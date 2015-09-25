@@ -1,2 +1,2 @@
-# genome-compass
+# genome-nexus
 Interpreting cancer genomics data
