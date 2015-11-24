@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <name>Genome Nexus Annotation</name>
+  <description>Genome Nexus VEP Wrapper</description>
+  <artifactId>annotation</artifactId>
+  <version>0.1.0</version>
+  <!--<packaging>jar</packaging>-->
+  <packaging>${packaging.type}</packaging>
+
+  <parent>
+    <groupId>org.cbioportal.genome_nexus</groupId>
+    <artifactId>master</artifactId>
+    <version>0.1.0</version>
+  </parent>
+
+  <profiles>
+    <profile>
+      <id>war</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <packaging.type>war</packaging.type>
+      </properties>
+    </profile>
+    <profile>
+      <id>jar</id>
+      <properties>
+        <packaging.type>jar</packaging.type>
+      </properties>
+    </profile>
+  </profiles>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+      <scope>provided</scope>
+      </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- required to build an executable jar -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>1.2.7.RELEASE</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+  
