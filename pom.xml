@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.cbioportal.genome_nexus</groupId>
+    <artifactId>master</artifactId>
+    <packaging>pom</packaging>
+    <name>Genome Nexus Master</name>
+    <version>0.1.0</version>
+    <description>master maven module</description>
+    <url>https://github.com/cBioPortal/genome-nexus/</url>
+
+    <modules>
+      <module>annotation</module>
+    </modules>
+
+    <!-- inherit defaults from spring boot -->
+    <parent>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>1.2.7.RELEASE</version>
+    </parent>
+
+    <properties>
+      <java.version>1.7</java.version>
+    </properties>
+
+    <build>
+      <!-- this plugin will allow us to share resources with children -->
+      <!--
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.4</version>
+        </plugin>
+        </plugins>
+        -->
+    </build>
+
+</project>
