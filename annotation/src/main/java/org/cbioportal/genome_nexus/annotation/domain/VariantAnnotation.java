@@ -32,9 +32,14 @@
 
 package org.cbioportal.genome_nexus.annotation.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * @author Benjamin Gross
+ */
 @Document(collection = "vep.annotation")
 public class VariantAnnotation
 {
@@ -42,15 +47,14 @@ public class VariantAnnotation
     private String variant;
     private String annotationJSON;
 
-    /**
-     * @author Benjamin Gross
-     */
     public VariantAnnotation(String variant, String annotationJSON)
     {
         this.variant = variant;
         this.annotationJSON = annotationJSON;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(value = "Variant key", required = true)
     public String getVariant()
     {
         return variant;
@@ -61,6 +65,8 @@ public class VariantAnnotation
         this.annotationJSON = annotationJSON;
     }
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(value = "Annotation data as JSON string", required = true)
     public String getAnnotationJSON()
     {
         return annotationJSON;

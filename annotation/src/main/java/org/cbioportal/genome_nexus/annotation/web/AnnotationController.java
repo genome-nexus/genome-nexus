@@ -32,6 +32,7 @@
 
 package org.cbioportal.genome_nexus.annotation.web;
 
+import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.annotation.domain.*;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
@@ -59,6 +60,18 @@ public class AnnotationController
         this.variantAnnotationRepository = variantAnnotationRepository;
     }
 
+    @ApiOperation(value = "getVariantAnnotation", nickname = "getVariantAnnotation")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "variants",
+            value = "Comma separated list of variants",
+            required = true,
+            dataType = "string",
+            paramType = "path")
+    })
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success", response = VariantAnnotation.class, responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request"),
+        @ApiResponse(code = 404, message = "Not Found")})
 	@RequestMapping(value = "/hgvs/{variants:.+}", method = RequestMethod.GET)
 	public List<VariantAnnotation> getVariantAnnotation(@PathVariable List<String> variants)
 	{
