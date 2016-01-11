@@ -60,8 +60,9 @@ public class AnnotationController
         this.variantAnnotationRepository = variantAnnotationRepository;
     }
 
-    @ApiOperation(value = "getVariantAnnotation", nickname = "getVariantAnnotation")
-    @ApiImplicitParams({
+    @ApiOperation(value = "getVariantAnnotation",
+        nickname = "getVariantAnnotation")
+    @ApiImplicitParams(value = {
         @ApiImplicitParam(name = "variants",
             value = "Comma separated list of variants",
             required = true,
@@ -69,10 +70,14 @@ public class AnnotationController
             paramType = "path")
     })
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Success", response = VariantAnnotation.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request"),
-        @ApiResponse(code = 404, message = "Not Found")})
-	@RequestMapping(value = "/hgvs/{variants:.+}", method = RequestMethod.GET)
+        @ApiResponse(code = 200, message = "Success",
+            response = VariantAnnotation.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+	@RequestMapping(value = "/hgvs/{variants:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
 	public List<VariantAnnotation> getVariantAnnotation(@PathVariable List<String> variants)
 	{
 		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
@@ -86,7 +91,7 @@ public class AnnotationController
 	}
 
     //@RequestMapping(value = "/hgvs/{variant:.+}", method = RequestMethod.GET)
-    private VariantAnnotation getVariantAnnotation(@PathVariable String variant)
+    private VariantAnnotation getVariantAnnotation(String variant)
     {
         VariantAnnotation variantAnnotation = variantAnnotationRepository.findOne(variant);
 

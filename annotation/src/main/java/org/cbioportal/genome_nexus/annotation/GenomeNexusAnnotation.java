@@ -59,19 +59,21 @@ public class GenomeNexusAnnotation extends SpringBootServletInitializer
 
     @Bean
     public Docket annotationApi() {
+        // default swagger definition file location: <root>/v2/api-docs?group=variant_annotation
+        // default swagger UI location: <root>/swagger-ui.html
         return new Docket(DocumentationType.SWAGGER_2)
             .groupName("variant_annotation")
-            .apiInfo(apiInfo())
+            .apiInfo(annotationApiInfo())
             .select()
-            .paths(PathSelectors.regex("/variant_annotation/*.*"))
+            .paths(PathSelectors.regex("/variant_annotation.*"))
             .build();
     }
 
-    private ApiInfo apiInfo() {
+    private ApiInfo annotationApiInfo() {
         return new ApiInfoBuilder()
             .title("Genome Nexus API")
-            .description("Genome Nexus API")
-            .termsOfServiceUrl("http://terms-of-service-url")
+            .description("Genome Nexus Variant Annotation API")
+            //.termsOfServiceUrl("http://terms-of-service-url")
             .contact("CMO, MSKCC")
             .license("GNU AFFERO GENERAL PUBLIC LICENSE Version 3")
             .licenseUrl("https://github.com/cBioPortal/genome-nexus/blob/master/LICENSE")
