@@ -64,7 +64,7 @@ public class AnnotationController
         nickname = "getVariantAnnotation")
     @ApiImplicitParams(value = {
         @ApiImplicitParam(name = "variants",
-            value = "Comma separated list of variants. Example: 10:g.152595854G>A,10:g.152595854G>C",
+            value = "Comma separated list of variants. Example: X:g.66937331T>A,17:g.41242962->GA",
             required = true,
             dataType = "string",
             paramType = "path")
