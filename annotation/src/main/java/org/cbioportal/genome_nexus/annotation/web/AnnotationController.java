@@ -47,6 +47,7 @@ import java.util.List;
  */
 @RestController // shorthand for @Controller, @ResponseBody
 @RequestMapping(value = "/variant_annotation/")
+@CrossOrigin(origins="*")
 public class AnnotationController
 {
     private final VariantAnnotationService variantAnnotationService;
@@ -62,13 +63,6 @@ public class AnnotationController
 
     @ApiOperation(value = "getVariantAnnotation",
         nickname = "getVariantAnnotation")
-    @ApiImplicitParams(value = {
-        @ApiImplicitParam(name = "variants",
-            value = "Comma separated list of variants. Example: X:g.66937331T>A,17:g.41242962->GA",
-            required = true,
-            dataType = "string",
-            paramType = "path")
-    })
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success",
             response = VariantAnnotation.class,
@@ -78,7 +72,12 @@ public class AnnotationController
 	@RequestMapping(value = "/hgvs/{variants:.+}",
         method = RequestMethod.GET,
         produces = "application/json")
-	public List<VariantAnnotation> getVariantAnnotation(@PathVariable List<String> variants)
+	public List<VariantAnnotation> getVariantAnnotation(
+        @PathVariable
+        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
+            required = true,
+            allowMultiple = true)
+        List<String> variants)
 	{
 		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
 
@@ -90,7 +89,29 @@ public class AnnotationController
 		return variantAnnotations;
 	}
 
-    //@RequestMapping(value = "/hgvs/{variant:.+}", method = RequestMethod.GET)
+    @ApiOperation(value = "postVariantAnnotation",
+        nickname = "postVariantAnnotation")
+    @RequestMapping(value = "/hgvs",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<VariantAnnotation> postVariantAnnotation(
+        @RequestBody
+        @ApiParam(name="variants",
+            value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
+            required = true,
+            allowMultiple = true)
+        String variants)
+    {
+        List<VariantAnnotation> variantAnnotations = new ArrayList<>();
+
+        for (String variant: variants.split(","))
+        {
+            variantAnnotations.add(getVariantAnnotation(variant));
+        }
+
+        return variantAnnotations;
+    }
+
     private VariantAnnotation getVariantAnnotation(String variant)
     {
         VariantAnnotation variantAnnotation = variantAnnotationRepository.findOne(variant);
