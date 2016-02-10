@@ -38,6 +38,9 @@ import org.cbioportal.genome_nexus.annotation.service.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Benjamin Gross
  */
@@ -55,9 +58,22 @@ public class AnnotationController
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
     }
-    
-    @RequestMapping(value = "/hgvs/{variant:.+}", method = RequestMethod.GET)
-    public VariantAnnotation getVariantAnnotation(@PathVariable String variant)
+
+	@RequestMapping(value = "/hgvs/{variants:.+}", method = RequestMethod.GET)
+	public List<VariantAnnotation> getVariantAnnotation(@PathVariable List<String> variants)
+	{
+		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
+
+		for (String variant: variants)
+		{
+			variantAnnotations.add(getVariantAnnotation(variant));
+		}
+
+		return variantAnnotations;
+	}
+
+    //@RequestMapping(value = "/hgvs/{variant:.+}", method = RequestMethod.GET)
+    private VariantAnnotation getVariantAnnotation(@PathVariable String variant)
     {
         VariantAnnotation variantAnnotation = variantAnnotationRepository.findOne(variant);
 
