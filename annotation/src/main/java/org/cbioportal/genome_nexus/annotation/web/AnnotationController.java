@@ -32,6 +32,7 @@
 
 package org.cbioportal.genome_nexus.annotation.web;
 
+import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.annotation.domain.*;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
@@ -59,7 +60,24 @@ public class AnnotationController
         this.variantAnnotationRepository = variantAnnotationRepository;
     }
 
-	@RequestMapping(value = "/hgvs/{variants:.+}", method = RequestMethod.GET)
+    @ApiOperation(value = "getVariantAnnotation",
+        nickname = "getVariantAnnotation")
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "variants",
+            value = "Comma separated list of variants. Example: X:g.66937331T>A,17:g.41242962->GA",
+            required = true,
+            dataType = "string",
+            paramType = "path")
+    })
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = VariantAnnotation.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+	@RequestMapping(value = "/hgvs/{variants:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
 	public List<VariantAnnotation> getVariantAnnotation(@PathVariable List<String> variants)
 	{
 		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
@@ -73,7 +91,7 @@ public class AnnotationController
 	}
 
     //@RequestMapping(value = "/hgvs/{variant:.+}", method = RequestMethod.GET)
-    private VariantAnnotation getVariantAnnotation(@PathVariable String variant)
+    private VariantAnnotation getVariantAnnotation(String variant)
     {
         VariantAnnotation variantAnnotation = variantAnnotationRepository.findOne(variant);
 
