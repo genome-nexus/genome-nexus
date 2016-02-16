@@ -38,6 +38,7 @@ import org.cbioportal.genome_nexus.annotation.service.*;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ import java.util.List;
  * @author Benjamin Gross
  */
 @RestController // shorthand for @Controller, @ResponseBody
+@CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value = "/variant_annotation/")
 public class AnnotationController
 {
@@ -62,13 +64,6 @@ public class AnnotationController
 
     @ApiOperation(value = "getVariantAnnotation",
         nickname = "getVariantAnnotation")
-    @ApiImplicitParams(value = {
-        @ApiImplicitParam(name = "variants",
-            value = "Comma separated list of variants. Example: X:g.66937331T>A,17:g.41242962->GA",
-            required = true,
-            dataType = "string",
-            paramType = "path")
-    })
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success",
             response = VariantAnnotation.class,
@@ -78,7 +73,12 @@ public class AnnotationController
 	@RequestMapping(value = "/hgvs/{variants:.+}",
         method = RequestMethod.GET,
         produces = "application/json")
-	public List<VariantAnnotation> getVariantAnnotation(@PathVariable List<String> variants)
+	public List<VariantAnnotation> getVariantAnnotation(
+        @PathVariable
+        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
+            required = true,
+            allowMultiple = true)
+        List<String> variants)
 	{
 		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
 
@@ -90,15 +90,48 @@ public class AnnotationController
 		return variantAnnotations;
 	}
 
-    //@RequestMapping(value = "/hgvs/{variant:.+}", method = RequestMethod.GET)
+    @ApiOperation(value = "postVariantAnnotation",
+        nickname = "postVariantAnnotation")
+    @RequestMapping(value = "/hgvs",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<VariantAnnotation> postVariantAnnotation(
+        @RequestBody
+        @ApiParam(name="variants",
+            value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
+            required = true,
+            allowMultiple = true)
+        String variants)
+    {
+        List<VariantAnnotation> variantAnnotations = new ArrayList<>();
+
+        // assuming the response body is comma separated list of variants
+        for (String variant: variants.split(","))
+        {
+            variantAnnotations.add(getVariantAnnotation(variant));
+        }
+
+        return variantAnnotations;
+    }
+
     private VariantAnnotation getVariantAnnotation(String variant)
     {
         VariantAnnotation variantAnnotation = variantAnnotationRepository.findOne(variant);
 
         if (variantAnnotation == null) {
-            variantAnnotation = variantAnnotationService.getAnnotation(variant);
-            variantAnnotationRepository.save(variantAnnotation);
+
+            try {
+                // get the annotation from the web service and save it to the cache
+                variantAnnotation = variantAnnotationService.getAnnotation(variant);
+                variantAnnotationRepository.save(variantAnnotation);
+            }
+            catch (HttpClientErrorException e) {
+                // in case of error, do not terminate the whole process.
+                // just copy the response body (error message) for this variant
+                variantAnnotation = new VariantAnnotation(variant, e.getResponseBodyAsString());
+            }
         }
+
         return variantAnnotation;
     }
 }
