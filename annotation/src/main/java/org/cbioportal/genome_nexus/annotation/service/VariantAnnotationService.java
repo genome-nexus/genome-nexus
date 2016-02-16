@@ -40,4 +40,5 @@ import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 public interface VariantAnnotationService
 {
     VariantAnnotation getAnnotation(String variant);
+    String getRawAnnotation(String variant);
 }
