@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Selcuk Onur Sumer
@@ -61,7 +62,7 @@ public class VariantAnnotationRepositoryImpl implements VariantAnnotationReposit
     public void saveAnnotationJson(String variant, String annotationJSON)
     {
         // parse the given annotation JSON string to get a proper object
-        DBObject dbObject = (DBObject) JSON.parse(removeArrayBrackets(annotationJSON));
+        DBObject dbObject = convertToDbObject(annotationJSON);
 
         // update the _id field to the given variant
         dbObject.put("_id", variant);
@@ -81,13 +82,14 @@ public class VariantAnnotationRepositoryImpl implements VariantAnnotationReposit
     @Override
     public VariantAnnotation mapAnnotationJson(String variant, String annotationJSON) throws IOException
     {
-        String toSerialize = removeArrayBrackets(annotationJSON);
+        //String toMap = removeArrayBrackets(annotationJSON);
+        String toMap = JSON.serialize(convertToDbObject(annotationJSON));
 
         VariantAnnotation vepVariantAnnotation;
         ObjectMapper mapper = new ObjectMapper();
 
         // map annotation string onto VariantAnnotation instance
-        vepVariantAnnotation = mapper.readValue(toSerialize, VariantAnnotation.class);
+        vepVariantAnnotation = mapper.readValue(toMap, VariantAnnotation.class);
         // include original variant value too
         vepVariantAnnotation.setVariant(variant);
         //vepVariantAnnotation.setAnnotationJSON(annotationJSON);
@@ -95,11 +97,41 @@ public class VariantAnnotationRepositoryImpl implements VariantAnnotationReposit
         return vepVariantAnnotation;
     }
 
+	/**
+     * Transforms the given annotationJSON to a DBObject instance.
+     * If the given annotation JSON is an array, returns only the first element.
+     *
+     * @param annotationJSON    annotation JSON as a string
+     * @return DBObject instance
+     */
+    private DBObject convertToDbObject(String annotationJSON)
+    {
+        DBObject dbObject = (DBObject) JSON.parse(annotationJSON);
+
+        // if it is a list, get the first element of the list
+        if (dbObject instanceof List)
+        {
+            List list = ((List) dbObject);
+
+            // get the first element, ignore the rest
+            if (list.size() > 0)
+            {
+                dbObject = (DBObject) list.iterator().next();
+            }
+        }
+
+        return dbObject;
+    }
+
+	/**
+     *
+     * @param annotationJSON    annotation JSON as a string
+     * @return  stripped string with array brackets removed
+     */
     private String removeArrayBrackets(String annotationJSON)
     {
         String stripped = annotationJSON;
 
-        // TODO this is not safe. a better way: parse and if array then get the first element
         // if annotation JSON is actually an array, assume it is an array of size 1,
         // and convert it to a single object by removing array brackets
         if (annotationJSON.trim().startsWith("["))
