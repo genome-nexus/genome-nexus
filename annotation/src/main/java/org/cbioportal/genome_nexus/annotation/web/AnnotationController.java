@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,18 +118,35 @@ public class AnnotationController
     private VariantAnnotation getVariantAnnotation(String variant)
     {
         VariantAnnotation variantAnnotation = variantAnnotationRepository.findOne(variant);
+        String annotationJSON = null;
 
         if (variantAnnotation == null) {
 
             try {
-                // get the annotation from the web service and save it to the cache
-                variantAnnotation = variantAnnotationService.getAnnotation(variant);
-                variantAnnotationRepository.save(variantAnnotation);
+                // get the annotation from the web service and save it to the DB
+                //variantAnnotation = variantAnnotationService.getAnnotation(variant);
+                //variantAnnotationRepository.save(variantAnnotation);
+
+                // get the raw annotation string from the web service
+                annotationJSON = variantAnnotationService.getRawAnnotation(variant);
+
+                // construct a VariantAnnotation instance to return:
+                // this does not contain all the information obtained from the web service
+                // only the fields mapped to the VariantAnnotation model will be returned
+                variantAnnotation = variantAnnotationRepository.mapAnnotationJson(variant, annotationJSON);
+
+                // save everything to the cache as a properly parsed JSON
+                variantAnnotationRepository.saveAnnotationJson(variant, annotationJSON);
             }
             catch (HttpClientErrorException e) {
-                // in case of error, do not terminate the whole process.
+                // in case of web service error, do not terminate the whole process.
                 // just copy the response body (error message) for this variant
                 variantAnnotation = new VariantAnnotation(variant, e.getResponseBodyAsString());
+            }
+            catch (IOException e) {
+                // in case of parse error, do not terminate the whole process.
+                // just send the raw annotationJSON to the client
+                variantAnnotation = new VariantAnnotation(variant, annotationJSON);
             }
         }
 

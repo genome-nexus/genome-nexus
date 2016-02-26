@@ -60,13 +60,17 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
 
     public VariantAnnotation getAnnotation(String variant)
     {
-        //http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1
-        String uri = vepURL.replace("VARIANT", variant);
-
-        RestTemplate restTemplate = new RestTemplate();
-        String vepJSON = restTemplate.getForObject(uri, String.class);
+        String vepJSON = this.getRawAnnotation(variant);
         VariantAnnotation variantAnnotation = new VariantAnnotation(variant, vepJSON);
         enrichmentService.enrichAnnotation(variantAnnotation);
         return variantAnnotation;
+    }
+
+    public String getRawAnnotation(String variant)
+    {
+        //http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1
+        String uri = vepURL.replace("VARIANT", variant);
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(uri, String.class);
     }
 }

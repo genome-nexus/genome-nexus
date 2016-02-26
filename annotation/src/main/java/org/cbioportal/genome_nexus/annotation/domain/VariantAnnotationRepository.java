@@ -32,9 +32,11 @@
 
 package org.cbioportal.genome_nexus.annotation.domain;
 
+import org.cbioportal.genome_nexus.annotation.domain.internal.VariantAnnotationRepositoryCustom;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  * @author Benjamin Gross
  */
-public interface VariantAnnotationRepository extends MongoRepository<VariantAnnotation, String> {}
+public interface VariantAnnotationRepository
+    extends MongoRepository<VariantAnnotation, String>, VariantAnnotationRepositoryCustom {}

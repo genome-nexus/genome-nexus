@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Memorial Sloan-Kettering Cancer Center.
+ * Copyright (c) 2016 Memorial Sloan-Kettering Cancer Center.
  *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS
@@ -30,15 +30,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cbioportal.genome_nexus.annotation.service;
+package org.cbioportal.genome_nexus.annotation.domain.internal;
 
 import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 
+import java.io.IOException;
+
 /**
- * @author Benjamin Gross
+ * @author Selcuk Onur Sumer
  */
-public interface VariantAnnotationService
+public interface VariantAnnotationRepositoryCustom
 {
-    VariantAnnotation getAnnotation(String variant);
-    String getRawAnnotation(String variant);
+    /**
+     * Parses and saves the entire content of the annotation JSON object to the database.
+     *
+     * @param variant           variant key (used as an id)
+     * @param annotationJSON    raw annotation JSON (obtained from the service)
+     */
+    void saveAnnotationJson(String variant, String annotationJSON);
+
+    /**
+     * Maps the given raw annotation JSON string onto a VariantAnnotation instance.
+     *
+     * @param variant           variant key
+     * @param annotationJSON    raw annotation JSON string
+     * @return a VariantAnnotation instance
+     * @throws IOException
+     */
+    VariantAnnotation mapAnnotationJson(String variant, String annotationJSON) throws IOException;
 }

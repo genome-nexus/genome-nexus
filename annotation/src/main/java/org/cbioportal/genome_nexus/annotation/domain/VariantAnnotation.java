@@ -32,20 +32,48 @@
 
 package org.cbioportal.genome_nexus.annotation.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import java.util.List;
 
 /**
  * @author Benjamin Gross
+ * @author Selcuk Onur Sumer
  */
 @Document(collection = "vep.annotation")
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VariantAnnotation
 {
     @Id
-    private String variant;
-    private String annotationJSON;
+    private String variant;        // used as an id for mongodb record
+    private String annotationJSON; // raw annotation JSON
+
+    private String variantId;     // variant id
+    private String assemblyName;  // NCBI build number
+    private String seqRegionName; // chromosome
+    private String start;         // start position
+    private String end;           // end position
+    private String alleleString;  // reference allele & variant allele
+    private String strand;
+    private String mostSevereConsequence;
+    private List<TranscriptConsequence> transcriptConsequences;
+
+    public VariantAnnotation()
+    {
+        this(null, null);
+    }
+
+    public VariantAnnotation(String variant)
+    {
+        this(variant, null);
+    }
 
     public VariantAnnotation(String variant, String annotationJSON)
     {
@@ -60,9 +88,9 @@ public class VariantAnnotation
         return variant;
     }
 
-    public void setAnnotationJSON(String annotationJSON)
+    public void setVariant(String variant)
     {
-        this.annotationJSON = annotationJSON;
+        this.variant = variant;
     }
 
     @JsonProperty(required = true)
@@ -70,6 +98,128 @@ public class VariantAnnotation
     public String getAnnotationJSON()
     {
         return annotationJSON;
+    }
+
+    public void setAnnotationJSON(String annotationJSON)
+    {
+        this.annotationJSON = annotationJSON;
+    }
+
+    @Field(value="id")
+    @JsonProperty(value="id", required = true)
+    @ApiModelProperty(value = "Variant id", required = true)
+    public String getVariantId()
+    {
+        return variantId;
+    }
+
+    public void setVariantId(String variantId)
+    {
+        this.variantId = variantId;
+    }
+
+    @Field(value="assembly_name")
+    @JsonProperty(value="assembly_name", required = true)
+    @ApiModelProperty(value = "NCBI build number", required = false)
+    public String getAssemblyName()
+    {
+        return assemblyName;
+    }
+
+    public void setAssemblyName(String assemblyName)
+    {
+        this.assemblyName = assemblyName;
+    }
+
+    @Field(value="seq_region_name")
+    @JsonProperty(value="seq_region_name", required = true)
+    @ApiModelProperty(value = "Chromosome", required = false)
+    public String getSeqRegionName()
+    {
+        return seqRegionName;
+    }
+
+    public void setSeqRegionName(String seqRegionName)
+    {
+        this.seqRegionName = seqRegionName;
+    }
+
+    @Field(value="start")
+    @JsonProperty(value="start", required = true)
+    @ApiModelProperty(value = "Start position", required = false)
+    public String getStart()
+    {
+        return start;
+    }
+
+    public void setStart(String start)
+    {
+        this.start = start;
+    }
+
+    @Field(value="end")
+    @JsonProperty(value="end", required = true)
+    @ApiModelProperty(value = "End position", required = false)
+    public String getEnd()
+    {
+        return end;
+    }
+
+    public void setEnd(String end)
+    {
+        this.end = end;
+    }
+
+    @Field(value="allele_string")
+    @JsonProperty(value="allele_string", required = true)
+    @ApiModelProperty(value = "Allele string (e.g: A/T)", required = false)
+    public String getAlleleString()
+    {
+        return alleleString;
+    }
+
+    public void setAlleleString(String alleleString)
+    {
+        this.alleleString = alleleString;
+    }
+
+    @Field(value="strand")
+    @JsonProperty(value="strand", required = true)
+    @ApiModelProperty(value = "Strand (negative or positive)", required = false)
+    public String getStrand()
+    {
+        return strand;
+    }
+
+    public void setStrand(String strand)
+    {
+        this.strand = strand;
+    }
+
+    @Field(value="most_severe_consequence")
+    @JsonProperty(value="most_severe_consequence", required = true)
+    @ApiModelProperty(value = "Most severe consequence", required = false)
+    public String getMostSevereConsequence()
+    {
+        return mostSevereConsequence;
+    }
+
+    public void setMostSevereConsequence(String mostSevereConsequence)
+    {
+        this.mostSevereConsequence = mostSevereConsequence;
+    }
+
+    @Field(value="transcript_consequences")
+    @JsonProperty(value="transcript_consequences", required = true)
+    @ApiModelProperty(value = "List of transcripts", required = false)
+    public List<TranscriptConsequence> getTranscriptConsequences()
+    {
+        return transcriptConsequences;
+    }
+
+    public void setTranscriptConsequences(List<TranscriptConsequence> transcriptConsequences)
+    {
+        this.transcriptConsequences = transcriptConsequences;
     }
 
     @Override
