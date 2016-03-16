@@ -54,13 +54,16 @@ public class AnnotationController
 {
     private final VariantAnnotationService variantAnnotationService;
     private final VariantAnnotationRepository variantAnnotationRepository;
+    private final IsoformOverrideService isoformOverrideService;
 
     @Autowired
     public AnnotationController(VariantAnnotationService variantAnnotationService,
-                                VariantAnnotationRepository variantAnnotationRepository)
+                                VariantAnnotationRepository variantAnnotationRepository,
+                                IsoformOverrideService isoformOverrideService)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
+        this.isoformOverrideService = isoformOverrideService;
     }
 
     @ApiOperation(value = "getVariantAnnotation",
@@ -113,6 +116,48 @@ public class AnnotationController
         }
 
         return variantAnnotations;
+    }
+
+    @ApiOperation(value = "getIsoformOverride",
+        nickname = "getIsoformOverride")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = IsoformOverride.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/isoform_override/{source}/{transcriptIds:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<IsoformOverride> getIsoformOverride(
+        @PathVariable
+        @ApiParam(value="Override source. For example uniprot",
+            required = true)
+        String source,
+        @PathVariable
+        @ApiParam(value="Comma separated list of transcript ids. For example ENST00000361125,ENST00000443649",
+            required = true,
+            allowMultiple = true)
+        List<String> transcriptIds)
+    {
+        List<IsoformOverride> isoformOverrides = new ArrayList<>();
+
+        for (String id: transcriptIds)
+        {
+            IsoformOverride override = getIsoformOverride(source, id);
+
+            if (override != null)
+            {
+                isoformOverrides.add(override);
+            }
+        }
+
+        return isoformOverrides;
+    }
+
+    private IsoformOverride getIsoformOverride(String source, String transcriptId)
+    {
+        return isoformOverrideService.getIsoformOverride(source, transcriptId);
     }
 
     private VariantAnnotation getVariantAnnotation(String variant)
