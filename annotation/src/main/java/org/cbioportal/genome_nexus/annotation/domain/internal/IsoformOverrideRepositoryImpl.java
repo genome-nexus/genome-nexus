@@ -1,9 +1,10 @@
-package org.cbioportal.genome_nexus.annotation.service.internal;
+package org.cbioportal.genome_nexus.annotation.domain.internal;
 
 import com.univocity.parsers.common.processor.BeanListProcessor;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.cbioportal.genome_nexus.annotation.domain.IsoformOverride;
+import org.cbioportal.genome_nexus.annotation.domain.IsoformOverrideRepository;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -19,18 +20,19 @@ import java.util.Map;
 /**
  * @author Selcuk Onur Sumer
  */
-public class IsoformOverrideResourceManager
+public class IsoformOverrideRepositoryImpl implements IsoformOverrideRepository
 {
     private List<IsoformOverride> overrideList;
     private Map<String, IsoformOverride> overrideMap;
     private String resourceURI;
 
-    public IsoformOverrideResourceManager(String resourceURI)
+    public IsoformOverrideRepositoryImpl(String resourceURI)
     {
         this.resourceURI = resourceURI;
     }
 
-    public List<IsoformOverride> getAllOverridesAsList()
+    @Override
+    public List<IsoformOverride> findAllAsList()
     {
         if (overrideList == null)
         {
@@ -40,7 +42,8 @@ public class IsoformOverrideResourceManager
         return overrideList;
     }
 
-    public Map<String, IsoformOverride> getAllOverridesAsMap()
+    @Override
+    public Map<String, IsoformOverride> findAllAsMap()
     {
         if (overrideMap == null)
         {
@@ -50,9 +53,10 @@ public class IsoformOverrideResourceManager
         return overrideMap;
     }
 
-    public IsoformOverride getOverride(String transcriptId)
+    @Override
+    public IsoformOverride findIsoformOverride(String transcriptId)
     {
-        return getAllOverridesAsMap().get(transcriptId.toLowerCase());
+        return findAllAsMap().get(transcriptId.toLowerCase());
     }
 
     private void populateData()

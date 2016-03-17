@@ -1,6 +1,8 @@
 package org.cbioportal.genome_nexus.annotation.service.internal;
 
 import org.cbioportal.genome_nexus.annotation.domain.IsoformOverride;
+import org.cbioportal.genome_nexus.annotation.domain.IsoformOverrideRepository;
+import org.cbioportal.genome_nexus.annotation.domain.internal.IsoformOverrideRepositoryImpl;
 import org.cbioportal.genome_nexus.annotation.service.IsoformOverrideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +19,7 @@ public class VEPIsoformOverrideService implements IsoformOverrideService
 {
     private String overrideURIs;
 
-    private Map<String, IsoformOverrideResourceManager> overrideResources;
+    private Map<String, IsoformOverrideRepository> overrideRepositories;
 
     @Autowired
     public VEPIsoformOverrideService(@Value("${vep.overrides_uris}") String overrideURIs)
@@ -25,11 +27,12 @@ public class VEPIsoformOverrideService implements IsoformOverrideService
         this.overrideURIs = overrideURIs;
 
         Map<String, String> resources = parseOverrideURIsString(overrideURIs);
-        this.overrideResources = new HashMap<>();
+        this.overrideRepositories = new HashMap<>();
 
+        // Create a repository for each resource URI
         for (String key: resources.keySet())
         {
-            this.overrideResources.put(key, new IsoformOverrideResourceManager(resources.get(key)));
+            this.overrideRepositories.put(key, new IsoformOverrideRepositoryImpl(resources.get(key)));
         }
     }
 
@@ -55,11 +58,11 @@ public class VEPIsoformOverrideService implements IsoformOverrideService
 
     public IsoformOverride getIsoformOverride(String source, String id)
     {
-        IsoformOverrideResourceManager manager = this.overrideResources.get(source);
+        IsoformOverrideRepository repository = this.overrideRepositories.get(source);
 
-        if (manager != null)
+        if (repository != null)
         {
-            return manager.getOverride(id);
+            return repository.findIsoformOverride(id);
         }
         else
         {
@@ -72,8 +75,8 @@ public class VEPIsoformOverrideService implements IsoformOverrideService
         return overrideURIs;
     }
 
-    public Map<String, IsoformOverrideResourceManager> getOverrideResources()
+    public Map<String, IsoformOverrideRepository> getOverrideRepositories()
     {
-        return overrideResources;
+        return overrideRepositories;
     }
 }
