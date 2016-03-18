@@ -32,6 +32,7 @@
 
 package org.cbioportal.genome_nexus.annotation.service;
 
+import org.cbioportal.genome_nexus.annotation.domain.AnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 
 /**
@@ -40,4 +41,6 @@ import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 public interface EnrichmentService
 {
     void enrichAnnotation(VariantAnnotation annotation);
+    void registerEnricher(String id, AnnotationEnricher enricher);
+    void unregisterEnricher(String id);
 }

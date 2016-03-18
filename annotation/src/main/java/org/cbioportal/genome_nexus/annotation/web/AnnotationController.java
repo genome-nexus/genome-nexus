@@ -34,6 +34,7 @@ package org.cbioportal.genome_nexus.annotation.web;
 
 import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.annotation.domain.*;
+import org.cbioportal.genome_nexus.annotation.domain.internal.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
 import org.springframework.web.bind.annotation.*;
@@ -56,14 +57,22 @@ public class AnnotationController
     private final VariantAnnotationRepository variantAnnotationRepository;
     private final IsoformOverrideService isoformOverrideService;
 
+    // The post enrichment service enriches the annotation after saving
+    // the original annotation data to the repository. Any enrichment
+    // performed by the post enrichment service is not saved
+    // to the annotation repository.
+    private final EnrichmentService postEnrichmentService;
+
     @Autowired
     public AnnotationController(VariantAnnotationService variantAnnotationService,
                                 VariantAnnotationRepository variantAnnotationRepository,
-                                IsoformOverrideService isoformOverrideService)
+                                IsoformOverrideService isoformOverrideService,
+                                EnrichmentService postEnrichmentService)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
         this.isoformOverrideService = isoformOverrideService;
+        this.postEnrichmentService = postEnrichmentService;
     }
 
     @ApiOperation(value = "getVariantAnnotation",
@@ -82,13 +91,32 @@ public class AnnotationController
         @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
             required = true,
             allowMultiple = true)
-        List<String> variants)
+        List<String> variants,
+        @RequestParam(required = false)
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+        String isoformOverrideSource)
 	{
 		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
 
+        // only register the enricher if the service actually has data for the given source
+        if (isoformOverrideService.hasData(isoformOverrideSource))
+        {
+            AnnotationEnricher enricher = new IsoformAnnotationEnricher(
+                isoformOverrideSource, isoformOverrideService);
+
+            postEnrichmentService.registerEnricher(isoformOverrideSource, enricher);
+        }
+
 		for (String variant: variants)
 		{
-			variantAnnotations.add(getVariantAnnotation(variant));
+            VariantAnnotation annotation = getVariantAnnotation(variant);
+
+            if (annotation != null)
+            {
+                postEnrichmentService.enrichAnnotation(annotation);
+                variantAnnotations.add(annotation);
+            }
 		}
 
 		return variantAnnotations;

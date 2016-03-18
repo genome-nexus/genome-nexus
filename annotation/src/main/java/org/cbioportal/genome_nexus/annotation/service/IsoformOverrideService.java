@@ -11,4 +11,5 @@ public interface IsoformOverrideService
 {
     IsoformOverride getIsoformOverride(String source, String id);
     List<IsoformOverride> getIsoformOverrides(String source);
+    Boolean hasData(String source);
 }

@@ -54,4 +54,10 @@ public class VEPIsoformOverrideService implements IsoformOverrideService
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public Boolean hasData(String source)
+    {
+        return this.repoFactory.getRepository(source) != null;
+    }
 }

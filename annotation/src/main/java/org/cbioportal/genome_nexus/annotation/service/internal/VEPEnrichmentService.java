@@ -37,14 +37,50 @@ import org.cbioportal.genome_nexus.annotation.service.EnrichmentService;
 
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Benjamin Gross
  */
 @Service
 public class VEPEnrichmentService implements EnrichmentService
 {
+    private Map<String, AnnotationEnricher> enrichers;
+
+    @Override
     public void enrichAnnotation(VariantAnnotation variantAnnotation)
     {
         // modify JSON returned by VEP
+        if (enrichers != null)
+        {
+            for (AnnotationEnricher enricher: enrichers.values())
+            {
+                enricher.enrich(variantAnnotation);
+            }
+        }
     }
+
+    @Override
+    public void registerEnricher(String id, AnnotationEnricher enricher)
+    {
+        // initiate enricher list if not initiated yet
+        if (enrichers == null)
+        {
+            enrichers = new HashMap<>();
+        }
+
+        enrichers.put(id, enricher);
+    }
+
+    @Override
+    public void unregisterEnricher(String id)
+    {
+        if (enrichers != null)
+        {
+            enrichers.put(id, null);
+        }
+    }
+
+
 }
