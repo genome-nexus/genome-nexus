@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Selcuk Onur Sumer
  */
@@ -31,6 +33,20 @@ public class VEPIsoformOverrideService implements IsoformOverrideService
         if (repository != null)
         {
             return repository.findIsoformOverride(id);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public List<IsoformOverride> getIsoformOverrides(String source)
+    {
+        IsoformOverrideRepository repository = this.repoFactory.getRepository(source);
+
+        if (repository != null)
+        {
+            return repository.findAllAsList();
         }
         else
         {

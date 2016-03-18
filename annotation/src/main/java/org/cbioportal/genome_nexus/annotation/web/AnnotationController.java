@@ -131,11 +131,11 @@ public class AnnotationController
         produces = "application/json")
     public List<IsoformOverride> getIsoformOverride(
         @PathVariable
-        @ApiParam(value="Override source. For example uniprot",
+        @ApiParam(value="Override source. For example uniprot.",
             required = true)
         String source,
         @PathVariable
-        @ApiParam(value="Comma separated list of transcript ids. For example ENST00000361125,ENST00000443649",
+        @ApiParam(value="Comma separated list of transcript ids. For example ENST00000361125,ENST00000443649.",
             required = true,
             allowMultiple = true)
         List<String> transcriptIds)
@@ -153,6 +153,53 @@ public class AnnotationController
         }
 
         return isoformOverrides;
+    }
+
+    @ApiOperation(value = "postIsoformOverride",
+        nickname = "postIsoformOverride")
+    @RequestMapping(value = "/isoform_override",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<IsoformOverride> postIsoformOverride(
+        @RequestParam
+        @ApiParam(value="Override source. For example uniprot",
+            required = true)
+        String source,
+        @RequestParam(required = false)
+        @ApiParam(value="Comma separated list of transcript ids. For example ENST00000361125,ENST00000443649. " +
+                        "If no transcript id provided, all available isoform overrides returned.",
+            required = false,
+            allowMultiple = true)
+        List<String> transcriptIds)
+    {
+        if (transcriptIds != null)
+        {
+            return getIsoformOverride(source, transcriptIds);
+        }
+        else
+        {
+            return getIsoformOverride(source);
+        }
+    }
+
+    @ApiOperation(value = "getAllIsoformOverrides",
+        nickname = "getAllIsoformOverrides")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = IsoformOverride.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/isoform_override/{source}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<IsoformOverride> getIsoformOverride(
+        @PathVariable
+        @ApiParam(value="Override source. For example uniprot",
+            required = true)
+        String source)
+    {
+        return isoformOverrideService.getIsoformOverrides(source);
     }
 
     private IsoformOverride getIsoformOverride(String source, String transcriptId)
