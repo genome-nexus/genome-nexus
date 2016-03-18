@@ -97,22 +97,13 @@ public class AnnotationController
         method = RequestMethod.POST,
         produces = "application/json")
     public List<VariantAnnotation> postVariantAnnotation(
-        @RequestBody
-        @ApiParam(name="variants",
-            value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
+        @RequestParam
+        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
             required = true,
             allowMultiple = true)
-        String variants)
+        List<String> variants)
     {
-        List<VariantAnnotation> variantAnnotations = new ArrayList<>();
-
-        // assuming the response body is comma separated list of variants
-        for (String variant: variants.split(","))
-        {
-            variantAnnotations.add(getVariantAnnotation(variant));
-        }
-
-        return variantAnnotations;
+       return getVariantAnnotation(variants);
     }
 
     private VariantAnnotation getVariantAnnotation(String variant)
