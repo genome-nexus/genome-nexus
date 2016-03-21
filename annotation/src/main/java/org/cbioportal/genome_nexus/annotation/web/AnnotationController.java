@@ -132,9 +132,13 @@ public class AnnotationController
         @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
             required = true,
             allowMultiple = true)
-        List<String> variants)
+        List<String> variants,
+        @RequestParam(required = false)
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+        String isoformOverrideSource)
     {
-       return getVariantAnnotation(variants);
+       return getVariantAnnotation(variants, isoformOverrideSource);
     }
 
     @ApiOperation(value = "getIsoformOverride",
