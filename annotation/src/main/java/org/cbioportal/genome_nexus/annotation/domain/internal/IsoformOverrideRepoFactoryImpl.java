@@ -46,7 +46,7 @@ public class IsoformOverrideRepoFactoryImpl implements IsoformOverrideRepoFactor
 
         for (String pair: overrideURIs.split(","))
         {
-            String parts[] = pair.split(":");
+            String parts[] = pair.split("=");
 
             if (parts.length > 1)
             {
