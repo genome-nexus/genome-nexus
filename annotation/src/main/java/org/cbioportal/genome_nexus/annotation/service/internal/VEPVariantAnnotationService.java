@@ -35,11 +35,13 @@ package org.cbioportal.genome_nexus.annotation.service.internal;
 import org.cbioportal.genome_nexus.annotation.domain.*;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.*;
 
+/**
+ * @author Benjamin Gross
+ */
 @Service
 public class VEPVariantAnnotationService implements VariantAnnotationService
 {
@@ -49,9 +51,6 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
 
     private final EnrichmentService enrichmentService;
 
-    /**
-     * @author Benjamin Gross
-     */
     @Autowired
     public VEPVariantAnnotationService(EnrichmentService enrichmentService)
     {

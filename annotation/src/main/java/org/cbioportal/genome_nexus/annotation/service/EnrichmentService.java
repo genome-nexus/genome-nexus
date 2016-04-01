@@ -32,7 +32,6 @@
 
 package org.cbioportal.genome_nexus.annotation.service;
 
-import org.cbioportal.genome_nexus.annotation.domain.AnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 
 /**

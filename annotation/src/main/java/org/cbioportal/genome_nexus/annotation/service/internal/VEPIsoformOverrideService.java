@@ -3,7 +3,6 @@ package org.cbioportal.genome_nexus.annotation.service.internal;
 import org.cbioportal.genome_nexus.annotation.domain.IsoformOverride;
 import org.cbioportal.genome_nexus.annotation.domain.IsoformOverrideRepoFactory;
 import org.cbioportal.genome_nexus.annotation.domain.IsoformOverrideRepository;
-import org.cbioportal.genome_nexus.annotation.domain.internal.IsoformOverrideRepoFactoryImpl;
 import org.cbioportal.genome_nexus.annotation.service.IsoformOverrideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

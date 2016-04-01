@@ -1,6 +1,6 @@
-package org.cbioportal.genome_nexus.annotation.domain.internal;
+package org.cbioportal.genome_nexus.annotation.service.internal;
 
-import org.cbioportal.genome_nexus.annotation.domain.AnnotationEnricher;
+import org.cbioportal.genome_nexus.annotation.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.domain.IsoformOverride;
 import org.cbioportal.genome_nexus.annotation.domain.TranscriptConsequence;
 import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;

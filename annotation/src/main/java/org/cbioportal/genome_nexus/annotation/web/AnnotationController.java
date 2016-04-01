@@ -34,7 +34,7 @@ package org.cbioportal.genome_nexus.annotation.web;
 
 import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.annotation.domain.*;
-import org.cbioportal.genome_nexus.annotation.domain.internal.IsoformAnnotationEnricher;
+import org.cbioportal.genome_nexus.annotation.service.internal.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
 import org.springframework.web.bind.annotation.*;

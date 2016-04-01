@@ -33,6 +33,7 @@
 package org.cbioportal.genome_nexus.annotation.service.internal;
 
 import org.cbioportal.genome_nexus.annotation.domain.*;
+import org.cbioportal.genome_nexus.annotation.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.EnrichmentService;
 
 import org.springframework.stereotype.Service;
