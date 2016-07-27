@@ -34,6 +34,7 @@ package org.cbioportal.genome_nexus.annotation.web;
 
 import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.annotation.domain.*;
+import org.cbioportal.genome_nexus.annotation.service.internal.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
 import org.springframework.web.bind.annotation.*;
@@ -54,13 +55,24 @@ public class AnnotationController
 {
     private final VariantAnnotationService variantAnnotationService;
     private final VariantAnnotationRepository variantAnnotationRepository;
+    private final IsoformOverrideService isoformOverrideService;
+
+    // The post enrichment service enriches the annotation after saving
+    // the original annotation data to the repository. Any enrichment
+    // performed by the post enrichment service is not saved
+    // to the annotation repository.
+    private final EnrichmentService postEnrichmentService;
 
     @Autowired
     public AnnotationController(VariantAnnotationService variantAnnotationService,
-                                VariantAnnotationRepository variantAnnotationRepository)
+                                VariantAnnotationRepository variantAnnotationRepository,
+                                IsoformOverrideService isoformOverrideService,
+                                EnrichmentService postEnrichmentService)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
+        this.isoformOverrideService = isoformOverrideService;
+        this.postEnrichmentService = postEnrichmentService;
     }
 
     @ApiOperation(value = "getVariantAnnotation",
@@ -79,13 +91,32 @@ public class AnnotationController
         @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
             required = true,
             allowMultiple = true)
-        List<String> variants)
+        List<String> variants,
+        @RequestParam(required = false)
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+        String isoformOverrideSource)
 	{
 		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
 
+        // only register the enricher if the service actually has data for the given source
+        if (isoformOverrideService.hasData(isoformOverrideSource))
+        {
+            AnnotationEnricher enricher = new IsoformAnnotationEnricher(
+                isoformOverrideSource, isoformOverrideService);
+
+            postEnrichmentService.registerEnricher(isoformOverrideSource, enricher);
+        }
+
 		for (String variant: variants)
 		{
-			variantAnnotations.add(getVariantAnnotation(variant));
+            VariantAnnotation annotation = getVariantAnnotation(variant);
+
+            if (annotation != null)
+            {
+                postEnrichmentService.enrichAnnotation(annotation);
+                variantAnnotations.add(annotation);
+            }
 		}
 
 		return variantAnnotations;
@@ -101,9 +132,102 @@ public class AnnotationController
         @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
             required = true,
             allowMultiple = true)
-        List<String> variants)
+        List<String> variants,
+        @RequestParam(required = false)
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+        String isoformOverrideSource)
     {
-       return getVariantAnnotation(variants);
+       return getVariantAnnotation(variants, isoformOverrideSource);
+    }
+
+    @ApiOperation(value = "getIsoformOverride",
+        nickname = "getIsoformOverride")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = IsoformOverride.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/isoform_override/{source}/{transcriptIds:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<IsoformOverride> getIsoformOverride(
+        @PathVariable
+        @ApiParam(value="Override source. For example uniprot.",
+            required = true)
+        String source,
+        @PathVariable
+        @ApiParam(value="Comma separated list of transcript ids. For example ENST00000361125,ENST00000443649.",
+            required = true,
+            allowMultiple = true)
+        List<String> transcriptIds)
+    {
+        List<IsoformOverride> isoformOverrides = new ArrayList<>();
+
+        for (String id: transcriptIds)
+        {
+            IsoformOverride override = getIsoformOverride(source, id);
+
+            if (override != null)
+            {
+                isoformOverrides.add(override);
+            }
+        }
+
+        return isoformOverrides;
+    }
+
+    @ApiOperation(value = "postIsoformOverride",
+        nickname = "postIsoformOverride")
+    @RequestMapping(value = "/isoform_override",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<IsoformOverride> postIsoformOverride(
+        @RequestParam
+        @ApiParam(value="Override source. For example uniprot",
+            required = true)
+        String source,
+        @RequestParam(required = false)
+        @ApiParam(value="Comma separated list of transcript ids. For example ENST00000361125,ENST00000443649. " +
+                        "If no transcript id provided, all available isoform overrides returned.",
+            required = false,
+            allowMultiple = true)
+        List<String> transcriptIds)
+    {
+        if (transcriptIds != null)
+        {
+            return getIsoformOverride(source, transcriptIds);
+        }
+        else
+        {
+            return getIsoformOverride(source);
+        }
+    }
+
+    @ApiOperation(value = "getAllIsoformOverrides",
+        nickname = "getAllIsoformOverrides")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = IsoformOverride.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/isoform_override/{source}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<IsoformOverride> getIsoformOverride(
+        @PathVariable
+        @ApiParam(value="Override source. For example uniprot",
+            required = true)
+        String source)
+    {
+        return isoformOverrideService.getIsoformOverrides(source);
+    }
+
+    private IsoformOverride getIsoformOverride(String source, String transcriptId)
+    {
+        return isoformOverrideService.getIsoformOverride(source, transcriptId);
     }
 
     private VariantAnnotation getVariantAnnotation(String variant)
