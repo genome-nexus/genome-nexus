@@ -83,6 +83,7 @@ public class VariantAnnotationRepositoryImpl implements VariantAnnotationReposit
     public VariantAnnotation mapAnnotationJson(String variant, String annotationJSON) throws IOException
     {
         //String toMap = removeArrayBrackets(annotationJSON);
+        // TODO use Transformer.converToDbObject instead and remove the private function of this class
         String toMap = JSON.serialize(convertToDbObject(annotationJSON));
 
         VariantAnnotation vepVariantAnnotation;

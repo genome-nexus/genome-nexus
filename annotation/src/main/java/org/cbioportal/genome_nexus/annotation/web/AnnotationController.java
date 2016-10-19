@@ -56,6 +56,7 @@ public class AnnotationController
     private final VariantAnnotationService variantAnnotationService;
     private final VariantAnnotationRepository variantAnnotationRepository;
     private final IsoformOverrideService isoformOverrideService;
+    private final HotspotService hotspotService;
 
     // The post enrichment service enriches the annotation after saving
     // the original annotation data to the repository. Any enrichment
@@ -67,11 +68,13 @@ public class AnnotationController
     public AnnotationController(VariantAnnotationService variantAnnotationService,
                                 VariantAnnotationRepository variantAnnotationRepository,
                                 IsoformOverrideService isoformOverrideService,
+                                HotspotService hotspotService,
                                 EnrichmentService postEnrichmentService)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
         this.isoformOverrideService = isoformOverrideService;
+        this.hotspotService = hotspotService;
         this.postEnrichmentService = postEnrichmentService;
     }
 
@@ -139,6 +142,56 @@ public class AnnotationController
         String isoformOverrideSource)
     {
        return getVariantAnnotation(variants, isoformOverrideSource);
+    }
+
+    @ApiOperation(value = "getHotspotAnnotation",
+        nickname = "getHotspotAnnotation")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = Hotspot.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/cancer_hotspots/{variants:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<Hotspot> getHotspotAnnotation(
+        @PathVariable
+        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
+            required = true,
+            allowMultiple = true)
+        List<String> variants)
+    {
+        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null);
+        List<Hotspot> hotspots = new ArrayList<>();
+
+        for (VariantAnnotation variantAnnotation : variantAnnotations)
+        {
+            if (variantAnnotation.getTranscriptConsequences() != null)
+            {
+                for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
+                {
+                    hotspots.addAll(hotspotService.getHotspots(transcript.getTranscriptId()));
+                }
+            }
+        }
+
+        return hotspots;
+    }
+
+    @ApiOperation(value = "postHotspotAnnotation",
+        nickname = "postHotspotAnnotation")
+    @RequestMapping(value = "/cancer_hotspots",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<Hotspot> postHotspotAnnotation(
+        @RequestParam
+        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
+            required = true,
+            allowMultiple = true)
+        List<String> variants)
+    {
+        return getHotspotAnnotation(variants);
     }
 
     @ApiOperation(value = "getIsoformOverride",
