@@ -57,6 +57,7 @@ public class AnnotationController
     private final VariantAnnotationRepository variantAnnotationRepository;
     private final IsoformOverrideService isoformOverrideService;
     private final HotspotService hotspotService;
+    private final HotspotRepository hotspotRepository;
 
     // The post enrichment service enriches the annotation after saving
     // the original annotation data to the repository. Any enrichment
@@ -69,12 +70,14 @@ public class AnnotationController
                                 VariantAnnotationRepository variantAnnotationRepository,
                                 IsoformOverrideService isoformOverrideService,
                                 HotspotService hotspotService,
+                                HotspotRepository hotspotRepository,
                                 EnrichmentService postEnrichmentService)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
+        this.hotspotRepository = hotspotRepository;
         this.postEnrichmentService = postEnrichmentService;
     }
 
@@ -171,7 +174,7 @@ public class AnnotationController
             {
                 for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
                 {
-                    hotspots.addAll(hotspotService.getHotspots(transcript.getTranscriptId()));
+                    hotspots.addAll(getHotspotAnnotation(transcript.getTranscriptId()));
                 }
             }
         }
@@ -281,6 +284,28 @@ public class AnnotationController
     private IsoformOverride getIsoformOverride(String source, String transcriptId)
     {
         return isoformOverrideService.getIsoformOverride(source, transcriptId);
+    }
+
+    private List<Hotspot> getHotspotAnnotation(String transcriptId)
+    {
+        List<Hotspot> hotspots;
+        // TODO make sure that transcript ID is a unique identifier for a Hotspot,
+        // otherwise we may like to find all hotspots corresponding to this transcript ID
+        Hotspot hotspot = hotspotRepository.findOne(transcriptId);
+
+        if (hotspot == null)
+        {
+            // get the hotspot(s) from the web service and save it to the DB
+            hotspots = hotspotService.getHotspots(transcriptId);
+            hotspotRepository.save(hotspots);
+        }
+        else
+        {
+            hotspots = new ArrayList<>(1);
+            hotspots.add(hotspot);
+        }
+
+        return hotspots;
     }
 
     private VariantAnnotation getVariantAnnotation(String variant)
