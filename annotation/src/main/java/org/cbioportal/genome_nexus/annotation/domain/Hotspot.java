@@ -32,10 +32,84 @@
 
 package org.cbioportal.genome_nexus.annotation.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 
 public class Hotspot
 {
     @Id
     private String transcriptId;
+
+    private String hugoSymbol;
+    private String residue;
+
+    private String proteinStart;
+    private String proteinEnd;
+    private String geneId;
+
+    @ApiModelProperty(value = "Transcript id", required = true)
+    public String getTranscriptId()
+    {
+        return transcriptId;
+    }
+
+    public void setTranscriptId(String transcriptId)
+    {
+        this.transcriptId = transcriptId;
+    }
+
+    @ApiModelProperty(value = "Protein start position", required = false)
+    public String getProteinStart()
+    {
+        return proteinStart;
+    }
+
+    public void setProteinStart(String proteinStart)
+    {
+        this.proteinStart = proteinStart;
+    }
+
+    @ApiModelProperty(value = "Protein end position", required = false)
+    public String getProteinEnd()
+    {
+        return proteinEnd;
+    }
+
+    public void setProteinEnd(String proteinEnd)
+    {
+        this.proteinEnd = proteinEnd;
+    }
+
+    @ApiModelProperty(value = "Ensembl gene id", required = false)
+    public String getGeneId()
+    {
+        return geneId;
+    }
+
+    public void setGeneId(String geneId)
+    {
+        this.geneId = geneId;
+    }
+
+    @ApiModelProperty(value = "Hugo gene symbol", required = false)
+    public String getHugoSymbol()
+    {
+        return hugoSymbol;
+    }
+
+    public void setHugoSymbol(String hugoSymbol)
+    {
+        this.hugoSymbol = hugoSymbol;
+    }
+
+    @ApiModelProperty(value = "Hotspot Residue", required = false)
+    public String getResidue()
+    {
+        return residue;
+    }
+
+    public void setResidue(String residue)
+    {
+        this.residue = residue;
+    }
 }

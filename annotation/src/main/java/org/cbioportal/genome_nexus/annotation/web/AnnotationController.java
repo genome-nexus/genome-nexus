@@ -174,7 +174,7 @@ public class AnnotationController
             {
                 for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
                 {
-                    hotspots.addAll(getHotspotAnnotation(transcript.getTranscriptId()));
+                    hotspots.addAll(getHotspotAnnotation(transcript));
                 }
             }
         }
@@ -286,17 +286,28 @@ public class AnnotationController
         return isoformOverrideService.getIsoformOverride(source, transcriptId);
     }
 
-    private List<Hotspot> getHotspotAnnotation(String transcriptId)
+    private List<Hotspot> getHotspotAnnotation(TranscriptConsequence transcript)
     {
         List<Hotspot> hotspots;
         // TODO make sure that transcript ID is a unique identifier for a Hotspot,
         // otherwise we may like to find all hotspots corresponding to this transcript ID
+        String transcriptId = transcript.getTranscriptId();
         Hotspot hotspot = hotspotRepository.findOne(transcriptId);
 
         if (hotspot == null)
         {
             // get the hotspot(s) from the web service and save it to the DB
             hotspots = hotspotService.getHotspots(transcriptId);
+
+            // TODO use a JSON view instead of copying fields to another model?
+            // we have data duplication here...
+            for (Hotspot rawHotspot : hotspots)
+            {
+                rawHotspot.setGeneId(transcript.getGeneId());
+                rawHotspot.setProteinStart(transcript.getProteinStart());
+                rawHotspot.setProteinEnd(transcript.getProteinEnd());
+            }
+
             hotspotRepository.save(hotspots);
         }
         else
