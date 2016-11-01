@@ -37,6 +37,7 @@ import org.cbioportal.genome_nexus.annotation.domain.*;
 import org.cbioportal.genome_nexus.annotation.service.internal.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
+import org.cbioportal.genome_nexus.annotation.util.Numerical;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
@@ -160,7 +161,7 @@ public class AnnotationController
         produces = "application/json")
     public List<Hotspot> getHotspotAnnotation(
         @PathVariable
-        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
+        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
             required = true,
             allowMultiple = true)
         List<String> variants)
@@ -189,7 +190,7 @@ public class AnnotationController
         produces = "application/json")
     public List<Hotspot> postHotspotAnnotation(
         @RequestParam
-        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
+        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
             required = true,
             allowMultiple = true)
         List<String> variants)
@@ -288,32 +289,28 @@ public class AnnotationController
 
     private List<Hotspot> getHotspotAnnotation(TranscriptConsequence transcript)
     {
-        List<Hotspot> hotspots;
-        // TODO make sure that transcript ID is a unique identifier for a Hotspot,
-        // otherwise we may like to find all hotspots corresponding to this transcript ID
+        List<Hotspot> hotspots = new ArrayList<>();
         String transcriptId = transcript.getTranscriptId();
-        Hotspot hotspot = hotspotRepository.findOne(transcriptId);
+        //Hotspot hotspot = hotspotRepository.findOne(transcriptId);
 
-        if (hotspot == null)
+        // get the hotspot(s) from the web service
+        for (Hotspot hotspot : hotspotService.getHotspots(transcriptId))
         {
-            // get the hotspot(s) from the web service and save it to the DB
-            hotspots = hotspotService.getHotspots(transcriptId);
-
-            // TODO use a JSON view instead of copying fields to another model?
-            // we have data duplication here...
-            for (Hotspot rawHotspot : hotspots)
+            if (Numerical.overlaps(hotspot.getResidue(),
+                       transcript.getProteinStart(),
+                       transcript.getProteinEnd()))
             {
-                rawHotspot.setGeneId(transcript.getGeneId());
-                rawHotspot.setProteinStart(transcript.getProteinStart());
-                rawHotspot.setProteinEnd(transcript.getProteinEnd());
-            }
+                // TODO use a JSON view instead of copying fields to another model?
+                // we have data duplication here...
+                hotspot.setGeneId(transcript.getGeneId());
+                hotspot.setProteinStart(transcript.getProteinStart());
+                hotspot.setProteinEnd(transcript.getProteinEnd());
 
-            hotspotRepository.save(hotspots);
-        }
-        else
-        {
-            hotspots = new ArrayList<>(1);
-            hotspots.add(hotspot);
+                hotspots.add(hotspot);
+
+                // do not cache anything for now
+                //hotspotRepository.save(hotspots);
+            }
         }
 
         return hotspots;

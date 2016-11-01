@@ -43,6 +43,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Hotspot
 {
+    // TODO transcriptId is not a unique identifier, we may need a composite id...
     @Id
     private String transcriptId;
 

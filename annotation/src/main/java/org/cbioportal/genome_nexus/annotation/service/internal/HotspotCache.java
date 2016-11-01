@@ -33,73 +33,29 @@
 package org.cbioportal.genome_nexus.annotation.service.internal;
 
 import org.cbioportal.genome_nexus.annotation.domain.Hotspot;
-import org.cbioportal.genome_nexus.annotation.service.HotspotService;
-import org.cbioportal.genome_nexus.annotation.util.Transformer;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
+ * In-memory cache for hotspot mutations for better performance.
+ *
  * @author Selcuk Onur Sumer
  */
-@Service
-public class CancerHotspotService implements HotspotService
+public class HotspotCache
 {
-    // TODO make the cache functional
-    private HotspotCache cache;
+    private List<Hotspot> hotspots;
+    private Map<String, List<Hotspot>> mapByTranscript;
 
-    private String hotspotsURL;
-    @Value("${hotspots.url}")
-    public void setHotspotsURL(String hotspotsURL) { this.hotspotsURL = hotspotsURL; }
-
-    public CancerHotspotService()
+    public HotspotCache()
     {
-        this.cache = new HotspotCache();
+        this(null);
     }
 
-    @Override
-    public List<Hotspot> getHotspots(String transcriptId)
+    public HotspotCache(List<Hotspot> hotspots)
     {
-        try
-        {
-            return Transformer.mapJsonToInstance(getHotspotsJSON(transcriptId), Hotspot.class);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
+        this.hotspots = hotspots;
     }
 
-    @Override
-    public List<Hotspot> getHotspots()
-    {
-        try
-        {
-            return Transformer.mapJsonToInstance(getHotspotsJSON(null), Hotspot.class);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
-    }
-
-    private String getHotspotsJSON(String variables)
-    {
-        String uri = hotspotsURL;
-
-        if (variables != null &&
-            variables.length() > 0)
-        {
-            uri += "/" + variables;
-        }
-
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(uri, String.class);
-    }
+    // TODO make the cache functional!
 }
