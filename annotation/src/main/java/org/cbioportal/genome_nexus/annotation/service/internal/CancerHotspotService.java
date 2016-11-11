@@ -49,30 +49,28 @@ import java.util.List;
 @Service
 public class CancerHotspotService implements HotspotService
 {
-    // TODO make the cache functional
     private HotspotCache cache;
 
     private String hotspotsURL;
     @Value("${hotspots.url}")
     public void setHotspotsURL(String hotspotsURL) { this.hotspotsURL = hotspotsURL; }
 
-    public CancerHotspotService()
-    {
-        this.cache = new HotspotCache();
-    }
-
     @Override
     public List<Hotspot> getHotspots(String transcriptId)
     {
-        try
-        {
-            return Transformer.mapJsonToInstance(getHotspotsJSON(transcriptId), Hotspot.class);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
+        // get it by using the specific API
+//        try
+//        {
+//            return Transformer.mapJsonToInstance(getHotspotsJSON(transcriptId), Hotspot.class);
+//        }
+//        catch (IOException e)
+//        {
+//            e.printStackTrace();
+//            return Collections.emptyList();
+//        }
+
+        //use cache instead
+        return getHotspotsFromCache(transcriptId);
     }
 
     @Override
@@ -96,10 +94,33 @@ public class CancerHotspotService implements HotspotService
         if (variables != null &&
             variables.length() > 0)
         {
-            uri += "/" + variables;
+            // TODO partially hardcoded API URI!
+            uri += "/byTranscript/" + variables;
         }
 
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(uri, String.class);
+    }
+
+    private List<Hotspot> getHotspotsFromCache(String transcriptId)
+    {
+        // if null: not initialized yet
+        if (cache == null)
+        {
+            List<Hotspot> hotspots = getHotspots();
+
+            if (hotspots.size() > 0)
+            {
+                this.cache = new HotspotCache(hotspots);
+            }
+        }
+
+        // still null: error at initialization
+        if (cache == null)
+        {
+            return Collections.emptyList();
+        }
+
+        return cache.findByTranscriptId(transcriptId);
     }
 }

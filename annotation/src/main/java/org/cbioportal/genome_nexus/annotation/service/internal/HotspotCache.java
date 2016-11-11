@@ -34,8 +34,7 @@ package org.cbioportal.genome_nexus.annotation.service.internal;
 
 import org.cbioportal.genome_nexus.annotation.domain.Hotspot;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * In-memory cache for hotspot mutations for better performance.
@@ -55,7 +54,53 @@ public class HotspotCache
     public HotspotCache(List<Hotspot> hotspots)
     {
         this.hotspots = hotspots;
+        this.mapByTranscript = initMapByTranscript(hotspots);
     }
 
-    // TODO make the cache functional!
+    public List<Hotspot> findByTranscriptId(String transcriptId)
+    {
+        List<Hotspot> hotspots = null;
+
+        if (transcriptId != null)
+        {
+            hotspots = mapByTranscript.get(transcriptId.toLowerCase());
+        }
+
+        if (hotspots == null)
+        {
+            hotspots = Collections.emptyList();
+        }
+
+        return hotspots;
+    }
+
+    private Map<String, List<Hotspot>> initMapByTranscript(List<Hotspot> hotspots)
+    {
+        if (hotspots == null)
+        {
+            return Collections.emptyMap();
+        }
+
+        Map<String, List<Hotspot>> map = new LinkedHashMap<>();
+
+        for (Hotspot hotspot : hotspots)
+        {
+            String transcriptId = hotspot.getTranscriptId();
+
+            if (transcriptId != null)
+            {
+                List<Hotspot> list = map.get(transcriptId.toLowerCase());
+
+                if (list == null)
+                {
+                    list = new LinkedList<>();
+                    map.put(transcriptId.toLowerCase(), list);
+                }
+
+                list.add(hotspot);
+            }
+        }
+
+        return map;
+    }
 }
