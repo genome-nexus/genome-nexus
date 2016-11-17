@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Selcuk Onur Sumer
@@ -64,6 +63,17 @@ public class IsoformOverrideRepoFactoryImpl implements IsoformOverrideRepoFactor
     public IsoformOverrideRepository getRepository(String id)
     {
         return getOverrideRepositories().get(id);
+    }
+
+    @Override
+    public List<String> getOverrideSources()
+    {
+        if (overrideRepositories != null)
+        {
+            return new ArrayList<>(overrideRepositories.keySet());
+        }
+
+        return Collections.emptyList();
     }
 
     public Map<String, IsoformOverrideRepository> getOverrideRepositories()
