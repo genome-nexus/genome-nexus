@@ -37,6 +37,7 @@ import org.cbioportal.genome_nexus.annotation.domain.*;
 import org.cbioportal.genome_nexus.annotation.service.internal.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
+import org.cbioportal.genome_nexus.annotation.util.Numerical;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
@@ -56,6 +57,8 @@ public class AnnotationController
     private final VariantAnnotationService variantAnnotationService;
     private final VariantAnnotationRepository variantAnnotationRepository;
     private final IsoformOverrideService isoformOverrideService;
+    private final HotspotService hotspotService;
+    private final HotspotRepository hotspotRepository;
 
     // The post enrichment service enriches the annotation after saving
     // the original annotation data to the repository. Any enrichment
@@ -67,11 +70,15 @@ public class AnnotationController
     public AnnotationController(VariantAnnotationService variantAnnotationService,
                                 VariantAnnotationRepository variantAnnotationRepository,
                                 IsoformOverrideService isoformOverrideService,
+                                HotspotService hotspotService,
+                                HotspotRepository hotspotRepository,
                                 EnrichmentService postEnrichmentService)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
         this.isoformOverrideService = isoformOverrideService;
+        this.hotspotService = hotspotService;
+        this.hotspotRepository = hotspotRepository;
         this.postEnrichmentService = postEnrichmentService;
     }
 
@@ -139,6 +146,56 @@ public class AnnotationController
         String isoformOverrideSource)
     {
        return getVariantAnnotation(variants, isoformOverrideSource);
+    }
+
+    @ApiOperation(value = "getHotspotAnnotation",
+        nickname = "getHotspotAnnotation")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = Hotspot.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/cancer_hotspots/{variants:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<Hotspot> getHotspotAnnotation(
+        @PathVariable
+        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
+            required = true,
+            allowMultiple = true)
+        List<String> variants)
+    {
+        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null);
+        List<Hotspot> hotspots = new ArrayList<>();
+
+        for (VariantAnnotation variantAnnotation : variantAnnotations)
+        {
+            if (variantAnnotation.getTranscriptConsequences() != null)
+            {
+                for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
+                {
+                    hotspots.addAll(getHotspotAnnotation(transcript));
+                }
+            }
+        }
+
+        return hotspots;
+    }
+
+    @ApiOperation(value = "postHotspotAnnotation",
+        nickname = "postHotspotAnnotation")
+    @RequestMapping(value = "/cancer_hotspots",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<Hotspot> postHotspotAnnotation(
+        @RequestParam
+        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
+            required = true,
+            allowMultiple = true)
+        List<String> variants)
+    {
+        return getHotspotAnnotation(variants);
     }
 
     @ApiOperation(value = "getIsoformOverride",
@@ -228,6 +285,35 @@ public class AnnotationController
     private IsoformOverride getIsoformOverride(String source, String transcriptId)
     {
         return isoformOverrideService.getIsoformOverride(source, transcriptId);
+    }
+
+    private List<Hotspot> getHotspotAnnotation(TranscriptConsequence transcript)
+    {
+        List<Hotspot> hotspots = new ArrayList<>();
+        String transcriptId = transcript.getTranscriptId();
+        //Hotspot hotspot = hotspotRepository.findOne(transcriptId);
+
+        // get the hotspot(s) from the web service
+        for (Hotspot hotspot : hotspotService.getHotspots(transcriptId))
+        {
+            if (Numerical.overlaps(hotspot.getResidue(),
+                       transcript.getProteinStart(),
+                       transcript.getProteinEnd()))
+            {
+                // TODO use a JSON view instead of copying fields to another model?
+                // we have data duplication here...
+                hotspot.setGeneId(transcript.getGeneId());
+                hotspot.setProteinStart(transcript.getProteinStart());
+                hotspot.setProteinEnd(transcript.getProteinEnd());
+
+                hotspots.add(hotspot);
+
+                // do not cache anything for now
+                //hotspotRepository.save(hotspots);
+            }
+        }
+
+        return hotspots;
     }
 
     private VariantAnnotation getVariantAnnotation(String variant)
