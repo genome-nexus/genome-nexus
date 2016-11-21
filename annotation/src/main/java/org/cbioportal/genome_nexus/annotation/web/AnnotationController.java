@@ -282,6 +282,32 @@ public class AnnotationController
         return isoformOverrideService.getIsoformOverrides(source);
     }
 
+    @ApiOperation(value = "getIsoformOverrideSources",
+        nickname = "getIsoformOverrideSources")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = IsoformOverride.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/isoform_override/sources",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<String> getIsoformOverrideSources()
+    {
+        return isoformOverrideService.getOverrideSources();
+    }
+
+    @ApiOperation(value = "postIsoformOverrideSources",
+        nickname = "postIsoformOverrideSources")
+    @RequestMapping(value = "/isoform_override/sources",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<String> postIsoformOverrideSources()
+    {
+        return getIsoformOverrideSources();
+    }
+
     private IsoformOverride getIsoformOverride(String source, String transcriptId)
     {
         return isoformOverrideService.getIsoformOverride(source, transcriptId);

@@ -54,6 +54,11 @@ public class VEPIsoformOverrideService implements IsoformOverrideService
         }
     }
 
+    public List<String> getOverrideSources()
+    {
+        return repoFactory.getOverrideSources();
+    }
+
     @Override
     public Boolean hasData(String source)
     {
