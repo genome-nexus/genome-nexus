@@ -1,0 +1,16 @@
+# VEP web API URL with additional parameters. Note that "VARIANT" field will be replaced with
+# the actual variant value before each VEP request.
+vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1
+
+# Cancer Hotspots web API URL
+hotspots.url=http://cancerhotspots.org/api/hotspots/single/
+
+# Comma separated list of isoform_overrides_resource:overrides_filename pairs.
+vep.isoform.overrides=uniprot:isoform_overrides_uniprot.txt,mskcc:isoform_overrides_at_mskcc.txt
+
+# MongoDB URI in the form of mongodb://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DB>
+spring.data.mongodb.uri=mongodb://127.0.0.1:27017/annotator
+
+# Server port number for the embedded tomcat. This property is required only when building
+# a jar file, and ignored when building a war file.
+server.port=38080

@@ -14,19 +14,20 @@ import java.util.*;
 @Component("defaultIsoformOverrideRepoFactory")
 public class IsoformOverrideRepoFactoryImpl implements IsoformOverrideRepoFactory
 {
-    private final String overrideURIs;
+    // comma separated list of isoform overrides
+    private final String isoformOverrides;
 
     private Map<String, IsoformOverrideRepository> overrideRepositories;
 
     @Autowired
-    public IsoformOverrideRepoFactoryImpl(@Value("${vep.overrides_uris}") String overrideURIs)
+    public IsoformOverrideRepoFactoryImpl(@Value("${vep.isoform.overrides}") String isoformOverrides)
     {
-        this.overrideURIs = overrideURIs;
+        this.isoformOverrides = isoformOverrides;
 
-        Map<String, String> resources = parseOverrideURIsString(overrideURIs);
+        Map<String, String> resources = parseIsoformOverrides(isoformOverrides);
         this.overrideRepositories = new HashMap<>();
 
-        // Create a repository for each resource URI
+        // Create a repository for each override resource
         for (String key: resources.keySet())
         {
             this.overrideRepositories.put(key, new IsoformOverrideRepositoryImpl(resources.get(key)));
@@ -34,17 +35,19 @@ public class IsoformOverrideRepoFactoryImpl implements IsoformOverrideRepoFactor
     }
 
     /**
-     * Parses the isoform override URIs string.
+     * Parses the isoform overrides string.
      *
-     * @param overrideURIs  override URI list as a string
+     * @param isoformOverrides  comma separated list of isoform overrides
      * @return  map
      */
-    private Map<String, String> parseOverrideURIsString(String overrideURIs)
+    private Map<String, String> parseIsoformOverrides(String isoformOverrides)
     {
         Map<String, String> overrideResources = new HashMap<>();
 
-        for (String pair: overrideURIs.split(","))
+        // list is comma separated
+        for (String pair: isoformOverrides.split(","))
         {
+            // key-value pairs are semicolon separated
             String parts[] = pair.split(":");
 
             if (parts.length > 1)
@@ -81,8 +84,8 @@ public class IsoformOverrideRepoFactoryImpl implements IsoformOverrideRepoFactor
         return overrideRepositories;
     }
 
-    public String getOverrideURIs()
+    public String getIsoformOverrides()
     {
-        return overrideURIs;
+        return isoformOverrides;
     }
 }

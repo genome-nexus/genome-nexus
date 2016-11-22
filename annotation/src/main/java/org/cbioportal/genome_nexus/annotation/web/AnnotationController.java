@@ -75,7 +75,7 @@ public class AnnotationController
         this.hotspotRepository = hotspotRepository;
     }
 
-    @ApiOperation(value = "getVariantAnnotation",
+    @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
         nickname = "getVariantAnnotation")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success",
@@ -128,7 +128,7 @@ public class AnnotationController
 		return variantAnnotations;
 	}
 
-    @ApiOperation(value = "postVariantAnnotation",
+    @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
         nickname = "postVariantAnnotation")
     @RequestMapping(value = "/hgvs",
         method = RequestMethod.POST,
@@ -147,7 +147,7 @@ public class AnnotationController
        return getVariantAnnotation(variants, isoformOverrideSource);
     }
 
-    @ApiOperation(value = "getHotspotAnnotation",
+    @ApiOperation(value = "Retrieves hotspot annotation for the provided list of variants",
         nickname = "getHotspotAnnotation")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success",
@@ -182,7 +182,7 @@ public class AnnotationController
         return hotspots;
     }
 
-    @ApiOperation(value = "postHotspotAnnotation",
+    @ApiOperation(value = "Retrieves hotspot annotation for the provided list of variants",
         nickname = "postHotspotAnnotation")
     @RequestMapping(value = "/cancer_hotspots",
         method = RequestMethod.POST,
@@ -197,7 +197,8 @@ public class AnnotationController
         return getHotspotAnnotation(variants);
     }
 
-    @ApiOperation(value = "getIsoformOverride",
+    @ApiOperation(value = "Gets the isoform override information for the specified source " +
+                          "and the list of transcript ids",
         nickname = "getIsoformOverride")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success",
@@ -234,7 +235,8 @@ public class AnnotationController
         return isoformOverrides;
     }
 
-    @ApiOperation(value = "postIsoformOverride",
+    @ApiOperation(value = "Gets the isoform override information for the specified source " +
+                          "and the list of transcript ids",
         nickname = "postIsoformOverride")
     @RequestMapping(value = "/isoform_override",
         method = RequestMethod.POST,
@@ -261,7 +263,7 @@ public class AnnotationController
         }
     }
 
-    @ApiOperation(value = "getAllIsoformOverrides",
+    @ApiOperation(value = "Gets the isoform override information for the specified source",
         nickname = "getAllIsoformOverrides")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success",
@@ -281,7 +283,7 @@ public class AnnotationController
         return isoformOverrideService.getIsoformOverrides(source);
     }
 
-    @ApiOperation(value = "getIsoformOverrideSources",
+    @ApiOperation(value = "Gets a list of available isoform override data sources",
         nickname = "getIsoformOverrideSources")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success",
@@ -297,7 +299,7 @@ public class AnnotationController
         return isoformOverrideService.getOverrideSources();
     }
 
-    @ApiOperation(value = "postIsoformOverrideSources",
+    @ApiOperation(value = "Gets a list of available isoform override data sources",
         nickname = "postIsoformOverrideSources")
     @RequestMapping(value = "/isoform_override/sources",
         method = RequestMethod.POST,
