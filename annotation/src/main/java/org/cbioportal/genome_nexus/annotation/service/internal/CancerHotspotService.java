@@ -33,13 +33,16 @@
 package org.cbioportal.genome_nexus.annotation.service.internal;
 
 import org.cbioportal.genome_nexus.annotation.domain.Hotspot;
+import org.cbioportal.genome_nexus.annotation.domain.TranscriptConsequence;
 import org.cbioportal.genome_nexus.annotation.service.HotspotService;
+import org.cbioportal.genome_nexus.annotation.util.Numerical;
 import org.cbioportal.genome_nexus.annotation.util.Transformer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -71,6 +74,32 @@ public class CancerHotspotService implements HotspotService
 
         //use cache instead
         return getHotspotsFromCache(transcriptId);
+    }
+
+    @Override
+    public List<Hotspot> getHotspots(TranscriptConsequence transcript)
+    {
+        List<Hotspot> hotspots = new ArrayList<>();
+
+        for (Hotspot hotspot : this.getHotspots(transcript.getTranscriptId()))
+        {
+            // only include hotspots overlapping the protein change position
+            // of the current transcript
+            if (Numerical.overlaps(hotspot.getResidue(),
+                                   transcript.getProteinStart(),
+                                   transcript.getProteinEnd()))
+            {
+                // TODO use a JSON view instead of copying fields to another model?
+                // we have data duplication here...
+                hotspot.setGeneId(transcript.getGeneId());
+                hotspot.setProteinStart(transcript.getProteinStart());
+                hotspot.setProteinEnd(transcript.getProteinEnd());
+
+                hotspots.add(hotspot);
+            }
+        }
+
+        return hotspots;
     }
 
     @Override

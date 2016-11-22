@@ -32,13 +32,13 @@
 
 package org.cbioportal.genome_nexus.annotation.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Selcuk Onur Sumer
@@ -47,23 +47,26 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TranscriptConsequence
 {
-    String transcriptId;
+    private String transcriptId;
 
-    String hgvsp;
-    String hgvsc;
-    String variantAllele;
-    String codons;
-    String proteinId;
-    String proteinStart;
-    String proteinEnd;
-    String geneSymbol;
-    String geneId;
-    String aminoAcids;
-    String hgncId;
-    String canonical;
+    private String hgvsp;
+    private String hgvsc;
+    private String variantAllele;
+    private String codons;
+    private String proteinId;
+    private String proteinStart;
+    private String proteinEnd;
+    private String geneSymbol;
+    private String geneId;
+    private String aminoAcids;
+    private String hgncId;
+    private String canonical;
 
-    List<String> refseqTranscriptIds;
-    List<String> consequenceTerms;
+    private List<String> refseqTranscriptIds;
+    private List<String> consequenceTerms;
+
+    @JsonIgnore
+    private Map<String, Object> dynamicProps;
 
     public TranscriptConsequence()
     {
@@ -73,6 +76,7 @@ public class TranscriptConsequence
     public TranscriptConsequence(String transcriptId)
     {
         this.transcriptId = transcriptId;
+        this.dynamicProps = new LinkedHashMap<>();
     }
 
     @Field(value="transcript_id")
@@ -268,5 +272,21 @@ public class TranscriptConsequence
     public void setConsequenceTerms(List<String> consequenceTerms)
     {
         this.consequenceTerms = consequenceTerms;
+    }
+
+    // this is to dynamically add additional properties for this transcript
+    // anything added into the dynamic props map will be returned as an additional
+    // json property
+
+    @JsonAnySetter
+    public void setDynamicProp(String key, Object value)
+    {
+        this.dynamicProps.put(key, value);
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getDynamicProps()
+    {
+        return this.dynamicProps;
     }
 }

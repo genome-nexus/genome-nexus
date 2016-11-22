@@ -33,6 +33,7 @@
 package org.cbioportal.genome_nexus.annotation.service;
 
 import org.cbioportal.genome_nexus.annotation.domain.Hotspot;
+import org.cbioportal.genome_nexus.annotation.domain.TranscriptConsequence;
 
 import java.util.List;
 
@@ -42,5 +43,6 @@ import java.util.List;
 public interface HotspotService
 {
     List<Hotspot> getHotspots(String transcriptId);
+    List<Hotspot> getHotspots(TranscriptConsequence transcript);
     List<Hotspot> getHotspots();
 }
