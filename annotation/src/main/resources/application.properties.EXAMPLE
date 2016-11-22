@@ -6,7 +6,7 @@ vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=appli
 hotspots.url=http://cancerhotspots.org/api/hotspots/single/
 
 # Comma separated list of isoform_overrides_resource:overrides_filename pairs.
-vep.overrides_uris=uniprot:isoform_overrides_uniprot.txt,mskcc:isoform_overrides_at_mskcc.txt
+vep.isoform.overrides=uniprot:isoform_overrides_uniprot.txt,mskcc:isoform_overrides_at_mskcc.txt
 
 # MongoDB URI in the form of mongodb://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DB>
 spring.data.mongodb.uri=mongodb://127.0.0.1:27017/annotator
