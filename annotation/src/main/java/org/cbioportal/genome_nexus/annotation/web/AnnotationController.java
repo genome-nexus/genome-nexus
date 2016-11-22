@@ -37,6 +37,7 @@ import org.cbioportal.genome_nexus.annotation.domain.*;
 import org.cbioportal.genome_nexus.annotation.service.internal.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
+import org.cbioportal.genome_nexus.annotation.service.internal.VEPEnrichmentService;
 import org.cbioportal.genome_nexus.annotation.util.Numerical;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,26 +61,18 @@ public class AnnotationController
     private final HotspotService hotspotService;
     private final HotspotRepository hotspotRepository;
 
-    // The post enrichment service enriches the annotation after saving
-    // the original annotation data to the repository. Any enrichment
-    // performed by the post enrichment service is not saved
-    // to the annotation repository.
-    private final EnrichmentService postEnrichmentService;
-
     @Autowired
     public AnnotationController(VariantAnnotationService variantAnnotationService,
                                 VariantAnnotationRepository variantAnnotationRepository,
                                 IsoformOverrideService isoformOverrideService,
                                 HotspotService hotspotService,
-                                HotspotRepository hotspotRepository,
-                                EnrichmentService postEnrichmentService)
+                                HotspotRepository hotspotRepository)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
         this.hotspotRepository = hotspotRepository;
-        this.postEnrichmentService = postEnrichmentService;
     }
 
     @ApiOperation(value = "getVariantAnnotation",
@@ -105,6 +98,12 @@ public class AnnotationController
         String isoformOverrideSource)
 	{
 		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
+
+        // The post enrichment service enriches the annotation after saving
+        // the original annotation data to the repository. Any enrichment
+        // performed by the post enrichment service is not saved
+        // to the annotation repository.
+        EnrichmentService postEnrichmentService = new VEPEnrichmentService();
 
         // only register the enricher if the service actually has data for the given source
         if (isoformOverrideService.hasData(isoformOverrideSource))
