@@ -34,11 +34,11 @@ package org.cbioportal.genome_nexus.annotation.web;
 
 import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.annotation.domain.*;
+import org.cbioportal.genome_nexus.annotation.service.internal.HotspotAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.internal.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
 import org.cbioportal.genome_nexus.annotation.service.internal.VEPEnrichmentService;
-import org.cbioportal.genome_nexus.annotation.util.Numerical;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
@@ -95,7 +95,13 @@ public class AnnotationController
         @RequestParam(required = false)
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
-        String isoformOverrideSource)
+        String isoformOverrideSource,
+        @RequestParam(required = false)
+        @ApiParam(value="Indicates whether to include cancer hotspots information. " +
+                        "Valid options are: summary, and full. " +
+                        "Any other value will be ignored.",
+            required = false)
+        String cancerHotspots)
 	{
 		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
 
@@ -112,6 +118,15 @@ public class AnnotationController
                 isoformOverrideSource, isoformOverrideService);
 
             postEnrichmentService.registerEnricher(isoformOverrideSource, enricher);
+        }
+
+        // ignore any other value than "full" or "summary"
+        if (cancerHotspots != null &&
+            (cancerHotspots.equalsIgnoreCase("full") || cancerHotspots.equalsIgnoreCase("summary")))
+        {
+            AnnotationEnricher enricher = new HotspotAnnotationEnricher(
+                hotspotService, cancerHotspots.equalsIgnoreCase("full"));
+            postEnrichmentService.registerEnricher("cancerHotspots", enricher);
         }
 
 		for (String variant: variants)
@@ -142,9 +157,15 @@ public class AnnotationController
         @RequestParam(required = false)
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
-        String isoformOverrideSource)
+        String isoformOverrideSource,
+        @RequestParam(required = false)
+        @ApiParam(value="Indicates whether to include cancer hotspots information. " +
+                        "Valid options are: summary, and full. " +
+                        "Any other value will be ignored.",
+            required = false)
+        String cancerHotspots)
     {
-       return getVariantAnnotation(variants, isoformOverrideSource);
+       return getVariantAnnotation(variants, isoformOverrideSource, cancerHotspots);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotation for the provided list of variants",
@@ -165,7 +186,7 @@ public class AnnotationController
             allowMultiple = true)
         List<String> variants)
     {
-        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null);
+        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null, null);
         List<Hotspot> hotspots = new ArrayList<>();
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)
@@ -316,29 +337,14 @@ public class AnnotationController
 
     private List<Hotspot> getHotspotAnnotation(TranscriptConsequence transcript)
     {
-        List<Hotspot> hotspots = new ArrayList<>();
-        String transcriptId = transcript.getTranscriptId();
+        //String transcriptId = transcript.getTranscriptId();
         //Hotspot hotspot = hotspotRepository.findOne(transcriptId);
 
         // get the hotspot(s) from the web service
-        for (Hotspot hotspot : hotspotService.getHotspots(transcriptId))
-        {
-            if (Numerical.overlaps(hotspot.getResidue(),
-                       transcript.getProteinStart(),
-                       transcript.getProteinEnd()))
-            {
-                // TODO use a JSON view instead of copying fields to another model?
-                // we have data duplication here...
-                hotspot.setGeneId(transcript.getGeneId());
-                hotspot.setProteinStart(transcript.getProteinStart());
-                hotspot.setProteinEnd(transcript.getProteinEnd());
+        List<Hotspot> hotspots = hotspotService.getHotspots(transcript);
 
-                hotspots.add(hotspot);
-
-                // do not cache anything for now
-                //hotspotRepository.save(hotspots);
-            }
-        }
+        // do not cache anything for now
+        //hotspotRepository.save(hotspots);
 
         return hotspots;
     }
