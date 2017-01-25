@@ -65,7 +65,7 @@ public class GenomeNexusAnnotation extends SpringBootServletInitializer
             .groupName("variant_annotation")
             .apiInfo(annotationApiInfo())
             .select()
-            .paths(PathSelectors.regex("/variant_annotation.*"))
+            .paths(PathSelectors.regex("/.*"))
             .build();
     }
 
