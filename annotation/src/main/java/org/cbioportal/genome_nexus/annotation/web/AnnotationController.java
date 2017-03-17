@@ -52,7 +52,7 @@ import java.util.List;
  */
 @RestController // shorthand for @Controller, @ResponseBody
 @CrossOrigin(origins="*") // allow all cross-domain requests
-@RequestMapping(value = "/variant_annotation/")
+@RequestMapping(value = "/")
 public class AnnotationController
 {
     private final VariantAnnotationService variantAnnotationService;

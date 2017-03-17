@@ -1,0 +1,344 @@
+/*
+ * Copyright (c) 2016 Memorial Sloan-Kettering Cancer Center.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS
+ * FOR A PARTICULAR PURPOSE. The software and documentation provided hereunder
+ * is on an "as is" basis, and Memorial Sloan-Kettering Cancer Center has no
+ * obligations to provide maintenance, support, updates, enhancements or
+ * modifications. In no event shall Memorial Sloan-Kettering Cancer Center be
+ * liable to any party for direct, indirect, special, incidental or
+ * consequential damages, including lost profits, arising out of the use of this
+ * software and its documentation, even if Memorial Sloan-Kettering Cancer
+ * Center has been advised of the possibility of such damage.
+ */
+
+/*
+ * This file is part of cBioPortal Cancer Hotspots.
+ *
+ * cBioPortal is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+.container {
+    width: 90%;
+}
+
+@media (max-width: 919px) and (min-width: 768px) {
+    .mskcc-logo {
+        display: block;
+    }
+    .mskcc-icon {
+        display: none;
+    }
+    .container {
+        width: 99%;
+    }
+}
+
+.hotspot-fire:after {
+    display: inline-block;
+    position: relative;
+    padding-right: 0.25em;
+    background-color: inherit;
+    font-size: 1.25em;
+    font-family: icomoon;
+    content: "\e666";
+    color: #FF9900;
+}
+
+.hotspot-3d-fire:after {
+    content: "\e667";
+}
+
+.navbar-header {
+    text-transform: none;
+}
+
+.nav>li>a {
+    padding-left: 8px;
+    padding-right: 8px;
+    text-transform: none;
+}
+
+.mskcc-logo, .mskcc-icon {
+    padding: 8px 0;
+}
+
+table.center-align {
+    margin: auto;
+}
+
+.center-align, .center-align th {
+    text-align: center;
+}
+
+.left-align {
+    float: left;
+    text-align: left;
+}
+
+.right-align {
+    float: right;
+    text-align: right;
+}
+
+.no-text-wrap {
+    white-space: nowrap;
+}
+
+body {
+    font-size: 14px;
+    font-family: "DejaVu Sans", Georgia, serif;
+}
+
+.default-plain-text {
+    font-size: 1.0em;
+}
+
+.cancer-hotspots-tooltip {
+    font-size: 0.8em;
+    max-width: 480px;
+}
+
+.data-table-title {
+    margin-top: 10px;
+}
+
+.internal-note {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.variant-cell {
+    color: #ffffff;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.variant-tumor-type-composition-cell img {
+    width: auto;
+    height: 50%;
+}
+
+.tumor-type-composition td {
+    text-align: left;
+}
+
+.composition-view-filter input {
+    height: 22px;
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.tumor-type-color {
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-right: 5px;
+}
+
+.about-citation, .header-citation {
+    font-style: italic;
+}
+
+.contributor-list {
+    padding-bottom: 16px;
+}
+
+.funding {
+    padding-bottom: 10px;
+}
+
+table.about-lab-table {
+    margin-bottom: 16px;
+}
+
+.single-residue-title {
+    padding-top: 8px;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.residue-link {
+    cursor: pointer;
+}
+
+.table-button-group {
+    padding-top: 8px;
+}
+
+.dt-button a {
+    cursor: pointer;
+}
+
+.tumor-type-composition-info {
+    margin-bottom: 5px;
+}
+
+.footer .footer-row-2 {
+    line-height: 20px;
+    padding-top: 10px;
+}
+
+#residue_table {
+    font-size: 95%;
+}
+
+div#residue_table_wrapper {
+    width: 740px;
+}
+
+span.cluster-pdb {
+    cursor: pointer;
+}
+
+a.tooltip-pdb-link {
+    color: #2c3e50;
+}
+
+span.highlighted {
+    background-color: #0d0707;
+}
+
+span.cluster-residue {
+    cursor: pointer;
+    /*color: #FFF;*/
+    /*padding-left: 4px;*/
+    /*padding-right: 4px;*/
+}
+
+span.hotspot-classification {
+    font-size: 0.80em;
+}
+
+span.LH {
+    color: #09BCD3;
+}
+
+span.LL {
+    color: #DEBA24;
+}
+
+span.H {
+    color: #4CAE4E;
+}
+
+.class-legend-item {
+    margin-right: 10px;
+}
+
+.class-legend-color {
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-right: 5px;
+}
+
+.class-legend-container {
+    margin-left: 45px;
+}
+
+span.class-legend-color-LH {
+    background-color: #09BCD3;
+}
+
+span.class-legend-color-LL {
+    background-color: #DEBA24;
+}
+
+span.class-legend-color-H {
+    background-color: #4CAE4E;
+}
+
+span.download-links {
+    font-size: 18px;
+}
+
+.download-links a {
+    text-decoration: underline;
+}
+
+/* This is to center paging buttons */
+div.dataTables_wrapper div.composition-paginate div.dataTables_paginate {
+    text-align: center;
+    margin: auto;
+}
+
+/* A little bit of theme tweaking */
+header {
+    background-color: #c84e23;
+}
+header a,
+header a:hover,
+header a:focus,
+header a:active,
+header a.active {
+    outline: 0;
+    color: #ffffff;
+}
+section.stressed {
+    background-color: #dff0d8;
+}
+section a,
+section a:hover,
+section a:focus,
+section a:active,
+section a.active {
+    outline: 0;
+    color: #2c3e50;
+}
+hr.star-light:after, hr.star-primary:after {
+    background-color: inherit;
+    /*content: "\f140"*/
+    font-family: icomoon;
+    content: "\e666";
+    color: #FF9900;
+}
+#about hr.star-primary:after {
+    background-color: #fff;
+}
+#explore hr.star-primary:after {
+    background-color: #fff;
+}
+header hr.star-light:after {
+    background-color: #c84e23;
+}
+section {
+    padding: 40px 10px;
+}
+
+/* MutationMapper customization & tweaks */
+.mutation-3d-container {
+    top: 120px;
+}
+
+.mutation-details-uniprot-link,
+.diagram-to-pdf,
+.diagram-help,
+.mutation-3d-vis {
+    display: none;
+}
+
+    /* this is gonna make the filter info area practically hidden */
+.mutation-details-filter-info {
+    display: none !important;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.mutation-pdb-panel-container {
+    height: 11px;
+}
