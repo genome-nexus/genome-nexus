@@ -34,13 +34,31 @@ public class IsoformAnnotationEnricher implements AnnotationEnricher
 
         List<TranscriptConsequence> transcripts = new LinkedList<>();
 
+        /* This logic handles the case when there are more than one potential genes that a variant could be affecting.
+            When two genes are extremely close in the genome/overlapping, VEP will return the transcripts for both genes.
+            In the case where we only have an override for one of the genes, we do not want to force those transcripts as canonical
+            if the most severe consequence does not exist in that gene, because more likely the correct transcript that the user
+            cares about exists in the other gene.
+
+            We only apply isoform overrides if the most severe consequence exists in the gene we want to apply to override to.
+            If it does not, do not touch the canonical fields for those transcripts.
+        */
+        String geneWithMostSevereConsequence = "";
+        String mostSevereConsequence = annotation.getMostSevereConsequence();
+        for (TranscriptConsequence transcript : annotation.getTranscriptConsequences()) {
+            if (transcript.getConsequenceTerms().contains(mostSevereConsequence)) {
+                geneWithMostSevereConsequence = transcript.getGeneSymbol();
+                break;
+            }
+        }
+
         // search override service for the transcripts
         for (TranscriptConsequence transcript: annotation.getTranscriptConsequences())
         {
             IsoformOverride override = service.getIsoformOverride(source, transcript.getTranscriptId());
 
             // override the canonical field
-            if (override != null)
+            if (override != null && transcript.getGeneSymbol().equals(geneWithMostSevereConsequence))
             // TODO && override.getGeneSymbol().equalsIgnoreCase(transcript.getGeneSymbol())
             {
                 transcript.setCanonical("1");
