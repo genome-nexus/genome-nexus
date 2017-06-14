@@ -22,6 +22,7 @@ public class MutationAssessorService
         ArrayList<String> variantsList = new ArrayList<>();
         variantsList.add("12,25398285,C,A");
         variantsList.add("7,140453136,A,T");
+        variantsList.add("7,55211080,G,A");
         variantsList.add("13,140453136,A,C"); // no response from Mutation Assessor website
 
         for (String variant : variantsList)
@@ -29,8 +30,6 @@ public class MutationAssessorService
             MutationAssessorService serviceObj = new MutationAssessorService();
             serviceObj.setMutationAssessorURL("http://mutationassessor.org/r3/?cm=var&var=");
             String returnString = serviceObj.getMutationAssessorJSON(variant);
-
-            
             //System.err.println(returnString);
 
             DBObject dbObject = (DBObject) JSON.parse(returnString);
@@ -39,7 +38,6 @@ public class MutationAssessorService
             {
                 // get first object of array - todo: support for lists of variants
                 Object firstObj = dbObject.get("0");
-
                 ObjectMapper objectMapper = new ObjectMapper();
                 String toMap = objectMapper.writeValueAsString(firstObj);
 
@@ -60,7 +58,6 @@ public class MutationAssessorService
 
     public void setMutationAssessorURL(String mutationAssessorURL) { this.mutationAssessorURL = mutationAssessorURL; }
 
-    // todo: support multiple variants
     private String getMutationAssessorJSON(String variant)
     {
         String uri = mutationAssessorURL;
