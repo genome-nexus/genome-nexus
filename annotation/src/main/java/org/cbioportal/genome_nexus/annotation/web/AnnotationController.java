@@ -38,7 +38,8 @@ import org.cbioportal.genome_nexus.annotation.service.internal.HotspotAnnotation
 import org.cbioportal.genome_nexus.annotation.service.internal.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
-import org.cbioportal.genome_nexus.annotation.service.internal.VEPEnrichmentService;
+import org.cbioportal.genome_nexus.annotation.service.internal.VEPEnricher;
+import org.cbioportal.genome_nexus.annotation.service.internal.VEPDetailedEnrichmentService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
@@ -60,19 +61,23 @@ public class AnnotationController
     private final IsoformOverrideService isoformOverrideService;
     private final HotspotService hotspotService;
     private final HotspotRepository hotspotRepository;
+    private final VEPDetailedEnrichmentService vepEnrichmentService;
 
     @Autowired
     public AnnotationController(VariantAnnotationService variantAnnotationService,
                                 VariantAnnotationRepository variantAnnotationRepository,
                                 IsoformOverrideService isoformOverrideService,
                                 HotspotService hotspotService,
-                                HotspotRepository hotspotRepository)
+                                HotspotRepository hotspotRepository,
+                                VEPDetailedEnrichmentService vepEnrichmentService
+                                )
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
         this.hotspotRepository = hotspotRepository;
+        this.vepEnrichmentService = vepEnrichmentService;
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
@@ -93,9 +98,13 @@ public class AnnotationController
             allowMultiple = true)
         List<String> variants,
         @RequestParam(required = false)
-        @ApiParam(value="Isoform override source. For example uniprot",
+        @ApiParam(value="Isoform override source. For example uniport",
             required = false)
         String isoformOverrideSource,
+        @RequestParam(required = true, defaultValue = "SUMMARY")
+        @ApiParam(value="Level of detail of the response, Valid options are SUMMARY and detailed.",
+            required = true)
+            Projection projection,
         @RequestParam(required = false)
         @ApiParam(value="Indicates whether to include cancer hotspots information. " +
                         "Valid options are: summary, and full. " +
@@ -109,7 +118,7 @@ public class AnnotationController
         // the original annotation data to the repository. Any enrichment
         // performed by the post enrichment service is not saved
         // to the annotation repository.
-        EnrichmentService postEnrichmentService = new VEPEnrichmentService();
+        EnrichmentService postEnrichmentService = new VEPDetailedEnrichmentService();
 
         // only register the enricher if the service actually has data for the given source
         if (isoformOverrideService.hasData(isoformOverrideSource))
@@ -132,6 +141,12 @@ public class AnnotationController
 		for (String variant: variants)
 		{
             VariantAnnotation annotation = getVariantAnnotation(variant);
+
+            if(projection != null && projection.equals(Projection.DETAILED)) {
+                AnnotationEnricher enricher = new VEPEnricher(
+                    vepEnrichmentService, projection);
+                postEnrichmentService.registerEnricher("vep", enricher);
+            }
 
             if (annotation != null)
             {
@@ -158,6 +173,10 @@ public class AnnotationController
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
         String isoformOverrideSource,
+        @RequestParam(required = true, defaultValue = "SUMMARY")
+        @ApiParam(value="Level of detail of the response, Valid options are SUMMARY and DETAILED.",
+            required = true)
+            Projection projection,
         @RequestParam(required = false)
         @ApiParam(value="Indicates whether to include cancer hotspots information. " +
                         "Valid options are: summary, and full. " +
@@ -165,7 +184,7 @@ public class AnnotationController
             required = false)
         String cancerHotspots)
     {
-       return getVariantAnnotation(variants, isoformOverrideSource, cancerHotspots);
+       return getVariantAnnotation(variants, isoformOverrideSource, projection, cancerHotspots);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotation for the provided list of variants",
@@ -186,7 +205,7 @@ public class AnnotationController
             allowMultiple = true)
         List<String> variants)
     {
-        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null, null);
+        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null, Projection.SUMMARY,null);
         List<Hotspot> hotspots = new ArrayList<>();
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)

@@ -28,18 +28,14 @@ public class HotspotAnnotationEnricher implements AnnotationEnricher
     }
 
     @Override
-    public void enrich(VariantAnnotation annotation)
-    {
-        if (annotation.getTranscriptConsequences() != null)
-        {
-            for (TranscriptConsequence transcript : annotation.getTranscriptConsequences())
-            {
+    public void enrich(VariantAnnotation annotation) {
+        if (annotation.getTranscriptConsequences() != null) {
+            for (TranscriptConsequence transcript : annotation.getTranscriptConsequences()) {
                 List<Hotspot> hotspots = hotspotService.getHotspots(transcript);
 
                 if (fullInfo) {
                     enrichWithFullInfo(transcript, hotspots);
-                }
-                else {
+                } else {
                     enrichWithSummary(transcript, hotspots);
                 }
             }
@@ -49,7 +45,7 @@ public class HotspotAnnotationEnricher implements AnnotationEnricher
     private void enrichWithSummary(TranscriptConsequence transcript, List<Hotspot> hotspots)
     {
         // add a boolean field to the transcript
-        transcript.setDynamicProp("isHotspot", hotspots.size() > 0);
+        transcript.setIsHotspot(hotspots.size() > 0);
     }
 
     private void enrichWithFullInfo(TranscriptConsequence transcript, List<Hotspot> hotspots)
@@ -57,7 +53,7 @@ public class HotspotAnnotationEnricher implements AnnotationEnricher
         // attach the full list of hotspots
         if (hotspots.size() > 0)
         {
-            transcript.setDynamicProp("hotspots", hotspots);
+            transcript.setHotspots(hotspots);
         }
     }
 }

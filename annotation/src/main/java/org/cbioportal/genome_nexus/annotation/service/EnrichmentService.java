@@ -32,6 +32,7 @@
 
 package org.cbioportal.genome_nexus.annotation.service;
 
+import org.cbioportal.genome_nexus.annotation.domain.TranscriptConsequence;
 import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 
 /**

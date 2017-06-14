@@ -65,8 +65,14 @@ public class TranscriptConsequence
     private String refseqTranscriptIds;
     private List<String> consequenceTerms;
 
-    @JsonIgnore
-    private Map<String, Object> dynamicProps;
+    // Following properties are initialized after enrichment
+
+    private String hgvspShort;
+    private String refSeq;
+    private String codonChange;
+    private Boolean isHotspot;
+    private List<Hotspot> hotspots;
+    private String consequence;
 
     public TranscriptConsequence()
     {
@@ -76,7 +82,6 @@ public class TranscriptConsequence
     public TranscriptConsequence(String transcriptId)
     {
         this.transcriptId = transcriptId;
-        this.dynamicProps = new LinkedHashMap<>();
     }
 
     @Field(value="transcript_id")
@@ -274,19 +279,51 @@ public class TranscriptConsequence
         this.consequenceTerms = consequenceTerms;
     }
 
-    // this is to dynamically add additional properties for this transcript
-    // anything added into the dynamic props map will be returned as an additional
-    // json property
-
-    @JsonAnySetter
-    public void setDynamicProp(String key, Object value)
-    {
-        this.dynamicProps.put(key, value);
+    public String getHgvspShort() {
+        return hgvspShort;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getDynamicProps()
-    {
-        return this.dynamicProps;
+    public void setHgvspShort(String hgvspShort) {
+        this.hgvspShort = hgvspShort;
+    }
+
+    public String getRefSeq() {
+        return refSeq;
+    }
+
+    public void setRefSeq(String refSeq) {
+        this.refSeq = refSeq;
+    }
+
+    public String getCodonChange() {
+        return codonChange;
+    }
+
+    public void setCodonChange(String codonChange) {
+        this.codonChange = codonChange;
+    }
+
+    public Boolean getIsHotspot() {
+        return isHotspot;
+    }
+
+    public void setIsHotspot(Boolean hotspot) {
+        isHotspot = hotspot;
+    }
+
+    public List<Hotspot> getHotspots() {
+        return hotspots;
+    }
+
+    public void setHotspots(List<Hotspot> hotspots) {
+        this.hotspots = hotspots;
+    }
+
+    public String getConsequence() {
+        return consequence;
+    }
+
+    public void setConsequence(String consequence) {
+        this.consequence = consequence;
     }
 }
