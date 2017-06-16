@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.client.RestTemplate;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
-// import org.cbioportal.genome_nexus.annotation.util.Transformer;
 import org.cbioportal.genome_nexus.annotation.domain.MutationAssessor;
 
+import java.util.Arrays;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MutationAssessorService
 {
@@ -19,58 +20,75 @@ public class MutationAssessorService
     // manually obtaining MutationAssessor response from hardcoded URL
     public static void main(String[] args)
     {
-        ArrayList<String> variantsList = new ArrayList<>();
-        variantsList.add("12,25398285,C,A");
-        variantsList.add("7,140453136,A,T");
-        variantsList.add("7,55211080,G,A");
-        variantsList.add("13,140453136,A,C"); // no response from Mutation Assessor website
+        // todo: support for lists of variants
+        String genomeNexusInput = "7:g.140453136A>T,12:g.25398285C>A,2:g.29443695G>T,7:g.55259515T>G";
+        ArrayList<String> variantsList = splitInput(genomeNexusInput);
 
         for (String variant : variantsList)
         {
             MutationAssessorService serviceObj = new MutationAssessorService();
             serviceObj.setMutationAssessorURL("http://mutationassessor.org/r3/?cm=var&var=");
-            String returnString = serviceObj.getMutationAssessorJSON(variant);
-            //System.err.println(returnString);
 
-            DBObject dbObject = (DBObject) JSON.parse(returnString);
+            String returnString = serviceObj.getMutationAssessorJSON(fromHGVS(variant));
+            Object obj = serviceObj.getDBObject(returnString);
 
             try
             {
-                // get first object of array - todo: support for lists of variants
-                Object firstObj = dbObject.get("0");
-                ObjectMapper objectMapper = new ObjectMapper();
-                String toMap = objectMapper.writeValueAsString(firstObj);
-
-                // System.err.println("\n\njson string to map: " + toMap);
-                // String testerStr = "{\"input\" : \"test\", \"gene\" : \"test-gene\", \"F_score\" : \"test-score\"}";
-
-                MutationAssessor mutationObj = objectMapper.readValue(toMap, MutationAssessor.class);
+                MutationAssessor mutationObj = mapJsonToMutationAssessor(obj);
                 System.err.println(mutationObj.getOuput());
-
             }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
         }
-
     }
 
     public void setMutationAssessorURL(String mutationAssessorURL) { this.mutationAssessorURL = mutationAssessorURL; }
 
-    private String getMutationAssessorJSON(String variant)
+    private static ArrayList<String> splitInput(String inputString) {
+        return new ArrayList<>(Arrays.asList(inputString.split(",")));
+    }
+
+    private String getMutationAssessorJSON(String variants)
     {
         String uri = mutationAssessorURL;
 
         // todo: check that variant is in the right format
-        if (variant != null &&
-            variant.length() > 0)
+        if (variants != null &&
+            variants.length() > 0)
         {
-            uri += variant + "&frm=json";
+            uri += variants + "&frm=json";
         }
 
          RestTemplate restTemplate = new RestTemplate();
          return restTemplate.getForObject(uri, String.class);
+    }
+
+    // converts genome-nexus input string to mutation assessor input
+    private static String fromHGVS(String hgvsString) {
+        String temp;
+
+        temp = hgvsString.replaceAll("\\p{Punct}[a-z]\\p{Punct}", ",");
+        temp = temp.replaceAll("\\p{Punct}", ",");
+        temp = temp.substring(0, temp.length()-3) +
+                "," +
+                temp.substring(temp.length()-3);
+
+        return temp;
+    }
+
+    private Object getDBObject(String jsonString) {
+        DBObject dbObject = (DBObject) JSON.parse(jsonString);
+        if (dbObject instanceof List)
+            return dbObject.get("0");
+        return null;
+    }
+
+    private static MutationAssessor mapJsonToMutationAssessor(Object obj) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String toMap = objectMapper.writeValueAsString(obj);
+        return objectMapper.readValue(toMap, MutationAssessor.class);
     }
 
 }
