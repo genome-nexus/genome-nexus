@@ -23,7 +23,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
         // @ApiModelProperty(value = "User-input variants", required = true)
         public String getVariant() { return this.variant; }
 
-        @JsonProperty("input")
         public void setVariant(String variant) { this.variant = variant; }
 
         // @ApiModelProperty(value = "Hugo gene symbol", required = false)
