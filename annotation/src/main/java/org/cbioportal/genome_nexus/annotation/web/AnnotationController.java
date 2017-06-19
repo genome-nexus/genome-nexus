@@ -38,6 +38,7 @@ import org.cbioportal.genome_nexus.annotation.service.internal.HotspotAnnotation
 import org.cbioportal.genome_nexus.annotation.service.internal.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
+import org.cbioportal.genome_nexus.annotation.service.internal.MutationAssessorService;
 import org.cbioportal.genome_nexus.annotation.service.internal.VEPEnrichmentService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ import java.util.List;
  */
 @RestController // shorthand for @Controller, @ResponseBody
 @CrossOrigin(origins="*") // allow all cross-domain requests
-@RequestMapping(value = "/")
+@RequestMapping(value= "/")
 public class AnnotationController
 {
     private final VariantAnnotationService variantAnnotationService;
@@ -60,19 +61,22 @@ public class AnnotationController
     private final IsoformOverrideService isoformOverrideService;
     private final HotspotService hotspotService;
     private final HotspotRepository hotspotRepository;
+    private final MutationAssessorService mutationService;
 
     @Autowired
     public AnnotationController(VariantAnnotationService variantAnnotationService,
                                 VariantAnnotationRepository variantAnnotationRepository,
                                 IsoformOverrideService isoformOverrideService,
                                 HotspotService hotspotService,
-                                HotspotRepository hotspotRepository)
+                                HotspotRepository hotspotRepository,
+                                MutationAssessorService mutationService)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
         this.hotspotRepository = hotspotRepository;
+        this.mutationService = mutationService;
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
@@ -217,6 +221,64 @@ public class AnnotationController
     {
         return getHotspotAnnotation(variants);
     }
+
+    /*
+        *
+        *
+        *
+        *
+        *
+        *
+        * */
+
+    @ApiOperation(value = "Retrieves mutation assessor information for the provided list of variants",
+        nickname = "getMutationAssessorAnnotation")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = MutationAssessor.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/mutation_assessor/{variants:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<MutationAssessor> getMutationAnnotation(
+        @PathVariable
+        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
+            required = true,
+            allowMultiple = true)
+            List<String> variants)
+    {
+        List<MutationAssessor> mutationAssessors = new ArrayList<>();
+        for (String variant : variants)
+        {
+            mutationAssessors.add(getMutationAnnotation(variant));
+        }
+        return mutationAssessors;
+    }
+
+    @ApiOperation(value = "Gets mutation assessor information for provided list of variants",
+        nickname = "postMutationAssessorAnnotation")
+    @RequestMapping(value = "/mutation_assessor",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<MutationAssessor> postMutationAnnotation(
+        @RequestParam
+        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
+            required = true,
+            allowMultiple = true)
+        List<String> variants)
+    {
+        return getMutationAnnotation(variants);
+    }
+
+    /*
+        *
+        *
+        *
+        *
+        *
+        * */
 
     @ApiOperation(value = "Gets the isoform override information for the specified source " +
                           "and the list of transcript ids",
@@ -385,5 +447,16 @@ public class AnnotationController
         }
 
         return variantAnnotation;
+    }
+
+    // todo: handle IOException
+    private MutationAssessor getMutationAnnotation(String variant)
+    {
+        try {
+            return mutationService.getMutationAssessor(variant);
+        }
+        catch (IOException e) {
+            return null;
+        }
     }
 }
