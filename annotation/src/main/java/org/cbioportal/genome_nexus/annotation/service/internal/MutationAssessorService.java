@@ -15,7 +15,6 @@ import java.util.List;
 @Service
 public class MutationAssessorService
 {
-
     @Value("${mutationAssessor.url}")
     private String mutationAssessorURL;
 
@@ -26,14 +25,16 @@ public class MutationAssessorService
 
     public MutationAssessor getMutationAssessor(String variant) throws IOException
     {
-//        MutationAssessor obj = Transformer.mapJsonToInstance(getMutationAssessorJSON(variant), MutationAssessor.class).get(0);
-//        obj.setVariant(variant);
-//        return obj;
-        return mapJsonToMutationAssessor(variant);
+        String inputString = toMutationString(variant);
+        MutationAssessor mutationAssessorObj =
+            Transformer.mapJsonToInstance(getMutationAssessorJSON(inputString), MutationAssessor.class).get(0);
+        mutationAssessorObj.setVariant(variant);
+        return mutationAssessorObj;
+        // return mapJsonToMutationAssessor(variant);
     }
 
     // todo: standardize input formatting
-    private static String toMutationString(String inputString)
+    private String toMutationString(String inputString)
     {
         String temp;
         temp = inputString.replaceAll("\\p{Punct}[a-z]\\p{Punct}", ",");
@@ -44,6 +45,24 @@ public class MutationAssessorService
 
         return temp;
     }
+
+    // todo: get rid of hardcoded URLs
+    private String getMutationAssessorJSON(String variant)
+    {
+        String uri = mutationAssessorURL;
+
+        // todo: check that variant is in the right format
+        if (variant != null &&
+            variant.length() > 0)
+        {
+            uri += variant + "&frm=json";
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(uri, String.class);
+    }
+
+    /*
 
     private MutationAssessor mapJsonToMutationAssessor(String variant) throws IOException
     {
@@ -58,22 +77,6 @@ public class MutationAssessorService
         return mutationObj;
     }
 
-    // todo: get rid of hardcoded URLs
-    private String getMutationAssessorJSON(String variants)
-    {
-        String uri = mutationAssessorURL;
-
-        // todo: check that variant is in the right format
-        if (variants != null &&
-            variants.length() > 0)
-        {
-            uri += variants + "&frm=json";
-        }
-
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(uri, String.class);
-    }
-
     private static Object getDBObject(String jsonString)
     {
         DBObject dbObject = (DBObject) JSON.parse(jsonString);
@@ -83,5 +86,6 @@ public class MutationAssessorService
         }
         return null;
     }
+    */
 
 }

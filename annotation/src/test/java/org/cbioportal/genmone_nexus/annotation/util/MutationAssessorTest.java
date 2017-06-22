@@ -15,9 +15,8 @@ import static org.junit.Assert.*;
 
 public class MutationAssessorTest
 {
-    /* for debugging
-    private static Logger log = Logger.getLogger(String.valueOf(MutationAssessorTest.class));
-    */
+    /* for debugging */
+    // private static Logger log = Logger.getLogger(String.valueOf(MutationAssessorTest.class));
 
     @Test
     public void testVariants() throws IOException {
@@ -66,7 +65,13 @@ public class MutationAssessorTest
         assertEquals(mutationObj41.getFunctionalImpactScore(), mutationObj42.getFunctionalImpactScore());
 
         String input5 = "junkInput";
-        String url5 = "http://mutationassessor.org/r3/?cm=var&var=junkInput&frm=json";
+        String urlString5 = "http://mutationassessor.org/r3/?cm=var&var=junkInput&frm=json";
+        MutationAssessor mutationObj51 = service.getMutationAssessor(input5);
+        MutationAssessor mutationObj52 =
+            Transformer.mapJsonToInstance(getReturnString(urlString5), MutationAssessor.class).get(0);
+        assertEquals(mutationObj51.getHugoSymbol(), mutationObj52.getHugoSymbol());
+        assertEquals(mutationObj51.getFunctionalImpact(), mutationObj52.getFunctionalImpact());
+        assertEquals(mutationObj51.getFunctionalImpactScore(), mutationObj52.getFunctionalImpactScore());
 
     }
 
