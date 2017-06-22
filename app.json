@@ -1,0 +1,36 @@
+{
+  "name": "genome-nexus",
+  "description":"Genome Nexus - A Resource for Annotation and Interpretation of Genetic Variants",
+  "repository":"https://github.com/cBioPortal/genome-nexus",
+  "keywords": [
+    "java",
+    "tomcat",
+    "javascript",
+    "cancer",
+    "genomics",
+    "hgvs",
+    "cancerhotspots",
+    "variants",
+    "genes"
+  ],
+  "env": {
+    "JAVA_OPTS": {
+      "description":"options for jvm",
+      "value": "-Xmx300m -Xms300m -XX:+UseCompressedOops"
+    },
+    "MAVEN_CUSTOM_OPTS": {
+        "description":"set options for mvn",
+        "value":"-DskipTests -Dpackaging.type=jar"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-java"
+    }
+  ],
+  "addons" : [
+    {
+      "plan": "mongolab:sandbox"
+    }
+  ]
+}
