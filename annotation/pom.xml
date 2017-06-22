@@ -90,6 +90,54 @@
           </execution>
         </executions>
       </plugin>
+      <!-- copy application.properties.EXAMPLE if it doesn't exist -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <!-- only needs to be executed for parent pom -->
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.dependency.classpath" />
+                <if>
+                  <not>
+                    <available file="src/main/resources/application.properties" />
+                  </not>
+                  <then>
+                    <copy
+                      file="src/main/resources/application.properties.EXAMPLE"
+					  tofile="src/main/resources/application.properties" />
+                  </then>
+                </if>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+            <version>1.0b3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                </exclusion>
+            </exclusions>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+      </plugin>
     </plugins>
     <resources>
       <resource>

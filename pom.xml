@@ -25,21 +25,27 @@
     </properties>
 
     <build>
-      <!-- this plugin will allow us to share resources with children -->
-      <!--
-      <plugins>
+    <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>2.6</version>
+         <groupId>org.jacoco</groupId>
+         <artifactId>jacoco-maven-plugin</artifactId>
+         <version>0.7.7.201606060606</version>
+         <executions>
+          <execution>
+           <goals>
+            <goal>prepare-agent</goal>
+           </goals>
+          </execution>
+          <execution>
+           <id>report</id>
+           <phase>test</phase>
+           <goals>
+            <goal>report</goal>
+           </goals>
+          </execution>
+         </executions>
         </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.4</version>
-        </plugin>
-        </plugins>
-        -->
+      </plugins>
     </build>
 
 </project>

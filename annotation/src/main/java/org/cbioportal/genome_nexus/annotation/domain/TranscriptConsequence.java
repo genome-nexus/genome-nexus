@@ -62,7 +62,7 @@ public class TranscriptConsequence
     private String hgncId;
     private String canonical;
 
-    private String refseqTranscriptIds;
+    private List<String> refseqTranscriptIds;
     private List<String> consequenceTerms;
 
     @JsonIgnore
@@ -251,12 +251,12 @@ public class TranscriptConsequence
     @Field(value="refseq_transcript_ids")
     @JsonProperty(value="refseq_transcript_ids", required = true)
     @ApiModelProperty(value = "List of RefSeq transcript ids", required = false)
-    public String getRefseqTranscriptIds()
+    public List<String> getRefseqTranscriptIds()
     {
         return refseqTranscriptIds;
     }
 
-    public void setRefseqTranscriptIds(String refseqTranscriptIds)
+    public void setRefseqTranscriptIds(List<String> refseqTranscriptIds)
     {
         this.refseqTranscriptIds = refseqTranscriptIds;
     }
