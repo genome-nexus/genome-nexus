@@ -102,7 +102,7 @@ public class VEPDetailedEnrichmentService implements EnrichmentService {
         if (refSeqTranscriptIds != null) {
             List<String> refseqTranscriptIds = Arrays.asList(refSeqTranscriptIds.split(","));
             if (refseqTranscriptIds.size() > 0) {
-                refSeq = refseqTranscriptIds.get(0);
+                refSeq = refseqTranscriptIds.get(0).trim();
             }
         }
         return refSeq != null ? refSeq : "";
