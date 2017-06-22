@@ -65,7 +65,7 @@ public class TranscriptConsequence
     private String refseqTranscriptIds;
     private List<String> consequenceTerms;
 
-    // Following properties are initialized after enrichment
+    // Following properties are intended to be set during enrichment
 
     private String hgvspShort;
     private String refSeq;
