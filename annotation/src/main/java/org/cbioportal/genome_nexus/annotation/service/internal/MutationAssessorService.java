@@ -1,18 +1,23 @@
 package org.cbioportal.genome_nexus.annotation.service.internal;
 
+import org.cbioportal.genome_nexus.annotation.domain.MutationAssessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.client.RestTemplate;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
-import org.cbioportal.genome_nexus.annotation.domain.MutationAssessor;
+import org.cbioportal.genome_nexus.annotation.util.Transformer;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.util.List;
 
+@Service
 public class MutationAssessorService
 {
 
-    private static String mutationAssessorURL;
+    @Value("${mutationAssessor.url}")
+    private String mutationAssessorURL;
 
     public void setMutationAssessorURL(String mutationAssessorURL)
     {
@@ -21,6 +26,9 @@ public class MutationAssessorService
 
     public MutationAssessor getMutationAssessor(String variant) throws IOException
     {
+//        MutationAssessor obj = Transformer.mapJsonToInstance(getMutationAssessorJSON(variant), MutationAssessor.class).get(0);
+//        obj.setVariant(variant);
+//        return obj;
         return mapJsonToMutationAssessor(variant);
     }
 

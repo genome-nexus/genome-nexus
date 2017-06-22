@@ -61,7 +61,7 @@ public class AnnotationController
     private final IsoformOverrideService isoformOverrideService;
     private final HotspotService hotspotService;
     private final HotspotRepository hotspotRepository;
-    private final MutationAssessorService mutationService;
+    private final MutationAssessorService mutationAssessorService;
 
     @Autowired
     public AnnotationController(VariantAnnotationService variantAnnotationService,
@@ -76,7 +76,7 @@ public class AnnotationController
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
         this.hotspotRepository = hotspotRepository;
-        this.mutationService = mutationService;
+        this.mutationAssessorService = mutationService;
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
@@ -222,15 +222,6 @@ public class AnnotationController
         return getHotspotAnnotation(variants);
     }
 
-    /*
-        *
-        *
-        *
-        *
-        *
-        *
-        * */
-
     @ApiOperation(value = "Retrieves mutation assessor information for the provided list of variants",
         nickname = "getMutationAssessorAnnotation")
     @ApiResponses(value = {
@@ -242,7 +233,7 @@ public class AnnotationController
     @RequestMapping(value = "/mutation_assessor/{variants:.+}",
         method = RequestMethod.GET,
         produces = "application/json")
-    public List<MutationAssessor> getMutationAnnotation(
+    public List<MutationAssessor> getMutationAssessorAnnotation(
         @PathVariable
         @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
             required = true,
@@ -257,28 +248,20 @@ public class AnnotationController
         return mutationAssessors;
     }
 
-    @ApiOperation(value = "Gets mutation assessor information for provided list of variants",
+    @ApiOperation(value = "Retrieves mutation assessor information for provided list of variants",
         nickname = "postMutationAssessorAnnotation")
     @RequestMapping(value = "/mutation_assessor",
         method = RequestMethod.POST,
         produces = "application/json")
-    public List<MutationAssessor> postMutationAnnotation(
+    public List<MutationAssessor> postMutationAssessorAnnotation(
         @RequestParam
         @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
             required = true,
             allowMultiple = true)
         List<String> variants)
     {
-        return getMutationAnnotation(variants);
+        return getMutationAssessorAnnotation(variants);
     }
-
-    /*
-        *
-        *
-        *
-        *
-        *
-        * */
 
     @ApiOperation(value = "Gets the isoform override information for the specified source " +
                           "and the list of transcript ids",
@@ -401,7 +384,7 @@ public class AnnotationController
     {
         //String transcriptId = transcript.getTranscriptId();
         //Hotspot hotspot = hotspotRepository.findOne(transcriptId);
-
+        // hotspotService.setHotspotsURL("http://cancerhotspots.org/api/hotspots/single/");
         // get the hotspot(s) from the web service
         List<Hotspot> hotspots = hotspotService.getHotspots(transcript);
 
@@ -449,11 +432,12 @@ public class AnnotationController
         return variantAnnotation;
     }
 
-    // todo: handle IOException
+    // todo: handle IOException, get rid of hardcoded url!
     private MutationAssessor getMutationAnnotation(String variant)
     {
+        mutationAssessorService.setMutationAssessorURL("http://mutationassessor.org/r3/?cm=var&var=");
         try {
-            return mutationService.getMutationAssessor(variant);
+            return mutationAssessorService.getMutationAssessor(variant);
         }
         catch (IOException e) {
             return null;
