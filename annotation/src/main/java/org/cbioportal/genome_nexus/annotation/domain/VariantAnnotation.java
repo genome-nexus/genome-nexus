@@ -58,10 +58,10 @@ public class VariantAnnotation
     private String variantId;     // variant id
     private String assemblyName;  // NCBI build number
     private String seqRegionName; // chromosome
-    private String start;         // start position
-    private String end;           // end position
+    private Integer start;         // start position
+    private Integer end;           // end position
     private String alleleString;  // reference allele & variant allele
-    private String strand;
+    private Integer strand;
     private String mostSevereConsequence;
     private List<TranscriptConsequence> transcriptConsequences;
 
@@ -147,12 +147,12 @@ public class VariantAnnotation
     @Field(value="start")
     @JsonProperty(value="start", required = true)
     @ApiModelProperty(value = "Start position", required = false)
-    public String getStart()
+    public Integer getStart()
     {
         return start;
     }
 
-    public void setStart(String start)
+    public void setStart(Integer start)
     {
         this.start = start;
     }
@@ -160,12 +160,12 @@ public class VariantAnnotation
     @Field(value="end")
     @JsonProperty(value="end", required = true)
     @ApiModelProperty(value = "End position", required = false)
-    public String getEnd()
+    public Integer getEnd()
     {
         return end;
     }
 
-    public void setEnd(String end)
+    public void setEnd(Integer end)
     {
         this.end = end;
     }
@@ -186,12 +186,12 @@ public class VariantAnnotation
     @Field(value="strand")
     @JsonProperty(value="strand", required = true)
     @ApiModelProperty(value = "Strand (negative or positive)", required = false)
-    public String getStrand()
+    public Integer getStrand()
     {
         return strand;
     }
 
-    public void setStrand(String strand)
+    public void setStrand(Integer strand)
     {
         this.strand = strand;
     }
