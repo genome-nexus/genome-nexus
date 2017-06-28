@@ -42,10 +42,11 @@ import org.cbioportal.genome_nexus.annotation.service.internal.VEPEnrichmentServ
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import org.apache.commons.logging.*;
 
 /**
  * @author Benjamin Gross
@@ -60,6 +61,8 @@ public class AnnotationController
     private final IsoformOverrideService isoformOverrideService;
     private final HotspotService hotspotService;
     private final HotspotRepository hotspotRepository;
+
+    private static final Log LOG = LogFactory.getLog(AnnotationController.class);
 
     @Autowired
     public AnnotationController(VariantAnnotationService variantAnnotationService,
@@ -370,7 +373,16 @@ public class AnnotationController
                 variantAnnotation = variantAnnotationRepository.mapAnnotationJson(variant, annotationJSON);
 
                 // save everything to the cache as a properly parsed JSON
-                variantAnnotationRepository.saveAnnotationJson(variant, annotationJSON);
+                
+                try {
+                    variantAnnotationRepository.saveAnnotationJson(variant, annotationJSON);
+                }
+                catch (DataIntegrityViolationException e) {
+                    // in case of data integrity violation exception, do not bloat the logs
+                    // this is thrown when the annotationJSON can't be stored by mongo
+                    // due to the variant annotation key being too large to index
+                    LOG.info(e.getLocalizedMessage());
+                }
             }
             catch (HttpClientErrorException e) {
                 // in case of web service error, do not terminate the whole process.
