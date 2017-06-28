@@ -11,8 +11,9 @@ import java.io.IOException;
 @Service
 public class MutationAssessorService
 {
-    private String mutationAssessorURL;
     @Value("${mutationAssessor.url}")
+    private String mutationAssessorURL;
+
     public void setMutationAssessorURL(String mutationAssessorURL)
     {
         this.mutationAssessorURL = mutationAssessorURL;
@@ -38,32 +39,34 @@ public class MutationAssessorService
         return null;
     }
 
-    // todo: get rid of hardcoded URLs and check that variant is in the right format
-    private String getMutationAssessorJSON(String variant)
-    {
-        String uri = mutationAssessorURL;
-
-        if (variant != null &&
-            variant.length() > 0)
-        {
-            uri += variant + "&frm=json";
-        }
-
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(uri, String.class);
-    }
 
     // todo: standardize input formatting
-    private String toMutationString(String inputString)
+    private static String toMutationString(String inputString)
     {
         String temp;
         temp = inputString.replaceAll("\\p{Punct}[a-z]\\p{Punct}", ",");
         temp = temp.replaceAll("\\p{Punct}", ",");
         temp = temp.substring(0, temp.length()-3) +
-            "," +
-            temp.substring(temp.length()-3);
+                "," +
+                temp.substring(temp.length()-3);
 
         return temp;
+    }
+
+    // todo: get rid of hardcoded URLs
+    private String getMutationAssessorJSON(String variants)
+    {
+        String uri = mutationAssessorURL;
+
+        // todo: check that variant is in the right format
+        if (variants != null &&
+            variants.length() > 0)
+        {
+            uri += variants + "&frm=json";
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(uri, String.class);
     }
 
 }

@@ -25,35 +25,24 @@ public class MutationAssessor
     public void setVariant(String variant) { this.variant = variant; }
 
     @ApiModelProperty(value = "Hugo gene symbol", required = false)
-    public String getHugoSymbol()
-    {
-        return hugoSymbol;
-    }
+    public String getHugoSymbol() { return hugoSymbol; }
 
     @JsonProperty("gene")
-    public void setHugoSymbol(String hugoSymbol)
-    {
-        this.hugoSymbol = hugoSymbol;
-    }
+    public void setHugoSymbol(String hugoSymbol) { this.hugoSymbol = hugoSymbol; }
 
     @ApiModelProperty(value = "Functional impact", required = false)
-    public String getFunctionalImpact()
-    {
-        return this.functionalImpact;
-    }
+    public String getFunctionalImpact() { return this.functionalImpact; }
 
     @JsonProperty("F_impact")
     public void setFunctionalImpact(String functionalImpact) { this.functionalImpact = functionalImpact; }
 
     @ApiModelProperty(value = "Functional impact score", required = false)
-    public double getFunctionalImpactScore()
-    {
+    public double getFunctionalImpactScore() {
         return this.functionalImpactScore;
     }
 
     @JsonProperty("F_score")
-    public void setFunctionalImpactScore(double functionalImpactScore)
-    {
+    public void setFunctionalImpactScore(double functionalImpactScore) {
         this.functionalImpactScore = functionalImpactScore;
     }
 

@@ -385,8 +385,10 @@ public class AnnotationController
 
     private List<Hotspot> getHotspotAnnotation(TranscriptConsequence transcript)
     {
+
         // String transcriptId = transcript.getTranscriptId();
         // Hotspot hotspot = hotspotRepository.findOne(transcriptId);
+
         // hotspotService.setHotspotsURL("http://cancerhotspots.org/api/hotspots/single/");
         // get the hotspot(s) from the web service
         List<Hotspot> hotspots = hotspotService.getHotspots(transcript);
@@ -443,6 +445,8 @@ public class AnnotationController
         {
             // if not cached, use web service to get annotation
             obj = mutationAssessorService.getMutationAssessor(variant);
+
+            // todo: check for valid input before caching
             mutationAssessorRepository.insert(obj);
         }
         return obj;

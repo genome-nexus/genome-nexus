@@ -15,12 +15,13 @@ import static org.junit.Assert.*;
 
 public class MutationAssessorTest
 {
-    /* for debugging */
+    /* for debugging
     private static Logger log = Logger.getLogger(String.valueOf(MutationAssessorTest.class));
+    */
 
     @Test
-    public void testWebService() throws IOException
-    {
+    public void testVariants() throws IOException {
+
         MutationAssessorService service = new MutationAssessorService();
         service.setMutationAssessorURL("http://mutationassessor.org/r3/?cm=var&var=");
 
@@ -45,7 +46,6 @@ public class MutationAssessorTest
         assertEquals(mutationObj21.getHugoSymbol(), mutationObj22.getHugoSymbol());
         assertEquals(mutationObj21.getFunctionalImpact(), mutationObj22.getFunctionalImpact());
         assertEquals(mutationObj21.getFunctionalImpactScore(), mutationObj22.getFunctionalImpactScore(), 0);
-
 
         String input3 = "2:g.29443695G>T";
         String urlString3 = "http://mutationassessor.org/r3/?cm=var&var=2,29443695,G,T&frm=json";
