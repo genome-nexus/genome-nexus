@@ -62,6 +62,7 @@ public class AnnotationController
     private final HotspotService hotspotService;
     private final HotspotRepository hotspotRepository;
     private final MutationAssessorService mutationAssessorService;
+    private final MutationAssessorRepository mutationAssessorRepository;
 
     @Autowired
     public AnnotationController(VariantAnnotationService variantAnnotationService,
@@ -69,7 +70,8 @@ public class AnnotationController
                                 IsoformOverrideService isoformOverrideService,
                                 HotspotService hotspotService,
                                 HotspotRepository hotspotRepository,
-                                MutationAssessorService mutationService)
+                                MutationAssessorService mutationService,
+                                MutationAssessorRepository mutationAssessorRepository)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
@@ -77,6 +79,7 @@ public class AnnotationController
         this.hotspotService = hotspotService;
         this.hotspotRepository = hotspotRepository;
         this.mutationAssessorService = mutationService;
+        this.mutationAssessorRepository = mutationAssessorRepository;
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
@@ -382,14 +385,14 @@ public class AnnotationController
 
     private List<Hotspot> getHotspotAnnotation(TranscriptConsequence transcript)
     {
-        //String transcriptId = transcript.getTranscriptId();
-        //Hotspot hotspot = hotspotRepository.findOne(transcriptId);
+        // String transcriptId = transcript.getTranscriptId();
+        // Hotspot hotspot = hotspotRepository.findOne(transcriptId);
         // hotspotService.setHotspotsURL("http://cancerhotspots.org/api/hotspots/single/");
         // get the hotspot(s) from the web service
         List<Hotspot> hotspots = hotspotService.getHotspots(transcript);
 
         // do not cache anything for now
-        //hotspotRepository.save(hotspots);
+        // hotspotRepository.save(hotspots);
 
         return hotspots;
     }
@@ -432,15 +435,16 @@ public class AnnotationController
         return variantAnnotation;
     }
 
-    // todo: handle IOException, get rid of hardcoded url!
     private MutationAssessor getMutationAnnotation(String variant)
     {
-        mutationAssessorService.setMutationAssessorURL("http://mutationassessor.org/r3/?cm=var&var=");
-        try {
-            return mutationAssessorService.getMutationAssessor(variant);
+        // get variant from cache
+        MutationAssessor obj = mutationAssessorRepository.findOne(variant);
+        if (obj == null)
+        {
+            // if not cached, use web service to get annotation
+            obj = mutationAssessorService.getMutationAssessor(variant);
+            mutationAssessorRepository.insert(obj);
         }
-        catch (IOException e) {
-            return null;
-        }
+        return obj;
     }
 }
