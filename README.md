@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/cBioPortal/genome-nexus.svg?branch=master)](https://travis-ci.org/cBioPortal/genome-nexus)
+[![codecov](https://codecov.io/gh/cBioPortal/genome-nexus/branch/master/graph/badge.svg)](https://codecov.io/gh/cBioPortal/genome-nexus)
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 # Genome Nexus
