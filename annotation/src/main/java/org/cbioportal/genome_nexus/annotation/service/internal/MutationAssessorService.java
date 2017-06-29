@@ -22,20 +22,23 @@ public class MutationAssessorService
     public MutationAssessor getMutationAssessor(String variant)
     {
         String inputString = toMutationAssessorString(variant);
-        MutationAssessor mutationAssessorObj;
+        String jsonString = getMutationAssessorJSON(inputString);
+        MutationAssessor mutationAssessorObj = new MutationAssessor();
+
         try
         {
-            mutationAssessorObj =
-                Transformer.mapJsonToInstance(getMutationAssessorJSON(inputString), MutationAssessor.class).get(0);
-            mutationAssessorObj.setVariant(variant);
-            return mutationAssessorObj;
+            if (Transformer.mapJsonToInstance(jsonString, MutationAssessor.class).size() != 0) {
+                mutationAssessorObj =
+                    Transformer.mapJsonToInstance(jsonString, MutationAssessor.class).get(0);
+                mutationAssessorObj.setVariant(variant);
+            }
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
 
-        return new MutationAssessor();
+        return mutationAssessorObj;
     }
 
 
@@ -47,6 +50,10 @@ public class MutationAssessorService
      */
     private static String toMutationAssessorString(String inputString)
     {
+        // todo: check if input is in the right format
+        if (inputString.length() < 3) {
+            return inputString;
+        }
         String temp;
         temp = inputString.replaceAll("\\p{Punct}[a-z]\\p{Punct}", ",");
         temp = temp.replaceAll("\\p{Punct}", ",");
@@ -62,7 +69,6 @@ public class MutationAssessorService
     {
         String uri = mutationAssessorURL;
 
-        // todo: check that variant is in the right format
         if (variants != null &&
             variants.length() > 0)
         {

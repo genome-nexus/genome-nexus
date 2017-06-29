@@ -440,15 +440,15 @@ public class AnnotationController
     private MutationAssessor getMutationAnnotation(String variant)
     {
         // get variant from cache
-        MutationAssessor obj = mutationAssessorRepository.findOne(variant);
-        if (obj == null)
-        {
-            // if not cached, use web service to get annotation
-            obj = mutationAssessorService.getMutationAssessor(variant);
-
-            // todo: check for valid input before caching
-            mutationAssessorRepository.insert(obj);
-        }
-        return obj;
+//        MutationAssessor obj = mutationAssessorRepository.findOne(variant);
+//        if (obj == null)
+//        {
+//            // if not cached, use web service to get annotation
+//            obj = mutationAssessorService.getMutationAssessor(variant);
+//
+//            // todo: check for valid input before caching
+//            mutationAssessorRepository.insert(obj);
+//        }
+        return mutationAssessorService.getMutationAssessor(variant);
     }
 }
