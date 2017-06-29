@@ -21,7 +21,7 @@ public class MutationAssessorService
 
     public MutationAssessor getMutationAssessor(String variant)
     {
-        String inputString = toMutationString(variant);
+        String inputString = toMutationAssessorString(variant);
         MutationAssessor mutationAssessorObj;
         try
         {
@@ -35,13 +35,17 @@ public class MutationAssessorService
             e.printStackTrace();
         }
 
-        // todo: handle this
-        return null;
+        return new MutationAssessor();
     }
 
 
-    // todo: standardize input formatting
-    private static String toMutationString(String inputString)
+    /**
+     * Transforms a given variant string into the comma-separated variant supplied to Mutation Assessor
+     *      ex: 7:g.140453136A>T    -->     7,140453136,A,T
+     *
+     * todo: standardize input formatting and parsing
+     */
+    private static String toMutationAssessorString(String inputString)
     {
         String temp;
         temp = inputString.replaceAll("\\p{Punct}[a-z]\\p{Punct}", ",");
