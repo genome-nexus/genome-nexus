@@ -46,7 +46,7 @@ public class MutationAssessorTest
         assertEquals(mutationObj21.getHugoSymbol(), mutationObj22.getHugoSymbol());
         assertEquals(mutationObj21.getFunctionalImpact(), mutationObj22.getFunctionalImpact());
         assertEquals(mutationObj21.getFunctionalImpactScore(), mutationObj22.getFunctionalImpactScore(), 0);
-/*
+
         String input3 = "2:g.29443695G>T";
         String urlString3 = "http://mutationassessor.org/r3/?cm=var&var=2,29443695,G,T&frm=json";
         MutationAssessor mutationObj31 = service.getMutationAssessor(input3);
@@ -67,7 +67,7 @@ public class MutationAssessorTest
         assertEquals(mutationObj41.getHugoSymbol(), mutationObj42.getHugoSymbol());
         assertEquals(mutationObj41.getFunctionalImpact(), mutationObj42.getFunctionalImpact());
         assertEquals(mutationObj41.getFunctionalImpactScore(), mutationObj42.getFunctionalImpactScore(), 0);
-*/
+
 
         // this input throws exception
         String input5 = "junk-input";
