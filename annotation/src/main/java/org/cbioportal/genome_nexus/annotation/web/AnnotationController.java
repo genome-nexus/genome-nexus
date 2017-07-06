@@ -32,8 +32,6 @@
 
 package org.cbioportal.genome_nexus.annotation.web;
 
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.annotation.domain.*;
 import org.cbioportal.genome_nexus.annotation.service.internal.HotspotAnnotationEnricher;
@@ -42,7 +40,6 @@ import org.cbioportal.genome_nexus.annotation.service.*;
 
 import org.cbioportal.genome_nexus.annotation.service.internal.MutationAssessorService;
 import org.cbioportal.genome_nexus.annotation.service.internal.VEPEnrichmentService;
-import org.cbioportal.genome_nexus.annotation.util.Transformer;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
@@ -430,7 +427,7 @@ public class AnnotationController
                 variantAnnotation = variantAnnotationRepository.mapAnnotationJson(variant, annotationJSON);
 
                 // save everything to the cache as a properly parsed JSON
-                
+
                 try {
                     variantAnnotationRepository.saveAnnotationJson(variant, annotationJSON);
                 }
