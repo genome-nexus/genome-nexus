@@ -1,8 +1,8 @@
 package org.cbioportal.genome_nexus.annotation.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.Id;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,24 +25,27 @@ public class MutationAssessor
     public void setVariant(String variant) { this.variant = variant; }
 
     @ApiModelProperty(value = "Hugo gene symbol", required = false)
+    @JsonProperty("hugoSymbol")
     public String getHugoSymbol() { return hugoSymbol; }
 
     @JsonProperty("gene")
-    public void setHugoSymbol(String hugoSymbol) { this.hugoSymbol = hugoSymbol; }
+    public void setGene(String hugoSymbol) { this.hugoSymbol = hugoSymbol; }
 
     @ApiModelProperty(value = "Functional impact", required = false)
+    @JsonProperty("functionalImpact")
     public String getFunctionalImpact() { return this.functionalImpact; }
 
     @JsonProperty("F_impact")
-    public void setFunctionalImpact(String functionalImpact) { this.functionalImpact = functionalImpact; }
+    public void setFuncImpact(String functionalImpact) { this.functionalImpact = functionalImpact; }
 
     @ApiModelProperty(value = "Functional impact score", required = false)
+    @JsonProperty("functionalImpactScore")
     public double getFunctionalImpactScore() {
         return this.functionalImpactScore;
     }
 
     @JsonProperty("F_score")
-    public void setFunctionalImpactScore(double functionalImpactScore) {
+    public void setFuncImpactScore(double functionalImpactScore) {
         this.functionalImpactScore = functionalImpactScore;
     }
 

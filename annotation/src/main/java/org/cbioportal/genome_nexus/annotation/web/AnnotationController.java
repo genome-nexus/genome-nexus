@@ -32,6 +32,8 @@
 
 package org.cbioportal.genome_nexus.annotation.web;
 
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.annotation.domain.*;
 import org.cbioportal.genome_nexus.annotation.service.internal.HotspotAnnotationEnricher;
@@ -40,6 +42,7 @@ import org.cbioportal.genome_nexus.annotation.service.*;
 
 import org.cbioportal.genome_nexus.annotation.service.internal.MutationAssessorService;
 import org.cbioportal.genome_nexus.annotation.service.internal.VEPEnrichmentService;
+import org.cbioportal.genome_nexus.annotation.util.Transformer;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
@@ -246,7 +249,11 @@ public class AnnotationController
         List<MutationAssessor> mutationAssessors = new ArrayList<>();
         for (String variant : variants)
         {
-            mutationAssessors.add(getMutationAnnotation(variant));
+            MutationAssessor mutationAssessorObj = getMutationAnnotation(variant);
+            if (mutationAssessorObj != null)
+            {
+                mutationAssessors.add(mutationAssessorObj);
+            }
         }
         return mutationAssessors;
     }
@@ -257,8 +264,8 @@ public class AnnotationController
         method = RequestMethod.POST,
         produces = "application/json")
     public List<MutationAssessor> postMutationAssessorAnnotation(
-        @RequestParam
-        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
+        @RequestBody
+        @ApiParam(value="List of variants. For example [\"7:g.140453136A>T\",\"12:g.25398285C>A\"]",
             required = true,
             allowMultiple = true)
         List<String> variants)
@@ -450,5 +457,6 @@ public class AnnotationController
 //            mutationAssessorRepository.insert(obj);
 //        }
         return mutationAssessorService.getMutationAssessor(variant);
+
     }
 }
