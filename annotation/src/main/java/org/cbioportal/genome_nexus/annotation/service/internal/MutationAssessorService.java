@@ -1,8 +1,8 @@
 package org.cbioportal.genome_nexus.annotation.service.internal;
 
 import org.cbioportal.genome_nexus.annotation.domain.MutationAssessor;
+import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 import org.cbioportal.genome_nexus.annotation.util.Transformer;
-import org.cbioportal.genome_nexus.annotation.util.HGVS;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,21 +20,33 @@ public class MutationAssessorService
         this.mutationAssessorURL = mutationAssessorURL;
     }
 
-    public MutationAssessor getMutationAssessor(String variant)
+    public MutationAssessor getMutationAssessor(VariantAnnotation annotation)
+    {
+        if (annotation.getStart() == null
+            || !annotation.getStart().equals(annotation.getEnd())
+            || !annotation.getAlleleString().matches("[A-Z]/[A-Z]"))
+        {
+            return null;
+        }
+
+
+        StringBuilder sb = new StringBuilder(annotation.getSeqRegionName() + ",");
+        sb.append(annotation.getStart() + ",");
+        sb.append(annotation.getAlleleString().replaceAll("/", ","));
+
+        String request = sb.toString();
+
+        return this.getMutationAssessor(request, annotation.getVariant());
+
+    }
+
+    public MutationAssessor getMutationAssessor(String variant, String hgvs)
     {
         MutationAssessor mutationAssessorObj = new MutationAssessor();
 
         try
         {
-            String inputString = HGVS.getMutationAssessorString(variant);
-
-            // string was incorrectly formatted
-            if (inputString == null)
-            {
-                inputString = "invalid input, check input format\n";
-            }
-
-            String jsonString = getMutationAssessorJSON(inputString);
+            String jsonString = getMutationAssessorJSON(variant);
             List<MutationAssessor> list = Transformer.mapJsonToInstance(jsonString, MutationAssessor.class);
 
             if (list.size() != 0)
@@ -42,7 +54,7 @@ public class MutationAssessorService
                 mutationAssessorObj = list.get(0);
                 if (mutationAssessorObj != null)
                 {
-                    mutationAssessorObj.setVariant(variant);
+                    mutationAssessorObj.setVariant(hgvs);
                 }
             }
         }
