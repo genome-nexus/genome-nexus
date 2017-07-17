@@ -16,6 +16,8 @@ public class MutationAssessor
     private String variant;
 
     private String hugoSymbol;
+    private int proteinPosition;
+    private String aminoAcidVariant;
     private String functionalImpact;
     private double functionalImpactScore;
 
@@ -30,6 +32,20 @@ public class MutationAssessor
 
     @JsonProperty("gene")
     public void setGene(String hugoSymbol) { this.hugoSymbol = hugoSymbol; }
+
+    @ApiModelProperty(value = "Protein position (RefSeq)", required = false)
+    @JsonProperty("proteinPosition")
+    public int getProteinPosition() { return this.proteinPosition; }
+
+    @JsonProperty("rs_pos")
+    public void setProtPosition(int proteinPosition) { this.proteinPosition = proteinPosition; }
+
+    @ApiModelProperty(value = "Amino acid variant", required = false)
+    @JsonProperty("aminoAcidVariant")
+    public String getAminoAcidVariant() { return this.aminoAcidVariant; }
+
+    @JsonProperty("rgaa")
+    public void setAAVariant(String aminoAcidVariant) { this.aminoAcidVariant = aminoAcidVariant; }
 
     @ApiModelProperty(value = "Functional impact", required = false)
     @JsonProperty("functionalImpact")

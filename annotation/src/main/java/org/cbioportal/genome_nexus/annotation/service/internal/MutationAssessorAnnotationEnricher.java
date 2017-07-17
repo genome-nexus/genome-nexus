@@ -2,6 +2,7 @@ package org.cbioportal.genome_nexus.annotation.service.internal;
 
 
 import org.cbioportal.genome_nexus.annotation.domain.MutationAssessor;
+import org.cbioportal.genome_nexus.annotation.domain.MutationAssessorAnnotation;
 import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 import org.cbioportal.genome_nexus.annotation.service.AnnotationEnricher;
 
@@ -20,10 +21,12 @@ public class MutationAssessorAnnotationEnricher implements AnnotationEnricher {
             MutationAssessor mutationAssessorObj =
                 mutationAssessorService.getMutationAssessor(annotation);
 
-            if (mutationAssessorObj != null)
+            MutationAssessorAnnotation mutationAnnotation = new MutationAssessorAnnotation();
+
+            if (mutationAssessorObj != null && mutationAssessorObj.getFunctionalImpact() != "")
             {
-                annotation.setDynamicProp("functionalImpact", mutationAssessorObj.getFunctionalImpact());
-                annotation.setDynamicProp("functionalImpactScore", mutationAssessorObj.getFunctionalImpactScore());
+                mutationAnnotation.setAnnotation(mutationAssessorObj);
+                annotation.setDynamicProp("mutation_assessor", mutationAnnotation);
             }
         }
     }

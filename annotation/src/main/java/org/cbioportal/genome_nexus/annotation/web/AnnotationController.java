@@ -105,16 +105,10 @@ public class AnnotationController
             required = false)
         String isoformOverrideSource,
         @RequestParam(required = false)
-        @ApiParam(value="Indicates whether to include cancer hotspots information. " +
-                        "Valid options are: summary, and full. " +
-                        "Any other value will be ignored.",
-            required = false)
-        String cancerHotspots,
-        @RequestParam(required = false)
-        @ApiParam(value="Indicates whether to include mutation assessor information. " +
-                        "Valid options are: \'true\' or \'false\'.",
-            required = false)
-        boolean mutationAssessor)
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+        List<String> fields)
+
 	{
 		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
 
@@ -133,19 +127,15 @@ public class AnnotationController
             postEnrichmentService.registerEnricher(isoformOverrideSource, enricher);
         }
 
-        // ignore any other value than "full" or "summary"
-        if (cancerHotspots != null &&
-            (cancerHotspots.equalsIgnoreCase("full") || cancerHotspots.equalsIgnoreCase("summary")))
+        if (fields != null && fields.contains("hotspots"))
         {
-            AnnotationEnricher enricher = new HotspotAnnotationEnricher(
-                hotspotService, cancerHotspots.equalsIgnoreCase("full"));
+            AnnotationEnricher enricher = new HotspotAnnotationEnricher(hotspotService, true);
             postEnrichmentService.registerEnricher("cancerHotspots", enricher);
         }
-
-        if (mutationAssessor)
+        if (fields != null && fields.contains("mutation_assessor"))
         {
             AnnotationEnricher enricher = new MutationAssessorAnnotationEnricher(mutationAssessorService);
-            postEnrichmentService.registerEnricher("mutationAssessor", enricher);
+            postEnrichmentService.registerEnricher("mutation_assessor", enricher);
         }
 
 		for (String variant: variants)
@@ -178,18 +168,12 @@ public class AnnotationController
             required = false)
         String isoformOverrideSource,
         @RequestParam(required = false)
-        @ApiParam(value="Indicates whether to include cancer hotspots information. " +
-                        "Valid options are: summary, and full. " +
-                        "Any other value will be ignored.",
-            required = false)
-        String cancerHotspots,
-        @RequestParam(required = false)
-        @ApiParam(value="Indicates whether to include mutation assessor information. " +
-            "Valid options are: \'true\' or \'false\'.",
-            required = false)
-            boolean mutationAssessor)
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+            List<String> fields)
     {
-       return getVariantAnnotation(variants, isoformOverrideSource, cancerHotspots, mutationAssessor);
+
+        return getVariantAnnotation(variants, isoformOverrideSource, fields);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotation for the provided list of variants",
@@ -210,8 +194,7 @@ public class AnnotationController
             allowMultiple = true)
         List<String> variants)
     {
-        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null,
-            null, false);
+        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null, new ArrayList<String>());
         List<Hotspot> hotspots = new ArrayList<>();
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)
@@ -262,16 +245,27 @@ public class AnnotationController
             List<String> variants)
     {
         List<MutationAssessor> mutationAssessors = new ArrayList<>();
-        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null,
-            null, false);
+
+        // uses enrichment to get mutation assessor object
+        List<String> fields = new ArrayList<>();
+        fields.add("mutation_assessor");
+
+        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null, fields);
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)
         {
-            MutationAssessor obj = getMutationAnnotation(variantAnnotation);
+            // gets mutation assessor annotation object from variant annotation map
+            Map<String, Object> map = variantAnnotation.getDynamicProps();
+            MutationAssessorAnnotation mutationAssessorAnnotation
+                = (MutationAssessorAnnotation) map.get("mutation_assessor");
 
-            if (obj != null && obj.getFunctionalImpact() != "")
+            if (mutationAssessorAnnotation != null)
             {
-                mutationAssessors.add(obj);
+                MutationAssessor obj = mutationAssessorAnnotation.getAnnotation();
+                if (obj != null && obj.getFunctionalImpact() != "")
+                {
+                    mutationAssessors.add(obj);
+                }
             }
         }
 
@@ -479,19 +473,4 @@ public class AnnotationController
         return variantAnnotation;
     }
 
-    private MutationAssessor getMutationAnnotation(VariantAnnotation annotation)
-    {
-        // get variant from cache
-//        MutationAssessor obj = mutationAssessorRepository.findOne(variant);
-//        if (obj == null)
-//        {
-//            // if not cached, use web service to get annotation
-//            obj = mutationAssessorService.getMutationAssessor(variant);
-//
-//            // todo: check for valid input before caching
-//            mutationAssessorRepository.insert(obj);
-//        }
-        return mutationAssessorService.getMutationAssessor(annotation);
-
-    }
 }

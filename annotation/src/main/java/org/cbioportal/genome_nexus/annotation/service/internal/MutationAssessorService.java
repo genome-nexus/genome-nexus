@@ -12,16 +12,24 @@ import java.util.List;
 @Service
 public class MutationAssessorService
 {
-    @Value("${mutationAssessor.url}")
-    private String mutationAssessorURL;
 
+    private String mutationAssessorURL;
+    @Value("${mutationAssessor.url}")
     public void setMutationAssessorURL(String mutationAssessorURL)
     {
         this.mutationAssessorURL = mutationAssessorURL;
     }
 
+//    private String urlFields;
+//    @Value("${mutationAssessorFields.url}")
+//    public void setUrlFields(String urlFields)
+//    {
+//        this.urlFields = urlFields;
+//    }
+
     public MutationAssessor getMutationAssessor(VariantAnnotation annotation)
     {
+        // checks annotation is SNP
         if (annotation.getStart() == null
             || !annotation.getStart().equals(annotation.getEnd())
             || !annotation.getAlleleString().matches("[A-Z]/[A-Z]"))
@@ -29,14 +37,7 @@ public class MutationAssessorService
             return null;
         }
 
-
-        StringBuilder sb = new StringBuilder(annotation.getSeqRegionName() + ",");
-        sb.append(annotation.getStart() + ",");
-        sb.append(annotation.getAlleleString().replaceAll("/", ","));
-
-        String request = sb.toString();
-
-        return this.getMutationAssessor(request, annotation.getVariant());
+        return this.getMutationAssessor(buildRequest(annotation), annotation.getVariant());
 
     }
 
@@ -66,19 +67,27 @@ public class MutationAssessorService
         return mutationAssessorObj;
     }
 
-    // todo: get rid of hardcoded URLs
-    private String getMutationAssessorJSON(String variants)
+    private String getMutationAssessorJSON(String variant)
     {
-        String uri = mutationAssessorURL;
+        String uri = this.mutationAssessorURL;
 
-        if (variants != null &&
-            variants.length() > 0)
+        if (variant != null &&
+            variant.length() > 0)
         {
-            uri += variants + "&frm=json";
+            uri = uri.replace("VARIANT", variant);
         }
 
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(uri, String.class);
+    }
+
+    private String buildRequest(VariantAnnotation annotation)
+    {
+        StringBuilder sb = new StringBuilder(annotation.getSeqRegionName() + ",");
+        sb.append(annotation.getStart() + ",");
+        sb.append(annotation.getAlleleString().replaceAll("/", ","));
+
+        return sb.toString();
     }
 
 }

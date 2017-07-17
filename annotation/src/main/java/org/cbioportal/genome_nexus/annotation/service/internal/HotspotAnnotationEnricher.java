@@ -1,11 +1,13 @@
 package org.cbioportal.genome_nexus.annotation.service.internal;
 
 import org.cbioportal.genome_nexus.annotation.domain.Hotspot;
+import org.cbioportal.genome_nexus.annotation.domain.HotspotAnnotation;
 import org.cbioportal.genome_nexus.annotation.domain.TranscriptConsequence;
 import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 import org.cbioportal.genome_nexus.annotation.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.HotspotService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,17 +34,25 @@ public class HotspotAnnotationEnricher implements AnnotationEnricher
     {
         if (annotation.getTranscriptConsequences() != null)
         {
+            List<List<Hotspot>> hotspotsList = new ArrayList<>();
+
             for (TranscriptConsequence transcript : annotation.getTranscriptConsequences())
             {
                 List<Hotspot> hotspots = hotspotService.getHotspots(transcript);
-
-                if (fullInfo) {
-                    enrichWithFullInfo(transcript, hotspots);
-                }
-                else {
-                    enrichWithSummary(transcript, hotspots);
+                if (hotspots.size() > 0)
+                {
+                    hotspotsList.add(hotspots);
                 }
             }
+
+            HotspotAnnotation hotspotAnnotation = new HotspotAnnotation();
+
+            if (hotspotsList.size() > 0)
+            {
+                hotspotAnnotation.setAnnotation(hotspotsList);
+            }
+
+            annotation.setDynamicProp("hotspots", hotspotAnnotation);
         }
     }
 
