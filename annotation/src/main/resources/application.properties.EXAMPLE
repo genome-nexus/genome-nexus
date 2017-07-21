@@ -5,6 +5,10 @@ vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=appli
 # Cancer Hotspots web API URL
 hotspots.url=http://cancerhotspots.org/api/hotspots/single/
 
+# Mutation Assessor web API URL
+#"VARIANT" will be replaced with actual variant upon each request.
+mutationAssessor.url=http://mutationassessor.org/r3/?cm=var&var=VARIANT&frm=json&fts=input,rgaa,rgvt,var,gene,F_impact,F_score,chr,rs_pos
+
 # Comma separated list of isoform_overrides_resource:overrides_filename pairs.
 vep.isoform.overrides=uniprot:isoform_overrides_uniprot.txt,mskcc:isoform_overrides_at_mskcc.txt
 
