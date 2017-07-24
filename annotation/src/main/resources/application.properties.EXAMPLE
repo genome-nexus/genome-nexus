@@ -2,6 +2,9 @@
 # the actual variant value before each VEP request.
 vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1
 
+# the gene external references URL
+genexrefs.url=http://grch37.rest.ensembl.org/xrefs/id/ACCESSION?content-type=application/json
+
 # Cancer Hotspots web API URL
 hotspots.url=http://cancerhotspots.org/api/hotspots/single/
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Memorial Sloan-Kettering Cancer Center.
+ * Copyright (c) 2015-17 Memorial Sloan-Kettering Cancer Center.
  *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS
@@ -47,6 +47,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.io.IOException;
 import java.util.*;
 import org.apache.commons.logging.*;
+import org.cbioportal.genome_nexus.annotation.service.internal.GeneXrefServiceImpl;
 
 /**
  * @author Benjamin Gross
@@ -61,6 +62,7 @@ public class AnnotationController
     private final IsoformOverrideService isoformOverrideService;
     private final HotspotService hotspotService;
     private final HotspotRepository hotspotRepository;
+    private final GeneXrefServiceImpl geneXrefServiceImpl;
 
     private static final Log LOG = LogFactory.getLog(AnnotationController.class);
 
@@ -69,13 +71,15 @@ public class AnnotationController
                                 VariantAnnotationRepository variantAnnotationRepository,
                                 IsoformOverrideService isoformOverrideService,
                                 HotspotService hotspotService,
-                                HotspotRepository hotspotRepository)
+                                HotspotRepository hotspotRepository, 
+                                GeneXrefServiceImpl geneXrefServiceImpl)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
         this.hotspotRepository = hotspotRepository;
+        this.geneXrefServiceImpl = geneXrefServiceImpl;
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
@@ -350,6 +354,25 @@ public class AnnotationController
         //hotspotRepository.save(hotspots);
 
         return hotspots;
+    }
+    
+    @ApiOperation(value = "Perform lookups of Ensembl identifiers and retrieve their external referenes in other databases", 
+            nickname = "getGeneXrefs")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = GeneXref.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/xrefs/{accession}", 
+            method = RequestMethod.GET, 
+            produces = "application/json")
+    public List<GeneXref> getGeneXrefs(
+            @PathVariable
+            @ApiParam(value="Ensembl gene accession. For example ENSG00000169083",
+                required = true)
+            String accession) {
+        return geneXrefServiceImpl.getGeneXrefs(accession);
     }
 
     private VariantAnnotation getVariantAnnotation(String variant)
