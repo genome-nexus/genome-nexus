@@ -382,6 +382,7 @@ public class AnnotationController
                     // this is thrown when the annotationJSON can't be stored by mongo
                     // due to the variant annotation key being too large to index
                     LOG.info(e.getLocalizedMessage());
+                    return variantAnnotation;
                 }
             }
             catch (HttpClientErrorException e) {
