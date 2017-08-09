@@ -23,7 +23,7 @@ public class MutationAssessorAnnotationEnricher implements AnnotationEnricher {
 
             MutationAssessorAnnotation mutationAnnotation = new MutationAssessorAnnotation();
 
-            if (mutationAssessorObj != null && mutationAssessorObj.getFunctionalImpact() != "")
+            if (mutationAssessorObj != null && mutationAssessorObj.getMappingIssue().length() == 0)
             {
                 mutationAnnotation.setAnnotation(mutationAssessorObj);
                 annotation.setDynamicProp("mutation_assessor", mutationAnnotation);

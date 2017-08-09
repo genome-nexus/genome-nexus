@@ -35,7 +35,6 @@ public class MutationAssessorTest
 
         // getVariant() not tested because variants set manually
         assertEquals(mutationObj1.getHugoSymbol(), mutationObj2.getHugoSymbol());
-        assertEquals(mutationObj1.getProteinPosition(), mutationObj2.getProteinPosition());
         assertEquals(mutationObj1.getFunctionalImpact(), mutationObj2.getFunctionalImpact());
         assertEquals(mutationObj1.getFunctionalImpactScore(), mutationObj2.getFunctionalImpactScore(), 0);
 
@@ -46,7 +45,6 @@ public class MutationAssessorTest
             Transformer.mapJsonToInstance(getReturnString(urlString2), MutationAssessor.class).get(0);
 
         assertEquals(mutationObj21.getHugoSymbol(), mutationObj22.getHugoSymbol());
-        assertEquals(mutationObj21.getProteinPosition(), mutationObj22.getProteinPosition());
         assertEquals(mutationObj21.getFunctionalImpact(), mutationObj22.getFunctionalImpact());
         assertEquals(mutationObj21.getFunctionalImpactScore(), mutationObj22.getFunctionalImpactScore(), 0);
 
@@ -65,7 +63,6 @@ public class MutationAssessorTest
 
         // getVariant() not tested because variants set manually
         assertEquals(mutationObj1.getHugoSymbol(), mutationObj2.getHugoSymbol());
-        assertEquals(mutationObj1.getProteinPosition(), mutationObj2.getProteinPosition());
         assertEquals(mutationObj1.getFunctionalImpact(), mutationObj2.getFunctionalImpact());
         assertEquals(mutationObj1.getFunctionalImpactScore(), mutationObj2.getFunctionalImpactScore(), 0);
     }
