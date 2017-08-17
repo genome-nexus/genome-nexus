@@ -208,5 +208,4 @@ public class MutationAssessor
 
     @JsonProperty("cnt_snps")
     public void setCnt_snps(int snpCount) { this.snpCount = snpCount; }
-
 }
