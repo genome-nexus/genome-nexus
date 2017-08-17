@@ -265,7 +265,7 @@ public class AnnotationController
             if (mutationAssessorAnnotation != null)
             {
                 MutationAssessor obj = mutationAssessorAnnotation.getAnnotation();
-                if (obj != null && obj.getFunctionalImpact() != "")
+                if (obj != null && obj.getMappingIssue().length() == 0)
                 {
                     mutationAssessors.add(obj);
                 }

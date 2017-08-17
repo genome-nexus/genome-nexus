@@ -20,13 +20,6 @@ public class MutationAssessorService
         this.mutationAssessorURL = mutationAssessorURL;
     }
 
-//    private String urlFields;
-//    @Value("${mutationAssessorFields.url}")
-//    public void setUrlFields(String urlFields)
-//    {
-//        this.urlFields = urlFields;
-//    }
-
     public MutationAssessor getMutationAssessor(VariantAnnotation annotation)
     {
         // checks annotation is SNP
@@ -55,7 +48,7 @@ public class MutationAssessorService
                 mutationAssessorObj = list.get(0);
                 if (mutationAssessorObj != null)
                 {
-                    mutationAssessorObj.setVariant(hgvs);
+                    mutationAssessorObj.setInput(hgvs);
                 }
             }
         }

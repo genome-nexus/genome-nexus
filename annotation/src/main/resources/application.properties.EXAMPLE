@@ -10,7 +10,7 @@ hotspots.url=http://cancerhotspots.org/api/hotspots/single/
 
 # Mutation Assessor web API URL
 #"VARIANT" will be replaced with actual variant upon each request.
-mutationAssessor.url=http://mutationassessor.org/r3/?cm=var&var=VARIANT&frm=json&fts=input,rgaa,rgvt,var,gene,F_impact,F_score,chr,rs_pos
+mutationAssessor.url=http://mutationassessor.org/r3/?cm=var&var=VARIANT&frm=json&fts=input,rgaa,rgvt,msa,pdb,F_impact,F_score,vc_score,vs_score,info,var,gene,uprot,rsprot,gaps,msa_height,chr,rs_pos,rs_res,up_pos,up_res,cnt_cosmic,cnt_snps
 
 # Comma separated list of isoform_overrides_resource:overrides_filename pairs.
 vep.isoform.overrides=uniprot:isoform_overrides_uniprot.txt,mskcc:isoform_overrides_at_mskcc.txt
