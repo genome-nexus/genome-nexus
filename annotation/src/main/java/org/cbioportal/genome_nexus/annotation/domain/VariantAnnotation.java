@@ -32,15 +32,15 @@
 
 package org.cbioportal.genome_nexus.annotation.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Benjamin Gross
@@ -65,6 +65,9 @@ public class VariantAnnotation
     private String mostSevereConsequence;
     private List<TranscriptConsequence> transcriptConsequences;
 
+    @JsonIgnore
+    private Map<String, Object> dynamicProps;
+
     public VariantAnnotation()
     {
         this(null, null);
@@ -79,6 +82,7 @@ public class VariantAnnotation
     {
         this.variant = variant;
         this.annotationJSON = annotationJSON;
+        this.dynamicProps = new LinkedHashMap<>();
     }
 
     @JsonProperty(required = true)
@@ -226,5 +230,17 @@ public class VariantAnnotation
     public String toString()
     {
         return annotationJSON;
+    }
+
+    @JsonAnySetter
+    public void setDynamicProp(String key, Object value)
+    {
+        this.dynamicProps.put(key, value);
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getDynamicProps()
+    {
+        return this.dynamicProps;
     }
 }

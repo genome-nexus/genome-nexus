@@ -34,11 +34,9 @@ package org.cbioportal.genome_nexus.annotation.web;
 
 import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.annotation.domain.*;
-import org.cbioportal.genome_nexus.annotation.service.internal.HotspotAnnotationEnricher;
-import org.cbioportal.genome_nexus.annotation.service.internal.IsoformAnnotationEnricher;
+import org.cbioportal.genome_nexus.annotation.service.internal.*;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
-import org.cbioportal.genome_nexus.annotation.service.internal.VEPEnrichmentService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
@@ -47,14 +45,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.io.IOException;
 import java.util.*;
 import org.apache.commons.logging.*;
-import org.cbioportal.genome_nexus.annotation.service.internal.GeneXrefServiceImpl;
+import sun.misc.Request;
 
 /**
  * @author Benjamin Gross
  */
 @RestController // shorthand for @Controller, @ResponseBody
 @CrossOrigin(origins="*") // allow all cross-domain requests
-@RequestMapping(value = "/")
+@RequestMapping(value= "/")
 public class AnnotationController
 {
     private final VariantAnnotationService variantAnnotationService;
@@ -63,6 +61,8 @@ public class AnnotationController
     private final HotspotService hotspotService;
     private final HotspotRepository hotspotRepository;
     private final GeneXrefServiceImpl geneXrefServiceImpl;
+    private final MutationAssessorService mutationAssessorService;
+    private final MutationAssessorRepository mutationAssessorRepository;
 
     private static final Log LOG = LogFactory.getLog(AnnotationController.class);
 
@@ -71,8 +71,10 @@ public class AnnotationController
                                 VariantAnnotationRepository variantAnnotationRepository,
                                 IsoformOverrideService isoformOverrideService,
                                 HotspotService hotspotService,
-                                HotspotRepository hotspotRepository, 
-                                GeneXrefServiceImpl geneXrefServiceImpl)
+                                HotspotRepository hotspotRepository,
+                                GeneXrefServiceImpl geneXrefServiceImpl,
+                                MutationAssessorService mutationService,
+                                MutationAssessorRepository mutationAssessorRepository)
     {
         this.variantAnnotationService = variantAnnotationService;
         this.variantAnnotationRepository = variantAnnotationRepository;
@@ -80,6 +82,8 @@ public class AnnotationController
         this.hotspotService = hotspotService;
         this.hotspotRepository = hotspotRepository;
         this.geneXrefServiceImpl = geneXrefServiceImpl;
+        this.mutationAssessorService = mutationService;
+        this.mutationAssessorRepository = mutationAssessorRepository;
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
@@ -104,11 +108,10 @@ public class AnnotationController
             required = false)
         String isoformOverrideSource,
         @RequestParam(required = false)
-        @ApiParam(value="Indicates whether to include cancer hotspots information. " +
-                        "Valid options are: summary, and full. " +
-                        "Any other value will be ignored.",
-            required = false)
-        String cancerHotspots)
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+        List<String> fields)
+
 	{
 		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
 
@@ -127,13 +130,15 @@ public class AnnotationController
             postEnrichmentService.registerEnricher(isoformOverrideSource, enricher);
         }
 
-        // ignore any other value than "full" or "summary"
-        if (cancerHotspots != null &&
-            (cancerHotspots.equalsIgnoreCase("full") || cancerHotspots.equalsIgnoreCase("summary")))
+        if (fields != null && fields.contains("hotspots"))
         {
-            AnnotationEnricher enricher = new HotspotAnnotationEnricher(
-                hotspotService, cancerHotspots.equalsIgnoreCase("full"));
+            AnnotationEnricher enricher = new HotspotAnnotationEnricher(hotspotService, true);
             postEnrichmentService.registerEnricher("cancerHotspots", enricher);
+        }
+        if (fields != null && fields.contains("mutation_assessor"))
+        {
+            AnnotationEnricher enricher = new MutationAssessorAnnotationEnricher(mutationAssessorService);
+            postEnrichmentService.registerEnricher("mutation_assessor", enricher);
         }
 
 		for (String variant: variants)
@@ -166,13 +171,12 @@ public class AnnotationController
             required = false)
         String isoformOverrideSource,
         @RequestParam(required = false)
-        @ApiParam(value="Indicates whether to include cancer hotspots information. " +
-                        "Valid options are: summary, and full. " +
-                        "Any other value will be ignored.",
-            required = false)
-        String cancerHotspots)
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+            List<String> fields)
     {
-       return getVariantAnnotation(variants, isoformOverrideSource, cancerHotspots);
+
+        return getVariantAnnotation(variants, isoformOverrideSource, fields);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotation for the provided list of variants",
@@ -193,7 +197,7 @@ public class AnnotationController
             allowMultiple = true)
         List<String> variants)
     {
-        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null, null);
+        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null, new ArrayList<String>());
         List<Hotspot> hotspots = new ArrayList<>();
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)
@@ -223,6 +227,73 @@ public class AnnotationController
         List<String> variants)
     {
         return getHotspotAnnotation(variants);
+    }
+
+    @ApiOperation(value = "Retrieves mutation assessor information for the provided list of variants",
+        nickname = "getMutationAssessorAnnotation")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = MutationAssessor.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/mutation_assessor/{variants:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<MutationAssessor> getMutationAssessorAnnotation(
+        @PathVariable
+        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
+            required = true,
+            allowMultiple = true)
+            List<String> variants)
+    {
+        List<MutationAssessor> mutationAssessors = new ArrayList<>();
+
+        // uses enrichment to get mutation assessor object
+        List<String> fields = new ArrayList<>();
+        fields.add("mutation_assessor");
+
+        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null, fields);
+
+        for (VariantAnnotation variantAnnotation : variantAnnotations)
+        {
+            // gets mutation assessor annotation object from variant annotation map
+            Map<String, Object> map = variantAnnotation.getDynamicProps();
+            MutationAssessorAnnotation mutationAssessorAnnotation
+                = (MutationAssessorAnnotation) map.get("mutation_assessor");
+
+            if (mutationAssessorAnnotation != null)
+            {
+                MutationAssessor obj = mutationAssessorAnnotation.getAnnotation();
+                if (obj != null && obj.getMappingIssue().length() == 0)
+                {
+                    mutationAssessors.add(obj);
+                }
+            }
+        }
+
+        return mutationAssessors;
+    }
+
+    @ApiOperation(value = "Retrieves mutation assessor information for the provided list of variants",
+        nickname = "postMutationAssessorAnnotation")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success",
+            response = MutationAssessor.class,
+            responseContainer = "List"),
+        @ApiResponse(code = 400, message = "Bad Request")
+    })
+    @RequestMapping(value = "/mutation_assessor",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<MutationAssessor> postMutationAssessorAnnotation(
+        @RequestBody
+        @ApiParam(value="List of variants. For example [\"7:g.140453136A>T\",\"12:g.25398285C>A\"]",
+            required = true,
+            allowMultiple = true)
+        List<String> variants)
+    {
+        return getMutationAssessorAnnotation(variants);
     }
 
     @ApiOperation(value = "Gets the isoform override information for the specified source " +
@@ -344,14 +415,16 @@ public class AnnotationController
 
     private List<Hotspot> getHotspotAnnotation(TranscriptConsequence transcript)
     {
-        //String transcriptId = transcript.getTranscriptId();
-        //Hotspot hotspot = hotspotRepository.findOne(transcriptId);
 
+        // String transcriptId = transcript.getTranscriptId();
+        // Hotspot hotspot = hotspotRepository.findOne(transcriptId);
+
+        // hotspotService.setHotspotsURL("http://cancerhotspots.org/api/hotspots/single/");
         // get the hotspot(s) from the web service
         List<Hotspot> hotspots = hotspotService.getHotspots(transcript);
 
         // do not cache anything for now
-        //hotspotRepository.save(hotspots);
+        // hotspotRepository.save(hotspots);
 
         return hotspots;
     }
@@ -396,7 +469,7 @@ public class AnnotationController
                 variantAnnotation = variantAnnotationRepository.mapAnnotationJson(variant, annotationJSON);
 
                 // save everything to the cache as a properly parsed JSON
-                
+
                 try {
                     variantAnnotationRepository.saveAnnotationJson(variant, annotationJSON);
                 }
@@ -421,4 +494,5 @@ public class AnnotationController
 
         return variantAnnotation;
     }
+
 }
