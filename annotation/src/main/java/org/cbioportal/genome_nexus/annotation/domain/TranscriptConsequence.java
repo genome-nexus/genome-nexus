@@ -61,6 +61,10 @@ public class TranscriptConsequence
     private String aminoAcids;
     private String hgncId;
     private String canonical;
+    private String polyphenScore;
+    private String polyphenPrediction;
+    private String siftScore;
+    private String siftPrediction;
 
     private List<String> refseqTranscriptIds;
     private List<String> consequenceTerms;
@@ -130,6 +134,46 @@ public class TranscriptConsequence
     {
         this.variantAllele = variantAllele;
     }
+
+    @Field(value="polyphen_score")
+    @JsonProperty(value="polyphen_score", required = true)
+    @ApiModelProperty(value = "Polyphen Score", required = false)
+    public String getPolyphenScore()
+    {
+        return polyphenScore;
+    }
+
+    public void setPolyphenScore(String polyphenScore) { this.polyphenScore = polyphenScore; }
+
+    @Field(value="polyphen_prediction")
+    @JsonProperty(value="polyphen_prediction", required = true)
+    @ApiModelProperty(value = "Polyphen Prediction", required = false)
+    public String getPolyphenPrediction()
+    {
+        return polyphenPrediction;
+    }
+
+    public void setPolyphenPrediction(String polyphenPrediction) { this.polyphenPrediction = polyphenPrediction; }
+
+    @Field(value="sift_score")
+    @JsonProperty(value="sift_score", required = true)
+    @ApiModelProperty(value = "Sift Score", required = false)
+    public String getSiftScore()
+    {
+        return siftScore;
+    }
+
+    public void setSiftScore(String siftScore) { this.siftScore = siftScore; }
+
+    @Field(value="sift_prediction")
+    @JsonProperty(value="sift_prediction", required = true)
+    @ApiModelProperty(value = "Sift Prediction", required = false)
+    public String getSiftPrediction()
+    {
+        return siftPrediction;
+    }
+
+    public void setSiftPrediction(String siftPrediction) { this.siftPrediction = siftPrediction; }
 
     @Field(value="codons")
     @JsonProperty(value="codons", required = true)
