@@ -15,6 +15,9 @@ mutationAssessor.url=http://mutationassessor.org/r3/?cm=var&var=VARIANT&frm=json
 # Comma separated list of isoform_overrides_resource:overrides_filename pairs.
 vep.isoform.overrides=uniprot:isoform_overrides_uniprot.txt,mskcc:isoform_overrides_at_mskcc.txt
 
+# Ensemble biomart PFAM filename
+ensembl.biomart.pfam=ensembl_biomart_pfam.txt
+
 # MongoDB URI in the form of mongodb://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DB>
 spring.data.mongodb.uri=mongodb://127.0.0.1:27017/annotator
 
