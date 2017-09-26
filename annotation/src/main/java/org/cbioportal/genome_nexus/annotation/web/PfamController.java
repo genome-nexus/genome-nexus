@@ -147,7 +147,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves PFAM domains by PFAM domain IDs",
         nickname = "fetchPfamDomainsByPfamIdsPOST")
-    @RequestMapping(value = "/pfam/domain/pfam",
+    @RequestMapping(value = "/pfam/domain/id",
         method = RequestMethod.POST,
         produces = "application/json")
     public List<PfamDomain> fetchPfamDomainsByPfamIdsPOST(
@@ -168,7 +168,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves PFAM domains by a PFAM domain ID",
         nickname = "fetchPfamDomainsByPfamIdGET")
-    @RequestMapping(value = "/pfam/domain/pfam/{pfamDomainId}",
+    @RequestMapping(value = "/pfam/domain/id/{pfamDomainId}",
         method = RequestMethod.GET,
         produces = "application/json")
     public List<PfamDomain> fetchPfamDomainsByPfamIdGET(

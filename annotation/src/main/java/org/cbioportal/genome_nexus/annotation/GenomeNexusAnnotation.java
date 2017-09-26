@@ -47,6 +47,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -57,6 +58,7 @@ import java.util.HashSet;
 @EnableSwagger2 // enable swagger2 documentation
 public class GenomeNexusAnnotation extends SpringBootServletInitializer
 {
+
     public static void main(String[] args)
     {
         SpringApplication.run(GenomeNexusAnnotation.class, args);
@@ -102,4 +104,5 @@ public class GenomeNexusAnnotation extends SpringBootServletInitializer
             .version("2.0")
             .build();
     }
+
 }

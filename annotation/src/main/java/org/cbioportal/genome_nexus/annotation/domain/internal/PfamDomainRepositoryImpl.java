@@ -37,8 +37,8 @@ public class PfamDomainRepositoryImpl implements PfamDomainRepository
 
     @Autowired
     public PfamDomainRepositoryImpl(
-        @Value("${ensembl.biomart.pfam}") String biomartResourceURI,
-        @Value("${pfam.pfamA}") String pfamAResourceURI)
+        @Value("${ensembl.biomart.pfam:ensembl_biomart_pfam.txt}") String biomartResourceURI,
+        @Value("${pfam.pfamA:pfamA.txt}") String pfamAResourceURI)
     {
         this.biomartResourceURI = biomartResourceURI;
         this.pfamAResourceURI = pfamAResourceURI;

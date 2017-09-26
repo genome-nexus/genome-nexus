@@ -7,3 +7,7 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 application.properties
+*.iml
+.idea/
+*.ipr
+*.iws
