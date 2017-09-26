@@ -25,3 +25,17 @@ for interpreting variants and patients.
 mvn clean install
 java -jar annotation/target/annotation-*.war
 ```
+
+## Data Download
+
+### Ensemble Biomart
+
+Ensembl Biomart file is required by the PFAM endpoint. In order to download this file
+follow these steps:
+
+1. Go to the [Biomart](www.ensembl.org/biomart/martview) page on the Ensemble website.
+2. Select `Ensemble Genes` from the `Database` dropdown menu.
+3. Select `Human Genes` from the `Dataset` dropdown menu.
+4. Click on `Attributes`, and select these ones:
+Gene stable ID, Transcript stable Id, Protein stable Id, Gene name, Pfam domain ID, Pfam domain start, Pfam domain end.
+5. Click on `Results`, and export all results to a `TSV` file.
