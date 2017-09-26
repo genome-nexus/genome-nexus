@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/cBioPortal/genome-nexus.svg?branch=master)](https://travis-ci.org/cBioPortal/genome-nexus)
+[![Build Status](https://travis-ci.org/genome-nexus/genome-nexus.svg?branch=master)](https://travis-ci.org/genome-nexus/genome-nexus)
 [![codecov](https://codecov.io/gh/cBioPortal/genome-nexus/branch/master/graph/badge.svg)](https://codecov.io/gh/cBioPortal/genome-nexus)
 [![codebeat badge](https://codebeat.co/badges/44bc0446-8b33-411d-bc33-f96ef66cb895)](https://codebeat.co/projects/github-com-cbioportal-genome-nexus-master)
 
