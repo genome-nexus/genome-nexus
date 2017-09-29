@@ -46,6 +46,12 @@ public class PfamDomain
     @ApiModelProperty(value = "PFAM domain end")
     private String getPfamDomainEnd;
 
+    @ApiModelProperty(value = "PFAM domain name")
+    private String pfamDomainName;
+
+    @ApiModelProperty(value = "PFAM domain description")
+    private String pfamDomainDescription;
+
     public String getGeneId() {
         return geneId;
     }
@@ -100,5 +106,21 @@ public class PfamDomain
 
     public void setGetPfamDomainEnd(String getPfamDomainEnd) {
         this.getPfamDomainEnd = getPfamDomainEnd;
+    }
+
+    public String getPfamDomainName() {
+        return pfamDomainName;
+    }
+
+    public void setPfamDomainName(String pfamDomainName) {
+        this.pfamDomainName = pfamDomainName;
+    }
+
+    public String getPfamDomainDescription() {
+        return pfamDomainDescription;
+    }
+
+    public void setPfamDomainDescription(String pfamDomainDescription) {
+        this.pfamDomainDescription = pfamDomainDescription;
     }
 }

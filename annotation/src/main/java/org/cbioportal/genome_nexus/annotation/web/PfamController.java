@@ -30,7 +30,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves all PFAM domains",
         nickname = "fetchAllPfamDomainsGET")
-    @RequestMapping(value = "/pfam/allDomains",
+    @RequestMapping(value = "/pfam/domain",
         method = RequestMethod.GET,
         produces = "application/json")
     public List<PfamDomain> fetchAllPfamDomainsGET()
@@ -40,7 +40,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves PFAM domains by Ensembl transcript IDs",
         nickname = "fetchPfamDomainsByTranscriptIdsPOST")
-    @RequestMapping(value = "/pfam/byTranscript",
+    @RequestMapping(value = "/pfam/domain/transcript",
         method = RequestMethod.POST,
         produces = "application/json")
     public List<PfamDomain> fetchPfamDomainsByTranscriptIdsPOST(
@@ -61,7 +61,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves PFAM domains by an Ensembl transcript ID",
         nickname = "fetchPfamDomainsByTranscriptIdGET")
-    @RequestMapping(value = "/pfam/byTranscript/{transcriptId}",
+    @RequestMapping(value = "/pfam/domain/transcript/{transcriptId}",
         method = RequestMethod.GET,
         produces = "application/json")
     public List<PfamDomain> fetchPfamDomainsByTranscriptIdsGET(
@@ -75,7 +75,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves PFAM domains by Ensembl protein IDs",
         nickname = "fetchPfamDomainsByProteinIdsPOST")
-    @RequestMapping(value = "/pfam/byProtein",
+    @RequestMapping(value = "/pfam/domain/protein",
         method = RequestMethod.POST,
         produces = "application/json")
     public List<PfamDomain> fetchPfamDomainsByProteinIdsPOST(
@@ -96,7 +96,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves PFAM domains by an Ensembl protein ID",
         nickname = "fetchPfamDomainsByProteinIdGET")
-    @RequestMapping(value = "/pfam/byProtein/{proteinId}",
+    @RequestMapping(value = "/pfam/domain/protein/{proteinId}",
         method = RequestMethod.GET,
         produces = "application/json")
     public List<PfamDomain> fetchPfamDomainsByProteinIdGET(
@@ -110,7 +110,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves PFAM domains by Ensembl gene IDs",
         nickname = "fetchPfamDomainsByGeneIdsPOST")
-    @RequestMapping(value = "/pfam/byGene",
+    @RequestMapping(value = "/pfam/domain/gene",
         method = RequestMethod.POST,
         produces = "application/json")
     public List<PfamDomain> fetchPfamDomainsByGeneIdsPOST(
@@ -131,7 +131,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves PFAM domains by an Ensembl gene ID",
         nickname = "fetchPfamDomainsByGeneIdGET")
-    @RequestMapping(value = "/pfam/byGene/{geneId}",
+    @RequestMapping(value = "/pfam/domain/gene/{geneId}",
         method = RequestMethod.GET,
         produces = "application/json")
     public List<PfamDomain> fetchPfamDomainsByGeneIdGET(
@@ -145,7 +145,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves PFAM domains by PFAM domain IDs",
         nickname = "fetchPfamDomainsByPfamIdsPOST")
-    @RequestMapping(value = "/pfam/byPfamDomain",
+    @RequestMapping(value = "/pfam/domain/pfam",
         method = RequestMethod.POST,
         produces = "application/json")
     public List<PfamDomain> fetchPfamDomainsByPfamIdsPOST(
@@ -166,7 +166,7 @@ public class PfamController
 
     @ApiOperation(value = "Retrieves PFAM domains by a PFAM domain ID",
         nickname = "fetchPfamDomainsByPfamIdGET")
-    @RequestMapping(value = "/pfam/byPfamDomain/{pfamDomainId}",
+    @RequestMapping(value = "/pfam/domain/pfam/{pfamDomainId}",
         method = RequestMethod.GET,
         produces = "application/json")
     public List<PfamDomain> fetchPfamDomainsByPfamIdGET(

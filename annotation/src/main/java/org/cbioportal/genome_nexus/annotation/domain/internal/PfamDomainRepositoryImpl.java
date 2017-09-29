@@ -3,6 +3,7 @@ package org.cbioportal.genome_nexus.annotation.domain.internal;
 import com.univocity.parsers.common.processor.BeanListProcessor;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import org.cbioportal.genome_nexus.annotation.domain.PfamA;
 import org.cbioportal.genome_nexus.annotation.domain.PfamDomain;
 import org.cbioportal.genome_nexus.annotation.domain.PfamDomainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +24,24 @@ import java.util.*;
 @Component("defaultPfamDomainRepository")
 public class PfamDomainRepositoryImpl implements PfamDomainRepository
 {
-    private String resourceURI;
+    private String biomartResourceURI;
+    private String pfamAResourceURI;
 
     private List<PfamDomain> pfamDomainList;
+    private List<PfamA> pfamAList;
+
     private Map<String, List<PfamDomain>> indexByTranscript;
     private Map<String, List<PfamDomain>> indexByProtein;
     private Map<String, List<PfamDomain>> indexByGene;
     private Map<String, List<PfamDomain>> indexByPfam;
 
     @Autowired
-    public PfamDomainRepositoryImpl(@Value("${ensembl.biomart.pfam}") String resourceURI)
+    public PfamDomainRepositoryImpl(
+        @Value("${ensembl.biomart.pfam}") String biomartResourceURI,
+        @Value("${pfam.pfamA}") String pfamAResourceURI)
     {
-        this.resourceURI = resourceURI;
+        this.biomartResourceURI = biomartResourceURI;
+        this.pfamAResourceURI = pfamAResourceURI;
 
         // populate the list and build the indices
         this.populateData();
@@ -65,7 +72,7 @@ public class PfamDomainRepositoryImpl implements PfamDomainRepository
         return this.find(this.indexByPfam, pfamDomainId);
     }
 
-    private List<PfamDomain> parseTSV()
+    private List<PfamDomain> parsePfamDomainTSV()
     {
         BeanListProcessor<PfamDomain> rowProcessor = new BeanListProcessor<>(PfamDomain.class);
 
@@ -75,7 +82,23 @@ public class PfamDomainRepositoryImpl implements PfamDomainRepository
         parserSettings.setRowProcessor(rowProcessor);
 
         CsvParser parser = new CsvParser(parserSettings);
-        parser.parse(getReader(this.resourceURI));
+        parser.parse(getReader(this.biomartResourceURI));
+
+        return rowProcessor.getBeans();
+    }
+
+    private List<PfamA> parsePfamATSV()
+    {
+        BeanListProcessor<PfamA> rowProcessor = new BeanListProcessor<>(PfamA.class);
+
+        CsvParserSettings parserSettings = new CsvParserSettings();
+        parserSettings.setHeaderExtractionEnabled(true);
+        parserSettings.getFormat().setDelimiter('\t');
+        parserSettings.setMaxCharsPerColumn(8192);
+        parserSettings.setRowProcessor(rowProcessor);
+
+        CsvParser parser = new CsvParser(parserSettings);
+        parser.parse(getReader(this.pfamAResourceURI));
 
         return rowProcessor.getBeans();
     }
@@ -116,13 +139,47 @@ public class PfamDomainRepositoryImpl implements PfamDomainRepository
         if (this.pfamDomainList == null)
         {
             this.pfamDomainList = new ArrayList<>();
-            this.pfamDomainList.addAll(this.parseTSV());
+            this.pfamDomainList.addAll(this.parsePfamDomainTSV());
+
+            this.pfamAList = new ArrayList<>();
+            this.pfamAList.addAll(this.parsePfamATSV());
+
+            this.addNameAndDescription(pfamDomainList, pfamAList);
+            // TODO add color
 
             this.indexByTranscript = this.index(pfamDomainList, new TranscriptIndexKeyGetter());
             this.indexByProtein = this.index(pfamDomainList, new ProteinIndexKeyGetter());
             this.indexByGene = this.index(pfamDomainList, new GeneIndexKeyGetter());
             this.indexByPfam = this.index(pfamDomainList, new PfamIndexKeyGetter());
         }
+    }
+
+    private void addNameAndDescription(List<PfamDomain> pfamDomainList, List<PfamA> pfamAList)
+    {
+        Map<String, PfamA> indexByAcc = this.indexByAccession(pfamAList);
+
+        for (PfamDomain domain : pfamDomainList)
+        {
+            PfamA pfamA = indexByAcc.get(domain.getPfamDomainId());
+
+            if (pfamA != null)
+            {
+                domain.setPfamDomainName(pfamA.getPfamId());
+                domain.setPfamDomainDescription(pfamA.getPfamDescription());
+            }
+        }
+    }
+
+    private Map<String, PfamA> indexByAccession(List<PfamA> pfamAList)
+    {
+        Map<String, PfamA> map = new HashMap<>();
+
+        for (PfamA pfamA : pfamAList)
+        {
+            map.put(pfamA.getPfamAccession(), pfamA);
+        }
+
+        return map;
     }
 
     private Map<String, List<PfamDomain>> index(List<PfamDomain> pfamDomainList, IndexKeyGetter getter)
