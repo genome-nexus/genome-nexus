@@ -33,17 +33,23 @@
 package org.cbioportal.genome_nexus.annotation;
 
 
+import org.cbioportal.genome_nexus.annotation.web.config.InternalApi;
+import org.cbioportal.genome_nexus.annotation.web.config.PublicApi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import springfox.documentation.builders.PathSelectors;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * @author Benjamin Gross
@@ -58,18 +64,30 @@ public class GenomeNexusAnnotation extends SpringBootServletInitializer
     }
 
     @Bean
-    public Docket annotationApi() {
+    public Docket publicApi() {
         // default swagger definition file location: <root>/v2/api-docs?group=variant_annotation
         // default swagger UI location: <root>/swagger-ui.html
         return new Docket(DocumentationType.SWAGGER_2)
-            .groupName("variant_annotation")
-            .apiInfo(annotationApiInfo())
             .select()
-            .paths(PathSelectors.regex("/.*"))
-            .build();
+            .apis(RequestHandlerSelectors.withClassAnnotation(PublicApi.class))
+            .build()
+            .useDefaultResponseMessages(false)
+            .protocols(new HashSet<>(Arrays.asList("http", "https")))
+            .apiInfo(apiInfo());
     }
 
-    private ApiInfo annotationApiInfo() {
+    @Bean
+    public Docket internalApi() {
+        return new Docket(DocumentationType.SWAGGER_2).groupName("internal")
+            .select()
+            .apis(RequestHandlerSelectors.withClassAnnotation(InternalApi.class))
+            .build()
+            .useDefaultResponseMessages(false)
+            .protocols(new HashSet<>(Arrays.asList("http", "https")))
+            .apiInfo(apiInfo());
+    }
+
+    private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             .title("Genome Nexus API")
             .description("Genome Nexus Variant Annotation API")

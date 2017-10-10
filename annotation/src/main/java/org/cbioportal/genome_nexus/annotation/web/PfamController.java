@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.annotation.domain.PfamDomain;
 import org.cbioportal.genome_nexus.annotation.service.PfamDomainService;
+import org.cbioportal.genome_nexus.annotation.web.config.PublicApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.List;
 /**
  * @author Selcuk Onur Sumer
  */
+@PublicApi
 @RestController // shorthand for @Controller, @ResponseBody
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")

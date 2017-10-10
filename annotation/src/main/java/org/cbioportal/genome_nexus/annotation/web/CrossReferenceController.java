@@ -3,11 +3,13 @@ package org.cbioportal.genome_nexus.annotation.web;
 import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.annotation.domain.GeneXref;
 import org.cbioportal.genome_nexus.annotation.service.GeneXrefService;
+import org.cbioportal.genome_nexus.annotation.web.config.PublicApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@PublicApi
 @RestController // shorthand for @Controller, @ResponseBody
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")
