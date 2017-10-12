@@ -8,7 +8,6 @@ import org.cbioportal.genome_nexus.annotation.domain.MutationAssessorAnnotation;
 import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 import org.cbioportal.genome_nexus.annotation.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.EnrichmentService;
-import org.cbioportal.genome_nexus.annotation.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.annotation.service.internal.MutationAssessorAnnotationEnricher;
 import org.cbioportal.genome_nexus.annotation.service.internal.MutationAssessorService;
 import org.cbioportal.genome_nexus.annotation.service.internal.VEPEnrichmentService;
@@ -25,16 +24,16 @@ import java.util.Map;
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")
 @Api(tags = "mutation-assessor-controller", description = "Mutation Assessor Controller")
-public class MutationAssessorController {
-
+public class MutationAssessorController
+{
+    private final VariantAnnotator variantAnnotator;
     private final MutationAssessorService mutationAssessorService;
-    private final VariantAnnotationService variantAnnotationService;
 
     @Autowired
-    public MutationAssessorController(VariantAnnotationService variantAnnotationService,
+    public MutationAssessorController(VariantAnnotator variantAnnotator,
                                       MutationAssessorService mutationAssessorService)
     {
-        this.variantAnnotationService = variantAnnotationService;
+        this.variantAnnotator = variantAnnotator;
         this.mutationAssessorService = mutationAssessorService;
     }
 
@@ -137,13 +136,13 @@ public class MutationAssessorController {
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService();
 
-        return Annotator.getVariantAnnotations(variants, variantAnnotationService, postEnrichmentService);
+        return this.variantAnnotator.getVariantAnnotations(variants, postEnrichmentService);
     }
 
     private VariantAnnotation getVariantAnnotation(String variant)
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService();
 
-        return Annotator.getVariantAnnotation(variant, variantAnnotationService, postEnrichmentService);
+        return this.variantAnnotator.getVariantAnnotation(variant, postEnrichmentService);
     }
 }

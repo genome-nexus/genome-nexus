@@ -44,6 +44,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Benjamin Gross
@@ -59,13 +60,16 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
 
     private final EnrichmentService enrichmentService;
     private final VariantAnnotationRepository variantAnnotationRepository;
+    private final ExternalResourceTransformer externalResourceTransformer;
 
     @Autowired
     public VEPVariantAnnotationService(EnrichmentService enrichmentService,
-                                       VariantAnnotationRepository variantAnnotationRepository)
+        VariantAnnotationRepository variantAnnotationRepository,
+        ExternalResourceTransformer externalResourceTransformer)
     {
         this.enrichmentService = enrichmentService;
         this.variantAnnotationRepository = variantAnnotationRepository;
+        this.externalResourceTransformer = externalResourceTransformer;
     }
 
     public VariantAnnotation getAnnotation(String variant)
@@ -86,7 +90,7 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
                 // construct a VariantAnnotation instance to return:
                 // this does not contain all the information obtained from the web service
                 // only the fields mapped to the VariantAnnotation model will be returned
-                variantAnnotation = variantAnnotationRepository.mapAnnotationJson(variant, annotationJSON);
+                variantAnnotation = this.mapAnnotationJson(variant, annotationJSON);
 
                 // save everything to the cache as a properly parsed JSON
 
@@ -113,6 +117,31 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
         }
 
         return variantAnnotation;
+    }
+
+    /**
+     * Maps the given raw annotation JSON string onto a VariantAnnotation instance.
+     *
+     * @param variant           variant key
+     * @param annotationJSON    raw annotation JSON string
+     * @return a VariantAnnotation instance
+     * @throws IOException
+     */
+    private VariantAnnotation mapAnnotationJson(String variant, String annotationJSON) throws IOException
+    {
+        // map annotation string onto VariantAnnotation instance
+        List<VariantAnnotation> list = this.externalResourceTransformer.transform(
+            annotationJSON, VariantAnnotation.class);
+
+        // assuming annotationJSON contains only a single variant.
+        // get the first one, ignore the rest...
+        VariantAnnotation vepVariantAnnotation = list.get(0);
+
+        // include original variant value too
+        vepVariantAnnotation.setVariant(variant);
+        //vepVariantAnnotation.setAnnotationJSON(annotationJSON);
+
+        return vepVariantAnnotation;
     }
 
     private String getRawAnnotation(String variant)

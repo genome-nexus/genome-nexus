@@ -34,10 +34,11 @@ package org.cbioportal.genome_nexus.annotation.service.internal;
 
 import org.cbioportal.genome_nexus.annotation.domain.GeneXref;
 import org.cbioportal.genome_nexus.annotation.service.GeneXrefService;
-import org.cbioportal.genome_nexus.annotation.util.Transformer;
 
 import java.io.IOException;
 import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -48,24 +49,32 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class GeneXrefServiceImpl implements GeneXrefService {
-    
+
     private String geneXrefsURL;
     @Value("${genexrefs.url}")
     public void setGeneXrefsURL(String geneXrefsURL) { this.geneXrefsURL = geneXrefsURL; }
-    
+
+    private final ExternalResourceTransformer externalResourceTransformer;
+
+    @Autowired
+    public GeneXrefServiceImpl(ExternalResourceTransformer externalResourceTransformer)
+    {
+        this.externalResourceTransformer = externalResourceTransformer;
+    }
+
     @Override
     public List<GeneXref> getGeneXrefs(String accession) {
         String xrefJSON = getGeneXrefsJSON(accession);
         List<GeneXref> geneXrefs = new ArrayList<>();
         try {
-            geneXrefs = Transformer.mapJsonToInstance(xrefJSON, GeneXref.class);
+            geneXrefs = this.externalResourceTransformer.transform(xrefJSON, GeneXref.class);
         }
         catch (IOException e) {
-            e.printStackTrace();            
+            e.printStackTrace();
         }
         return geneXrefs;
-    }    
-    
+    }
+
     @Override
     public String getGeneXrefsJSON(String accession) {
         String uri = geneXrefsURL.replace("ACCESSION", accession);

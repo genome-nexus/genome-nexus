@@ -32,8 +32,6 @@
 
 package org.cbioportal.genome_nexus.annotation.domain;
 
-import com.fasterxml.jackson.annotation.*;
-import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.LinkedHashMap;
@@ -43,8 +41,6 @@ import java.util.Map;
 /**
  * @author Selcuk Onur Sumer
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TranscriptConsequence
 {
     private String transcriptId;
@@ -69,7 +65,6 @@ public class TranscriptConsequence
     private List<String> refseqTranscriptIds;
     private List<String> consequenceTerms;
 
-    @JsonIgnore
     private Map<String, Object> dynamicProps;
 
     public TranscriptConsequence()
@@ -84,8 +79,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="transcript_id")
-    @JsonProperty(value="transcript_id", required = true)
-    @ApiModelProperty(value = "Ensembl transcript id", required = true)
     public String getTranscriptId()
     {
         return transcriptId;
@@ -97,8 +90,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="hgvsp")
-    @JsonProperty(value="hgvsp", required = true)
-    @ApiModelProperty(value = "HGVSp", required = false)
     public String getHgvsp()
     {
         return hgvsp;
@@ -110,8 +101,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="hgvsc")
-    @JsonProperty(value="hgvsc", required = true)
-    @ApiModelProperty(value = "HGVSc", required = false)
     public String getHgvsc()
     {
         return hgvsc;
@@ -123,8 +112,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="variant_allele")
-    @JsonProperty(value="variant_allele", required = true)
-    @ApiModelProperty(value = "Variant allele", required = false)
     public String getVariantAllele()
     {
         return variantAllele;
@@ -136,8 +123,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="polyphen_score")
-    @JsonProperty(value="polyphen_score", required = true)
-    @ApiModelProperty(value = "Polyphen Score", required = false)
     public String getPolyphenScore()
     {
         return polyphenScore;
@@ -146,8 +131,6 @@ public class TranscriptConsequence
     public void setPolyphenScore(String polyphenScore) { this.polyphenScore = polyphenScore; }
 
     @Field(value="polyphen_prediction")
-    @JsonProperty(value="polyphen_prediction", required = true)
-    @ApiModelProperty(value = "Polyphen Prediction", required = false)
     public String getPolyphenPrediction()
     {
         return polyphenPrediction;
@@ -156,8 +139,6 @@ public class TranscriptConsequence
     public void setPolyphenPrediction(String polyphenPrediction) { this.polyphenPrediction = polyphenPrediction; }
 
     @Field(value="sift_score")
-    @JsonProperty(value="sift_score", required = true)
-    @ApiModelProperty(value = "Sift Score", required = false)
     public String getSiftScore()
     {
         return siftScore;
@@ -166,8 +147,6 @@ public class TranscriptConsequence
     public void setSiftScore(String siftScore) { this.siftScore = siftScore; }
 
     @Field(value="sift_prediction")
-    @JsonProperty(value="sift_prediction", required = true)
-    @ApiModelProperty(value = "Sift Prediction", required = false)
     public String getSiftPrediction()
     {
         return siftPrediction;
@@ -176,8 +155,6 @@ public class TranscriptConsequence
     public void setSiftPrediction(String siftPrediction) { this.siftPrediction = siftPrediction; }
 
     @Field(value="codons")
-    @JsonProperty(value="codons", required = true)
-    @ApiModelProperty(value = "Codons", required = false)
     public String getCodons()
     {
         return codons;
@@ -189,8 +166,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="protein_id")
-    @JsonProperty(value="protein_id", required = true)
-    @ApiModelProperty(value = "Ensembl protein id", required = false)
     public String getProteinId()
     {
         return proteinId;
@@ -202,8 +177,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="protein_start")
-    @JsonProperty(value="protein_start", required = true)
-    @ApiModelProperty(value = "Protein start position", required = false)
     public String getProteinStart()
     {
         return proteinStart;
@@ -215,8 +188,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="protein_end")
-    @JsonProperty(value="protein_end", required = true)
-    @ApiModelProperty(value = "Protein end position", required = false)
     public String getProteinEnd()
     {
         return proteinEnd;
@@ -228,8 +199,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="gene_symbol")
-    @JsonProperty(value="gene_symbol", required = true)
-    @ApiModelProperty(value = "Hugo gene symbol", required = false)
     public String getGeneSymbol()
     {
         return geneSymbol;
@@ -241,8 +210,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="gene_id")
-    @JsonProperty(value="gene_id", required = true)
-    @ApiModelProperty(value = "Ensembl gene id", required = false)
     public String getGeneId()
     {
         return geneId;
@@ -254,8 +221,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="amino_acids")
-    @JsonProperty(value="amino_acids", required = true)
-    @ApiModelProperty(value = "Amino acids", required = false)
     public String getAminoAcids()
     {
         return aminoAcids;
@@ -267,8 +232,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="hgnc_id")
-    @JsonProperty(value="hgnc_id", required = true)
-    @ApiModelProperty(value = "HGNC id", required = false)
     public String getHgncId()
     {
         return hgncId;
@@ -280,8 +243,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="canonical")
-    @JsonProperty(value="canonical", required = true)
-    @ApiModelProperty(value = "Canonical transcript indicator", required = false)
     public String getCanonical()
     {
         return canonical;
@@ -293,8 +254,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="refseq_transcript_ids")
-    @JsonProperty(value="refseq_transcript_ids", required = true)
-    @ApiModelProperty(value = "List of RefSeq transcript ids", required = false)
     public List<String> getRefseqTranscriptIds()
     {
         return refseqTranscriptIds;
@@ -306,8 +265,6 @@ public class TranscriptConsequence
     }
 
     @Field(value="consequence_terms")
-    @JsonProperty(value="consequence_terms", required = true)
-    @ApiModelProperty(value = "List of consequence terms", required = false)
     public List<String> getConsequenceTerms()
     {
         return consequenceTerms;
@@ -322,13 +279,11 @@ public class TranscriptConsequence
     // anything added into the dynamic props map will be returned as an additional
     // json property
 
-    @JsonAnySetter
     public void setDynamicProp(String key, Object value)
     {
         this.dynamicProps.put(key, value);
     }
 
-    @JsonAnyGetter
     public Map<String, Object> getDynamicProps()
     {
         return this.dynamicProps;

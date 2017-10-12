@@ -7,7 +7,6 @@ import org.cbioportal.genome_nexus.annotation.domain.Hotspot;
 import org.cbioportal.genome_nexus.annotation.domain.TranscriptConsequence;
 import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
 import org.cbioportal.genome_nexus.annotation.service.HotspotService;
-import org.cbioportal.genome_nexus.annotation.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.annotation.web.config.InternalApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,16 +19,16 @@ import java.util.List;
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")
 @Api(tags = "cancer-hotspots-controller", description = "Cancer Hotspots Controller")
-public class CancerHotspotsController {
-
+public class CancerHotspotsController
+{
+    private final VariantAnnotator variantAnnotator;
     private final HotspotService hotspotService;
-    private final VariantAnnotationService variantAnnotationService;
 
     @Autowired
-    public CancerHotspotsController(VariantAnnotationService variantAnnotationService,
+    public CancerHotspotsController(VariantAnnotator variantAnnotator,
                                     HotspotService hotspotService)
     {
-        this.variantAnnotationService = variantAnnotationService;
+        this.variantAnnotator = variantAnnotator;
         this.hotspotService = hotspotService;
     }
 
@@ -63,7 +62,7 @@ public class CancerHotspotsController {
 
     private List<Hotspot> getHotspotAnnotations(String variant)
     {
-        VariantAnnotation variantAnnotation = variantAnnotationService.getAnnotation(variant);
+        VariantAnnotation variantAnnotation = this.variantAnnotator.getVariantAnnotation(variant);
         List<Hotspot> hotspots = new ArrayList<>();
 
         if (variantAnnotation != null &&
@@ -80,7 +79,8 @@ public class CancerHotspotsController {
 
     private List<Hotspot> getHotspotAnnotations(List<String> variants)
     {
-        List<VariantAnnotation> variantAnnotations = Annotator.getVariantAnnotations(variants, variantAnnotationService);
+        List<VariantAnnotation> variantAnnotations = this.variantAnnotator.getVariantAnnotations(variants);
+
         List<Hotspot> hotspots = new ArrayList<>();
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)

@@ -53,7 +53,7 @@ import org.apache.commons.logging.*;
 @RequestMapping(value= "/")
 public class AnnotationController
 {
-    private final VariantAnnotationService variantAnnotationService;
+    private final VariantAnnotator variantAnnotator;
     private final IsoformOverrideService isoformOverrideService;
     private final HotspotService hotspotService;
     private final MutationAssessorService mutationAssessorService;
@@ -61,12 +61,12 @@ public class AnnotationController
     private static final Log LOG = LogFactory.getLog(AnnotationController.class);
 
     @Autowired
-    public AnnotationController(VariantAnnotationService variantAnnotationService,
+    public AnnotationController(VariantAnnotator variantAnnotator,
                                 IsoformOverrideService isoformOverrideService,
                                 HotspotService hotspotService,
                                 MutationAssessorService mutationService)
     {
-        this.variantAnnotationService = variantAnnotationService;
+        this.variantAnnotator = variantAnnotator;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
         this.mutationAssessorService = mutationService;
@@ -142,7 +142,7 @@ public class AnnotationController
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
 
-        return Annotator.getVariantAnnotations(variants, variantAnnotationService, postEnrichmentService);
+        return this.variantAnnotator.getVariantAnnotations(variants, postEnrichmentService);
 	}
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided variant",
@@ -163,7 +163,7 @@ public class AnnotationController
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
 
-        return Annotator.getVariantAnnotation(variant, variantAnnotationService, postEnrichmentService);
+        return this.variantAnnotator.getVariantAnnotation(variant, postEnrichmentService);
     }
 
     private EnrichmentService initPostEnrichmentService(String isoformOverrideSource, List<String> fields)

@@ -36,7 +36,7 @@ import org.cbioportal.genome_nexus.annotation.domain.Hotspot;
 import org.cbioportal.genome_nexus.annotation.domain.TranscriptConsequence;
 import org.cbioportal.genome_nexus.annotation.service.HotspotService;
 import org.cbioportal.genome_nexus.annotation.util.Numerical;
-import org.cbioportal.genome_nexus.annotation.util.Transformer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -57,6 +57,14 @@ public class CancerHotspotService implements HotspotService
     private String hotspotsURL;
     @Value("${hotspots.url}")
     public void setHotspotsURL(String hotspotsURL) { this.hotspotsURL = hotspotsURL; }
+
+    private final ExternalResourceTransformer externalResourceTransformer;
+
+    @Autowired
+    public CancerHotspotService(ExternalResourceTransformer externalResourceTransformer)
+    {
+        this.externalResourceTransformer = externalResourceTransformer;
+    }
 
     @Override
     public List<Hotspot> getHotspots(String transcriptId)
@@ -107,7 +115,7 @@ public class CancerHotspotService implements HotspotService
     {
         try
         {
-            return Transformer.mapJsonToInstance(getHotspotsJSON(null), Hotspot.class);
+            return this.externalResourceTransformer.transform(getHotspotsJSON(null), Hotspot.class);
         }
         catch (IOException e)
         {

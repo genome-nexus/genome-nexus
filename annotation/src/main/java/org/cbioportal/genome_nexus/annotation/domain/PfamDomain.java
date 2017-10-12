@@ -1,55 +1,43 @@
 package org.cbioportal.genome_nexus.annotation.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.univocity.parsers.annotations.Parsed;
 import com.univocity.parsers.annotations.Trim;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @author Selcuk Onur Sumer
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PfamDomain
 {
     @Trim
     @Parsed(field = "Gene stable ID")
-    @ApiModelProperty(value = "Ensembl gene id", required = true)
     private String geneId;
 
     @Trim
     @Parsed(field = "Transcript stable ID")
-    @ApiModelProperty(value = "Ensembl transcript id", required = true)
     private String transcriptId;
 
     @Trim
     @Parsed(field = "Protein stable ID")
-    @ApiModelProperty(value = "Ensembl translation id", required = true)
     private String proteinId;
 
     @Trim
     @Parsed(field = "Gene name")
-    @ApiModelProperty(value = "Hugo gene symbol")
     private String geneSymbol;
 
     @Trim
     @Parsed(field = "Pfam domain ID")
-    @ApiModelProperty(value = "PFAM domain id")
     private String pfamDomainId;
 
     @Trim
     @Parsed(field = "Pfam domain start")
-    @ApiModelProperty(value = "PFAM domain start")
     private String pfamDomainStart;
 
     @Trim
     @Parsed(field = "Pfam domain end")
-    @ApiModelProperty(value = "PFAM domain end")
     private String getPfamDomainEnd;
 
-    @ApiModelProperty(value = "PFAM domain name")
     private String pfamDomainName;
 
-    @ApiModelProperty(value = "PFAM domain description")
     private String pfamDomainDescription;
 
     public String getGeneId() {

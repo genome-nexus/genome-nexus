@@ -32,15 +32,10 @@
 
 package org.cbioportal.genome_nexus.annotation.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "hotspots")
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Hotspot
 {
     // TODO transcriptId is not a unique identifier, we may need a composite id...
@@ -54,7 +49,6 @@ public class Hotspot
     private String proteinEnd;
     private String geneId;
 
-    @ApiModelProperty(value = "Transcript id", required = true)
     public String getTranscriptId()
     {
         return transcriptId;
@@ -65,7 +59,6 @@ public class Hotspot
         this.transcriptId = transcriptId;
     }
 
-    @ApiModelProperty(value = "Protein start position", required = false)
     public String getProteinStart()
     {
         return proteinStart;
@@ -76,7 +69,6 @@ public class Hotspot
         this.proteinStart = proteinStart;
     }
 
-    @ApiModelProperty(value = "Protein end position", required = false)
     public String getProteinEnd()
     {
         return proteinEnd;
@@ -87,7 +79,6 @@ public class Hotspot
         this.proteinEnd = proteinEnd;
     }
 
-    @ApiModelProperty(value = "Ensembl gene id", required = false)
     public String getGeneId()
     {
         return geneId;
@@ -98,7 +89,6 @@ public class Hotspot
         this.geneId = geneId;
     }
 
-    @ApiModelProperty(value = "Hugo gene symbol", required = false)
     public String getHugoSymbol()
     {
         return hugoSymbol;
@@ -109,7 +99,6 @@ public class Hotspot
         this.hugoSymbol = hugoSymbol;
     }
 
-    @ApiModelProperty(value = "Hotspot Residue", required = false)
     public String getResidue()
     {
         return residue;

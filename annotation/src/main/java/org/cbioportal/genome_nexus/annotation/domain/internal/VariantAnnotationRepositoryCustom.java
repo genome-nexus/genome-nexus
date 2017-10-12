@@ -32,10 +32,6 @@
 
 package org.cbioportal.genome_nexus.annotation.domain.internal;
 
-import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
-
-import java.io.IOException;
-
 /**
  * @author Selcuk Onur Sumer
  */
@@ -48,14 +44,4 @@ public interface VariantAnnotationRepositoryCustom
      * @param annotationJSON    raw annotation JSON (obtained from the service)
      */
     void saveAnnotationJson(String variant, String annotationJSON);
-
-    /**
-     * Maps the given raw annotation JSON string onto a VariantAnnotation instance.
-     *
-     * @param variant           variant key
-     * @param annotationJSON    raw annotation JSON string
-     * @return a VariantAnnotation instance
-     * @throws IOException
-     */
-    VariantAnnotation mapAnnotationJson(String variant, String annotationJSON) throws IOException;
 }
