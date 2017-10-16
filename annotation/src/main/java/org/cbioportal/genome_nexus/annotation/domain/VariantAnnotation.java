@@ -32,10 +32,7 @@
 
 package org.cbioportal.genome_nexus.annotation.domain;
 
-import com.fasterxml.jackson.annotation.*;
-import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.LinkedHashMap;
@@ -46,9 +43,6 @@ import java.util.Map;
  * @author Benjamin Gross
  * @author Selcuk Onur Sumer
  */
-@Document(collection = "vep.annotation")
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VariantAnnotation
 {
     @Id
@@ -65,7 +59,6 @@ public class VariantAnnotation
     private String mostSevereConsequence;
     private List<TranscriptConsequence> transcriptConsequences;
 
-    @JsonIgnore
     private Map<String, Object> dynamicProps;
 
     public VariantAnnotation()
@@ -85,8 +78,6 @@ public class VariantAnnotation
         this.dynamicProps = new LinkedHashMap<>();
     }
 
-    @JsonProperty(required = true)
-    @ApiModelProperty(value = "Variant key", required = true)
     public String getVariant()
     {
         return variant;
@@ -97,8 +88,6 @@ public class VariantAnnotation
         this.variant = variant;
     }
 
-    @JsonProperty(required = true)
-    @ApiModelProperty(value = "Annotation data as JSON string", required = true)
     public String getAnnotationJSON()
     {
         return annotationJSON;
@@ -110,8 +99,6 @@ public class VariantAnnotation
     }
 
     @Field(value="id")
-    @JsonProperty(value="id", required = true)
-    @ApiModelProperty(value = "Variant id", required = true)
     public String getVariantId()
     {
         return variantId;
@@ -123,8 +110,6 @@ public class VariantAnnotation
     }
 
     @Field(value="assembly_name")
-    @JsonProperty(value="assembly_name", required = true)
-    @ApiModelProperty(value = "NCBI build number", required = false)
     public String getAssemblyName()
     {
         return assemblyName;
@@ -136,8 +121,6 @@ public class VariantAnnotation
     }
 
     @Field(value="seq_region_name")
-    @JsonProperty(value="seq_region_name", required = true)
-    @ApiModelProperty(value = "Chromosome", required = false)
     public String getSeqRegionName()
     {
         return seqRegionName;
@@ -149,8 +132,6 @@ public class VariantAnnotation
     }
 
     @Field(value="start")
-    @JsonProperty(value="start", required = true)
-    @ApiModelProperty(value = "Start position", required = false)
     public Integer getStart()
     {
         return start;
@@ -162,8 +143,6 @@ public class VariantAnnotation
     }
 
     @Field(value="end")
-    @JsonProperty(value="end", required = true)
-    @ApiModelProperty(value = "End position", required = false)
     public Integer getEnd()
     {
         return end;
@@ -175,8 +154,6 @@ public class VariantAnnotation
     }
 
     @Field(value="allele_string")
-    @JsonProperty(value="allele_string", required = true)
-    @ApiModelProperty(value = "Allele string (e.g: A/T)", required = false)
     public String getAlleleString()
     {
         return alleleString;
@@ -188,8 +165,6 @@ public class VariantAnnotation
     }
 
     @Field(value="strand")
-    @JsonProperty(value="strand", required = true)
-    @ApiModelProperty(value = "Strand (negative or positive)", required = false)
     public Integer getStrand()
     {
         return strand;
@@ -201,8 +176,6 @@ public class VariantAnnotation
     }
 
     @Field(value="most_severe_consequence")
-    @JsonProperty(value="most_severe_consequence", required = true)
-    @ApiModelProperty(value = "Most severe consequence", required = false)
     public String getMostSevereConsequence()
     {
         return mostSevereConsequence;
@@ -214,8 +187,6 @@ public class VariantAnnotation
     }
 
     @Field(value="transcript_consequences")
-    @JsonProperty(value="transcript_consequences", required = true)
-    @ApiModelProperty(value = "List of transcripts", required = false)
     public List<TranscriptConsequence> getTranscriptConsequences()
     {
         return transcriptConsequences;
@@ -232,13 +203,11 @@ public class VariantAnnotation
         return annotationJSON;
     }
 
-    @JsonAnySetter
     public void setDynamicProp(String key, Object value)
     {
         this.dynamicProps.put(key, value);
     }
 
-    @JsonAnyGetter
     public Map<String, Object> getDynamicProps()
     {
         return this.dynamicProps;

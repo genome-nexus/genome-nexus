@@ -72,21 +72,33 @@ public class Transformer
         return dbObjects;
     }
 
+    public static <T> List<T> mapJsonToInstance(String jsonString, Class<T> type) throws IOException
+    {
+        return mapJsonToInstance(jsonString, type, null);
+    }
+
     /**
      * Maps the given raw JSON string onto the provided class instance.
      *
      * @param jsonString    raw JSON string
+     * @param type          object class
+     * @param objectMapper  custom object mapper
      * @return a list of instances of the provided class
      * @throws IOException
      */
-    public static <T> List<T> mapJsonToInstance(String jsonString, Class<T> type) throws IOException
+    public static <T> List<T> mapJsonToInstance(String jsonString, Class<T> type, ObjectMapper objectMapper) throws IOException
     {
         List<T> list = new ArrayList<>();
+        ObjectMapper mapper = objectMapper;
+
+        if (mapper == null)
+        {
+            mapper = new ObjectMapper();
+        }
 
         for (DBObject dbObject: convertToDbObject(jsonString))
         {
             String toMap = JSON.serialize(dbObject);
-            ObjectMapper mapper = new ObjectMapper();
 
             // map json string onto the given class type
             list.add(mapper.readValue(toMap, type));

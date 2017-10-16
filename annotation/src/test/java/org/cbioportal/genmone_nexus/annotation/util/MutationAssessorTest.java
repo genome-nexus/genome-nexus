@@ -1,8 +1,9 @@
 package org.cbioportal.genmone_nexus.annotation.util;
 
 import org.cbioportal.genome_nexus.annotation.domain.MutationAssessor;
+import org.cbioportal.genome_nexus.annotation.service.config.ExternalResourceObjectMapper;
+import org.cbioportal.genome_nexus.annotation.service.internal.ExternalResourceTransformer;
 import org.cbioportal.genome_nexus.annotation.service.internal.MutationAssessorService;
-import org.cbioportal.genome_nexus.annotation.util.Transformer;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -25,13 +26,14 @@ public class MutationAssessorTest
     @Test
     public void testStringInputs() throws IOException
     {
-        MutationAssessorService service = new MutationAssessorService();
+        ExternalResourceTransformer transformer = new ExternalResourceTransformer(new ExternalResourceObjectMapper());
+        MutationAssessorService service = new MutationAssessorService(transformer);
         service.setMutationAssessorURL(url);
 
         String urlString1 = url.replace("VARIANT", "7,140453136,A,T");
         MutationAssessor mutationObj1 = service.getMutationAssessor("7,140453136,A,T", "7:g.140453136A>T");
-        MutationAssessor mutationObj2 =
-            Transformer.mapJsonToInstance(getReturnString(urlString1), MutationAssessor.class).get(0);
+        MutationAssessor mutationObj2 = transformer.transform(
+            getReturnString(urlString1), MutationAssessor.class).get(0);
 
         // getVariant() not tested because variants set manually
         assertEquals(mutationObj1.getHugoSymbol(), mutationObj2.getHugoSymbol());
@@ -41,8 +43,8 @@ public class MutationAssessorTest
 
         String urlString2 = url.replace("VARIANT", "12,25398285,C,A");
         MutationAssessor mutationObj21 = service.getMutationAssessor("12,25398285,C,A", "12:g.25398285C>A");
-        MutationAssessor mutationObj22 =
-            Transformer.mapJsonToInstance(getReturnString(urlString2), MutationAssessor.class).get(0);
+        MutationAssessor mutationObj22 = transformer.transform(
+            getReturnString(urlString2), MutationAssessor.class).get(0);
 
         assertEquals(mutationObj21.getHugoSymbol(), mutationObj22.getHugoSymbol());
         assertEquals(mutationObj21.getFunctionalImpact(), mutationObj22.getFunctionalImpact());
@@ -53,13 +55,14 @@ public class MutationAssessorTest
     @Test
     public void testJunk() throws IOException
     {
-        MutationAssessorService service = new MutationAssessorService();
+        ExternalResourceTransformer transformer = new ExternalResourceTransformer(new ExternalResourceObjectMapper());
+        MutationAssessorService service = new MutationAssessorService(transformer);
         service.setMutationAssessorURL(url);
 
         String urlString = url.replace("VARIANT", "junkInput");
         MutationAssessor mutationObj1 = service.getMutationAssessor("junkInput", "junkInput");
-        MutationAssessor mutationObj2 =
-            Transformer.mapJsonToInstance(getReturnString(urlString), MutationAssessor.class).get(0);
+        MutationAssessor mutationObj2 = transformer.transform(
+            getReturnString(urlString), MutationAssessor.class).get(0);
 
         // getVariant() not tested because variants set manually
         assertEquals(mutationObj1.getHugoSymbol(), mutationObj2.getHugoSymbol());

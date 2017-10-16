@@ -37,66 +37,49 @@ import org.cbioportal.genome_nexus.annotation.domain.*;
 import org.cbioportal.genome_nexus.annotation.service.internal.*;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
+import org.cbioportal.genome_nexus.annotation.web.config.PublicApi;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.dao.DataIntegrityViolationException;
 
-import java.io.IOException;
 import java.util.*;
 import org.apache.commons.logging.*;
-import sun.misc.Request;
 
 /**
  * @author Benjamin Gross
  */
+@PublicApi
 @RestController // shorthand for @Controller, @ResponseBody
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")
 public class AnnotationController
 {
-    private final VariantAnnotationService variantAnnotationService;
-    private final VariantAnnotationRepository variantAnnotationRepository;
+    private final VariantAnnotator variantAnnotator;
     private final IsoformOverrideService isoformOverrideService;
     private final HotspotService hotspotService;
-    private final HotspotRepository hotspotRepository;
-    private final GeneXrefServiceImpl geneXrefServiceImpl;
     private final MutationAssessorService mutationAssessorService;
-    private final MutationAssessorRepository mutationAssessorRepository;
 
     private static final Log LOG = LogFactory.getLog(AnnotationController.class);
 
     @Autowired
-    public AnnotationController(VariantAnnotationService variantAnnotationService,
-                                VariantAnnotationRepository variantAnnotationRepository,
+    public AnnotationController(VariantAnnotator variantAnnotator,
                                 IsoformOverrideService isoformOverrideService,
                                 HotspotService hotspotService,
-                                HotspotRepository hotspotRepository,
-                                GeneXrefServiceImpl geneXrefServiceImpl,
-                                MutationAssessorService mutationService,
-                                MutationAssessorRepository mutationAssessorRepository)
+                                MutationAssessorService mutationService)
     {
-        this.variantAnnotationService = variantAnnotationService;
-        this.variantAnnotationRepository = variantAnnotationRepository;
+        this.variantAnnotator = variantAnnotator;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
-        this.hotspotRepository = hotspotRepository;
-        this.geneXrefServiceImpl = geneXrefServiceImpl;
         this.mutationAssessorService = mutationService;
-        this.mutationAssessorRepository = mutationAssessorRepository;
     }
 
+    // TODO remove this endpoint after all internal dependencies are resolved
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
+        hidden = true,
         nickname = "getVariantAnnotation")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Success",
-            response = VariantAnnotation.class,
-            responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request")
-    })
 	@RequestMapping(value = "/hgvs/{variants:.+}",
         method = RequestMethod.GET,
         produces = "application/json")
+    @Deprecated
 	public List<VariantAnnotation> getVariantAnnotation(
         @PathVariable
         @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
@@ -111,10 +94,80 @@ public class AnnotationController
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         List<String> fields)
+    {
+        return this.fetchVariantAnnotationPOST(variants, isoformOverrideSource, fields);
+    }
 
-	{
-		List<VariantAnnotation> variantAnnotations = new ArrayList<>();
+    // TODO remove this endpoint after all internal dependencies are resolved
+    @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
+        hidden = true,
+        nickname = "postVariantAnnotation")
+    @RequestMapping(value = "/hgvs",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    @Deprecated
+    public List<VariantAnnotation> postVariantAnnotation(
+        @RequestParam
+        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
+            required = true,
+            allowMultiple = true)
+            List<String> variants,
+        @RequestParam(required = false)
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+            String isoformOverrideSource,
+        @RequestParam(required = false)
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+            List<String> fields)
+    {
+        return fetchVariantAnnotationPOST(variants, isoformOverrideSource, fields);
+    }
 
+    @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
+        nickname = "fetchVariantAnnotationPOST")
+    @RequestMapping(value = "/annotation",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<VariantAnnotation> fetchVariantAnnotationPOST(
+        @ApiParam(value="List of variants. For example [\"X:g.66937331T>A\",\"17:g.41242962->GA\"]",
+            required = true)
+        @RequestBody List<String> variants,
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+        @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+        @RequestParam(required = false) List<String> fields)
+    {
+        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
+
+        return this.variantAnnotator.getVariantAnnotations(variants, postEnrichmentService);
+	}
+
+    @ApiOperation(value = "Retrieves VEP annotation for the provided variant",
+        nickname = "fetchVariantAnnotationGET")
+    @RequestMapping(value = "/annotation/{variant:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public VariantAnnotation fetchVariantAnnotationGET(
+        @ApiParam(value="Variant. For example 17:g.41242962->GA",
+            required = true)
+        @PathVariable String variant,
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+        @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+        @RequestParam(required = false) List<String> fields)
+    {
+        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
+
+        return this.variantAnnotator.getVariantAnnotation(variant, postEnrichmentService);
+    }
+
+    private EnrichmentService initPostEnrichmentService(String isoformOverrideSource, List<String> fields)
+    {
         // The post enrichment service enriches the annotation after saving
         // the original annotation data to the repository. Any enrichment
         // performed by the post enrichment service is not saved
@@ -141,358 +194,6 @@ public class AnnotationController
             postEnrichmentService.registerEnricher("mutation_assessor", enricher);
         }
 
-		for (String variant: variants)
-		{
-            VariantAnnotation annotation = getVariantAnnotation(variant);
-
-            if (annotation != null)
-            {
-                postEnrichmentService.enrichAnnotation(annotation);
-                variantAnnotations.add(annotation);
-            }
-		}
-
-		return variantAnnotations;
-	}
-
-    @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
-        nickname = "postVariantAnnotation")
-    @RequestMapping(value = "/hgvs",
-        method = RequestMethod.POST,
-        produces = "application/json")
-    public List<VariantAnnotation> postVariantAnnotation(
-        @RequestParam
-        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962->GA",
-            required = true,
-            allowMultiple = true)
-        List<String> variants,
-        @RequestParam(required = false)
-        @ApiParam(value="Isoform override source. For example uniprot",
-            required = false)
-        String isoformOverrideSource,
-        @RequestParam(required = false)
-        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
-            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
-            List<String> fields)
-    {
-
-        return getVariantAnnotation(variants, isoformOverrideSource, fields);
+        return postEnrichmentService;
     }
-
-    @ApiOperation(value = "Retrieves hotspot annotation for the provided list of variants",
-        nickname = "getHotspotAnnotation")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Success",
-            response = Hotspot.class,
-            responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request")
-    })
-    @RequestMapping(value = "/cancer_hotspots/{variants:.+}",
-        method = RequestMethod.GET,
-        produces = "application/json")
-    public List<Hotspot> getHotspotAnnotation(
-        @PathVariable
-        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
-            required = true,
-            allowMultiple = true)
-        List<String> variants)
-    {
-        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null, new ArrayList<String>());
-        List<Hotspot> hotspots = new ArrayList<>();
-
-        for (VariantAnnotation variantAnnotation : variantAnnotations)
-        {
-            if (variantAnnotation.getTranscriptConsequences() != null)
-            {
-                for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
-                {
-                    hotspots.addAll(getHotspotAnnotation(transcript));
-                }
-            }
-        }
-
-        return hotspots;
-    }
-
-    @ApiOperation(value = "Retrieves hotspot annotation for the provided list of variants",
-        nickname = "postHotspotAnnotation")
-    @RequestMapping(value = "/cancer_hotspots",
-        method = RequestMethod.POST,
-        produces = "application/json")
-    public List<Hotspot> postHotspotAnnotation(
-        @RequestParam
-        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
-            required = true,
-            allowMultiple = true)
-        List<String> variants)
-    {
-        return getHotspotAnnotation(variants);
-    }
-
-    @ApiOperation(value = "Retrieves mutation assessor information for the provided list of variants",
-        nickname = "getMutationAssessorAnnotation")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Success",
-            response = MutationAssessor.class,
-            responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request")
-    })
-    @RequestMapping(value = "/mutation_assessor/{variants:.+}",
-        method = RequestMethod.GET,
-        produces = "application/json")
-    public List<MutationAssessor> getMutationAssessorAnnotation(
-        @PathVariable
-        @ApiParam(value="Comma separated list of variants. For example 7:g.140453136A>T,12:g.25398285C>A",
-            required = true,
-            allowMultiple = true)
-            List<String> variants)
-    {
-        List<MutationAssessor> mutationAssessors = new ArrayList<>();
-
-        // uses enrichment to get mutation assessor object
-        List<String> fields = new ArrayList<>();
-        fields.add("mutation_assessor");
-
-        List<VariantAnnotation> variantAnnotations = getVariantAnnotation(variants, null, fields);
-
-        for (VariantAnnotation variantAnnotation : variantAnnotations)
-        {
-            // gets mutation assessor annotation object from variant annotation map
-            Map<String, Object> map = variantAnnotation.getDynamicProps();
-            MutationAssessorAnnotation mutationAssessorAnnotation
-                = (MutationAssessorAnnotation) map.get("mutation_assessor");
-
-            if (mutationAssessorAnnotation != null)
-            {
-                MutationAssessor obj = mutationAssessorAnnotation.getAnnotation();
-                if (obj != null && obj.getMappingIssue().length() == 0)
-                {
-                    mutationAssessors.add(obj);
-                }
-            }
-        }
-
-        return mutationAssessors;
-    }
-
-    @ApiOperation(value = "Retrieves mutation assessor information for the provided list of variants",
-        nickname = "postMutationAssessorAnnotation")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Success",
-            response = MutationAssessor.class,
-            responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request")
-    })
-    @RequestMapping(value = "/mutation_assessor",
-        method = RequestMethod.POST,
-        produces = "application/json")
-    public List<MutationAssessor> postMutationAssessorAnnotation(
-        @RequestBody
-        @ApiParam(value="List of variants. For example [\"7:g.140453136A>T\",\"12:g.25398285C>A\"]",
-            required = true,
-            allowMultiple = true)
-        List<String> variants)
-    {
-        return getMutationAssessorAnnotation(variants);
-    }
-
-    @ApiOperation(value = "Gets the isoform override information for the specified source " +
-                          "and the list of transcript ids",
-        nickname = "getIsoformOverride")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Success",
-            response = IsoformOverride.class,
-            responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request")
-    })
-    @RequestMapping(value = "/isoform_override/{source}/{transcriptIds:.+}",
-        method = RequestMethod.GET,
-        produces = "application/json")
-    public List<IsoformOverride> getIsoformOverride(
-        @PathVariable
-        @ApiParam(value="Override source. For example uniprot.",
-            required = true)
-        String source,
-        @PathVariable
-        @ApiParam(value="Comma separated list of transcript ids. For example ENST00000361125,ENST00000443649.",
-            required = true,
-            allowMultiple = true)
-        List<String> transcriptIds)
-    {
-        List<IsoformOverride> isoformOverrides = new ArrayList<>();
-
-        for (String id: transcriptIds)
-        {
-            IsoformOverride override = getIsoformOverride(source, id);
-
-            if (override != null)
-            {
-                isoformOverrides.add(override);
-            }
-        }
-
-        return isoformOverrides;
-    }
-
-    @ApiOperation(value = "Gets the isoform override information for the specified source " +
-                          "and the list of transcript ids",
-        nickname = "postIsoformOverride")
-    @RequestMapping(value = "/isoform_override",
-        method = RequestMethod.POST,
-        produces = "application/json")
-    public List<IsoformOverride> postIsoformOverride(
-        @RequestParam
-        @ApiParam(value="Override source. For example uniprot",
-            required = true)
-        String source,
-        @RequestParam(required = false)
-        @ApiParam(value="Comma separated list of transcript ids. For example ENST00000361125,ENST00000443649. " +
-                        "If no transcript id provided, all available isoform overrides returned.",
-            required = false,
-            allowMultiple = true)
-        List<String> transcriptIds)
-    {
-        if (transcriptIds != null)
-        {
-            return getIsoformOverride(source, transcriptIds);
-        }
-        else
-        {
-            return getIsoformOverride(source);
-        }
-    }
-
-    @ApiOperation(value = "Gets the isoform override information for the specified source",
-        nickname = "getAllIsoformOverrides")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Success",
-            response = IsoformOverride.class,
-            responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request")
-    })
-    @RequestMapping(value = "/isoform_override/{source}",
-        method = RequestMethod.GET,
-        produces = "application/json")
-    public List<IsoformOverride> getIsoformOverride(
-        @PathVariable
-        @ApiParam(value="Override source. For example uniprot",
-            required = true)
-        String source)
-    {
-        return isoformOverrideService.getIsoformOverrides(source);
-    }
-
-    @ApiOperation(value = "Gets a list of available isoform override data sources",
-        nickname = "getIsoformOverrideSources")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Success",
-            response = IsoformOverride.class,
-            responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request")
-    })
-    @RequestMapping(value = "/isoform_override/sources",
-        method = RequestMethod.GET,
-        produces = "application/json")
-    public List<String> getIsoformOverrideSources()
-    {
-        return isoformOverrideService.getOverrideSources();
-    }
-
-    @ApiOperation(value = "Gets a list of available isoform override data sources",
-        nickname = "postIsoformOverrideSources")
-    @RequestMapping(value = "/isoform_override/sources",
-        method = RequestMethod.POST,
-        produces = "application/json")
-    public List<String> postIsoformOverrideSources()
-    {
-        return getIsoformOverrideSources();
-    }
-
-    private IsoformOverride getIsoformOverride(String source, String transcriptId)
-    {
-        return isoformOverrideService.getIsoformOverride(source, transcriptId);
-    }
-
-    private List<Hotspot> getHotspotAnnotation(TranscriptConsequence transcript)
-    {
-
-        // String transcriptId = transcript.getTranscriptId();
-        // Hotspot hotspot = hotspotRepository.findOne(transcriptId);
-
-        // hotspotService.setHotspotsURL("http://cancerhotspots.org/api/hotspots/single/");
-        // get the hotspot(s) from the web service
-        List<Hotspot> hotspots = hotspotService.getHotspots(transcript);
-
-        // do not cache anything for now
-        // hotspotRepository.save(hotspots);
-
-        return hotspots;
-    }
-    
-    @ApiOperation(value = "Perform lookups of Ensembl identifiers and retrieve their external referenes in other databases", 
-            nickname = "getGeneXrefs")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Success",
-            response = GeneXref.class,
-            responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request")
-    })
-    @RequestMapping(value = "/xrefs/{accession}", 
-            method = RequestMethod.GET, 
-            produces = "application/json")
-    public List<GeneXref> getGeneXrefs(
-            @PathVariable
-            @ApiParam(value="Ensembl gene accession. For example ENSG00000169083",
-                required = true)
-            String accession) {
-        return geneXrefServiceImpl.getGeneXrefs(accession);
-    }
-
-    private VariantAnnotation getVariantAnnotation(String variant)
-    {
-        VariantAnnotation variantAnnotation = variantAnnotationRepository.findOne(variant);
-        String annotationJSON = null;
-
-        if (variantAnnotation == null) {
-
-            try {
-                // get the annotation from the web service and save it to the DB
-                //variantAnnotation = variantAnnotationService.getAnnotation(variant);
-                //variantAnnotationRepository.save(variantAnnotation);
-
-                // get the raw annotation string from the web service
-                annotationJSON = variantAnnotationService.getRawAnnotation(variant);
-
-                // construct a VariantAnnotation instance to return:
-                // this does not contain all the information obtained from the web service
-                // only the fields mapped to the VariantAnnotation model will be returned
-                variantAnnotation = variantAnnotationRepository.mapAnnotationJson(variant, annotationJSON);
-
-                // save everything to the cache as a properly parsed JSON
-
-                try {
-                    variantAnnotationRepository.saveAnnotationJson(variant, annotationJSON);
-                }
-                catch (DataIntegrityViolationException e) {
-                    // in case of data integrity violation exception, do not bloat the logs
-                    // this is thrown when the annotationJSON can't be stored by mongo
-                    // due to the variant annotation key being too large to index
-                    LOG.info(e.getLocalizedMessage());
-                }
-            }
-            catch (HttpClientErrorException e) {
-                // in case of web service error, do not terminate the whole process.
-                // just copy the response body (error message) for this variant
-                variantAnnotation = new VariantAnnotation(variant, e.getResponseBodyAsString());
-            }
-            catch (IOException e) {
-                // in case of parse error, do not terminate the whole process.
-                // just send the raw annotationJSON to the client
-                variantAnnotation = new VariantAnnotation(variant, annotationJSON);
-            }
-        }
-
-        return variantAnnotation;
-    }
-
 }

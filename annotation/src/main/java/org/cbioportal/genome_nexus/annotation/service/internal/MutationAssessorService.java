@@ -2,7 +2,7 @@ package org.cbioportal.genome_nexus.annotation.service.internal;
 
 import org.cbioportal.genome_nexus.annotation.domain.MutationAssessor;
 import org.cbioportal.genome_nexus.annotation.domain.VariantAnnotation;
-import org.cbioportal.genome_nexus.annotation.util.Transformer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,12 +12,19 @@ import java.util.List;
 @Service
 public class MutationAssessorService
 {
-
     private String mutationAssessorURL;
     @Value("${mutationAssessor.url}")
     public void setMutationAssessorURL(String mutationAssessorURL)
     {
         this.mutationAssessorURL = mutationAssessorURL;
+    }
+
+    private final ExternalResourceTransformer externalResourceTransformer;
+
+    @Autowired
+    public MutationAssessorService(ExternalResourceTransformer externalResourceTransformer)
+    {
+        this.externalResourceTransformer = externalResourceTransformer;
     }
 
     public MutationAssessor getMutationAssessor(VariantAnnotation annotation)
@@ -41,7 +48,8 @@ public class MutationAssessorService
         try
         {
             String jsonString = getMutationAssessorJSON(variant);
-            List<MutationAssessor> list = Transformer.mapJsonToInstance(jsonString, MutationAssessor.class);
+            List<MutationAssessor> list = this.externalResourceTransformer.transform(
+                jsonString, MutationAssessor.class);
 
             if (list.size() != 0)
             {
