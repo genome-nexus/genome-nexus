@@ -33,6 +33,7 @@
 package org.cbioportal.genome_nexus.annotation.domain;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.LinkedHashMap;
@@ -43,6 +44,7 @@ import java.util.Map;
  * @author Benjamin Gross
  * @author Selcuk Onur Sumer
  */
+@Document(collection = "vep.annotation")
 public class VariantAnnotation
 {
     @Id
