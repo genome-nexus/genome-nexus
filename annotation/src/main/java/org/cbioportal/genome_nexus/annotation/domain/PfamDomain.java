@@ -30,11 +30,11 @@ public class PfamDomain
 
     @Trim
     @Parsed(field = "Pfam domain start")
-    private String pfamDomainStart;
+    private Integer pfamDomainStart;
 
     @Trim
     @Parsed(field = "Pfam domain end")
-    private String getPfamDomainEnd;
+    private Integer pfamDomainEnd;
 
     private String pfamDomainName;
 
@@ -80,20 +80,20 @@ public class PfamDomain
         this.pfamDomainId = pfamDomainId;
     }
 
-    public String getPfamDomainStart() {
+    public Integer getPfamDomainStart() {
         return pfamDomainStart;
     }
 
-    public void setPfamDomainStart(String pfamDomainStart) {
+    public void setPfamDomainStart(Integer pfamDomainStart) {
         this.pfamDomainStart = pfamDomainStart;
     }
 
-    public String getGetPfamDomainEnd() {
-        return getPfamDomainEnd;
+    public Integer getPfamDomainEnd() {
+        return pfamDomainEnd;
     }
 
-    public void setGetPfamDomainEnd(String getPfamDomainEnd) {
-        this.getPfamDomainEnd = getPfamDomainEnd;
+    public void setPfamDomainEnd(Integer pfamDomainEnd) {
+        this.pfamDomainEnd = pfamDomainEnd;
     }
 
     public String getPfamDomainName() {

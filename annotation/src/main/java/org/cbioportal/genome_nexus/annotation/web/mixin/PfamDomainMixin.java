@@ -22,10 +22,10 @@ public class PfamDomainMixin
     private String pfamDomainId;
 
     @ApiModelProperty(value = "PFAM domain start")
-    private String pfamDomainStart;
+    private Integer pfamDomainStart;
 
     @ApiModelProperty(value = "PFAM domain end")
-    private String getPfamDomainEnd;
+    private Integer getPfamDomainEnd;
 
     @ApiModelProperty(value = "PFAM domain name")
     private String pfamDomainName;
