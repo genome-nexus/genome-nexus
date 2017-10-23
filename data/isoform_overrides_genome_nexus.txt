@@ -1,0 +1,2 @@
+enst_id	gene_name	protein_stable_id	gene_stable_id
+ENST00000573679	PTPRC	ENSP00000458322	ENSG00000262418

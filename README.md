@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/genome-nexus/genome-nexus.svg?branch=master)](https://travis-ci.org/genome-nexus/genome-nexus)
-[![codecov](https://codecov.io/gh/cBioPortal/genome-nexus/branch/master/graph/badge.svg)](https://codecov.io/gh/cBioPortal/genome-nexus)
-[![codebeat badge](https://codebeat.co/badges/44bc0446-8b33-411d-bc33-f96ef66cb895)](https://codebeat.co/projects/github-com-cbioportal-genome-nexus-master)
+[![codecov](https://codecov.io/gh/genome-nexus/genome-nexus/branch/master/graph/badge.svg)](https://codecov.io/gh/genome-nexus/genome-nexus)
+[![codebeat badge](https://codebeat.co/badges/d599b538-43e3-4828-8f27-820031393196)](https://codebeat.co/projects/github-com-genome-nexus-genome-nexus-master)
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
@@ -27,15 +27,4 @@ java -jar annotation/target/annotation-*.war
 ```
 
 ## Data Download
-
-### Ensemble Biomart
-
-Ensembl Biomart file is required by the PFAM endpoint. In order to download this file
-follow these steps:
-
-1. Go to the [Biomart](www.ensembl.org/biomart/martview) page on the Ensemble website.
-2. Select `Ensemble Genes` from the `Database` dropdown menu.
-3. Select `Human Genes` from the `Dataset` dropdown menu.
-4. Click on `Attributes`, and select these ones:
-Gene stable ID, Transcript stable Id, Protein stable Id, Gene name, Pfam domain ID, Pfam domain start, Pfam domain end.
-5. Click on `Results`, and export all results to a `TSV` file.
+If you need to update the included date files see [data/README.md](data/README.md)
