@@ -22,7 +22,7 @@ public class EnsemblTranscript
     private String proteinId;
 
     @Field(value="protein_length")
-    private String proteinLength;
+    private Integer proteinLength;
 
     public String getTranscriptId() {
         return transcriptId;
@@ -48,11 +48,11 @@ public class EnsemblTranscript
         this.proteinId = proteinId;
     }
 
-    public String getProteinLength() {
+    public Integer getProteinLength() {
         return proteinLength;
     }
 
-    public void setProteinLength(String proteinLength) {
+    public void setProteinLength(Integer proteinLength) {
         this.proteinLength = proteinLength;
     }
 }

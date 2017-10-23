@@ -15,5 +15,5 @@ public class EnsemblTranscriptMixin {
     private String proteinId;
 
     @ApiModelProperty(value = "Length of protein")
-    private String proteinLength;
+    private Integer proteinLength;
 }
