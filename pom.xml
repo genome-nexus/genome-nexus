@@ -2,15 +2,18 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cbioportal.genome_nexus</groupId>
-    <artifactId>master</artifactId>
+    <artifactId>genome-nexus</artifactId>
     <packaging>pom</packaging>
     <name>Genome Nexus Master</name>
     <version>0.1.0</version>
-    <description>master maven module</description>
+    <description>Genome Nexus Master Module</description>
     <url>https://github.com/cBioPortal/genome-nexus/</url>
 
     <modules>
-      <module>annotation</module>
+      <module>model</module>
+      <module>persistence</module>
+      <module>service</module>
+      <module>web</module>
     </modules>
 
     <!-- inherit defaults from spring boot -->
@@ -23,6 +26,14 @@
     <properties>
       <java.version>1.7</java.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
     <plugins>
