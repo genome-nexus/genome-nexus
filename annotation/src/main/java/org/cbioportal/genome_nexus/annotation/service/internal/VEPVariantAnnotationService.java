@@ -38,6 +38,7 @@ import org.cbioportal.genome_nexus.annotation.domain.*;
 import org.cbioportal.genome_nexus.annotation.service.*;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -74,9 +75,17 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
 
     public VariantAnnotation getAnnotation(String variant)
     {
-        VariantAnnotation variantAnnotation = variantAnnotationRepository.findOne(variant);
+        boolean saveAnnotationJson = true;
+        VariantAnnotation variantAnnotation = null;
         String annotationJSON = null;
-
+        try {
+            variantAnnotation = variantAnnotationRepository.findOne(variant);
+        }
+        catch (DataAccessResourceFailureException e) {
+            LOG.warn("Failed to read from Mongo database - falling back on Ensembl server. Will not attempt to store variant in Mongo database.");
+            saveAnnotationJson = false;
+        }
+        
         if (variantAnnotation == null) {
 
             try {
@@ -93,15 +102,8 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
                 variantAnnotation = this.mapAnnotationJson(variant, annotationJSON);
 
                 // save everything to the cache as a properly parsed JSON
-
-                try {
+                if (saveAnnotationJson) {
                     variantAnnotationRepository.saveAnnotationJson(variant, annotationJSON);
-                }
-                catch (DataIntegrityViolationException e) {
-                    // in case of data integrity violation exception, do not bloat the logs
-                    // this is thrown when the annotationJSON can't be stored by mongo
-                    // due to the variant annotation key being too large to index
-                    LOG.info(e.getLocalizedMessage());
                 }
             }
             catch (HttpClientErrorException e) {
@@ -113,6 +115,12 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
                 // in case of parse error, do not terminate the whole process.
                 // just send the raw annotationJSON to the client
                 variantAnnotation = new VariantAnnotation(variant, annotationJSON);
+            }
+            catch (DataIntegrityViolationException e) {
+                // in case of data integrity violation exception, do not bloat the logs
+                // this is thrown when the annotationJSON can't be stored by mongo
+                // due to the variant annotation key being too large to index
+                LOG.info(e.getLocalizedMessage());
             }
         }
 
