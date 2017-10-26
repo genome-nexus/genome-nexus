@@ -23,7 +23,7 @@ for interpreting variants and patients.
 ## Run
 ```
 mvn clean install
-java -jar annotation/target/annotation-*.war
+java -jar web/target/web-*.war
 ```
 
 ## Data Download

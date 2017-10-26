@@ -20,7 +20,7 @@ isoform_overrides_at_mskcc.txt:
 	curl '$(VCF2MAF_RAW_URL)/data/isoform_overrides_at_mskcc' | sed 's/^#//' | sed 's/dmp_refseq_id/refseq_id/' | sed 's/isoform_override/enst_id/g' > $@
 
 export: isoform_overrides_at_mskcc.txt isoform_overrides_uniprot.txt ensembl_biomart_canonical_transcripts_per_hgnc.txt ensembl_biomart_transcripts.txt
-	cp $^ ../annotation/src/main/resources/
+	cp $^ ../web/src/main/resources/
 
 all: ensembl_biomart_geneids_grch37.p13.transcript_info.txt ensembl_biomart_geneids_grch37.p13.transcript_info.txt ensembl_biomart_canonical_transcripts_per_hgnc.txt isoform_overrides_uniprot.txt isoform_overrides_at_mskcc.txt ensembl_biomart_transcripts.txt
 
