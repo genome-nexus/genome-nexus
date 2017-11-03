@@ -1,0 +1,77 @@
+package org.cbioportal.genome_nexus.web;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.cbioportal.genome_nexus.model.PdbHeader;
+import org.cbioportal.genome_nexus.service.PdbDataService;
+import org.cbioportal.genome_nexus.web.config.PublicApi;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * @author Selcuk Onur Sumer
+ */
+@PublicApi
+@RestController // shorthand for @Controller, @ResponseBody
+@CrossOrigin(origins="*") // allow all cross-domain requests
+@RequestMapping(value= "/")
+@Api(tags = "pdb-controller", description = "PDB Controller")
+public class PdbController
+{
+    private final PdbDataService pdbDataService;
+
+    @Autowired
+    public PdbController(PdbDataService pdbDataService)
+    {
+        this.pdbDataService = pdbDataService;
+    }
+
+    @ApiOperation(value = "Retrieves PDB header info by a PDB id",
+        nickname = "fetchPdbHeaderGET")
+    @RequestMapping(value = "pdb/header/{pdbId}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public PdbHeader fetchPdbHeaderGET(
+        @ApiParam(value = "PDB id, for example 1a37",
+            required = true,
+            allowMultiple = true)
+        @PathVariable String pdbId)
+    {
+        return pdbDataService.getPdbHeader(pdbId);
+    }
+
+    @ApiOperation(value = "Retrieves PDB header info by a PDB id",
+        nickname = "fetchPdbHeaderPOST")
+    @RequestMapping(value = "pdb/header",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<PdbHeader> fetchPdbHeaderPOST(
+        @ApiParam(value = "List of pdb ids, for example [\"1a37\",\"1a4o\"]",
+            required = true,
+            allowMultiple = true)
+        @RequestBody List<String> pdbIds)
+    {
+        List<PdbHeader> pdbHeaderList = new LinkedList<>();
+
+        // remove duplicates
+        Set<String> pdbIdSet = new LinkedHashSet<>(pdbIds);
+
+        for (String pdbId : pdbIdSet)
+        {
+            PdbHeader header = pdbDataService.getPdbHeader(pdbId);
+
+            if (header != null)
+            {
+                pdbHeaderList.add(header);
+            }
+        }
+
+        return pdbHeaderList;
+    }
+}

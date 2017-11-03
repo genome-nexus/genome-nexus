@@ -20,6 +20,7 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(IsoformOverride.class, IsoformOverrideMixin.class);
         mixinMap.put(MutationAssessor.class, MutationAssessorMixin.class);
         mixinMap.put(PfamDomain.class, PfamDomainMixin.class);
+        mixinMap.put(PdbHeader.class, PdbHeaderMixin.class);
         mixinMap.put(TranscriptConsequence.class, TranscriptConsequenceMixin.class);
         mixinMap.put(VariantAnnotation.class, VariantAnnotationMixin.class);
         mixinMap.put(EnsemblTranscript.class, EnsemblTranscriptMixin.class);
