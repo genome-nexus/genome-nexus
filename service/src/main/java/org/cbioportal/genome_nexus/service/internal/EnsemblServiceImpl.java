@@ -34,7 +34,7 @@ public class EnsemblServiceImpl implements EnsemblService
     }
 
     @Override
-    public EnsemblTranscript getEnsemblTranscriptsByHugoSymbol(String hugoSymbol, String isoformOverrideSource) {
+    public EnsemblTranscript getCanonicalEnsemblTranscriptsByHugoSymbol(String hugoSymbol, String isoformOverrideSource) {
         return this.ensemblRepository.findByHugoSymbol(hugoSymbol, isoformOverrideSource);
     }
 

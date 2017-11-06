@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 import org.cbioportal.genome_nexus.service.EnsemblService;
-import org.cbioportal.genome_nexus.web.config.InternalApi;
+import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")
 @Api(tags = "ensembl-controller", description = "Ensembl Controller")
-@InternalApi
+@PublicApi
 public class EnsemblController
 {
     private final EnsemblService ensemblService;
@@ -143,11 +143,11 @@ public class EnsemblController
     }
 
     @ApiOperation(value = "Retrieves Ensembl transcripts by Hugo Symbols",
-        nickname = "fetchEnsemblTranscriptsByHugoSymbolsPOST")
-    @RequestMapping(value = "/ensembl/transcript/hgnc",
+        nickname = "fetchCanonicalEnsemblTranscriptsByHugoSymbolsPOST")
+    @RequestMapping(value = "/ensembl/canonical-transcript/hgnc",
         method = RequestMethod.POST,
         produces = "application/json")
-    public List<EnsemblTranscript> fetchEnsemblTranscriptsByHugoSymbolPOST(
+    public List<EnsemblTranscript> fetchCanonicalEnsemblTranscriptsByHugoSymbolPOST(
         @ApiParam(value = "List of Hugo Symbols. For example [\"TP53\",\"PIK3CA\",\"BRCA1\"]",
             required = true,
             allowMultiple = true)
@@ -161,18 +161,18 @@ public class EnsemblController
         List<EnsemblTranscript> transcripts = new ArrayList<>();
         for (String hugoSymbol : hugoSymbols)
         {
-            transcripts.add(this.ensemblService.getEnsemblTranscriptsByHugoSymbol(hugoSymbol, isoformOverrideSource));
+            transcripts.add(this.ensemblService.getCanonicalEnsemblTranscriptsByHugoSymbol(hugoSymbol, isoformOverrideSource));
         }
 
         return transcripts;
     }
 
-    @ApiOperation(value = "Retrieves Ensembl transcripts by an Ensembl gene ID",
-        nickname = "fetchEnsemblTranscriptsByHugoSymbolGET")
-    @RequestMapping(value = "/ensembl/transcript/hgnc/{hugoSymbol}",
+    @ApiOperation(value = "Retrieves Ensembl transcripts by Hugo Symbols",
+        nickname = "fetchCanonicalEnsemblTranscriptsByHugoSymbolGET")
+    @RequestMapping(value = "/ensembl/canonical-transcript/hgnc/{hugoSymbol}",
         method = RequestMethod.GET,
         produces = "application/json")
-    public EnsemblTranscript fetchEnsemblTranscriptsByHugoSymbolGET(
+    public EnsemblTranscript fetchCanonicalEnsemblTranscriptsByHugoSymbolGET(
         @ApiParam(value = "A Hugo Symbol. For example TP53",
             required = true,
             allowMultiple = true)
@@ -183,7 +183,6 @@ public class EnsemblController
             required = false)
             String isoformOverrideSource)
     {
-        return this.ensemblService.getEnsemblTranscriptsByHugoSymbol(hugoSymbol, isoformOverrideSource);
+        return this.ensemblService.getCanonicalEnsemblTranscriptsByHugoSymbol(hugoSymbol, isoformOverrideSource);
     }
 }
-
