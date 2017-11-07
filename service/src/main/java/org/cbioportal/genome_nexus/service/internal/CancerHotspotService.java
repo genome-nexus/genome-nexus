@@ -35,15 +35,17 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.service.HotspotService;
+import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
 import org.cbioportal.genome_nexus.util.Numerical;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -67,7 +69,7 @@ public class CancerHotspotService implements HotspotService
     }
 
     @Override
-    public List<Hotspot> getHotspots(String transcriptId)
+    public List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException
     {
         // get it by using the specific API
 //        try
@@ -85,7 +87,7 @@ public class CancerHotspotService implements HotspotService
     }
 
     @Override
-    public List<Hotspot> getHotspots(TranscriptConsequence transcript)
+    public List<Hotspot> getHotspots(TranscriptConsequence transcript) throws CancerHotspotsWebServiceException
     {
         List<Hotspot> hotspots = new ArrayList<>();
 
@@ -111,16 +113,23 @@ public class CancerHotspotService implements HotspotService
     }
 
     @Override
-    public List<Hotspot> getHotspots()
+    public List<Hotspot> getHotspots() throws CancerHotspotsWebServiceException
     {
         try
         {
             return this.externalResourceTransformer.transform(getHotspotsJSON(null), Hotspot.class);
         }
-        catch (IOException e)
+        catch (JsonMappingException e)
         {
-            e.printStackTrace();
-            return Collections.emptyList();
+            throw new CancerHotspotsWebServiceException(e.getMessage());
+        }
+        catch (HttpClientErrorException e)
+        {
+            throw new CancerHotspotsWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
+        }
+        catch (ResourceAccessException e)
+        {
+            throw new CancerHotspotsWebServiceException(e.getMessage());
         }
     }
 
@@ -139,12 +148,12 @@ public class CancerHotspotService implements HotspotService
         return restTemplate.getForObject(uri, String.class);
     }
 
-    private List<Hotspot> getHotspotsFromCache(String transcriptId)
+    private List<Hotspot> getHotspotsFromCache(String transcriptId) throws CancerHotspotsWebServiceException
     {
         // if null: not initialized yet
         if (cache == null)
         {
-            List<Hotspot> hotspots = getHotspots();
+            List<Hotspot> hotspots = this.getHotspots();
 
             if (hotspots.size() > 0)
             {
@@ -152,12 +161,13 @@ public class CancerHotspotService implements HotspotService
             }
         }
 
+        List<Hotspot> hotspots = null;
+
         // still null: error at initialization
-        if (cache == null)
-        {
-            return Collections.emptyList();
+        if (cache != null) {
+            hotspots = cache.findByTranscriptId(transcriptId);
         }
 
-        return cache.findByTranscriptId(transcriptId);
+        return hotspots;
     }
 }

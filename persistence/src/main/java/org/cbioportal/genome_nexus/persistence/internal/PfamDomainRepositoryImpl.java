@@ -145,7 +145,6 @@ public class PfamDomainRepositoryImpl implements PfamDomainRepository
             this.pfamAList.addAll(this.parsePfamATSV());
 
             this.addNameAndDescription(pfamDomainList, pfamAList);
-            // TODO add color
 
             this.indexByTranscript = this.index(pfamDomainList, new TranscriptIndexKeyGetter());
             this.indexByProtein = this.index(pfamDomainList, new ProteinIndexKeyGetter());

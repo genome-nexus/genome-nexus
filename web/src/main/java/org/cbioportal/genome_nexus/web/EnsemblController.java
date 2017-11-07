@@ -159,9 +159,11 @@ public class EnsemblController
             String isoformOverrideSource)
     {
         List<EnsemblTranscript> transcripts = new ArrayList<>();
+
         for (String hugoSymbol : hugoSymbols)
         {
-            transcripts.add(this.ensemblService.getCanonicalEnsemblTranscriptsByHugoSymbol(hugoSymbol, isoformOverrideSource));
+            transcripts.add(this.ensemblService.getCanonicalEnsemblTranscriptsByHugoSymbol(
+                hugoSymbol, isoformOverrideSource));
         }
 
         return transcripts;

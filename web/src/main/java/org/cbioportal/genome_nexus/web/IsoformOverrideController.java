@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.IsoformOverride;
 import org.cbioportal.genome_nexus.service.IsoformOverrideService;
+import org.cbioportal.genome_nexus.service.exception.IsoformOverrideNotFoundException;
 import org.cbioportal.genome_nexus.web.config.InternalApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class IsoformOverrideController {
         @ApiParam(value="Transcript id. For example ENST00000361125.",
             required = true,
             allowMultiple = true)
-        @PathVariable String transcriptId)
+        @PathVariable String transcriptId) throws IsoformOverrideNotFoundException
     {
         return this.getIsoformOverride(source, transcriptId);
     }
@@ -70,7 +71,7 @@ public class IsoformOverrideController {
     public List<IsoformOverride> fetchAllIsoformOverridesGET(
         @ApiParam(value="Override source. For example uniprot",
             required = true)
-        @PathVariable String source)
+        @PathVariable String source) throws IsoformOverrideNotFoundException
     {
         return isoformOverrideService.getIsoformOverrides(source);
     }
@@ -86,6 +87,7 @@ public class IsoformOverrideController {
     }
 
     private IsoformOverride getIsoformOverride(String source, String transcriptId)
+        throws IsoformOverrideNotFoundException
     {
         return isoformOverrideService.getIsoformOverride(source, transcriptId);
     }
@@ -96,11 +98,10 @@ public class IsoformOverrideController {
 
         for (String id: transcriptIds)
         {
-            IsoformOverride override = getIsoformOverride(source, id);
-
-            if (override != null)
-            {
-                isoformOverrides.add(override);
+            try {
+                isoformOverrides.add(getIsoformOverride(source, id));
+            } catch (IsoformOverrideNotFoundException e) {
+                e.printStackTrace();
             }
         }
 

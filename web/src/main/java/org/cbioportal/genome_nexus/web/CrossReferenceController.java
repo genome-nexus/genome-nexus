@@ -3,6 +3,7 @@ package org.cbioportal.genome_nexus.web;
 import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.service.GeneXrefService;
+import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,16 +25,16 @@ public class CrossReferenceController
         this.geneXrefService = geneXrefService;
     }
 
-    @ApiOperation(value = "Perform lookups of Ensembl identifiers and retrieve their external referenes in other databases",
-        nickname = "getGeneXrefs")
+    @ApiOperation(value = "Perform lookups of Ensembl identifiers and retrieve their external references in other databases",
+        nickname = "fetchGeneXrefsGET")
     @RequestMapping(value = "/xrefs/{accession}",
         method = RequestMethod.GET,
         produces = "application/json")
-    public List<GeneXref> getGeneXrefs(
-        @PathVariable
+    public List<GeneXref> fetchGeneXrefsGET(
         @ApiParam(value="Ensembl gene accession. For example ENSG00000169083",
             required = true)
-            String accession) {
+        @PathVariable String accession) throws EnsemblWebServiceException
+    {
         return geneXrefService.getGeneXrefs(accession);
     }
 }

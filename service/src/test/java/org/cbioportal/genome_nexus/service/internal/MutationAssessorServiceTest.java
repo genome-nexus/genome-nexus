@@ -1,6 +1,9 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import org.cbioportal.genome_nexus.model.MutationAssessor;
+import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
+import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 import org.cbioportal.genome_nexus.service.remote.MutationAssessorDataFetcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +29,8 @@ public class MutationAssessorServiceTest
     private MutationAssessorDataFetcher fetcher;
 
     @Test
-    public void testStringInputs() throws IOException
+    public void getMutationAssessor()
+        throws JsonMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
         Map<String, List<MutationAssessor>> mockData = this.generateMockData();
 

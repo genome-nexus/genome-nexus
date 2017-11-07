@@ -5,6 +5,7 @@ import org.cbioportal.genome_nexus.model.IsoformOverride;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.IsoformOverrideService;
+import org.cbioportal.genome_nexus.service.exception.IsoformOverrideNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -55,7 +56,13 @@ public class IsoformAnnotationEnricher implements AnnotationEnricher
         // search override service for the transcripts
         for (TranscriptConsequence transcript: annotation.getTranscriptConsequences())
         {
-            IsoformOverride override = service.getIsoformOverride(source, transcript.getTranscriptId());
+            IsoformOverride override = null;
+
+            try {
+                override = service.getIsoformOverride(source, transcript.getTranscriptId());
+            } catch (IsoformOverrideNotFoundException e) {
+                // fail silently for this transcript
+            }
 
             // override the canonical field
             if (override != null && transcript.getGeneSymbol().equals(geneWithMostSevereConsequence))

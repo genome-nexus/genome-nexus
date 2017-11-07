@@ -6,6 +6,7 @@ import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.service.HotspotService;
+import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +39,10 @@ public class HotspotAnnotationEnricher implements AnnotationEnricher
 
             for (TranscriptConsequence transcript : annotation.getTranscriptConsequences())
             {
-                List<Hotspot> hotspots = hotspotService.getHotspots(transcript);
-                if (hotspots.size() > 0)
-                {
-                    hotspotsList.add(hotspots);
+                try {
+                    hotspotsList.add(hotspotService.getHotspots(transcript));
+                } catch (CancerHotspotsWebServiceException e) {
+                    e.printStackTrace();
                 }
             }
 

@@ -2,6 +2,9 @@ package org.cbioportal.genome_nexus.service;
 
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.service.config.ExternalResourceObjectMapper;
+import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
+import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 import org.cbioportal.genome_nexus.service.internal.ExternalResourceTransformer;
 import org.cbioportal.genome_nexus.service.internal.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.remote.MutationAssessorDataFetcher;
@@ -26,7 +29,8 @@ public class MutationAssessorTest
         "http://mutationassessor.org/r3/?cm=var&var=VARIANT&frm=json&fts=input,rgaa,rgvt,var,gene,F_impact,F_score,chr,rs_pos";
 
     //@Test
-    public void testStringInputs() throws IOException
+    public void testStringInputs()
+        throws IOException, JsonMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
         ExternalResourceTransformer transformer = new ExternalResourceTransformer(new ExternalResourceObjectMapper());
         MutationAssessorDataFetcher fetcher = new MutationAssessorDataFetcher(transformer);
@@ -56,7 +60,8 @@ public class MutationAssessorTest
     }
 
     //@Test
-    public void testJunk() throws IOException
+    public void testJunk()
+        throws IOException, JsonMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
         ExternalResourceTransformer transformer = new ExternalResourceTransformer(new ExternalResourceObjectMapper());
         MutationAssessorDataFetcher fetcher = new MutationAssessorDataFetcher(transformer);
