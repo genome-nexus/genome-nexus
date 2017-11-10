@@ -58,21 +58,6 @@ public class PdbController
             allowMultiple = true)
         @RequestBody List<String> pdbIds)
     {
-        List<PdbHeader> pdbHeaderList = new LinkedList<>();
-
-        // remove duplicates
-        Set<String> pdbIdSet = new LinkedHashSet<>(pdbIds);
-
-        for (String pdbId : pdbIdSet)
-        {
-            try {
-                PdbHeader header = pdbDataService.getPdbHeader(pdbId);
-                pdbHeaderList.add(header);
-            } catch (PdbHeaderNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return pdbHeaderList;
+        return this.pdbDataService.getPdbHeaders(pdbIds);
     }
 }

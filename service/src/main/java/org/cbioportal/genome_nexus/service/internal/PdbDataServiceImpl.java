@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Selcuk Onur Sumer
@@ -59,6 +59,27 @@ public class PdbDataServiceImpl implements PdbDataService
         }
 
         return info;
+    }
+
+    @Override
+    public List<PdbHeader> getPdbHeaders(List<String> pdbIds)
+    {
+        List<PdbHeader> pdbHeaderList = new LinkedList<>();
+
+        // remove duplicates
+        Set<String> pdbIdSet = new LinkedHashSet<>(pdbIds);
+
+        for (String pdbId : pdbIdSet)
+        {
+            try {
+                PdbHeader header = this.getPdbHeader(pdbId);
+                pdbHeaderList.add(header);
+            } catch (PdbHeaderNotFoundException e) {
+                // fail silently for this pdb id
+            }
+        }
+
+        return pdbHeaderList;
     }
 
     private String getRawInfo(String pdbId)

@@ -35,6 +35,8 @@ package org.cbioportal.genome_nexus.service;
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 
 import java.util.List;
 
@@ -46,4 +48,7 @@ public interface HotspotService
     List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspots(TranscriptConsequence transcript) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspots() throws CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspotAnnotations(List<String> variants) throws CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspotAnnotations(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
 }

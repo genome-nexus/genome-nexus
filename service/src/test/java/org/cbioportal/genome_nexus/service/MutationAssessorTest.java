@@ -6,9 +6,8 @@ import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 import org.cbioportal.genome_nexus.service.internal.ExternalResourceTransformer;
-import org.cbioportal.genome_nexus.service.internal.MutationAssessorService;
+import org.cbioportal.genome_nexus.service.internal.MutationAssessorServiceImpl;
 import org.cbioportal.genome_nexus.service.remote.MutationAssessorDataFetcher;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -35,7 +34,7 @@ public class MutationAssessorTest
         ExternalResourceTransformer transformer = new ExternalResourceTransformer(new ExternalResourceObjectMapper());
         MutationAssessorDataFetcher fetcher = new MutationAssessorDataFetcher(transformer);
         fetcher.setMutationAssessorUrl(url);
-        MutationAssessorService service = new MutationAssessorService(fetcher);
+        MutationAssessorServiceImpl service = new MutationAssessorServiceImpl(fetcher, null);
 
         String urlString1 = url.replace("VARIANT", "7,140453136,A,T");
         MutationAssessor mutationObj1 = service.getMutationAssessor("7,140453136,A,T", "7:g.140453136A>T");
@@ -66,7 +65,7 @@ public class MutationAssessorTest
         ExternalResourceTransformer transformer = new ExternalResourceTransformer(new ExternalResourceObjectMapper());
         MutationAssessorDataFetcher fetcher = new MutationAssessorDataFetcher(transformer);
         fetcher.setMutationAssessorUrl(url);
-        MutationAssessorService service = new MutationAssessorService(fetcher);
+        MutationAssessorServiceImpl service = new MutationAssessorServiceImpl(fetcher, null);
 
         String urlString = url.replace("VARIANT", "junkInput");
         MutationAssessor mutationObj1 = service.getMutationAssessor("junkInput", "junkInput");

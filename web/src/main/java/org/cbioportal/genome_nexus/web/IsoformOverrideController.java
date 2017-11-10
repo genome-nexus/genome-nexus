@@ -42,7 +42,7 @@ public class IsoformOverrideController {
             allowMultiple = true)
         @PathVariable String transcriptId) throws IsoformOverrideNotFoundException
     {
-        return this.getIsoformOverride(source, transcriptId);
+        return isoformOverrideService.getIsoformOverride(source, transcriptId);
     }
 
     @ApiOperation(
@@ -60,7 +60,7 @@ public class IsoformOverrideController {
             allowMultiple = true)
         @RequestBody List<String> transcriptIds)
     {
-        return this.getIsoformOverrides(source, transcriptIds);
+        return isoformOverrideService.getIsoformOverrides(source, transcriptIds);
     }
 
     @ApiOperation(value = "Gets the isoform override information for the specified source",
@@ -84,27 +84,5 @@ public class IsoformOverrideController {
     public List<String> fetchIsoformOverrideSourcesGET()
     {
         return isoformOverrideService.getOverrideSources();
-    }
-
-    private IsoformOverride getIsoformOverride(String source, String transcriptId)
-        throws IsoformOverrideNotFoundException
-    {
-        return isoformOverrideService.getIsoformOverride(source, transcriptId);
-    }
-
-    private List<IsoformOverride> getIsoformOverrides(String source, List<String> transcriptIds)
-    {
-        List<IsoformOverride> isoformOverrides = new ArrayList<>();
-
-        for (String id: transcriptIds)
-        {
-            try {
-                isoformOverrides.add(getIsoformOverride(source, id));
-            } catch (IsoformOverrideNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return isoformOverrides;
     }
 }
