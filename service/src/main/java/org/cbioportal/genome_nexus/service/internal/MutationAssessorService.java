@@ -2,29 +2,21 @@ package org.cbioportal.genome_nexus.service.internal;
 
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.service.remote.MutationAssessorDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
 @Service
 public class MutationAssessorService
 {
-    private String mutationAssessorURL;
-    @Value("${mutationAssessor.url}")
-    public void setMutationAssessorURL(String mutationAssessorURL)
-    {
-        this.mutationAssessorURL = mutationAssessorURL;
-    }
-
-    private final ExternalResourceTransformer externalResourceTransformer;
+    private final MutationAssessorDataFetcher externalResourceFetcher;
 
     @Autowired
-    public MutationAssessorService(ExternalResourceTransformer externalResourceTransformer)
+    public MutationAssessorService(MutationAssessorDataFetcher externalResourceFetcher)
     {
-        this.externalResourceTransformer = externalResourceTransformer;
+        this.externalResourceFetcher = externalResourceFetcher;
     }
 
     public MutationAssessor getMutationAssessor(VariantAnnotation annotation)
@@ -47,9 +39,7 @@ public class MutationAssessorService
 
         try
         {
-            String jsonString = getMutationAssessorJSON(variant);
-            List<MutationAssessor> list = this.externalResourceTransformer.transform(
-                jsonString, MutationAssessor.class);
+            List<MutationAssessor> list = this.externalResourceFetcher.fetchInstances(variant);
 
             if (list.size() != 0)
             {
@@ -66,20 +56,6 @@ public class MutationAssessorService
         }
 
         return mutationAssessorObj;
-    }
-
-    private String getMutationAssessorJSON(String variant)
-    {
-        String uri = this.mutationAssessorURL;
-
-        if (variant != null &&
-            variant.length() > 0)
-        {
-            uri = uri.replace("VARIANT", variant);
-        }
-
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(uri, String.class);
     }
 
     private String buildRequest(VariantAnnotation annotation)
