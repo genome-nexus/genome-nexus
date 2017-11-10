@@ -34,6 +34,7 @@ package org.cbioportal.genome_nexus.service;
 
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
+import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ import java.util.List;
  */
 public interface HotspotService
 {
-    List<Hotspot> getHotspots(String transcriptId);
-    List<Hotspot> getHotspots(TranscriptConsequence transcript);
-    List<Hotspot> getHotspots();
+    List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspots(TranscriptConsequence transcript) throws CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspots() throws CancerHotspotsWebServiceException;
 }

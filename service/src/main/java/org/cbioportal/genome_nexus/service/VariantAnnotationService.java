@@ -33,11 +33,14 @@
 package org.cbioportal.genome_nexus.service;
 
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 
 /**
  * @author Benjamin Gross
  */
 public interface VariantAnnotationService
 {
-    VariantAnnotation getAnnotation(String variant);
+    VariantAnnotation getAnnotation(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
 }

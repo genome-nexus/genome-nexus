@@ -7,6 +7,9 @@ import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.HotspotService;
+import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.web.config.InternalApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +45,8 @@ public class CancerHotspotsController
             required = true,
             allowMultiple = true)
         @PathVariable String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        CancerHotspotsWebServiceException
     {
         return this.getHotspotAnnotations(variant);
     }
@@ -55,29 +60,28 @@ public class CancerHotspotsController
         @ApiParam(value="List of variants. For example [\"7:g.140453136A>T\",\"12:g.25398285C>A\"]",
             required = true,
             allowMultiple = true)
-        @RequestBody List<String> variants)
+        @RequestBody List<String> variants) throws CancerHotspotsWebServiceException
     {
         return this.getHotspotAnnotations(variants);
     }
 
     private List<Hotspot> getHotspotAnnotations(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        CancerHotspotsWebServiceException
     {
         VariantAnnotation variantAnnotation = this.variantAnnotator.getVariantAnnotation(variant);
         List<Hotspot> hotspots = new ArrayList<>();
 
-        if (variantAnnotation != null &&
-            variantAnnotation.getTranscriptConsequences() != null)
+        if (variantAnnotation != null)
         {
-            for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
-            {
-                hotspots.addAll(getHotspotAnnotation(transcript));
-            }
+            hotspots.addAll(this.getHotspotAnnotations(variantAnnotation));
         }
 
         return hotspots;
     }
 
     private List<Hotspot> getHotspotAnnotations(List<String> variants)
+        throws CancerHotspotsWebServiceException
     {
         List<VariantAnnotation> variantAnnotations = this.variantAnnotator.getVariantAnnotations(variants);
 
@@ -85,21 +89,31 @@ public class CancerHotspotsController
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)
         {
-            if (variantAnnotation.getTranscriptConsequences() != null)
+            hotspots.addAll(this.getHotspotAnnotations(variantAnnotation));
+        }
+
+        return hotspots;
+    }
+
+    private List<Hotspot> getHotspotAnnotations(VariantAnnotation variantAnnotation)
+        throws CancerHotspotsWebServiceException
+    {
+        List<Hotspot> hotspots = new ArrayList<>();
+
+        if (variantAnnotation.getTranscriptConsequences() != null)
+        {
+            for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
             {
-                for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
-                {
-                    hotspots.addAll(getHotspotAnnotation(transcript));
-                }
+                hotspots.addAll(getHotspotAnnotations(transcript));
             }
         }
 
         return hotspots;
     }
 
-    private List<Hotspot> getHotspotAnnotation(TranscriptConsequence transcript)
+    private List<Hotspot> getHotspotAnnotations(TranscriptConsequence transcript)
+        throws CancerHotspotsWebServiceException
     {
-
         // String transcriptId = transcript.getTranscriptId();
         // Hotspot hotspot = hotspotRepository.findOne(transcriptId);
 

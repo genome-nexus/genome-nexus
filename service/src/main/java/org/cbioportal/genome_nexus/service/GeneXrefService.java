@@ -34,12 +34,12 @@ package org.cbioportal.genome_nexus.service;
 
 import java.util.List;
 import org.cbioportal.genome_nexus.model.GeneXref;
+import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 
 /**
  *
  * @author ochoaa
  */
 public interface GeneXrefService {
-    List<GeneXref> getGeneXrefs(String accession);
-    String getGeneXrefsJSON(String accession);
+    List<GeneXref> getGeneXrefs(String accession) throws EnsemblWebServiceException;
 }

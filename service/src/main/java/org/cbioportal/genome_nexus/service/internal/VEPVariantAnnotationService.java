@@ -38,14 +38,17 @@ import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.persistence.*;
 import org.cbioportal.genome_nexus.service.*;
 
+import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -75,6 +78,7 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
     }
 
     public VariantAnnotation getAnnotation(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         boolean saveAnnotationJson = true;
         VariantAnnotation variantAnnotation = null;
@@ -86,7 +90,7 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
             LOG.warn("Failed to read from Mongo database - falling back on Ensembl server. Will not attempt to store variant in Mongo database.");
             saveAnnotationJson = false;
         }
-        
+
         if (variantAnnotation == null) {
 
             try {
@@ -108,20 +112,22 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
                 }
             }
             catch (HttpClientErrorException e) {
-                // in case of web service error, do not terminate the whole process.
-                // just copy the response body (error message) for this variant
-                variantAnnotation = new VariantAnnotation(variant, e.getResponseBodyAsString());
+                // in case of web service error, throw an exception to indicate that there is a problem with the service.
+                throw new VariantAnnotationWebServiceException(variant, e.getResponseBodyAsString(), e.getStatusCode());
             }
-            catch (IOException e) {
-                // in case of parse error, do not terminate the whole process.
-                // just send the raw annotationJSON to the client
-                variantAnnotation = new VariantAnnotation(variant, annotationJSON);
+            catch (JsonMappingException e) {
+                // TODO this only indicates that web service returns an incompatible response, but
+                // this does not always mean that annotation is not found
+                throw new VariantAnnotationNotFoundException(variant, annotationJSON);
             }
             catch (DataIntegrityViolationException e) {
                 // in case of data integrity violation exception, do not bloat the logs
                 // this is thrown when the annotationJSON can't be stored by mongo
                 // due to the variant annotation key being too large to index
                 LOG.info(e.getLocalizedMessage());
+            }
+            catch (ResourceAccessException e) {
+                throw new VariantAnnotationWebServiceException(variant, e.getMessage());
             }
         }
 
@@ -134,9 +140,9 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
      * @param variant           variant key
      * @param annotationJSON    raw annotation JSON string
      * @return a VariantAnnotation instance
-     * @throws IOException
+     * @throws JsonMappingException
      */
-    private VariantAnnotation mapAnnotationJson(String variant, String annotationJSON) throws IOException
+    private VariantAnnotation mapAnnotationJson(String variant, String annotationJSON) throws JsonMappingException
     {
         // map annotation string onto VariantAnnotation instance
         List<VariantAnnotation> list = this.externalResourceTransformer.transform(

@@ -1,6 +1,7 @@
 package org.cbioportal.genome_nexus.service;
 
 import org.cbioportal.genome_nexus.model.IsoformOverride;
+import org.cbioportal.genome_nexus.service.exception.IsoformOverrideNotFoundException;
 
 import java.util.List;
 
@@ -9,8 +10,8 @@ import java.util.List;
  */
 public interface IsoformOverrideService
 {
-    IsoformOverride getIsoformOverride(String source, String id);
-    List<IsoformOverride> getIsoformOverrides(String source);
+    IsoformOverride getIsoformOverride(String source, String id) throws IsoformOverrideNotFoundException;
+    List<IsoformOverride> getIsoformOverrides(String source) throws IsoformOverrideNotFoundException;
     List<String> getOverrideSources();
     Boolean hasData(String source);
 }

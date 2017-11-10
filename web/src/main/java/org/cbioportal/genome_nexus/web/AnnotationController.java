@@ -34,6 +34,8 @@ package org.cbioportal.genome_nexus.web;
 
 import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.model.*;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.service.internal.*;
 import org.cbioportal.genome_nexus.service.*;
 
@@ -160,6 +162,7 @@ public class AnnotationController
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         @RequestParam(required = false) List<String> fields)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
 

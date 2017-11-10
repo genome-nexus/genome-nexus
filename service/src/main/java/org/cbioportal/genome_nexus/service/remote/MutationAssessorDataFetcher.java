@@ -2,6 +2,7 @@ package org.cbioportal.genome_nexus.service.remote;
 
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.service.ExternalResourceFetcher;
+import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
 import org.cbioportal.genome_nexus.service.internal.ExternalResourceTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +11,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,14 +56,14 @@ public class MutationAssessorDataFetcher implements ExternalResourceFetcher<Muta
 
     @Override
     public List<MutationAssessor> fetchInstances(Map<String, String> queryParams)
-        throws IOException, HttpClientErrorException, ResourceAccessException
+        throws HttpClientErrorException, ResourceAccessException, JsonMappingException
     {
         return this.externalResourceTransformer.transform(this.fetchJsonString(queryParams), MutationAssessor.class);
     }
 
     @Override
     public List<MutationAssessor> fetchInstances(String variant)
-        throws IOException, HttpClientErrorException, ResourceAccessException
+        throws HttpClientErrorException, ResourceAccessException, JsonMappingException
     {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("variant", variant);

@@ -8,6 +8,8 @@ import org.cbioportal.genome_nexus.model.MutationAssessorAnnotation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.service.EnrichmentService;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.service.internal.MutationAssessorAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.internal.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.internal.VEPEnrichmentService;
@@ -47,6 +49,7 @@ public class MutationAssessorController
             required = true,
             allowMultiple = true)
         @PathVariable String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         return this.getMutationAssessorAnnotation(variant);
     }
@@ -66,6 +69,7 @@ public class MutationAssessorController
     }
 
     private MutationAssessor getMutationAssessorAnnotation(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         VariantAnnotation variantAnnotation = this.getVariantAnnotation(variant);
 
@@ -140,6 +144,7 @@ public class MutationAssessorController
     }
 
     private VariantAnnotation getVariantAnnotation(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService();
 

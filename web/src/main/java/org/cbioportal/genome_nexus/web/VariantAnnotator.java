@@ -3,6 +3,8 @@ package org.cbioportal.genome_nexus.web;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.EnrichmentService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +22,8 @@ public class VariantAnnotator
         this.variantAnnotationService = variantAnnotationService;
     }
 
-    public VariantAnnotation getVariantAnnotation(String variant,
-                                                  EnrichmentService postEnrichmentService)
+    public VariantAnnotation getVariantAnnotation(String variant, EnrichmentService postEnrichmentService)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         VariantAnnotation annotation = this.variantAnnotationService.getAnnotation(variant);
 
@@ -41,12 +43,13 @@ public class VariantAnnotator
 
         for (String variant: variants)
         {
-            VariantAnnotation annotation = this.getVariantAnnotation(
-                variant, postEnrichmentService);
-
-            if (annotation != null)
-            {
+            try {
+                VariantAnnotation annotation = this.getVariantAnnotation(variant, postEnrichmentService);
                 variantAnnotations.add(annotation);
+            } catch (VariantAnnotationNotFoundException e) {
+                e.printStackTrace();
+            } catch (VariantAnnotationWebServiceException e) {
+                e.printStackTrace();
             }
         }
 
@@ -54,6 +57,7 @@ public class VariantAnnotator
     }
 
     public VariantAnnotation getVariantAnnotation(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         return this.getVariantAnnotation(variant, null);
     }

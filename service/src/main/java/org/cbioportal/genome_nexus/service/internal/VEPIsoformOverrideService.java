@@ -4,6 +4,7 @@ import org.cbioportal.genome_nexus.model.IsoformOverride;
 import org.cbioportal.genome_nexus.persistence.IsoformOverrideRepoFactory;
 import org.cbioportal.genome_nexus.persistence.IsoformOverrideRepository;
 import org.cbioportal.genome_nexus.service.IsoformOverrideService;
+import org.cbioportal.genome_nexus.service.exception.IsoformOverrideNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,21 +27,27 @@ public class VEPIsoformOverrideService implements IsoformOverrideService
         this.repoFactory = repoFactory;
     }
 
-    public IsoformOverride getIsoformOverride(String source, String id)
+    public IsoformOverride getIsoformOverride(String source, String id) throws IsoformOverrideNotFoundException
     {
         IsoformOverrideRepository repository = this.repoFactory.getRepository(source);
+        IsoformOverride override = null;
 
         if (repository != null)
         {
-            return repository.findIsoformOverride(id);
+            override = repository.findIsoformOverride(id);
+        }
+
+        if (override != null)
+        {
+            return override;
         }
         else
         {
-            return null;
+            throw new IsoformOverrideNotFoundException(source, id);
         }
     }
 
-    public List<IsoformOverride> getIsoformOverrides(String source)
+    public List<IsoformOverride> getIsoformOverrides(String source) throws IsoformOverrideNotFoundException
     {
         IsoformOverrideRepository repository = this.repoFactory.getRepository(source);
 
@@ -50,7 +57,7 @@ public class VEPIsoformOverrideService implements IsoformOverrideService
         }
         else
         {
-            return Collections.emptyList();
+            throw new IsoformOverrideNotFoundException(source);
         }
     }
 

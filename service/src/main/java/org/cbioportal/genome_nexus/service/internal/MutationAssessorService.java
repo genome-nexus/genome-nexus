@@ -3,8 +3,13 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.remote.MutationAssessorDataFetcher;
+import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
+import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
 
@@ -20,6 +25,7 @@ public class MutationAssessorService
     }
 
     public MutationAssessor getMutationAssessor(VariantAnnotation annotation)
+        throws MutationAssessorNotFoundException, MutationAssessorWebServiceException
     {
         // checks annotation is SNP
         if (annotation.getStart() == null
@@ -34,25 +40,31 @@ public class MutationAssessorService
     }
 
     public MutationAssessor getMutationAssessor(String variant, String hgvs)
+        throws MutationAssessorNotFoundException, MutationAssessorWebServiceException
     {
-        MutationAssessor mutationAssessorObj = new MutationAssessor();
+        MutationAssessor mutationAssessorObj = null;
 
         try
         {
+
             List<MutationAssessor> list = this.externalResourceFetcher.fetchInstances(variant);
 
-            if (list.size() != 0)
-            {
+            if (list.size() != 0) {
                 mutationAssessorObj = list.get(0);
-                if (mutationAssessorObj != null)
-                {
-                    mutationAssessorObj.setInput(hgvs);
-                }
             }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
+
+            if (mutationAssessorObj != null) {
+                mutationAssessorObj.setInput(hgvs);
+            }
+            else {
+                throw new MutationAssessorNotFoundException(variant);
+            }
+        } catch (JsonMappingException e) {
+            throw new MutationAssessorWebServiceException(e.getMessage());
+        } catch (HttpClientErrorException e) {
+            throw new MutationAssessorWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
+        } catch (ResourceAccessException e) {
+            throw new MutationAssessorWebServiceException(e.getMessage());
         }
 
         return mutationAssessorObj;

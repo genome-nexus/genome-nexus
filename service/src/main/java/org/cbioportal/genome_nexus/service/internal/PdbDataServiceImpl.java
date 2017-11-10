@@ -4,6 +4,7 @@ import org.cbioportal.genome_nexus.model.PdbHeader;
 import org.cbioportal.genome_nexus.model.SimpleCacheEntity;
 import org.cbioportal.genome_nexus.persistence.SimpleCacheRepository;
 import org.cbioportal.genome_nexus.service.PdbDataService;
+import org.cbioportal.genome_nexus.service.exception.PdbHeaderNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class PdbDataServiceImpl implements PdbDataService
     private PdbFileParser pdbParser;
 
     @Override
-    public PdbHeader getPdbHeader(String pdbId)
+    public PdbHeader getPdbHeader(String pdbId) throws PdbHeaderNotFoundException
     {
         PdbHeader info = null;
 
@@ -51,6 +52,10 @@ public class PdbDataServiceImpl implements PdbDataService
                 info.setCompound(this.pdbParser.parseCompound(content.get("compnd")));
                 info.setSource(this.pdbParser.parseCompound(content.get("source")));
             }
+        }
+
+        if (info == null) {
+            throw new PdbHeaderNotFoundException(pdbId);
         }
 
         return info;

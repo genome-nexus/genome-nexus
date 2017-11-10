@@ -35,12 +35,15 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.service.GeneXrefService;
 
-import java.io.IOException;
 import java.util.*;
 
+import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -63,20 +66,30 @@ public class GeneXrefServiceImpl implements GeneXrefService {
     }
 
     @Override
-    public List<GeneXref> getGeneXrefs(String accession) {
-        String xrefJSON = getGeneXrefsJSON(accession);
-        List<GeneXref> geneXrefs = new ArrayList<>();
+    public List<GeneXref> getGeneXrefs(String accession) throws EnsemblWebServiceException
+    {
+        List<GeneXref> geneXrefs;
+
         try {
+            String xrefJSON = getGeneXrefsJSON(accession);
             geneXrefs = this.externalResourceTransformer.transform(xrefJSON, GeneXref.class);
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (JsonMappingException e) {
+            throw new EnsemblWebServiceException(e.getMessage());
         }
+        catch (HttpClientErrorException e)
+        {
+            throw new EnsemblWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
+        }
+        catch (ResourceAccessException e)
+        {
+            throw new EnsemblWebServiceException(e.getMessage());
+        }
+
         return geneXrefs;
     }
 
-    @Override
-    public String getGeneXrefsJSON(String accession) {
+    private String getGeneXrefsJSON(String accession) {
         String uri = geneXrefsURL.replace("ACCESSION", accession);
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(uri, String.class);
