@@ -4,13 +4,14 @@ import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.service.GeneXrefService;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
+import org.cbioportal.genome_nexus.web.config.InternalApi;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@PublicApi
+@InternalApi
 @RestController // shorthand for @Controller, @ResponseBody
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")
@@ -30,6 +31,7 @@ public class CrossReferenceController
     @RequestMapping(value = "/xrefs/{accession}",
         method = RequestMethod.GET,
         produces = "application/json")
+    @Deprecated
     public List<GeneXref> fetchGeneXrefsGET(
         @ApiParam(value="Ensembl gene accession. For example ENSG00000169083",
             required = true)
