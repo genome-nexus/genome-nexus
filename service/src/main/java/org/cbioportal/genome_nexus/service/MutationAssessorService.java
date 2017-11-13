@@ -11,9 +11,10 @@ import java.util.List;
 
 public interface MutationAssessorService
 {
-    MutationAssessor getMutationAssessorFromEnrichedVariantAnnotation(String variant)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
-    List<MutationAssessor> getMutationAssessorFromEnrichedVariantAnnotation(List<String> variants);
+    MutationAssessor getMutationAssessor(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        MutationAssessorWebServiceException, MutationAssessorNotFoundException;
+    List<MutationAssessor> getMutationAssessor(List<String> variants);
 
     MutationAssessor getMutationAssessor(VariantAnnotation annotation)
         throws MutationAssessorNotFoundException, MutationAssessorWebServiceException;

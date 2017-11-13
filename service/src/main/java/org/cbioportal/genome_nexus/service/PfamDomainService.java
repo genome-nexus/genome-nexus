@@ -1,6 +1,7 @@
 package org.cbioportal.genome_nexus.service;
 
 import org.cbioportal.genome_nexus.model.PfamDomain;
+import org.cbioportal.genome_nexus.service.exception.PfamDomainNotFoundException;
 
 import java.util.List;
 
@@ -9,9 +10,7 @@ import java.util.List;
  */
 public interface PfamDomainService
 {
+    PfamDomain getPfamDomainByPfamAccession(String pfamDomainAccession) throws PfamDomainNotFoundException;
     List<PfamDomain> getAllPfamDomains();
-    List<PfamDomain> getPfamDomainsByTranscriptId(String transcriptId);
-    List<PfamDomain> getPfamDomainsByProteinId(String proteinId);
-    List<PfamDomain> getPfamDomainsByGeneId(String geneId);
-    List<PfamDomain> getPfamDomainsByPfamDomainId(String pfamDomainId);
+    List<PfamDomain> getPfamDomainsByPfamAccession(List<String> pfamDomainAccessions);
 }

@@ -21,6 +21,7 @@ public class GenomeNexusImporter implements CommandLineRunner {
     final static String[][] IMPORT_RESOURCE_FILES = new String[][]{
         new String[]{"/ensembl_biomart_transcripts.txt", EnsemblRepositoryImpl.TRANSCRIPTS_COLLECTION},
         new String[]{"/ensembl_biomart_canonical_transcripts_per_hgnc.txt", EnsemblRepositoryImpl.CANONICAL_TRANSCRIPTS_COLLECTION},
+        new String[]{"/pfamA.txt", "pfam.domain"},
     };
 
     /**

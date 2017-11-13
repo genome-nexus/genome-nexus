@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
+import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.web.config.InternalApi;
@@ -38,9 +40,10 @@ public class MutationAssessorController
             required = true,
             allowMultiple = true)
         @PathVariable String variant)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
-        return this.mutationAssessorService.getMutationAssessorFromEnrichedVariantAnnotation(variant);
+        return this.mutationAssessorService.getMutationAssessor(variant);
     }
 
     @ApiOperation(value = "Retrieves mutation assessor information for the provided list of variants",
@@ -54,6 +57,6 @@ public class MutationAssessorController
             allowMultiple = true)
         @RequestBody List<String> variants)
     {
-        return this.mutationAssessorService.getMutationAssessorFromEnrichedVariantAnnotation(variants);
+        return this.mutationAssessorService.getMutationAssessor(variants);
     }
 }

@@ -1,114 +1,44 @@
 package org.cbioportal.genome_nexus.model;
 
-import com.univocity.parsers.annotations.Parsed;
-import com.univocity.parsers.annotations.Trim;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * @author Selcuk Onur Sumer
  */
+@Document(collection="pfam.domain")
 public class PfamDomain
 {
-    @Trim
-    @Parsed(field = "Gene stable ID")
-    private String geneId;
+    @Field(value = "pfamA_acc")
+    private String pfamAccession;
 
-    @Trim
-    @Parsed(field = "Transcript stable ID")
-    private String transcriptId;
+    @Field(value = "pfamA_id")
+    private String name;
 
-    @Trim
-    @Parsed(field = "Protein stable ID")
-    private String proteinId;
+    @Field(value = "description")
+    private String description;
 
-    @Trim
-    @Parsed(field = "Gene name")
-    private String geneSymbol;
-
-    @Trim
-    @Parsed(field = "Pfam domain ID")
-    private String pfamDomainId;
-
-    @Trim
-    @Parsed(field = "Pfam domain start")
-    private Integer pfamDomainStart;
-
-    @Trim
-    @Parsed(field = "Pfam domain end")
-    private Integer pfamDomainEnd;
-
-    private String pfamDomainName;
-
-    private String pfamDomainDescription;
-
-    public String getGeneId() {
-        return geneId;
+    public String getPfamAccession() {
+        return pfamAccession;
     }
 
-    public void setGeneId(String geneId) {
-        this.geneId = geneId;
+    public void setPfamAccession(String pfamAccession) {
+        this.pfamAccession = pfamAccession;
     }
 
-    public String getTranscriptId() {
-        return transcriptId;
+    public String getName() {
+        return name;
     }
 
-    public void setTranscriptId(String transcriptId) {
-        this.transcriptId = transcriptId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getProteinId() {
-        return proteinId;
+    public String getDescription() {
+        return description;
     }
 
-    public void setProteinId(String proteinId) {
-        this.proteinId = proteinId;
-    }
-
-    public String getGeneSymbol() {
-        return geneSymbol;
-    }
-
-    public void setGeneSymbol(String geneSymbol) {
-        this.geneSymbol = geneSymbol;
-    }
-
-    public String getPfamDomainId() {
-        return pfamDomainId;
-    }
-
-    public void setPfamDomainId(String pfamDomainId) {
-        this.pfamDomainId = pfamDomainId;
-    }
-
-    public Integer getPfamDomainStart() {
-        return pfamDomainStart;
-    }
-
-    public void setPfamDomainStart(Integer pfamDomainStart) {
-        this.pfamDomainStart = pfamDomainStart;
-    }
-
-    public Integer getPfamDomainEnd() {
-        return pfamDomainEnd;
-    }
-
-    public void setPfamDomainEnd(Integer pfamDomainEnd) {
-        this.pfamDomainEnd = pfamDomainEnd;
-    }
-
-    public String getPfamDomainName() {
-        return pfamDomainName;
-    }
-
-    public void setPfamDomainName(String pfamDomainName) {
-        this.pfamDomainName = pfamDomainName;
-    }
-
-    public String getPfamDomainDescription() {
-        return pfamDomainDescription;
-    }
-
-    public void setPfamDomainDescription(String pfamDomainDescription) {
-        this.pfamDomainDescription = pfamDomainDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

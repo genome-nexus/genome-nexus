@@ -1,7 +1,6 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import org.cbioportal.genome_nexus.model.MutationAssessor;
-import org.cbioportal.genome_nexus.model.MutationAssessorAnnotation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
@@ -14,7 +13,6 @@ import org.springframework.web.client.ResourceAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MutationAssessorServiceImpl implements MutationAssessorService
@@ -30,27 +28,28 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
         this.variantAnnotationService = variantAnnotationService;
     }
 
-    public MutationAssessor getMutationAssessorFromEnrichedVariantAnnotation(String variant)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
+    public MutationAssessor getMutationAssessor(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
-        VariantAnnotation variantAnnotation = this.getVariantAnnotation(variant);
+        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant);
 
-        return this.getMutationAssessorFromEnrichedVariantAnnotation(variantAnnotation);
+        return this.getMutationAssessorByVariantAnnotation(variantAnnotation);
     }
 
-    public List<MutationAssessor> getMutationAssessorFromEnrichedVariantAnnotation(List<String> variants)
+    public List<MutationAssessor> getMutationAssessor(List<String> variants)
     {
         List<MutationAssessor> mutationAssessors = new ArrayList<>();
-        List<VariantAnnotation> variantAnnotations = this.getVariantAnnotations(variants);
+        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants);
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)
         {
-            // gets mutation assessor annotation object from variant annotation map
-            MutationAssessor mutationAssessor = this.getMutationAssessorFromEnrichedVariantAnnotation(variantAnnotation);
-
-            if (mutationAssessor != null)
-            {
-                mutationAssessors.add(mutationAssessor);
+            try {
+                mutationAssessors.add(this.getMutationAssessorByVariantAnnotation(variantAnnotation));
+            } catch (MutationAssessorWebServiceException e) {
+                e.printStackTrace();
+            } catch (MutationAssessorNotFoundException e) {
+                // fail silently for this variant
             }
         }
 
@@ -65,7 +64,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
             || !annotation.getStart().equals(annotation.getEnd())
             || !annotation.getAlleleString().matches("[A-Z]/[A-Z]"))
         {
-            return null;
+            throw new MutationAssessorNotFoundException(annotation.getVariant());
         }
 
         return this.getMutationAssessor(buildRequest(annotation), annotation.getVariant());
@@ -101,48 +100,19 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
         return mutationAssessorObj;
     }
 
-    private MutationAssessor getMutationAssessorFromEnrichedVariantAnnotation(VariantAnnotation variantAnnotation)
+    private MutationAssessor getMutationAssessorByVariantAnnotation(VariantAnnotation variantAnnotation)
+        throws MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
-        // gets mutation assessor annotation object from variant annotation map
-        Map<String, Object> map = variantAnnotation.getDynamicProps();
+        MutationAssessor mutationAssessorObj = this.getMutationAssessor(variantAnnotation);
 
-        MutationAssessorAnnotation mutationAssessorAnnotation
-            = (MutationAssessorAnnotation) map.get("mutation_assessor");
-
-        if (mutationAssessorAnnotation != null)
+        if (mutationAssessorObj != null &&
+            mutationAssessorObj.getMappingIssue().length() == 0)
         {
-            MutationAssessor obj = mutationAssessorAnnotation.getAnnotation();
-
-            if (obj != null &&
-                obj.getMappingIssue().length() == 0)
-            {
-                return obj;
-            }
+            return mutationAssessorObj;
         }
-
-        return null;
-    }
-
-    private List<String> initFields()
-    {
-        // uses enrichment to get mutation assessor object
-        List<String> fields = new ArrayList<>(1);
-        fields.add("mutation_assessor");
-
-        return fields;
-    }
-
-    private List<VariantAnnotation> getVariantAnnotations(List<String> variants)
-    {
-        // uses enrichment to get mutation assessor annotation
-        return this.variantAnnotationService.getAnnotations(variants, null, this.initFields());
-    }
-
-    private VariantAnnotation getVariantAnnotation(String variant)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
-    {
-        // uses enrichment to get mutation assessor annotation
-        return this.variantAnnotationService.getAnnotation(variant, null, this.initFields());
+        else {
+            throw new MutationAssessorNotFoundException(variantAnnotation.getVariant());
+        }
     }
 
     private String buildRequest(VariantAnnotation annotation)

@@ -35,17 +35,17 @@ public class EnsemblController
 
     @ApiOperation(value = "Retrieves Ensembl Transcripts by protein ID, and gene ID. " +
         "Retrieves all transcripts in case no query parameter provided",
-        nickname = "fetchAllEnsemblTranscriptsGET")
+        nickname = "fetchEnsemblTranscriptsGET")
     @RequestMapping(value = "/ensembl/transcript",
         method = RequestMethod.GET,
         produces = "application/json")
-    public List<EnsemblTranscript> fetchAllEnsemblTranscriptsGET(
-        @ApiParam(value = "An Ensembl protein ID. For example ENSP00000439985")
-        @RequestParam(required = false) String proteinId,
+    public List<EnsemblTranscript> fetchEnsemblTranscriptsGET(
         @ApiParam(value = "An Ensembl gene ID. For example ENSG00000136999")
-        @RequestParam(required = false) String geneId)
+        @RequestParam(required = false) String geneId,
+        @ApiParam(value = "An Ensembl protein ID. For example ENSP00000439985")
+        @RequestParam(required = false) String proteinId)
     {
-        return ensemblService.getEnsemblTranscripts(proteinId, geneId);
+        return ensemblService.getEnsemblTranscripts(geneId, proteinId);
     }
 
     @ApiOperation(value = "Retrieves Ensembl Transcripts by Ensembl transcript IDs, protein IDs, or gene IDs",
