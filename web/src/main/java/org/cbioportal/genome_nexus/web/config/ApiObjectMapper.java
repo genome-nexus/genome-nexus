@@ -24,6 +24,7 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(TranscriptConsequence.class, TranscriptConsequenceMixin.class);
         mixinMap.put(VariantAnnotation.class, VariantAnnotationMixin.class);
         mixinMap.put(EnsemblTranscript.class, EnsemblTranscriptMixin.class);
+        mixinMap.put(PfamDomainRange.class, PfamDomainRangeMixin.class);
 
         super.setMixIns(mixinMap);
     }
