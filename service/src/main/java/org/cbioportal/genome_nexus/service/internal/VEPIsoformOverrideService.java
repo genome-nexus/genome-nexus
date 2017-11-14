@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,6 +59,22 @@ public class VEPIsoformOverrideService implements IsoformOverrideService
         {
             throw new IsoformOverrideNotFoundException(source);
         }
+    }
+
+    public List<IsoformOverride> getIsoformOverrides(String source, List<String> transcriptIds)
+    {
+        List<IsoformOverride> isoformOverrides = new ArrayList<>();
+
+        for (String id: transcriptIds)
+        {
+            try {
+                isoformOverrides.add(getIsoformOverride(source, id));
+            } catch (IsoformOverrideNotFoundException e) {
+                // fail silently for this override source
+            }
+        }
+
+        return isoformOverrides;
     }
 
     public List<String> getOverrideSources()

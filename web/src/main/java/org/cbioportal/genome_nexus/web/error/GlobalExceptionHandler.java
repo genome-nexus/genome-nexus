@@ -17,6 +17,14 @@ public class GlobalExceptionHandler
             HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(PfamDomainNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlePfamDomainNotFound(PfamDomainNotFoundException ex)
+    {
+        return new ResponseEntity<>(
+            new ErrorResponse("PFAM domain not found: " + ex.getPfamAccession()),
+            HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(VariantAnnotationNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleVariantAnnotationNotFound(VariantAnnotationNotFoundException ex)
     {

@@ -4,12 +4,16 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
+import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.service.EnsemblService;
+import org.cbioportal.genome_nexus.service.GeneXrefService;
+import org.cbioportal.genome_nexus.service.exception.EnsemblTranscriptNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
+import org.cbioportal.genome_nexus.web.param.EnsemblFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController // shorthand for @Controller, @ResponseBody
@@ -20,171 +24,104 @@ import java.util.List;
 public class EnsemblController
 {
     private final EnsemblService ensemblService;
+    private final GeneXrefService geneXrefService;
 
     @Autowired
-    public EnsemblController(EnsemblService ensemblService)
+    public EnsemblController(EnsemblService ensemblService, GeneXrefService geneXrefService)
     {
         this.ensemblService = ensemblService;
+        this.geneXrefService = geneXrefService;
     }
 
-    @ApiOperation(value = "Retrieves all Ensembl Transcripts",
-        nickname = "fetchAllEnsemblTranscriptsGET")
+    @ApiOperation(value = "Retrieves Ensembl Transcripts by protein ID, and gene ID. " +
+        "Retrieves all transcripts in case no query parameter provided",
+        nickname = "fetchEnsemblTranscriptsGET")
     @RequestMapping(value = "/ensembl/transcript",
         method = RequestMethod.GET,
         produces = "application/json")
-    public List<EnsemblTranscript> fetchAllEnsemblTranscriptsGET()
+    public List<EnsemblTranscript> fetchEnsemblTranscriptsGET(
+        @ApiParam(value = "An Ensembl gene ID. For example ENSG00000136999")
+        @RequestParam(required = false) String geneId,
+        @ApiParam(value = "An Ensembl protein ID. For example ENSP00000439985")
+        @RequestParam(required = false) String proteinId)
     {
-        return ensemblService.getAllEnsemblTranscripts();
+        return ensemblService.getEnsemblTranscripts(geneId, proteinId);
     }
 
-    @ApiOperation(value = "Retrieves Ensembl Transcripts by Ensembl transcript IDs",
-        nickname = "fetchEnsemblTranscriptsByTranscriptIdsPOST")
-    @RequestMapping(value = "/ensembl/transcript/id",
+    @ApiOperation(value = "Retrieves Ensembl Transcripts by Ensembl transcript IDs, protein IDs, or gene IDs",
+        nickname = "fetchEnsemblTranscriptsByEnsemblFilterPOST")
+    @RequestMapping(value = "/ensembl/transcript",
         method = RequestMethod.POST,
         produces = "application/json")
-    public List<EnsemblTranscript> fetchEnsemblTranscriptsByTranscriptIdsPOST(
-        @ApiParam(value = "List of Ensembl transcript IDs. For example [\"ENST00000361390\",\"ENST00000361453\",\"ENST00000361624\"]",
-            required = true,
-            allowMultiple = true)
-        @RequestBody List<String> transcriptIds)
+    public List<EnsemblTranscript> fetchEnsemblTranscriptsByEnsemblFilterPOST(
+        @ApiParam(
+            value = EnsemblFilter.TRANSCRIPT_ID_DESC + "<br>OR<br>" +
+                EnsemblFilter.PROTEIN_ID_DESC + "<br>OR<br>" +
+                EnsemblFilter.GENE_ID_DESC,
+            required = true)
+        @RequestBody EnsemblFilter ensemblFilter)
     {
-        List<EnsemblTranscript> transcripts = new ArrayList<>();
-
-        for (String transcriptId : transcriptIds)
-        {
-            transcripts.addAll(this.ensemblService.getEnsemblTranscriptsByTranscriptId(transcriptId));
-        }
-
-        return transcripts;
+        return this.ensemblService.getEnsemblTranscripts(
+            ensemblFilter.getTranscriptIds(), ensemblFilter.getGeneIds(), ensemblFilter.getProteinIds());
     }
 
-    @ApiOperation(value = "Retrieves Transcripts by an Ensembl transcript ID",
-        nickname = "fetchEnsemblTranscriptsByTranscriptIdGET")
-    @RequestMapping(value = "/ensembl/transcript/id/{transcriptId}",
+    @ApiOperation(value = "Retrieves the transcript by an Ensembl transcript ID",
+        nickname = "fetchEnsemblTranscriptByTranscriptIdGET")
+    @RequestMapping(value = "/ensembl/transcript/{transcriptId}",
         method = RequestMethod.GET,
         produces = "application/json")
-    public List<EnsemblTranscript> fetchEnsemblTranscriptsByTranscriptIdsGET(
+    public EnsemblTranscript fetchEnsemblTranscriptByTranscriptIdGET(
         @ApiParam(value = "An Ensembl transcript ID. For example ENST00000361390",
-            required = true,
-            allowMultiple = true)
-        @PathVariable String transcriptId)
+            required = true)
+        @PathVariable String transcriptId) throws EnsemblTranscriptNotFoundException
     {
         return this.ensemblService.getEnsemblTranscriptsByTranscriptId(transcriptId);
     }
 
-    @ApiOperation(value = "Retrieves Ensembl transcripts by Ensembl protein IDs",
-        nickname = "fetchEnsemblTranscriptsByProteinIdsPOST")
-    @RequestMapping(value = "/ensembl/transcript/protein",
-        method = RequestMethod.POST,
-        produces = "application/json")
-    public List<EnsemblTranscript> fetchEnsemblTranscriptsByProteinIdsPOST(
-        @ApiParam(value = "List of Ensembl protein IDs. For example [\"ENSP00000439985\",\"ENSP00000478460\",\"ENSP00000346196\"]",
-            required = true,
-            allowMultiple = true)
-        @RequestBody List<String> proteinIds)
-    {
-        List<EnsemblTranscript> transcripts = new ArrayList<>();
-
-        for (String proteinId : proteinIds)
-        {
-            transcripts.addAll(this.ensemblService.getEnsemblTranscriptsByProteinId(proteinId));
-        }
-
-        return transcripts;
-    }
-
-    @ApiOperation(value = "Retrieves Ensembl transcripts by an Ensembl protein ID",
-        nickname = "fetchEnsemblTranscriptsByProteinIdGET")
-    @RequestMapping(value = "/ensembl/transcript/protein/{proteinId}",
-        method = RequestMethod.GET,
-        produces = "application/json")
-    public List<EnsemblTranscript> fetchEnsemblTranscriptsByProteinIdGET(
-        @ApiParam(value = "An Ensembl protein ID. For example ENSP00000439985",
-            required = true,
-            allowMultiple = true)
-        @PathVariable String proteinId)
-    {
-        return this.ensemblService.getEnsemblTranscriptsByProteinId(proteinId);
-    }
-
-    @ApiOperation(value = "Retrieves Ensembl transcripts by Ensembl gene IDs",
-        nickname = "fetchEnsemblTranscriptsByGeneIdsPOST")
-    @RequestMapping(value = "/ensembl/transcript/gene",
-        method = RequestMethod.POST,
-        produces = "application/json")
-    public List<EnsemblTranscript> fetchEnsemblTranscriptsByGeneIdsPOST(
-        @ApiParam(value = "List of Ensembl gene IDs. For example [\"ENSG00000136999\",\"ENSG00000272398\",\"ENSG00000198695\"]",
-            required = true,
-            allowMultiple = true)
-        @RequestBody List<String> geneIds)
-    {
-        List<EnsemblTranscript> transcripts = new ArrayList<>();
-
-        for (String geneId : geneIds)
-        {
-            transcripts.addAll(this.ensemblService.getEnsemblTranscriptsByGeneId(geneId));
-        }
-
-        return transcripts;
-    }
-
-    @ApiOperation(value = "Retrieves Ensembl transcripts by an Ensembl gene ID",
-        nickname = "fetchEnsemblTranscriptsByGeneIdGET")
-    @RequestMapping(value = "/ensembl/transcript/gene/{geneId}",
-        method = RequestMethod.GET,
-        produces = "application/json")
-    public List<EnsemblTranscript> fetchEnsemblTranscriptsByGeneIdGET(
-        @ApiParam(value = "An Ensembl gene ID. For example ENSG00000136999",
-            required = true,
-            allowMultiple = true)
-        @PathVariable String geneId)
-    {
-        return this.ensemblService.getEnsemblTranscriptsByGeneId(geneId);
-    }
-
-    @ApiOperation(value = "Retrieves Ensembl transcripts by Hugo Symbols",
+    @ApiOperation(value = "Retrieves Ensembl canonical transcripts by Hugo Symbols",
         nickname = "fetchCanonicalEnsemblTranscriptsByHugoSymbolsPOST")
     @RequestMapping(value = "/ensembl/canonical-transcript/hgnc",
         method = RequestMethod.POST,
         produces = "application/json")
     public List<EnsemblTranscript> fetchCanonicalEnsemblTranscriptsByHugoSymbolPOST(
         @ApiParam(value = "List of Hugo Symbols. For example [\"TP53\",\"PIK3CA\",\"BRCA1\"]",
-            required = true,
-            allowMultiple = true)
+            required = true)
         @RequestBody List<String> hugoSymbols,
-        @RequestParam(required = false)
         @ApiParam(value="Isoform override source. For example uniprot",
             defaultValue="uniprot",
             required = false)
-            String isoformOverrideSource)
+        @RequestParam(required = false) String isoformOverrideSource)
     {
-        List<EnsemblTranscript> transcripts = new ArrayList<>();
-
-        for (String hugoSymbol : hugoSymbols)
-        {
-            transcripts.add(this.ensemblService.getCanonicalEnsemblTranscriptsByHugoSymbol(
-                hugoSymbol, isoformOverrideSource));
-        }
-
-        return transcripts;
+        return this.ensemblService.getCanonicalEnsemblTranscriptsByHugoSymbols(hugoSymbols, isoformOverrideSource);
     }
 
-    @ApiOperation(value = "Retrieves Ensembl transcripts by Hugo Symbols",
-        nickname = "fetchCanonicalEnsemblTranscriptsByHugoSymbolGET")
+    @ApiOperation(value = "Retrieves Ensembl canonical transcript by Hugo Symbol",
+        nickname = "fetchCanonicalEnsemblTranscriptByHugoSymbolGET")
     @RequestMapping(value = "/ensembl/canonical-transcript/hgnc/{hugoSymbol}",
         method = RequestMethod.GET,
         produces = "application/json")
-    public EnsemblTranscript fetchCanonicalEnsemblTranscriptsByHugoSymbolGET(
+    public EnsemblTranscript fetchCanonicalEnsemblTranscriptByHugoSymbolGET(
         @ApiParam(value = "A Hugo Symbol. For example TP53",
-            required = true,
-            allowMultiple = true)
+            required = true)
         @PathVariable String hugoSymbol,
-        @RequestParam(required = false)
         @ApiParam(value="Isoform override source. For example uniprot",
             defaultValue="uniprot",
             required = false)
-            String isoformOverrideSource)
+        @RequestParam(required = false) String isoformOverrideSource) throws EnsemblTranscriptNotFoundException
     {
-        return this.ensemblService.getCanonicalEnsemblTranscriptsByHugoSymbol(hugoSymbol, isoformOverrideSource);
+        return this.ensemblService.getCanonicalEnsemblTranscriptByHugoSymbol(hugoSymbol, isoformOverrideSource);
+    }
+
+    @ApiOperation(value = "Perform lookups of Ensembl identifiers and retrieve their external references in other databases",
+        nickname = "fetchGeneXrefsGET")
+    @RequestMapping(value = "/ensembl/xrefs",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<GeneXref> fetchGeneXrefsGET(
+        @ApiParam(value="Ensembl gene accession. For example ENSG00000169083",
+            required = true)
+        @RequestParam String accession) throws EnsemblWebServiceException
+    {
+        return geneXrefService.getGeneXrefs(accession);
     }
 }

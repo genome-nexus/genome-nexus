@@ -41,6 +41,7 @@ import org.cbioportal.genome_nexus.service.*;
 import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,21 +65,53 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
     @Value("${vep.url}")
     public void setVEPURL(String vepURL) { this.vepURL = vepURL; }
 
-    private final EnrichmentService enrichmentService;
-    private final VariantAnnotationRepository variantAnnotationRepository;
-    private final ExternalResourceTransformer externalResourceTransformer;
-
     @Autowired
-    public VEPVariantAnnotationService(EnrichmentService enrichmentService,
-        VariantAnnotationRepository variantAnnotationRepository,
-        ExternalResourceTransformer externalResourceTransformer)
+    private EnrichmentService enrichmentService;
+    @Autowired
+    private VariantAnnotationRepository variantAnnotationRepository;
+    @Autowired
+    private ExternalResourceTransformer externalResourceTransformer;
+
+    // Lazy autowire services used for enrichment,
+    // otherwise we are getting circular dependency issues
+    @Lazy @Autowired
+    private IsoformOverrideService isoformOverrideService;
+    @Lazy @Autowired
+    private HotspotService hotspotService;
+    @Lazy @Autowired
+    private MutationAssessorService mutationAssessorService;
+
+    @Override
+    public VariantAnnotation getAnnotation(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        this.enrichmentService = enrichmentService;
-        this.variantAnnotationRepository = variantAnnotationRepository;
-        this.externalResourceTransformer = externalResourceTransformer;
+        return this.getVariantAnnotation(variant, null);
     }
 
-    public VariantAnnotation getAnnotation(String variant)
+    @Override
+    public List<VariantAnnotation> getAnnotations(List<String> variants)
+    {
+        return this.getVariantAnnotations(variants, null);
+    }
+
+    @Override
+    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, List<String> fields)
+        throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
+    {
+        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
+
+        return this.getVariantAnnotation(variant, postEnrichmentService);
+    }
+
+    @Override
+    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, List<String> fields)
+    {
+        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
+
+        return this.getVariantAnnotations(variants, postEnrichmentService);
+    }
+
+    private VariantAnnotation getVariantAnnotation(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         boolean saveAnnotationJson = true;
@@ -132,6 +166,71 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
         }
 
         return variantAnnotation;
+    }
+
+    private VariantAnnotation getVariantAnnotation(String variant, EnrichmentService postEnrichmentService)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
+    {
+        VariantAnnotation annotation = this.getVariantAnnotation(variant);
+
+        if (annotation != null &&
+            postEnrichmentService != null)
+        {
+            postEnrichmentService.enrichAnnotation(annotation);
+        }
+
+        return annotation;
+    }
+
+    private List<VariantAnnotation> getVariantAnnotations(List<String> variants,
+                                                          EnrichmentService postEnrichmentService)
+    {
+        List<VariantAnnotation> variantAnnotations = new ArrayList<>();
+
+        for (String variant: variants)
+        {
+            try {
+                VariantAnnotation annotation = this.getVariantAnnotation(variant, postEnrichmentService);
+                variantAnnotations.add(annotation);
+            } catch (VariantAnnotationNotFoundException e) {
+                // fail silently for this annotation
+            } catch (VariantAnnotationWebServiceException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return variantAnnotations;
+    }
+
+    private EnrichmentService initPostEnrichmentService(String isoformOverrideSource, List<String> fields)
+    {
+        // The post enrichment service enriches the annotation after saving
+        // the original annotation data to the repository. Any enrichment
+        // performed by the post enrichment service is not saved
+        // to the annotation repository.
+        EnrichmentService postEnrichmentService = new VEPEnrichmentService();
+
+        // only register the enricher if the service actually has data for the given source
+        if (isoformOverrideService.hasData(isoformOverrideSource))
+        {
+            AnnotationEnricher enricher = new IsoformAnnotationEnricher(
+                isoformOverrideSource, isoformOverrideService);
+
+            postEnrichmentService.registerEnricher(isoformOverrideSource, enricher);
+        }
+
+        if (fields != null && fields.contains("hotspots"))
+        {
+            AnnotationEnricher enricher = new HotspotAnnotationEnricher(hotspotService, true);
+            postEnrichmentService.registerEnricher("cancerHotspots", enricher);
+        }
+        if (fields != null && fields.contains("mutation_assessor"))
+        {
+            AnnotationEnricher enricher = new MutationAssessorAnnotationEnricher(mutationAssessorService);
+            postEnrichmentService.registerEnricher("mutation_assessor", enricher);
+        }
+
+        return postEnrichmentService;
     }
 
     /**

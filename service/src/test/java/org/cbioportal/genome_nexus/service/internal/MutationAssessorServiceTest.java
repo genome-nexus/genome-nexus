@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 public class MutationAssessorServiceTest
 {
     @InjectMocks
-    private MutationAssessorService service;
+    private MutationAssessorServiceImpl service;
 
     @Mock
     private MutationAssessorDataFetcher fetcher;

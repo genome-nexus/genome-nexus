@@ -11,3 +11,4 @@ import() {
 #TODO: get this config from some JSON file, so both bash and Java can read it
 import ensembl.biomart_transcripts web/src/main/resources/ensembl_biomart_transcripts.txt
 import ensembl.canonical_transcript_per_hgnc web/src/main/resources/ensembl_biomart_canonical_transcripts_per_hgnc.txt
+import pfam.domain web/src/main/resources/pfamA.txt

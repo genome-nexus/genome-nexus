@@ -15,7 +15,7 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
     public static final String TRANSCRIPTS_COLLECTION = "ensembl.biomart_transcripts";
 
     @Override
-    public EnsemblTranscript findByHugoSymbol(String hugoSymbol, String isoformOverrideSource) {
+    public EnsemblTranscript findOneByHugoSymbol(String hugoSymbol, String isoformOverrideSource) {
         BasicDBObject whereQuery = new BasicDBObject();
         whereQuery.put("hgnc_symbol", hugoSymbol);
 
