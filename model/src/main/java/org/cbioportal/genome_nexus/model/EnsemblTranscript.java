@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.model;
 
+import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -23,6 +24,9 @@ public class EnsemblTranscript
 
     @Field(value="protein_length")
     private Integer proteinLength;
+
+    @Field(value="domains")
+    private List<PfamDomainRange> pfamDomains;
 
     public String getTranscriptId() {
         return transcriptId;
@@ -54,6 +58,14 @@ public class EnsemblTranscript
 
     public void setProteinLength(Integer proteinLength) {
         this.proteinLength = proteinLength;
+    }
+
+    public List<PfamDomainRange> getPfamDomains() {
+        return this.pfamDomains;
+    }
+
+    public void setPfamDomains(List<PfamDomainRange> pfamDomains) {
+        this.pfamDomains = pfamDomains;
     }
 }
 

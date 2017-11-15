@@ -19,9 +19,9 @@ public class GenomeNexusImporter implements CommandLineRunner {
 
     protected final Log logger = LogFactory.getLog(getClass());
     final static String[][] IMPORT_RESOURCE_FILES = new String[][]{
-        new String[]{"/ensembl_biomart_transcripts.txt", EnsemblRepositoryImpl.TRANSCRIPTS_COLLECTION},
-        new String[]{"/ensembl_biomart_canonical_transcripts_per_hgnc.txt", EnsemblRepositoryImpl.CANONICAL_TRANSCRIPTS_COLLECTION},
-        new String[]{"/pfamA.txt", "pfam.domain"},
+        new String[]{"/ensembl_biomart_transcripts.json", EnsemblRepositoryImpl.TRANSCRIPTS_COLLECTION, "--type json"},
+        new String[]{"/ensembl_biomart_canonical_transcripts_per_hgnc.txt", EnsemblRepositoryImpl.CANONICAL_TRANSCRIPTS_COLLECTION, "--type tsv --headerline"},
+        new String[]{"/pfamA.txt", "pfam.domain", "--type tsv --headerline"},
     };
 
     /**
@@ -60,7 +60,7 @@ public class GenomeNexusImporter implements CommandLineRunner {
         return tempFile.getCanonicalPath();
     }
 
-    private void importFile(String fileName, String collection) throws Exception {
+    private void importFile(String fileName, String collection, String extraOptions) throws Exception {
         if (mongoDBURI.length() > 0) {
             Runtime r = Runtime.getRuntime();
             Process p = null;
@@ -71,7 +71,7 @@ public class GenomeNexusImporter implements CommandLineRunner {
                 File file = new File(GenomeNexusImporter.exportResource(fileName));
                 logger.info("Importing " + fileName + " to mongodb collection " + collection + "...");
 
-                String command = "mongoimport --uri " + mongoDBURI + " --drop --collection " + collection + " --type tsv --headerline --file " + file.getAbsolutePath();
+                String command = "mongoimport --uri " + mongoDBURI + " --drop --collection " + collection + " " + extraOptions + " --file " + file.getAbsolutePath();
                 logger.info("Command: " + command);
                 p = r.exec(command);
                 p.waitFor();
@@ -109,7 +109,7 @@ public class GenomeNexusImporter implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         for (String[] importToMongo : IMPORT_RESOURCE_FILES) {
-            importFile(importToMongo[0], importToMongo[1]);
+            importFile(importToMongo[0], importToMongo[1], importToMongo[2]);
         }
     }
 
