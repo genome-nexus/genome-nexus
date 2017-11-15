@@ -1,14 +1,21 @@
 package org.cbioportal.genome_nexus.service.internal;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.PdbHeader;
 import org.cbioportal.genome_nexus.model.SimpleCacheEntity;
 import org.cbioportal.genome_nexus.persistence.SimpleCacheRepository;
 import org.cbioportal.genome_nexus.service.PdbDataService;
+import org.cbioportal.genome_nexus.service.exception.PdbHeaderWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.PdbHeaderNotFoundException;
+import org.cbioportal.genome_nexus.service.remote.PdbHeaderDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.*;
 
@@ -18,47 +25,81 @@ import java.util.*;
 @Service
 public class PdbDataServiceImpl implements PdbDataService
 {
-    private String headerServiceURL;
-    @Value("${pdb.header_service_url}")
-    public void setHeaderServiceURL(String headerServiceURL)
-    {
-        this.headerServiceURL = headerServiceURL;
-    }
+    private static final Log LOG = LogFactory.getLog(PdbDataServiceImpl.class);
 
     @Autowired
     private SimpleCacheRepository cacheRepository;
 
     @Autowired
-    private PdbFileParser pdbParser;
+    private PdbHeaderDataFetcher externalResourceFetcher;
 
     @Override
-    public PdbHeader getPdbHeader(String pdbId) throws PdbHeaderNotFoundException
-    {
-        PdbHeader info = null;
+    public PdbHeader getPdbHeader(String pdbId) throws PdbHeaderNotFoundException, PdbHeaderWebServiceException {
+        boolean saveRawValue = true;
+        PdbHeader pdbHeader = null;
+        String rawValue = null;
 
-        if (pdbId != null &&
-            pdbId.length() > 0)
-        {
-            String rawData = this.getRawInfo(pdbId);
+        // try to get the data from database first
+        try {
+            SimpleCacheEntity entity = cacheRepository.findOne(pdbId);
 
-            if (rawData != null)
+            if (entity != null)
             {
-                Map<String, String> content = this.pdbParser.parsePdbFile(rawData);
+                // we have the information in the cache already!
+                rawValue = entity.getValue();
+            }
+        }
+        catch (DataAccessResourceFailureException e) {
+            LOG.warn("Failed to read from Mongo database - falling back on the PDB data server. " +
+                "Will not attempt to store the value in Mongo database.");
+            saveRawValue = false;
+        }
 
-                info = new PdbHeader();
+        if (rawValue == null)
+        {
+            // get the annotation from the web service and save it to the DB
+            try {
+                // get the raw annotation string from the web service
+                rawValue = this.externalResourceFetcher.fetchStringValue(pdbId);
 
-                info.setPdbId(pdbId);
-                info.setTitle(this.pdbParser.parseTitle(content.get("title")));
-                info.setCompound(this.pdbParser.parseCompound(content.get("compnd")));
-                info.setSource(this.pdbParser.parseCompound(content.get("source")));
+                // save everything to the cache as a properly parsed JSON
+                if (saveRawValue && rawValue != null && rawValue.length() > 0)
+                {
+                    // TODO sanitize value before caching?
+                    cacheRepository.save(new SimpleCacheEntity(pdbId, rawValue));
+                }
+            }
+            catch (HttpClientErrorException e) {
+                // in case of web service error, throw an exception to indicate that there is a problem with the service.
+                throw new PdbHeaderWebServiceException(pdbId, e.getResponseBodyAsString(), e.getStatusCode());
+            }
+            catch (DataIntegrityViolationException e) {
+                // in case of data integrity violation exception, do not bloat the logs
+                // this is thrown when the rawValue can't be stored by mongo
+                // due to the it is too large to index
+                LOG.info(e.getLocalizedMessage());
+            }
+            catch (ResourceAccessException e) {
+                throw new PdbHeaderWebServiceException(pdbId, e.getMessage());
             }
         }
 
-        if (info == null) {
+        try {
+            // construct a PdbHeader instance to return:
+            // this does not contain all the information obtained from the web service
+            // only the fields mapped to the PdbHeader model will be returned
+            pdbHeader = this.externalResourceFetcher.getParser().mapToInstance(pdbId, rawValue);
+        } catch (ResourceMappingException e) {
+            // TODO this only indicates that web service returns an incompatible response, but
+            // this does not always mean that annotation is not found
             throw new PdbHeaderNotFoundException(pdbId);
         }
 
-        return info;
+        if (pdbHeader == null) {
+            throw new PdbHeaderNotFoundException(pdbId);
+        }
+
+        return pdbHeader;
     }
 
     @Override
@@ -74,42 +115,13 @@ public class PdbDataServiceImpl implements PdbDataService
             try {
                 PdbHeader header = this.getPdbHeader(pdbId);
                 pdbHeaderList.add(header);
+            } catch (PdbHeaderWebServiceException e) {
+                e.printStackTrace();
             } catch (PdbHeaderNotFoundException e) {
                 // fail silently for this pdb id
             }
         }
 
         return pdbHeaderList;
-    }
-
-    private String getRawInfo(String pdbId)
-    {
-        // try to get the data from database first
-        SimpleCacheEntity entity = cacheRepository.findOne(pdbId);
-
-        // we have the information in the cache already!
-        if (entity != null)
-        {
-            return entity.getValue();
-        }
-
-        //http://www.rcsb.org/pdb/files/PDB_ID.pdb?headerOnly=YES
-        //http://files.rcsb.org/header/PDB_ID.pdb
-        String uri = headerServiceURL.replace("PDB_ID", pdbId.toUpperCase());
-        RestTemplate restTemplate = new RestTemplate();
-
-        try {
-            String value = restTemplate.getForObject(uri, String.class);
-            // cache the retrieved value
-            if (value != null && value.length() > 0)
-            {
-                // TODO sanitize value before caching?
-                cacheRepository.save(new SimpleCacheEntity(pdbId, value));
-            }
-            return value;
-        } catch (Exception e) {
-            //e.printStackTrace();
-            return null;
-        }
     }
 }

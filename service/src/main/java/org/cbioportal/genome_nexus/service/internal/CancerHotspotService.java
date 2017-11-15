@@ -38,16 +38,15 @@ import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.HotspotService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
-import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
+import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.service.remote.CancerHotspotDataFetcher;
 import org.cbioportal.genome_nexus.util.Numerical;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,19 +59,14 @@ public class CancerHotspotService implements HotspotService
 {
     private HotspotCache cache;
 
-    private String hotspotsURL;
-    @Value("${hotspots.url}")
-    public void setHotspotsURL(String hotspotsURL) { this.hotspotsURL = hotspotsURL; }
-
-    private final ExternalResourceTransformer externalResourceTransformer;
-
+    private final CancerHotspotDataFetcher externalResourceFetcher;
     private final VariantAnnotationService variantAnnotationService;
 
     @Autowired
-    public CancerHotspotService(ExternalResourceTransformer externalResourceTransformer,
+    public CancerHotspotService(CancerHotspotDataFetcher externalResourceFetcher,
                                 VariantAnnotationService variantAnnotationService)
     {
-        this.externalResourceTransformer = externalResourceTransformer;
+        this.externalResourceFetcher = externalResourceFetcher;
         this.variantAnnotationService = variantAnnotationService;
     }
 
@@ -125,9 +119,9 @@ public class CancerHotspotService implements HotspotService
     {
         try
         {
-            return this.externalResourceTransformer.transform(getHotspotsJSON(null), Hotspot.class);
+            return this.externalResourceFetcher.fetchInstances("");
         }
-        catch (JsonMappingException e)
+        catch (ResourceMappingException e)
         {
             throw new CancerHotspotsWebServiceException(e.getMessage());
         }
@@ -203,21 +197,6 @@ public class CancerHotspotService implements HotspotService
         // hotspotRepository.save(hotspots);
 
         return hotspots;
-    }
-
-    private String getHotspotsJSON(String variables)
-    {
-        String uri = hotspotsURL;
-
-        if (variables != null &&
-            variables.length() > 0)
-        {
-            // TODO partially hardcoded API URI!
-            uri += "/byTranscript/" + variables;
-        }
-
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(uri, String.class);
     }
 
     private List<Hotspot> getHotspotsFromCache(String transcriptId) throws CancerHotspotsWebServiceException

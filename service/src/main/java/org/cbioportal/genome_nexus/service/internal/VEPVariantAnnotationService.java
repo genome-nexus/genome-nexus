@@ -38,16 +38,16 @@ import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.persistence.*;
 import org.cbioportal.genome_nexus.service.*;
 
-import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
+import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.service.remote.VEPDataFetcher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.ArrayList;
@@ -61,16 +61,12 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
 {
     private static final Log LOG = LogFactory.getLog(VEPVariantAnnotationService.class);
 
-    private String vepURL;
-    @Value("${vep.url}")
-    public void setVEPURL(String vepURL) { this.vepURL = vepURL; }
-
     @Autowired
     private EnrichmentService enrichmentService;
     @Autowired
     private VariantAnnotationRepository variantAnnotationRepository;
     @Autowired
-    private ExternalResourceTransformer externalResourceTransformer;
+    private VEPDataFetcher externalResourceFetcher;
 
     // Lazy autowire services used for enrichment,
     // otherwise we are getting circular dependency issues
@@ -125,15 +121,12 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
             saveAnnotationJson = false;
         }
 
-        if (variantAnnotation == null) {
-
+        if (variantAnnotation == null)
+        {
+            // get the annotation from the web service and save it to the DB
             try {
-                // get the annotation from the web service and save it to the DB
-                //variantAnnotation = variantAnnotationService.getAnnotation(variant);
-                //variantAnnotationRepository.save(variantAnnotation);
-
                 // get the raw annotation string from the web service
-                annotationJSON = this.getRawAnnotation(variant);
+                annotationJSON = this.externalResourceFetcher.fetchStringValue(variant);
 
                 // construct a VariantAnnotation instance to return:
                 // this does not contain all the information obtained from the web service
@@ -149,7 +142,7 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
                 // in case of web service error, throw an exception to indicate that there is a problem with the service.
                 throw new VariantAnnotationWebServiceException(variant, e.getResponseBodyAsString(), e.getStatusCode());
             }
-            catch (JsonMappingException e) {
+            catch (ResourceMappingException e) {
                 // TODO this only indicates that web service returns an incompatible response, but
                 // this does not always mean that annotation is not found
                 throw new VariantAnnotationNotFoundException(variant, annotationJSON);
@@ -239,12 +232,12 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
      * @param variant           variant key
      * @param annotationJSON    raw annotation JSON string
      * @return a VariantAnnotation instance
-     * @throws JsonMappingException
+     * @throws ResourceMappingException
      */
-    private VariantAnnotation mapAnnotationJson(String variant, String annotationJSON) throws JsonMappingException
+    private VariantAnnotation mapAnnotationJson(String variant, String annotationJSON) throws ResourceMappingException
     {
         // map annotation string onto VariantAnnotation instance
-        List<VariantAnnotation> list = this.externalResourceTransformer.transform(
+        List<VariantAnnotation> list = this.externalResourceFetcher.getTransformer().transform(
             annotationJSON, VariantAnnotation.class);
 
         // assuming annotationJSON contains only a single variant.
@@ -256,13 +249,5 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
         //vepVariantAnnotation.setAnnotationJSON(annotationJSON);
 
         return vepVariantAnnotation;
-    }
-
-    private String getRawAnnotation(String variant)
-    {
-        //http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1
-        String uri = vepURL.replace("VARIANT", variant);
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(uri, String.class);
     }
 }
