@@ -14,11 +14,4 @@ public class PfamDomainMixin
 
     @ApiModelProperty(value = "PFAM domain description")
     private String description;
-
-    // TODO move this into Ensembl model...
-    @ApiModelProperty(value = "PFAM domain start")
-    private Integer pfamDomainStart;
-
-    @ApiModelProperty(value = "PFAM domain end")
-    private Integer pfamDomainEnd;
 }
