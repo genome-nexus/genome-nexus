@@ -1,7 +1,7 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import org.cbioportal.genome_nexus.model.MutationAssessor;
-import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
+import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 import org.cbioportal.genome_nexus.service.remote.MutationAssessorDataFetcher;
@@ -30,7 +30,7 @@ public class MutationAssessorServiceTest
 
     @Test
     public void getMutationAssessor()
-        throws JsonMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
+        throws ResourceMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
         Map<String, List<MutationAssessor>> mockData = this.generateMockData();
 

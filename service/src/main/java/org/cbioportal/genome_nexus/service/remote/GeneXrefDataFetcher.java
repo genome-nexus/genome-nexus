@@ -1,6 +1,6 @@
 package org.cbioportal.genome_nexus.service.remote;
 
-import org.cbioportal.genome_nexus.model.MutationAssessor;
+import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.internal.ExternalResourceTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,26 +13,26 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class MutationAssessorDataFetcher extends BaseExternalResourceFetcher<MutationAssessor>
+public class GeneXrefDataFetcher extends BaseExternalResourceFetcher<GeneXref>
 {
-    private static final String MAIN_QUERY_PARAM = "variant";
-    private static final String PLACEHOLDER = "VARIANT";
+    private static final String MAIN_QUERY_PARAM = "accession";
+    private static final String PLACEHOLDER = "ACCESSION";
 
     private final ExternalResourceTransformer transformer;
 
     @Autowired
-    public MutationAssessorDataFetcher(ExternalResourceTransformer transformer,
-                                       @Value("${mutationAssessor.url}") String mutationAssessorUrl)
+    public GeneXrefDataFetcher(ExternalResourceTransformer transformer,
+                               @Value("${genexrefs.url}") String geneXrefsUrl)
     {
-        super(mutationAssessorUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
+        super(geneXrefsUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
         this.transformer = transformer;
     }
 
     @Override
-    public List<MutationAssessor> fetchInstances(Map<String, String> queryParams)
+    public List<GeneXref> fetchInstances(Map<String, String> queryParams)
         throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
     {
-        return this.transformer.transform(this.fetchStringValue(queryParams), MutationAssessor.class);
+        return this.transformer.transform(this.fetchStringValue(queryParams), GeneXref.class);
     }
 
     public ExternalResourceTransformer getTransformer() {

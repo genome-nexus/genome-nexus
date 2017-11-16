@@ -1,5 +1,7 @@
 package org.cbioportal.genome_nexus.service.internal;
 
+import org.cbioportal.genome_nexus.model.PdbHeader;
+import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -13,6 +15,29 @@ import java.util.*;
 @Component
 public class PdbFileParser
 {
+    public PdbHeader mapToInstance(String pdbId, String rawInput) throws ResourceMappingException
+    {
+        PdbHeader pdbHeader = null;
+
+        try {
+            if (rawInput != null && rawInput.length() > 0)
+            {
+                Map<String, String> content = this.parsePdbFile(rawInput);
+
+                pdbHeader = new PdbHeader();
+
+                pdbHeader.setPdbId(pdbId);
+                pdbHeader.setTitle(this.parseTitle(content.get("title")));
+                pdbHeader.setCompound(this.parseCompound(content.get("compnd")));
+                pdbHeader.setSource(this.parseCompound(content.get("source")));
+            }
+        } catch (Exception e) {
+            throw new ResourceMappingException(e.getMessage());
+        }
+
+        return pdbHeader;
+    }
+
     /**
      * Parses the raw PDB file retrieved from the server and
      * creates a mapping for each main identifier.

@@ -2,7 +2,7 @@ package org.cbioportal.genome_nexus.service;
 
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.service.config.ExternalResourceObjectMapper;
-import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
+import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 import org.cbioportal.genome_nexus.service.internal.ExternalResourceTransformer;
@@ -29,11 +29,10 @@ public class MutationAssessorTest
 
     //@Test
     public void testStringInputs()
-        throws IOException, JsonMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
+        throws IOException, ResourceMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
         ExternalResourceTransformer transformer = new ExternalResourceTransformer(new ExternalResourceObjectMapper());
-        MutationAssessorDataFetcher fetcher = new MutationAssessorDataFetcher(transformer);
-        fetcher.setMutationAssessorUrl(url);
+        MutationAssessorDataFetcher fetcher = new MutationAssessorDataFetcher(transformer, url);
         MutationAssessorServiceImpl service = new MutationAssessorServiceImpl(fetcher, null);
 
         String urlString1 = url.replace("VARIANT", "7,140453136,A,T");
@@ -60,11 +59,10 @@ public class MutationAssessorTest
 
     //@Test
     public void testJunk()
-        throws IOException, JsonMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
+        throws IOException, ResourceMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
         ExternalResourceTransformer transformer = new ExternalResourceTransformer(new ExternalResourceObjectMapper());
-        MutationAssessorDataFetcher fetcher = new MutationAssessorDataFetcher(transformer);
-        fetcher.setMutationAssessorUrl(url);
+        MutationAssessorDataFetcher fetcher = new MutationAssessorDataFetcher(transformer, url);
         MutationAssessorServiceImpl service = new MutationAssessorServiceImpl(fetcher, null);
 
         String urlString = url.replace("VARIANT", "junkInput");

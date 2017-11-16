@@ -17,6 +17,14 @@ public class GlobalExceptionHandler
             HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(PdbHeaderWebServiceException.class)
+    public ResponseEntity<ErrorResponse> handleCancerHotspotsWebServiceException(PdbHeaderWebServiceException ex)
+    {
+        return new ResponseEntity<>(
+            new ErrorResponse("PDB web service error for id " + ex.getPdbId() + ": " + ex.getResponseBody()),
+            ex.getStatusCode());
+    }
+
     @ExceptionHandler(PfamDomainNotFoundException.class)
     public ResponseEntity<ErrorResponse> handlePfamDomainNotFound(PfamDomainNotFoundException ex)
     {

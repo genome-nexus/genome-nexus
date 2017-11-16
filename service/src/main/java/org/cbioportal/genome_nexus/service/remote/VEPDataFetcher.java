@@ -1,6 +1,6 @@
 package org.cbioportal.genome_nexus.service.remote;
 
-import org.cbioportal.genome_nexus.model.MutationAssessor;
+import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.internal.ExternalResourceTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class MutationAssessorDataFetcher extends BaseExternalResourceFetcher<MutationAssessor>
+public class VEPDataFetcher extends BaseExternalResourceFetcher<VariantAnnotation>
 {
     private static final String MAIN_QUERY_PARAM = "variant";
     private static final String PLACEHOLDER = "VARIANT";
@@ -21,18 +21,18 @@ public class MutationAssessorDataFetcher extends BaseExternalResourceFetcher<Mut
     private final ExternalResourceTransformer transformer;
 
     @Autowired
-    public MutationAssessorDataFetcher(ExternalResourceTransformer transformer,
-                                       @Value("${mutationAssessor.url}") String mutationAssessorUrl)
+    public VEPDataFetcher(ExternalResourceTransformer externalResourceTransformer,
+                          @Value("${vep.url}") String vepUrl)
     {
-        super(mutationAssessorUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
-        this.transformer = transformer;
+        super(vepUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
+        this.transformer = externalResourceTransformer;
     }
 
     @Override
-    public List<MutationAssessor> fetchInstances(Map<String, String> queryParams)
+    public List<VariantAnnotation> fetchInstances(Map<String, String> queryParams)
         throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
     {
-        return this.transformer.transform(this.fetchStringValue(queryParams), MutationAssessor.class);
+        return this.transformer.transform(this.fetchStringValue(queryParams), VariantAnnotation.class);
     }
 
     public ExternalResourceTransformer getTransformer() {

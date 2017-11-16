@@ -89,7 +89,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
             else {
                 throw new MutationAssessorNotFoundException(variant);
             }
-        } catch (JsonMappingException e) {
+        } catch (ResourceMappingException e) {
             throw new MutationAssessorWebServiceException(e.getMessage());
         } catch (HttpClientErrorException e) {
             throw new MutationAssessorWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
