@@ -37,7 +37,7 @@ public class GlobalExceptionHandler
     public ResponseEntity<ErrorResponse> handleVariantAnnotationNotFound(VariantAnnotationNotFoundException ex)
     {
         return new ResponseEntity<>(
-            new ErrorResponse("Variant annotation not found: " + ex.getVariant() + ": " + ex.getResponse()),
+            new ErrorResponse("Variant annotation not found: " + ex.getVariant()),
             HttpStatus.NOT_FOUND);
     }
 

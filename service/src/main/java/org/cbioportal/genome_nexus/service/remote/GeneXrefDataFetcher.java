@@ -2,7 +2,7 @@ package org.cbioportal.genome_nexus.service.remote;
 
 import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
-import org.cbioportal.genome_nexus.service.internal.ExternalResourceTransformer;
+import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,10 +18,10 @@ public class GeneXrefDataFetcher extends BaseExternalResourceFetcher<GeneXref>
     private static final String MAIN_QUERY_PARAM = "accession";
     private static final String PLACEHOLDER = "ACCESSION";
 
-    private final ExternalResourceTransformer transformer;
+    private final ExternalResourceTransformer<GeneXref> transformer;
 
     @Autowired
-    public GeneXrefDataFetcher(ExternalResourceTransformer transformer,
+    public GeneXrefDataFetcher(ExternalResourceTransformer<GeneXref> transformer,
                                @Value("${genexrefs.url}") String geneXrefsUrl)
     {
         super(geneXrefsUrl, MAIN_QUERY_PARAM, PLACEHOLDER);

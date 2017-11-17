@@ -1,8 +1,9 @@
-package org.cbioportal.genome_nexus.service.internal;
+package org.cbioportal.genome_nexus.service.transformer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
+import org.cbioportal.genome_nexus.service.ResourceTransformer;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.util.Transformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ExternalResourceTransformer
+public class ExternalResourceTransformer<T> implements ResourceTransformer<T>
 {
     private final ObjectMapper externalResourceObjectMapper;
 
@@ -24,14 +25,9 @@ public class ExternalResourceTransformer
         this.externalResourceObjectMapper = externalResourceObjectMapper;
     }
 
-    public <T> List<T> transform(String jsonString, Class<T> type) throws ResourceMappingException
+    public List<T> transform(String jsonString, Class<T> type) throws ResourceMappingException
     {
         return this.mapJsonToInstance(jsonString, type, this.externalResourceObjectMapper);
-    }
-
-    public <T> List<T> mapJsonToInstance(String jsonString, Class<T> type) throws ResourceMappingException
-    {
-        return this.mapJsonToInstance(jsonString, type, null);
     }
 
     /**
@@ -43,7 +39,7 @@ public class ExternalResourceTransformer
      * @return a list of instances of the provided class
      * @throws ResourceMappingException
      */
-    public <T> List<T> mapJsonToInstance(String jsonString, Class<T> type, ObjectMapper objectMapper)
+    private List<T> mapJsonToInstance(String jsonString, Class<T> type, ObjectMapper objectMapper)
         throws ResourceMappingException
     {
         List<T> list = new ArrayList<>();

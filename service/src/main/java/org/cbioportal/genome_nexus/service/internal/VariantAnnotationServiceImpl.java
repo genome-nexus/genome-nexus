@@ -32,19 +32,14 @@
 
 package org.cbioportal.genome_nexus.service.internal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.*;
-import org.cbioportal.genome_nexus.persistence.*;
 import org.cbioportal.genome_nexus.service.*;
 
+import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
-import org.cbioportal.genome_nexus.service.remote.VEPDataFetcher;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -57,16 +52,10 @@ import java.util.List;
  * @author Benjamin Gross
  */
 @Service
-public class VEPVariantAnnotationService implements VariantAnnotationService
+public class VariantAnnotationServiceImpl implements VariantAnnotationService
 {
-    private static final Log LOG = LogFactory.getLog(VEPVariantAnnotationService.class);
-
     @Autowired
-    private EnrichmentService enrichmentService;
-    @Autowired
-    private VariantAnnotationRepository variantAnnotationRepository;
-    @Autowired
-    private VEPDataFetcher externalResourceFetcher;
+    private CachedVariantAnnotationFetcher cachedExternalResourceFetcher;
 
     // Lazy autowire services used for enrichment,
     // otherwise we are getting circular dependency issues
@@ -110,52 +99,32 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
     private VariantAnnotation getVariantAnnotation(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        boolean saveAnnotationJson = true;
         VariantAnnotation variantAnnotation = null;
-        String annotationJSON = null;
+
         try {
-            variantAnnotation = variantAnnotationRepository.findOne(variant);
-        }
-        catch (DataAccessResourceFailureException e) {
-            LOG.warn("Failed to read from Mongo database - falling back on Ensembl server. Will not attempt to store variant in Mongo database.");
-            saveAnnotationJson = false;
-        }
-
-        if (variantAnnotation == null)
-        {
             // get the annotation from the web service and save it to the DB
-            try {
-                // get the raw annotation string from the web service
-                annotationJSON = this.externalResourceFetcher.fetchStringValue(variant);
+            variantAnnotation = cachedExternalResourceFetcher.fetchAndCache(variant);
 
-                // construct a VariantAnnotation instance to return:
-                // this does not contain all the information obtained from the web service
-                // only the fields mapped to the VariantAnnotation model will be returned
-                variantAnnotation = this.mapAnnotationJson(variant, annotationJSON);
+            // include original variant value too
+            if (variantAnnotation != null) {
+                variantAnnotation.setVariant(variant);
+            }
+        }
+        catch (HttpClientErrorException e) {
+            // in case of web service error, throw an exception to indicate that there is a problem with the service.
+            throw new VariantAnnotationWebServiceException(variant, e.getResponseBodyAsString(), e.getStatusCode());
+        }
+        catch (ResourceMappingException e) {
+            // TODO this only indicates that web service returns an incompatible response, but
+            // this does not always mean that annotation is not found
+            throw new VariantAnnotationNotFoundException(variant);
+        }
+        catch (ResourceAccessException e) {
+            throw new VariantAnnotationWebServiceException(variant, e.getMessage());
+        }
 
-                // save everything to the cache as a properly parsed JSON
-                if (saveAnnotationJson) {
-                    variantAnnotationRepository.saveAnnotationJson(variant, annotationJSON);
-                }
-            }
-            catch (HttpClientErrorException e) {
-                // in case of web service error, throw an exception to indicate that there is a problem with the service.
-                throw new VariantAnnotationWebServiceException(variant, e.getResponseBodyAsString(), e.getStatusCode());
-            }
-            catch (ResourceMappingException e) {
-                // TODO this only indicates that web service returns an incompatible response, but
-                // this does not always mean that annotation is not found
-                throw new VariantAnnotationNotFoundException(variant, annotationJSON);
-            }
-            catch (DataIntegrityViolationException e) {
-                // in case of data integrity violation exception, do not bloat the logs
-                // this is thrown when the annotationJSON can't be stored by mongo
-                // due to the variant annotation key being too large to index
-                LOG.info(e.getLocalizedMessage());
-            }
-            catch (ResourceAccessException e) {
-                throw new VariantAnnotationWebServiceException(variant, e.getMessage());
-            }
+        if (variantAnnotation == null) {
+            throw new VariantAnnotationNotFoundException(variant);
         }
 
         return variantAnnotation;
@@ -224,30 +193,5 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
         }
 
         return postEnrichmentService;
-    }
-
-    /**
-     * Maps the given raw annotation JSON string onto a VariantAnnotation instance.
-     *
-     * @param variant           variant key
-     * @param annotationJSON    raw annotation JSON string
-     * @return a VariantAnnotation instance
-     * @throws ResourceMappingException
-     */
-    private VariantAnnotation mapAnnotationJson(String variant, String annotationJSON) throws ResourceMappingException
-    {
-        // map annotation string onto VariantAnnotation instance
-        List<VariantAnnotation> list = this.externalResourceFetcher.getTransformer().transform(
-            annotationJSON, VariantAnnotation.class);
-
-        // assuming annotationJSON contains only a single variant.
-        // get the first one, ignore the rest...
-        VariantAnnotation vepVariantAnnotation = list.get(0);
-
-        // include original variant value too
-        vepVariantAnnotation.setVariant(variant);
-        //vepVariantAnnotation.setAnnotationJSON(annotationJSON);
-
-        return vepVariantAnnotation;
     }
 }

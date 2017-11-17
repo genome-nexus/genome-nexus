@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Cursor;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
 {
     @Autowired

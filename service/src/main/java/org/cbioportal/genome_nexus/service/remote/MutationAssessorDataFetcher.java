@@ -2,7 +2,7 @@ package org.cbioportal.genome_nexus.service.remote;
 
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
-import org.cbioportal.genome_nexus.service.internal.ExternalResourceTransformer;
+import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,10 +18,10 @@ public class MutationAssessorDataFetcher extends BaseExternalResourceFetcher<Mut
     private static final String MAIN_QUERY_PARAM = "variant";
     private static final String PLACEHOLDER = "VARIANT";
 
-    private final ExternalResourceTransformer transformer;
+    private final ExternalResourceTransformer<MutationAssessor> transformer;
 
     @Autowired
-    public MutationAssessorDataFetcher(ExternalResourceTransformer transformer,
+    public MutationAssessorDataFetcher(ExternalResourceTransformer<MutationAssessor> transformer,
                                        @Value("${mutationAssessor.url}") String mutationAssessorUrl)
     {
         super(mutationAssessorUrl, MAIN_QUERY_PARAM, PLACEHOLDER);

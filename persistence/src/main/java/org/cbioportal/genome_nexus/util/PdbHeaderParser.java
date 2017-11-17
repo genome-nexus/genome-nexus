@@ -1,38 +1,32 @@
-package org.cbioportal.genome_nexus.service.internal;
+package org.cbioportal.genome_nexus.util;
 
 import org.cbioportal.genome_nexus.model.PdbHeader;
-import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 /**
- * Class designed to parse raw text files returned from PDB data service,
- * and to convert data into JSON objects.
+ * Class designed to parse raw PDB file text content.
  *
  * @author Selcuk Onur Sumer
  */
 @Component
-public class PdbFileParser
+public class PdbHeaderParser
 {
-    public PdbHeader mapToInstance(String pdbId, String rawInput) throws ResourceMappingException
+    public PdbHeader convertToInstance(String plainText)
     {
         PdbHeader pdbHeader = null;
 
-        try {
-            if (rawInput != null && rawInput.length() > 0)
-            {
-                Map<String, String> content = this.parsePdbFile(rawInput);
+        if (plainText != null && plainText.length() > 0)
+        {
+            Map<String, String> content = this.parsePdbFile(plainText);
 
-                pdbHeader = new PdbHeader();
+            pdbHeader = new PdbHeader();
 
-                pdbHeader.setPdbId(pdbId);
-                pdbHeader.setTitle(this.parseTitle(content.get("title")));
-                pdbHeader.setCompound(this.parseCompound(content.get("compnd")));
-                pdbHeader.setSource(this.parseCompound(content.get("source")));
-            }
-        } catch (Exception e) {
-            throw new ResourceMappingException(e.getMessage());
+            pdbHeader.setPdbId(this.parseId(content.get("header")));
+            pdbHeader.setTitle(this.parseTitle(content.get("title")));
+            pdbHeader.setCompound(this.parseCompound(content.get("compnd")));
+            pdbHeader.setSource(this.parseCompound(content.get("source")));
         }
 
         return pdbHeader;
@@ -217,5 +211,31 @@ public class PdbFileParser
         }
 
         return sb.toString().trim();
+    }
+
+    /**
+     * Parses the raw PDB header content returned by the service,
+     * and extracts the id.
+     *
+     * @param rawHeader   data line to process
+     * @return  a human readable info string
+     */
+    public String parseId(String rawHeader)
+    {
+        String[] parts = rawHeader.split("\\s");
+        String id = null;
+
+        // assuming that the last item is always the id
+        if (parts.length > 0)
+        {
+            id = parts[parts.length - 1];
+        }
+
+        if (id == null || id.length() == 0) {
+            return null;
+        }
+        else {
+            return id.trim().toLowerCase();
+        }
     }
 }
