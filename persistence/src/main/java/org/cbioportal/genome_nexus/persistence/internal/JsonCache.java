@@ -38,37 +38,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author Selcuk Onur Sumer
  */
-public class VariantAnnotationRepositoryImpl implements VariantAnnotationRepositoryCustom
+public class JsonCache
 {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public final String DEFAULT_COLLECTION = "vep.annotation";
+    private static Logger log = Logger.getLogger(String.valueOf(JsonCache.class));
 
     /**
      * Parses and saves the entire content of the annotation JSON object to the database.
      *
-     * @param variant           variant key (used as an id)
-     * @param annotationJSON    raw annotation JSON (obtained from the service)
+     * @param key           key (used as an id)
+     * @param json          raw JSON (obtained from the service)
+     * @param collection    collection name where to save the object
      */
-    @Override
-    public void saveAnnotationJson(String variant, String annotationJSON)
+    public void save(String key, String json, String collection)
     {
         // parse the given annotation JSON string to get a proper object
-        List<DBObject> list = Transformer.convertToDbObject(annotationJSON);
+        List<DBObject> list = Transformer.convertToDbObject(json);
 
-        // assuming annotationJSON contains only a single variant.
+        // assuming json contains only a single json object
+        if (list.size() > 1 || list.size() == 0) {
+            log.warning("Unexpected JSON size (> 1): " + list.size() + "\nSee list:" + list);
+        }
         // get the first one, ignore the rest...
         DBObject dbObject = list.get(0);
 
-        // update the _id field to the given variant
-        dbObject.put("_id", variant);
+        // update the _id field 
+        dbObject.put("_id", key);
 
-        // save the object into the correct repository
-        this.mongoTemplate.save(dbObject, DEFAULT_COLLECTION);
+        // save the object into the correct collection
+        this.mongoTemplate.save(dbObject, collection);
     }
 }

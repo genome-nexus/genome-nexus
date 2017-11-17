@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Memorial Sloan-Kettering Cancer Center.
+ * Copyright (c) 2016 Memorial Sloan-Kettering Cancer Center.
  *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS
@@ -30,14 +30,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cbioportal.genome_nexus.persistence;
-
-import org.cbioportal.genome_nexus.persistence.internal.VariantAnnotationRepositoryCustom;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.springframework.data.mongodb.repository.MongoRepository;
+package org.cbioportal.genome_nexus.persistence.internal;
 
 /**
- * @author Benjamin Gross
+ * @author Selcuk Onur Sumer
  */
-public interface VariantAnnotationRepository
-    extends MongoRepository<VariantAnnotation, String>, VariantAnnotationRepositoryCustom {}
+public interface JsonCacheRepositoryCustom
+{
+    /**
+     * Parses and saves the entire content of the JSON object to the database.
+     *
+     * @param key           key (used as an id)
+     * @param json          raw JSON (obtained from the service)
+     * @param collection    what collection to save the object
+     */
+    void saveJson(String key, String json, String collection);
+}
