@@ -36,6 +36,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.persistence.*;
+import org.cbioportal.genome_nexus.persistence.internal.JsonCache;
+import org.cbioportal.genome_nexus.persistence.internal.VariantAnnotationRepository;
 import org.cbioportal.genome_nexus.service.*;
 
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
@@ -44,6 +46,7 @@ import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebService
 import org.cbioportal.genome_nexus.service.remote.VEPDataFetcher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -63,6 +66,7 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
 
     @Autowired
     private EnrichmentService enrichmentService;
+    private JsonCache jsonCache = new JsonCache();
     @Autowired
     private VariantAnnotationRepository variantAnnotationRepository;
     @Autowired
@@ -135,7 +139,7 @@ public class VEPVariantAnnotationService implements VariantAnnotationService
 
                 // save everything to the cache as a properly parsed JSON
                 if (saveAnnotationJson) {
-                    variantAnnotationRepository.saveAnnotationJson(variant, annotationJSON);
+                    jsonCache.save(variant, annotationJSON, "vep.annotation");
                 }
             }
             catch (HttpClientErrorException e) {
