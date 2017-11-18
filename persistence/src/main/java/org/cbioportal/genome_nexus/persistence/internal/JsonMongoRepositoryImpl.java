@@ -32,16 +32,53 @@
 
 package org.cbioportal.genome_nexus.persistence.internal;
 
+import com.mongodb.DBObject;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cbioportal.genome_nexus.persistence.GenericMongoRepository;
+import org.cbioportal.genome_nexus.util.Transformer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
 /**
  * @author Selcuk Onur Sumer
  */
-public interface VariantAnnotationRepositoryCustom
+@Repository
+public class JsonMongoRepositoryImpl implements GenericMongoRepository
 {
+    private static final Log LOG = LogFactory.getLog(JsonMongoRepositoryImpl.class);
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     /**
      * Parses and saves the entire content of the annotation JSON object to the database.
      *
-     * @param variant           variant key (used as an id)
-     * @param annotationJSON    raw annotation JSON (obtained from the service)
+     * @param key  key (used as an id)
+     * @param json raw JSON value
      */
-    void saveAnnotationJson(String variant, String annotationJSON);
+    @Override
+    public void saveStringValue(String collection, String key, String json)
+    {
+        // parse the given json string to get a proper object
+        List<DBObject> list = Transformer.convertToDbObject(json);
+
+        // assuming json contains only a single json object
+        if (list.size() != 1) {
+            LOG.warn("Unexpected JSON size (!= 1): " + list.size() + "\nSee list:" + list);
+        }
+
+        // assuming value contains only a single variant.
+        // get the first one, ignore the rest...
+        DBObject dbObject = list.get(0);
+
+        // update the _id field to the given variant
+        dbObject.put("_id", key);
+
+        // save the object into the correct repository
+        this.mongoTemplate.save(dbObject, collection);
+    }
 }

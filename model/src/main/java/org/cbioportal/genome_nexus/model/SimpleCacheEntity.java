@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 /**
  * @author Selcuk Onur Sumer
  */
-@Document(collection = "simple_cache")
 public class SimpleCacheEntity
 {
     @Id

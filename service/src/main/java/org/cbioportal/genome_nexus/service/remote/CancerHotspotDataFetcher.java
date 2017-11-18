@@ -2,7 +2,7 @@ package org.cbioportal.genome_nexus.service.remote;
 
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
-import org.cbioportal.genome_nexus.service.internal.ExternalResourceTransformer;
+import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,10 +19,10 @@ public class CancerHotspotDataFetcher extends BaseExternalResourceFetcher<Hotspo
     public static final String MAIN_QUERY_PARAM = "variables";
 
     private final String hotspotsUrl;
-    private final ExternalResourceTransformer transformer;
+    private final ExternalResourceTransformer<Hotspot> transformer;
 
     @Autowired
-    public CancerHotspotDataFetcher(ExternalResourceTransformer transformer,
+    public CancerHotspotDataFetcher(ExternalResourceTransformer<Hotspot> transformer,
                                     @Value("${hotspots.url}") String hotspotsUrl)
     {
         super(hotspotsUrl, MAIN_QUERY_PARAM, null);

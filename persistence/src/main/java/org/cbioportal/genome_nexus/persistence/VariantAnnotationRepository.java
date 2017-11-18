@@ -32,7 +32,6 @@
 
 package org.cbioportal.genome_nexus.persistence;
 
-import org.cbioportal.genome_nexus.persistence.internal.VariantAnnotationRepositoryCustom;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -40,4 +39,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @author Benjamin Gross
  */
 public interface VariantAnnotationRepository
-    extends MongoRepository<VariantAnnotation, String>, VariantAnnotationRepositoryCustom {}
+    extends MongoRepository<VariantAnnotation, String>, GenericMongoRepository {}
