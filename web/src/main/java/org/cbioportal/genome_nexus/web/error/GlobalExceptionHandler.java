@@ -17,11 +17,27 @@ public class GlobalExceptionHandler
             HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(PdbHeaderWebServiceException.class)
+    public ResponseEntity<ErrorResponse> handleCancerHotspotsWebServiceException(PdbHeaderWebServiceException ex)
+    {
+        return new ResponseEntity<>(
+            new ErrorResponse("PDB web service error for id " + ex.getPdbId() + ": " + ex.getResponseBody()),
+            ex.getStatusCode());
+    }
+
+    @ExceptionHandler(PfamDomainNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlePfamDomainNotFound(PfamDomainNotFoundException ex)
+    {
+        return new ResponseEntity<>(
+            new ErrorResponse("PFAM domain not found: " + ex.getPfamAccession()),
+            HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(VariantAnnotationNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleVariantAnnotationNotFound(VariantAnnotationNotFoundException ex)
     {
         return new ResponseEntity<>(
-            new ErrorResponse("Variant annotation not found: " + ex.getVariant() + ": " + ex.getResponse()),
+            new ErrorResponse("Variant annotation not found: " + ex.getVariant()),
             HttpStatus.NOT_FOUND);
     }
 

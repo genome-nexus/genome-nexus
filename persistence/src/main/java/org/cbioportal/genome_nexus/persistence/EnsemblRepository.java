@@ -9,7 +9,12 @@ import java.util.List;
 public interface EnsemblRepository extends MongoRepository<EnsemblTranscript, String>, EnsemblRepositoryCustom
 {
     /*List<EnsemblTranscript> findAll();*/
-    List<EnsemblTranscript> findByTranscriptId(String transcriptId);
+    EnsemblTranscript findOneByTranscriptId(String transcriptId);
+
+    List<EnsemblTranscript> findByTranscriptIdIn(List<String> transcriptIds);
     List<EnsemblTranscript> findByGeneId(String geneId);
+    List<EnsemblTranscript> findByGeneIdIn(List<String> geneIds);
     List<EnsemblTranscript> findByProteinId(String proteinId);
+    List<EnsemblTranscript> findByProteinIdIn(List<String> proteinIds);
+    List<EnsemblTranscript> findByGeneIdAndProteinId(String geneId, String proteinId);
 }

@@ -2,17 +2,13 @@ package org.cbioportal.genome_nexus.service.mixin;
 
 import com.fasterxml.jackson.annotation.*;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.Map;
 
-@Document(collection = "vep.annotation")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class VariantAnnotationMixin {
-
-    @Id
+public class VariantAnnotationMixin
+{
     @JsonProperty(required = true)
     private String variant;
 

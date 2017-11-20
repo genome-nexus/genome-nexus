@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.PdbHeader;
 import org.cbioportal.genome_nexus.service.PdbDataService;
 import org.cbioportal.genome_nexus.service.exception.PdbHeaderNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.PdbHeaderWebServiceException;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class PdbController
         @ApiParam(value = "PDB id, for example 1a37",
             required = true,
             allowMultiple = true)
-        @PathVariable String pdbId) throws PdbHeaderNotFoundException
+        @PathVariable String pdbId) throws PdbHeaderNotFoundException, PdbHeaderWebServiceException
     {
         return pdbDataService.getPdbHeader(pdbId);
     }
@@ -58,21 +59,6 @@ public class PdbController
             allowMultiple = true)
         @RequestBody List<String> pdbIds)
     {
-        List<PdbHeader> pdbHeaderList = new LinkedList<>();
-
-        // remove duplicates
-        Set<String> pdbIdSet = new LinkedHashSet<>(pdbIds);
-
-        for (String pdbId : pdbIdSet)
-        {
-            try {
-                PdbHeader header = pdbDataService.getPdbHeader(pdbId);
-                pdbHeaderList.add(header);
-            } catch (PdbHeaderNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return pdbHeaderList;
+        return this.pdbDataService.getPdbHeaders(pdbIds);
     }
 }

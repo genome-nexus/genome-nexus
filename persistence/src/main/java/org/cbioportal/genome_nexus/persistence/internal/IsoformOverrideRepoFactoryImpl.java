@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * @author Selcuk Onur Sumer
  */
-@Component("defaultIsoformOverrideRepoFactory")
+@Component
 public class IsoformOverrideRepoFactoryImpl implements IsoformOverrideRepoFactory
 {
     // comma separated list of isoform overrides

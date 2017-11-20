@@ -1,16 +1,17 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import org.cbioportal.genome_nexus.model.PdbHeader;
-import org.cbioportal.genome_nexus.model.SimpleCacheEntity;
-import org.cbioportal.genome_nexus.persistence.SimpleCacheRepository;
 import org.cbioportal.genome_nexus.service.PdbDataService;
+import org.cbioportal.genome_nexus.service.cached.CachedPdbHeaderFetcher;
+import org.cbioportal.genome_nexus.service.exception.PdbHeaderWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.PdbHeaderNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Selcuk Onur Sumer
@@ -18,77 +19,68 @@ import java.util.Map;
 @Service
 public class PdbDataServiceImpl implements PdbDataService
 {
-    private String headerServiceURL;
-    @Value("${pdb.header_service_url}")
-    public void setHeaderServiceURL(String headerServiceURL)
+    private final CachedPdbHeaderFetcher cachedExternalResourceFetcher;
+
+    @Autowired
+    public PdbDataServiceImpl(CachedPdbHeaderFetcher cachedExternalResourceFetcher)
     {
-        this.headerServiceURL = headerServiceURL;
+        this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
     }
 
-    @Autowired
-    private SimpleCacheRepository cacheRepository;
-
-    @Autowired
-    private PdbFileParser pdbParser;
-
     @Override
-    public PdbHeader getPdbHeader(String pdbId) throws PdbHeaderNotFoundException
+    public PdbHeader getPdbHeader(String pdbId) throws PdbHeaderNotFoundException, PdbHeaderWebServiceException
     {
-        PdbHeader info = null;
+        PdbHeader pdbHeader = null;
 
-        if (pdbId != null &&
-            pdbId.length() > 0)
-        {
-            String rawData = this.getRawInfo(pdbId);
+        try {
+            // get the PDB data from the web service and save it to the DB
+            pdbHeader = this.cachedExternalResourceFetcher.fetchAndCache(pdbId);
 
-            if (rawData != null)
-            {
-                Map<String, String> content = this.pdbParser.parsePdbFile(rawData);
-
-                info = new PdbHeader();
-
-                info.setPdbId(pdbId);
-                info.setTitle(this.pdbParser.parseTitle(content.get("title")));
-                info.setCompound(this.pdbParser.parseCompound(content.get("compnd")));
-                info.setSource(this.pdbParser.parseCompound(content.get("source")));
+            // include original pdb id value too
+            if (pdbHeader != null) {
+                pdbHeader.setPdbId(pdbId);
             }
         }
+        catch (HttpClientErrorException e) {
+            // in case of web service error, throw an exception to indicate that there is a problem with the service.
+            throw new PdbHeaderWebServiceException(pdbId, e.getResponseBodyAsString(), e.getStatusCode());
+        }
+        catch (ResourceMappingException e) {
+            // TODO this only indicates that web service returns an incompatible response, but
+            // this does not always mean that annotation is not found
+            throw new PdbHeaderNotFoundException(pdbId);
+        }
+        catch (ResourceAccessException e) {
+            throw new PdbHeaderWebServiceException(pdbId, e.getMessage());
+        }
 
-        if (info == null) {
+        if (pdbHeader == null) {
             throw new PdbHeaderNotFoundException(pdbId);
         }
 
-        return info;
+        return pdbHeader;
     }
 
-    private String getRawInfo(String pdbId)
+    @Override
+    public List<PdbHeader> getPdbHeaders(List<String> pdbIds)
     {
-        // try to get the data from database first
-        SimpleCacheEntity entity = cacheRepository.findOne(pdbId);
+        List<PdbHeader> pdbHeaderList = new LinkedList<>();
 
-        // we have the information in the cache already!
-        if (entity != null)
+        // remove duplicates
+        Set<String> pdbIdSet = new LinkedHashSet<>(pdbIds);
+
+        for (String pdbId : pdbIdSet)
         {
-            return entity.getValue();
-        }
-
-        //http://www.rcsb.org/pdb/files/PDB_ID.pdb?headerOnly=YES
-        //http://files.rcsb.org/header/PDB_ID.pdb
-        String uri = headerServiceURL.replace("PDB_ID", pdbId.toUpperCase());
-        RestTemplate restTemplate = new RestTemplate();
-
-        try {
-            String value = restTemplate.getForObject(uri, String.class);
-            // cache the retrieved value
-            if (value != null && value.length() > 0)
-            {
-                // TODO sanitize value before caching?
-                cacheRepository.save(new SimpleCacheEntity(pdbId, value));
+            try {
+                PdbHeader header = this.getPdbHeader(pdbId);
+                pdbHeaderList.add(header);
+            } catch (PdbHeaderWebServiceException e) {
+                e.printStackTrace();
+            } catch (PdbHeaderNotFoundException e) {
+                // fail silently for this pdb id
             }
-            return value;
-        } catch (Exception e) {
-            //e.printStackTrace();
-            return null;
         }
+
+        return pdbHeaderList;
     }
 }

@@ -38,31 +38,26 @@ import org.cbioportal.genome_nexus.service.GeneXrefService;
 import java.util.*;
 
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
-import org.cbioportal.genome_nexus.service.exception.JsonMappingException;
+import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
+import org.cbioportal.genome_nexus.service.remote.GeneXrefDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
 
 /**
  *
  * @author ochoaa
  */
 @Service
-public class GeneXrefServiceImpl implements GeneXrefService {
-
-    private String geneXrefsURL;
-    @Value("${genexrefs.url}")
-    public void setGeneXrefsURL(String geneXrefsURL) { this.geneXrefsURL = geneXrefsURL; }
-
-    private final ExternalResourceTransformer externalResourceTransformer;
+public class GeneXrefServiceImpl implements GeneXrefService
+{
+    private final GeneXrefDataFetcher externalResourceFetcher;
 
     @Autowired
-    public GeneXrefServiceImpl(ExternalResourceTransformer externalResourceTransformer)
+    public GeneXrefServiceImpl(GeneXrefDataFetcher externalResourceFetcher)
     {
-        this.externalResourceTransformer = externalResourceTransformer;
+        this.externalResourceFetcher = externalResourceFetcher;
     }
 
     @Override
@@ -71,10 +66,9 @@ public class GeneXrefServiceImpl implements GeneXrefService {
         List<GeneXref> geneXrefs;
 
         try {
-            String xrefJSON = getGeneXrefsJSON(accession);
-            geneXrefs = this.externalResourceTransformer.transform(xrefJSON, GeneXref.class);
+            geneXrefs = this.externalResourceFetcher.fetchInstances(accession);
         }
-        catch (JsonMappingException e) {
+        catch (ResourceMappingException e) {
             throw new EnsemblWebServiceException(e.getMessage());
         }
         catch (HttpClientErrorException e)
@@ -88,11 +82,4 @@ public class GeneXrefServiceImpl implements GeneXrefService {
 
         return geneXrefs;
     }
-
-    private String getGeneXrefsJSON(String accession) {
-        String uri = geneXrefsURL.replace("ACCESSION", accession);
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(uri, String.class);
-    }
-
 }

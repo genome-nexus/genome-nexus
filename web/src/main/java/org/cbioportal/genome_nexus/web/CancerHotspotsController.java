@@ -4,9 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.Hotspot;
-import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.cbioportal.genome_nexus.service.HotspotService;
+import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -14,7 +12,6 @@ import org.cbioportal.genome_nexus.web.config.InternalApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @InternalApi
@@ -24,14 +21,11 @@ import java.util.List;
 @Api(tags = "cancer-hotspots-controller", description = "Cancer Hotspots Controller")
 public class CancerHotspotsController
 {
-    private final VariantAnnotator variantAnnotator;
-    private final HotspotService hotspotService;
+    private final CancerHotspotService hotspotService;
 
     @Autowired
-    public CancerHotspotsController(VariantAnnotator variantAnnotator,
-                                    HotspotService hotspotService)
+    public CancerHotspotsController(CancerHotspotService hotspotService)
     {
-        this.variantAnnotator = variantAnnotator;
         this.hotspotService = hotspotService;
     }
 
@@ -48,7 +42,7 @@ public class CancerHotspotsController
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
     {
-        return this.getHotspotAnnotations(variant);
+        return this.hotspotService.getHotspotAnnotations(variant);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotation for the provided list of variants",
@@ -62,68 +56,6 @@ public class CancerHotspotsController
             allowMultiple = true)
         @RequestBody List<String> variants) throws CancerHotspotsWebServiceException
     {
-        return this.getHotspotAnnotations(variants);
-    }
-
-    private List<Hotspot> getHotspotAnnotations(String variant)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
-        CancerHotspotsWebServiceException
-    {
-        VariantAnnotation variantAnnotation = this.variantAnnotator.getVariantAnnotation(variant);
-        List<Hotspot> hotspots = new ArrayList<>();
-
-        if (variantAnnotation != null)
-        {
-            hotspots.addAll(this.getHotspotAnnotations(variantAnnotation));
-        }
-
-        return hotspots;
-    }
-
-    private List<Hotspot> getHotspotAnnotations(List<String> variants)
-        throws CancerHotspotsWebServiceException
-    {
-        List<VariantAnnotation> variantAnnotations = this.variantAnnotator.getVariantAnnotations(variants);
-
-        List<Hotspot> hotspots = new ArrayList<>();
-
-        for (VariantAnnotation variantAnnotation : variantAnnotations)
-        {
-            hotspots.addAll(this.getHotspotAnnotations(variantAnnotation));
-        }
-
-        return hotspots;
-    }
-
-    private List<Hotspot> getHotspotAnnotations(VariantAnnotation variantAnnotation)
-        throws CancerHotspotsWebServiceException
-    {
-        List<Hotspot> hotspots = new ArrayList<>();
-
-        if (variantAnnotation.getTranscriptConsequences() != null)
-        {
-            for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
-            {
-                hotspots.addAll(getHotspotAnnotations(transcript));
-            }
-        }
-
-        return hotspots;
-    }
-
-    private List<Hotspot> getHotspotAnnotations(TranscriptConsequence transcript)
-        throws CancerHotspotsWebServiceException
-    {
-        // String transcriptId = transcript.getTranscriptId();
-        // Hotspot hotspot = hotspotRepository.findOne(transcriptId);
-
-        // hotspotService.setHotspotsURL("http://cancerhotspots.org/api/hotspots/single/");
-        // get the hotspot(s) from the web service
-        List<Hotspot> hotspots = hotspotService.getHotspots(transcript);
-
-        // do not cache anything for now
-        // hotspotRepository.save(hotspots);
-
-        return hotspots;
+        return this.hotspotService.getHotspotAnnotations(variants);
     }
 }

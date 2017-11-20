@@ -36,7 +36,6 @@ import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
-import org.cbioportal.genome_nexus.service.internal.*;
 import org.cbioportal.genome_nexus.service.*;
 
 import org.cbioportal.genome_nexus.web.config.PublicApi;
@@ -44,7 +43,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
-import org.apache.commons.logging.*;
 
 /**
  * @author Benjamin Gross
@@ -55,23 +53,12 @@ import org.apache.commons.logging.*;
 @RequestMapping(value= "/")
 public class AnnotationController
 {
-    private final VariantAnnotator variantAnnotator;
-    private final IsoformOverrideService isoformOverrideService;
-    private final HotspotService hotspotService;
-    private final MutationAssessorService mutationAssessorService;
-
-    private static final Log LOG = LogFactory.getLog(AnnotationController.class);
+    private final VariantAnnotationService variantAnnotationService;
 
     @Autowired
-    public AnnotationController(VariantAnnotator variantAnnotator,
-                                IsoformOverrideService isoformOverrideService,
-                                HotspotService hotspotService,
-                                MutationAssessorService mutationService)
+    public AnnotationController(VariantAnnotationService variantAnnotationService)
     {
-        this.variantAnnotator = variantAnnotator;
-        this.isoformOverrideService = isoformOverrideService;
-        this.hotspotService = hotspotService;
-        this.mutationAssessorService = mutationService;
+        this.variantAnnotationService = variantAnnotationService;
     }
 
     // TODO remove this endpoint after all internal dependencies are resolved
@@ -142,9 +129,7 @@ public class AnnotationController
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         @RequestParam(required = false) List<String> fields)
     {
-        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
-
-        return this.variantAnnotator.getVariantAnnotations(variants, postEnrichmentService);
+        return this.variantAnnotationService.getAnnotations(variants, isoformOverrideSource, fields);
 	}
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided variant",
@@ -164,39 +149,6 @@ public class AnnotationController
         @RequestParam(required = false) List<String> fields)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
-
-        return this.variantAnnotator.getVariantAnnotation(variant, postEnrichmentService);
-    }
-
-    private EnrichmentService initPostEnrichmentService(String isoformOverrideSource, List<String> fields)
-    {
-        // The post enrichment service enriches the annotation after saving
-        // the original annotation data to the repository. Any enrichment
-        // performed by the post enrichment service is not saved
-        // to the annotation repository.
-        EnrichmentService postEnrichmentService = new VEPEnrichmentService();
-
-        // only register the enricher if the service actually has data for the given source
-        if (isoformOverrideService.hasData(isoformOverrideSource))
-        {
-            AnnotationEnricher enricher = new IsoformAnnotationEnricher(
-                isoformOverrideSource, isoformOverrideService);
-
-            postEnrichmentService.registerEnricher(isoformOverrideSource, enricher);
-        }
-
-        if (fields != null && fields.contains("hotspots"))
-        {
-            AnnotationEnricher enricher = new HotspotAnnotationEnricher(hotspotService, true);
-            postEnrichmentService.registerEnricher("cancerHotspots", enricher);
-        }
-        if (fields != null && fields.contains("mutation_assessor"))
-        {
-            AnnotationEnricher enricher = new MutationAssessorAnnotationEnricher(mutationAssessorService);
-            postEnrichmentService.registerEnricher("mutation_assessor", enricher);
-        }
-
-        return postEnrichmentService;
+        return this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, fields);
     }
 }
