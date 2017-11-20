@@ -10,8 +10,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
 {
+    private final MongoTemplate mongoTemplate;
+
     @Autowired
-    private MongoTemplate mongoTemplate;
+    public EnsemblRepositoryImpl(MongoTemplate mongoTemplate)
+    {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     public static final String CANONICAL_TRANSCRIPTS_COLLECTION = "ensembl.canonical_transcript_per_hgnc";
     public static final String TRANSCRIPTS_COLLECTION = "ensembl.biomart_transcripts";

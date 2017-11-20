@@ -51,8 +51,13 @@ public class JsonMongoRepositoryImpl implements GenericMongoRepository
 {
     private static final Log LOG = LogFactory.getLog(JsonMongoRepositoryImpl.class);
 
+    protected final MongoTemplate mongoTemplate;
+
     @Autowired
-    private MongoTemplate mongoTemplate;
+    public JsonMongoRepositoryImpl(MongoTemplate mongoTemplate)
+    {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     /**
      * Parses and saves the entire content of the annotation JSON object to the database.

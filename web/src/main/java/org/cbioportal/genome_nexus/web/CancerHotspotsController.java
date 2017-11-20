@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.Hotspot;
-import org.cbioportal.genome_nexus.service.HotspotService;
+import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -21,10 +21,10 @@ import java.util.List;
 @Api(tags = "cancer-hotspots-controller", description = "Cancer Hotspots Controller")
 public class CancerHotspotsController
 {
-    private final HotspotService hotspotService;
+    private final CancerHotspotService hotspotService;
 
     @Autowired
-    public CancerHotspotsController(HotspotService hotspotService)
+    public CancerHotspotsController(CancerHotspotService hotspotService)
     {
         this.hotspotService = hotspotService;
     }

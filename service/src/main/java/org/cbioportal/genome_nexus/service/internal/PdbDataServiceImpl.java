@@ -19,8 +19,13 @@ import java.util.*;
 @Service
 public class PdbDataServiceImpl implements PdbDataService
 {
+    private final CachedPdbHeaderFetcher cachedExternalResourceFetcher;
+
     @Autowired
-    private CachedPdbHeaderFetcher cachedExternalResourceFetcher;
+    public PdbDataServiceImpl(CachedPdbHeaderFetcher cachedExternalResourceFetcher)
+    {
+        this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
+    }
 
     @Override
     public PdbHeader getPdbHeader(String pdbId) throws PdbHeaderNotFoundException, PdbHeaderWebServiceException

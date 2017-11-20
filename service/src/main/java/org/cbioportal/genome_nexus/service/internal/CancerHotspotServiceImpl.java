@@ -35,7 +35,7 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.cbioportal.genome_nexus.service.HotspotService;
+import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
@@ -55,7 +55,7 @@ import java.util.List;
  * @author Selcuk Onur Sumer
  */
 @Service
-public class CancerHotspotService implements HotspotService
+public class CancerHotspotServiceImpl implements CancerHotspotService
 {
     private HotspotCache cache;
 
@@ -63,8 +63,8 @@ public class CancerHotspotService implements HotspotService
     private final VariantAnnotationService variantAnnotationService;
 
     @Autowired
-    public CancerHotspotService(CancerHotspotDataFetcher externalResourceFetcher,
-                                VariantAnnotationService variantAnnotationService)
+    public CancerHotspotServiceImpl(CancerHotspotDataFetcher externalResourceFetcher,
+                                    VariantAnnotationService variantAnnotationService)
     {
         this.externalResourceFetcher = externalResourceFetcher;
         this.variantAnnotationService = variantAnnotationService;

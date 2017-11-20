@@ -1,4 +1,4 @@
-package org.cbioportal.genome_nexus.service.internal;
+package org.cbioportal.genome_nexus.service.enricher;
 
 import org.cbioportal.genome_nexus.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.model.IsoformOverride;

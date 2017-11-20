@@ -16,11 +16,14 @@ public class PdbHeaderRepositoryImpl
 {
     public static final String COLLECTION = "pdb.header";
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final PdbHeaderParser parser;
 
     @Autowired
-    private PdbHeaderParser parser;
+    public PdbHeaderRepositoryImpl(MongoTemplate mongoTemplate, PdbHeaderParser parser)
+    {
+        super(mongoTemplate);
+        this.parser = parser;
+    }
 
     public PdbHeader findOne(String id)
     {

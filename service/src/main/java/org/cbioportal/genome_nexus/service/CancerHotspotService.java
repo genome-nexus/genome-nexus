@@ -43,7 +43,7 @@ import java.util.List;
 /**
  * @author Selcuk Onur Sumer
  */
-public interface HotspotService
+public interface CancerHotspotService
 {
     List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspots(TranscriptConsequence transcript) throws CancerHotspotsWebServiceException;

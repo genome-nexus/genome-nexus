@@ -9,8 +9,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class PlainTextMongoRepositoryImpl implements GenericMongoRepository
 {
+    protected final MongoTemplate mongoTemplate;
+
     @Autowired
-    private MongoTemplate mongoTemplate;
+    public PlainTextMongoRepositoryImpl(MongoTemplate mongoTemplate)
+    {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     @Override
     public void saveStringValue(String collection, String key, String plainText)
