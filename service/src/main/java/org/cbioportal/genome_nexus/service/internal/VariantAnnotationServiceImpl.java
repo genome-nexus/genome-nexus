@@ -36,6 +36,9 @@ import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.*;
 
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
+import org.cbioportal.genome_nexus.service.enricher.HotspotAnnotationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.IsoformAnnotationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.MutationAssessorAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -54,17 +57,24 @@ import java.util.List;
 @Service
 public class VariantAnnotationServiceImpl implements VariantAnnotationService
 {
-    @Autowired
-    private CachedVariantAnnotationFetcher cachedExternalResourceFetcher;
+    private final CachedVariantAnnotationFetcher cachedExternalResourceFetcher;
+    private final IsoformOverrideService isoformOverrideService;
+    private final CancerHotspotService hotspotService;
+    private final MutationAssessorService mutationAssessorService;
 
-    // Lazy autowire services used for enrichment,
-    // otherwise we are getting circular dependency issues
-    @Lazy @Autowired
-    private IsoformOverrideService isoformOverrideService;
-    @Lazy @Autowired
-    private HotspotService hotspotService;
-    @Lazy @Autowired
-    private MutationAssessorService mutationAssessorService;
+    @Autowired
+    public VariantAnnotationServiceImpl(CachedVariantAnnotationFetcher cachedExternalResourceFetcher,
+                                        // Lazy autowire services used for enrichment,
+                                        // otherwise we are getting circular dependency issues
+                                        @Lazy IsoformOverrideService isoformOverrideService,
+                                        @Lazy CancerHotspotService hotspotService,
+                                        @Lazy MutationAssessorService mutationAssessorService)
+    {
+        this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
+        this.isoformOverrideService = isoformOverrideService;
+        this.hotspotService = hotspotService;
+        this.mutationAssessorService = mutationAssessorService;
+    }
 
     @Override
     public VariantAnnotation getAnnotation(String variant)

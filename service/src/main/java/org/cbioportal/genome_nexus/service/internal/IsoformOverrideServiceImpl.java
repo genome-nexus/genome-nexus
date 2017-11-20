@@ -16,13 +16,12 @@ import java.util.List;
  * @author Selcuk Onur Sumer
  */
 @Service
-public class VEPIsoformOverrideService implements IsoformOverrideService
+public class IsoformOverrideServiceImpl implements IsoformOverrideService
 {
     private final IsoformOverrideRepoFactory repoFactory;
 
     @Autowired
-    public VEPIsoformOverrideService(
-        @Qualifier("defaultIsoformOverrideRepoFactory") IsoformOverrideRepoFactory repoFactory)
+    public IsoformOverrideServiceImpl(IsoformOverrideRepoFactory repoFactory)
     {
         this.repoFactory = repoFactory;
     }
