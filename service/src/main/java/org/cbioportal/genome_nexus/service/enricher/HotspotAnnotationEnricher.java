@@ -1,5 +1,7 @@
 package org.cbioportal.genome_nexus.service.enricher;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.HotspotAnnotation;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
@@ -16,6 +18,8 @@ import java.util.List;
  */
 public class HotspotAnnotationEnricher implements AnnotationEnricher
 {
+    private static final Log LOG = LogFactory.getLog(HotspotAnnotationEnricher.class);
+
     private CancerHotspotService hotspotService;
     private Boolean fullInfo;
 
@@ -42,7 +46,7 @@ public class HotspotAnnotationEnricher implements AnnotationEnricher
                 try {
                     hotspotsList.add(hotspotService.getHotspots(transcript));
                 } catch (CancerHotspotsWebServiceException e) {
-                    e.printStackTrace();
+                    LOG.warn(e.getLocalizedMessage());
                 }
             }
 

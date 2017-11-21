@@ -1,5 +1,7 @@
 package org.cbioportal.genome_nexus.service.internal;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
@@ -17,6 +19,8 @@ import java.util.List;
 @Service
 public class MutationAssessorServiceImpl implements MutationAssessorService
 {
+    private static final Log LOG = LogFactory.getLog(MutationAssessorServiceImpl.class);
+
     private final MutationAssessorDataFetcher externalResourceFetcher;
     private final VariantAnnotationService variantAnnotationService;
 
@@ -47,7 +51,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
             try {
                 mutationAssessors.add(this.getMutationAssessorByVariantAnnotation(variantAnnotation));
             } catch (MutationAssessorWebServiceException e) {
-                e.printStackTrace();
+                LOG.warn(e.getLocalizedMessage());
             } catch (MutationAssessorNotFoundException e) {
                 // fail silently for this variant
             }

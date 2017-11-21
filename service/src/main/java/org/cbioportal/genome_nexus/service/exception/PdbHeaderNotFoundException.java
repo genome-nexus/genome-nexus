@@ -16,4 +16,9 @@ public class PdbHeaderNotFoundException extends Exception
     public void setPdbId(String pdbId) {
         this.pdbId = pdbId;
     }
+
+    @Override
+    public String getMessage() {
+        return "PDB header not found: " + this.getPdbId();
+    }
 }

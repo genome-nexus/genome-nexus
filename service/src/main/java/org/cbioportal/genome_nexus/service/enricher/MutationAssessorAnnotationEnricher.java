@@ -1,6 +1,8 @@
 package org.cbioportal.genome_nexus.service.enricher;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.MutationAssessorAnnotation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
@@ -9,7 +11,9 @@ import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 
-public class MutationAssessorAnnotationEnricher implements AnnotationEnricher {
+public class MutationAssessorAnnotationEnricher implements AnnotationEnricher
+{
+    private static final Log LOG = LogFactory.getLog(MutationAssessorAnnotationEnricher.class);
 
     private MutationAssessorService mutationAssessorService;
 
@@ -26,7 +30,7 @@ public class MutationAssessorAnnotationEnricher implements AnnotationEnricher {
             try {
                 mutationAssessorObj = mutationAssessorService.getMutationAssessor(annotation);
             } catch (MutationAssessorWebServiceException e) {
-                e.printStackTrace();
+                LOG.warn(e.getLocalizedMessage());
             } catch (MutationAssessorNotFoundException e) {
                 // fail silently for this variant annotation
             }
