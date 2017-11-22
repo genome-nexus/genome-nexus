@@ -34,4 +34,16 @@ public class IsoformOverrideNotFoundException extends Exception
     public void setTranscriptId(String transcriptId) {
         this.transcriptId = transcriptId;
     }
+
+    @Override
+    public String getMessage()
+    {
+        String message = "Isoform override not found: source: " + this.getSource();
+
+        if (this.getTranscriptId() != null) {
+            message += ", transcript id: " + this.getTranscriptId();
+        }
+
+        return message;
+    }
 }

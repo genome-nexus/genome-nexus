@@ -1,5 +1,7 @@
 package org.cbioportal.genome_nexus.service.internal;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.PdbHeader;
 import org.cbioportal.genome_nexus.service.PdbDataService;
 import org.cbioportal.genome_nexus.service.cached.CachedPdbHeaderFetcher;
@@ -19,6 +21,8 @@ import java.util.*;
 @Service
 public class PdbDataServiceImpl implements PdbDataService
 {
+    private static final Log LOG = LogFactory.getLog(PdbDataServiceImpl.class);
+
     private final CachedPdbHeaderFetcher cachedExternalResourceFetcher;
 
     @Autowired
@@ -75,7 +79,7 @@ public class PdbDataServiceImpl implements PdbDataService
                 PdbHeader header = this.getPdbHeader(pdbId);
                 pdbHeaderList.add(header);
             } catch (PdbHeaderWebServiceException e) {
-                e.printStackTrace();
+                LOG.warn(e.getLocalizedMessage());
             } catch (PdbHeaderNotFoundException e) {
                 // fail silently for this pdb id
             }

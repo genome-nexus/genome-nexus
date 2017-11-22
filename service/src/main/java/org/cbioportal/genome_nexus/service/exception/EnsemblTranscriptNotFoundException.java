@@ -32,4 +32,9 @@ public class EnsemblTranscriptNotFoundException extends Exception
     public void setIsoformOverrideSource(String isoformOverrideSource) {
         this.isoformOverrideSource = isoformOverrideSource;
     }
+
+    @Override
+    public String getMessage() {
+        return "Ensembl transcript not found: " + this.getId();
+    }
 }

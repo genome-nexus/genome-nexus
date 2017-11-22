@@ -23,4 +23,9 @@ public class VariantAnnotationWebServiceException extends DefaultWebServiceExcep
     public void setVariant(String variant) {
         this.variant = variant;
     }
+
+    @Override
+    public String getMessage() {
+        return "VEP web service error for variant " + this.getVariant() + ": " + this.getResponseBody();
+    }
 }
