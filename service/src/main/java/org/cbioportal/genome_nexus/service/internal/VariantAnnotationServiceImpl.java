@@ -32,6 +32,8 @@
 
 package org.cbioportal.genome_nexus.service.internal;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.*;
 
@@ -57,6 +59,8 @@ import java.util.List;
 @Service
 public class VariantAnnotationServiceImpl implements VariantAnnotationService
 {
+    private static final Log LOG = LogFactory.getLog(VariantAnnotationServiceImpl.class);
+
     private final CachedVariantAnnotationFetcher cachedExternalResourceFetcher;
     private final IsoformOverrideService isoformOverrideService;
     private final CancerHotspotService hotspotService;
@@ -164,10 +168,10 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
             try {
                 VariantAnnotation annotation = this.getVariantAnnotation(variant, postEnrichmentService);
                 variantAnnotations.add(annotation);
+            } catch (VariantAnnotationWebServiceException e) {
+                LOG.warn(e.getLocalizedMessage());
             } catch (VariantAnnotationNotFoundException e) {
                 // fail silently for this annotation
-            } catch (VariantAnnotationWebServiceException e) {
-                e.printStackTrace();
             }
         }
 

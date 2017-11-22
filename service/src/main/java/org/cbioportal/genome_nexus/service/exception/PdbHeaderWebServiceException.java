@@ -23,4 +23,9 @@ public class PdbHeaderWebServiceException extends DefaultWebServiceException
     public void setPdbId(String pdbId) {
         this.pdbId = pdbId;
     }
+
+    @Override
+    public String getMessage() {
+        return "PDB web service error for id " + this.getPdbId() + ": " + this.getResponseBody();
+    }
 }

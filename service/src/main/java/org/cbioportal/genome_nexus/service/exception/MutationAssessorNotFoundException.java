@@ -16,4 +16,9 @@ public class MutationAssessorNotFoundException extends Exception
     public void setVariant(String variant) {
         this.variant = variant;
     }
+
+    @Override
+    public String getMessage() {
+        return "Mutation Assessor annotation not found for variant: " + this.getVariant();
+    }
 }

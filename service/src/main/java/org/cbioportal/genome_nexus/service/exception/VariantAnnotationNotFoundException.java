@@ -16,4 +16,9 @@ public class VariantAnnotationNotFoundException extends Exception
     public void setVariant(String variant) {
         this.variant = variant;
     }
+
+    @Override
+    public String getMessage() {
+        return "Variant annotation not found: " + this.getVariant();
+    }
 }

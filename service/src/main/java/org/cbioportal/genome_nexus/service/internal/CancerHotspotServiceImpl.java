@@ -80,7 +80,6 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 //        }
 //        catch (IOException e)
 //        {
-//            e.printStackTrace();
 //            return Collections.emptyList();
 //        }
 

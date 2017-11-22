@@ -16,4 +16,9 @@ public class PfamDomainNotFoundException extends Exception
     public void setPfamAccession(String pfamAccession) {
         this.pfamAccession = pfamAccession;
     }
+
+    @Override
+    public String getMessage() {
+        return "PFAM domain not found: " + this.getPfamAccession();
+    }
 }
