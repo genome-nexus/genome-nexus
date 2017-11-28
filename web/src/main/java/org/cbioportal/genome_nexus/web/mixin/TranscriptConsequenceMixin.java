@@ -35,11 +35,11 @@ public class TranscriptConsequenceMixin
 
     @JsonProperty(value="protein_start", required = true)
     @ApiModelProperty(value = "Protein start position", required = false)
-    private String proteinStart;
+    private Integer proteinStart;
 
     @JsonProperty(value="protein_end", required = true)
     @ApiModelProperty(value = "Protein end position", required = false)
-    private String proteinEnd;
+    private Integer proteinEnd;
 
     @JsonProperty(value="gene_symbol", required = true)
     @ApiModelProperty(value = "Hugo gene symbol", required = false)
@@ -55,7 +55,7 @@ public class TranscriptConsequenceMixin
 
     @JsonProperty(value="hgnc_id", required = true)
     @ApiModelProperty(value = "HGNC id", required = false)
-    private String hgncId;
+    private Integer hgncId;
 
     @JsonProperty(value="canonical", required = true)
     @ApiModelProperty(value = "Canonical transcript indicator", required = false)
@@ -63,7 +63,7 @@ public class TranscriptConsequenceMixin
 
     @JsonProperty(value="polyphen_score", required = true)
     @ApiModelProperty(value = "Polyphen Score", required = false)
-    private String polyphenScore;
+    private Double polyphenScore;
 
     @JsonProperty(value="polyphen_prediction", required = true)
     @ApiModelProperty(value = "Polyphen Prediction", required = false)
@@ -71,7 +71,7 @@ public class TranscriptConsequenceMixin
 
     @JsonProperty(value="sift_score", required = true)
     @ApiModelProperty(value = "Sift Score", required = false)
-    private String siftScore;
+    private Double siftScore;
 
     @JsonProperty(value="sift_prediction", required = true)
     @ApiModelProperty(value = "Sift Prediction", required = false)

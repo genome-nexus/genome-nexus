@@ -45,8 +45,8 @@ public class Hotspot
     private String hugoSymbol;
     private String residue;
 
-    private String proteinStart;
-    private String proteinEnd;
+    private Integer proteinStart;
+    private Integer proteinEnd;
     private String geneId;
 
     public String getTranscriptId()
@@ -59,22 +59,22 @@ public class Hotspot
         this.transcriptId = transcriptId;
     }
 
-    public String getProteinStart()
+    public Integer getProteinStart()
     {
         return proteinStart;
     }
 
-    public void setProteinStart(String proteinStart)
+    public void setProteinStart(Integer proteinStart)
     {
         this.proteinStart = proteinStart;
     }
 
-    public String getProteinEnd()
+    public Integer getProteinEnd()
     {
         return proteinEnd;
     }
 
-    public void setProteinEnd(String proteinEnd)
+    public void setProteinEnd(Integer proteinEnd)
     {
         this.proteinEnd = proteinEnd;
     }
