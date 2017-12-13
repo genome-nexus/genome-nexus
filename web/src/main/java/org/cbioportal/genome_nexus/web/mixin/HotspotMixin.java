@@ -16,10 +16,10 @@ public class HotspotMixin
     private String residue;
 
     @ApiModelProperty(value = "Protein start position", required = false)
-    private String proteinStart;
+    private Integer proteinStart;
 
     @ApiModelProperty(value = "Protein end position", required = false)
-    private String proteinEnd;
+    private Integer proteinEnd;
 
     @ApiModelProperty(value = "Ensembl gene id", required = false)
     private String geneId;

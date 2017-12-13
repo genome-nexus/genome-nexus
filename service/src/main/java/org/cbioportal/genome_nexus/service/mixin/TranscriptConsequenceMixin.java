@@ -27,10 +27,10 @@ public class TranscriptConsequenceMixin
     private String proteinId;
 
     @JsonProperty(value="protein_start", required = true)
-    private String proteinStart;
+    private Integer proteinStart;
 
     @JsonProperty(value="protein_end", required = true)
-    private String proteinEnd;
+    private Integer proteinEnd;
 
     @JsonProperty(value="gene_symbol", required = true)
     private String geneSymbol;
@@ -42,19 +42,19 @@ public class TranscriptConsequenceMixin
     private String aminoAcids;
 
     @JsonProperty(value="hgnc_id", required = true)
-    private String hgncId;
+    private Integer hgncId;
 
     @JsonProperty(value="canonical", required = true)
     private String canonical;
 
     @JsonProperty(value="polyphen_score", required = true)
-    private String polyphenScore;
+    private Double polyphenScore;
 
     @JsonProperty(value="polyphen_prediction", required = true)
     private String polyphenPrediction;
 
     @JsonProperty(value="sift_score", required = true)
-    private String siftScore;
+    private Double siftScore;
 
     @JsonProperty(value="sift_prediction", required = true)
     private String siftPrediction;
