@@ -2,12 +2,15 @@ package org.cbioportal.genome_nexus.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "mutation_assessor")
+@Document(collection = "mutation_assessor.annotation")
 public class MutationAssessor
 {
     @Id
     private String input;
+
+    private String hgvs;
 
     private String hugoSymbol;
 
@@ -15,30 +18,30 @@ public class MutationAssessor
     private String referenceGenomeVariantType;
 
     private String functionalImpact;
-    private double functionalImpactScore;
+    private Double functionalImpactScore;
 
     private String msaLink;
     private String pdbLink;
 
-    private double variantConservationScore;
-    private double variantSpecificityScore;
+    private Double variantConservationScore;
+    private Double variantSpecificityScore;
 
     private String mappingIssue;
     private String variant;
     private String uniprotId;
     private String refseqId;
 
-    private double msaGaps;
-    private int msaHeight;
+    private Double msaGaps;
+    private Integer msaHeight;
 
     private String codonStartPosition;
-    private int uniprotPosition;
+    private Integer uniprotPosition;
     private String uniprotResidue;
-    private int refseqPosition;
+    private Integer refseqPosition;
     private String refseqResidue;
 
-    private int cosmicCount;
-    private int snpCount;
+    private Integer cosmicCount;
+    private Integer snpCount;
 
     public String getInput() {
         return input;
@@ -48,6 +51,15 @@ public class MutationAssessor
         this.input = input;
     }
 
+    public String getHgvs() {
+        return hgvs;
+    }
+
+    public void setHgvs(String hgvs) {
+        this.hgvs = hgvs;
+    }
+
+    @Field("gene")
     public String getHugoSymbol() {
         return hugoSymbol;
     }
@@ -56,6 +68,7 @@ public class MutationAssessor
         this.hugoSymbol = hugoSymbol;
     }
 
+    @Field("rgaa")
     public String getReferenceGenomeVariant() {
         return referenceGenomeVariant;
     }
@@ -64,6 +77,7 @@ public class MutationAssessor
         this.referenceGenomeVariant = referenceGenomeVariant;
     }
 
+    @Field("rgvt")
     public String getReferenceGenomeVariantType() {
         return referenceGenomeVariantType;
     }
@@ -72,6 +86,7 @@ public class MutationAssessor
         this.referenceGenomeVariantType = referenceGenomeVariantType;
     }
 
+    @Field("F_impact")
     public String getFunctionalImpact() {
         return functionalImpact;
     }
@@ -80,14 +95,16 @@ public class MutationAssessor
         this.functionalImpact = functionalImpact;
     }
 
-    public double getFunctionalImpactScore() {
+    @Field("F_score")
+    public Double getFunctionalImpactScore() {
         return functionalImpactScore;
     }
 
-    public void setFunctionalImpactScore(double functionalImpactScore) {
+    public void setFunctionalImpactScore(Double functionalImpactScore) {
         this.functionalImpactScore = functionalImpactScore;
     }
 
+    @Field("msa")
     public String getMsaLink() {
         return msaLink;
     }
@@ -96,6 +113,7 @@ public class MutationAssessor
         this.msaLink = msaLink;
     }
 
+    @Field("pdb")
     public String getPdbLink() {
         return pdbLink;
     }
@@ -104,22 +122,25 @@ public class MutationAssessor
         this.pdbLink = pdbLink;
     }
 
-    public double getVariantConservationScore() {
+    @Field("vc_score")
+    public Double getVariantConservationScore() {
         return variantConservationScore;
     }
 
-    public void setVariantConservationScore(double variantConservationScore) {
+    public void setVariantConservationScore(Double variantConservationScore) {
         this.variantConservationScore = variantConservationScore;
     }
 
-    public double getVariantSpecificityScore() {
+    @Field("vs_score")
+    public Double getVariantSpecificityScore() {
         return variantSpecificityScore;
     }
 
-    public void setVariantSpecificityScore(double variantSpecificityScore) {
+    public void setVariantSpecificityScore(Double variantSpecificityScore) {
         this.variantSpecificityScore = variantSpecificityScore;
     }
 
+    @Field("info")
     public String getMappingIssue() {
         return mappingIssue;
     }
@@ -128,6 +149,7 @@ public class MutationAssessor
         this.mappingIssue = mappingIssue;
     }
 
+    @Field("var")
     public String getVariant() {
         return variant;
     }
@@ -136,6 +158,7 @@ public class MutationAssessor
         this.variant = variant;
     }
 
+    @Field("uprot")
     public String getUniprotId() {
         return uniprotId;
     }
@@ -144,6 +167,7 @@ public class MutationAssessor
         this.uniprotId = uniprotId;
     }
 
+    @Field("rsprot")
     public String getRefseqId() {
         return refseqId;
     }
@@ -152,22 +176,25 @@ public class MutationAssessor
         this.refseqId = refseqId;
     }
 
-    public double getMsaGaps() {
+    @Field("gaps")
+    public Double getMsaGaps() {
         return msaGaps;
     }
 
-    public void setMsaGaps(double msaGaps) {
+    public void setMsaGaps(Double msaGaps) {
         this.msaGaps = msaGaps;
     }
 
-    public int getMsaHeight() {
+    @Field("msa_height")
+    public Integer getMsaHeight() {
         return msaHeight;
     }
 
-    public void setMsaHeight(int msaHeight) {
+    public void setMsaHeight(Integer msaHeight) {
         this.msaHeight = msaHeight;
     }
 
+    @Field("chr")
     public String getCodonStartPosition() {
         return codonStartPosition;
     }
@@ -176,14 +203,16 @@ public class MutationAssessor
         this.codonStartPosition = codonStartPosition;
     }
 
-    public int getUniprotPosition() {
+    @Field("up_pos")
+    public Integer getUniprotPosition() {
         return uniprotPosition;
     }
 
-    public void setUniprotPosition(int uniprotPosition) {
+    public void setUniprotPosition(Integer uniprotPosition) {
         this.uniprotPosition = uniprotPosition;
     }
 
+    @Field("up_res")
     public String getUniprotResidue() {
         return uniprotResidue;
     }
@@ -192,14 +221,16 @@ public class MutationAssessor
         this.uniprotResidue = uniprotResidue;
     }
 
-    public int getRefseqPosition() {
+    @Field("rs_pos")
+    public Integer getRefseqPosition() {
         return refseqPosition;
     }
 
-    public void setRefseqPosition(int refseqPosition) {
+    public void setRefseqPosition(Integer refseqPosition) {
         this.refseqPosition = refseqPosition;
     }
 
+    @Field("rs_res")
     public String getRefseqResidue() {
         return refseqResidue;
     }
@@ -208,19 +239,21 @@ public class MutationAssessor
         this.refseqResidue = refseqResidue;
     }
 
-    public int getCosmicCount() {
+    @Field("cnt_cosmic")
+    public Integer getCosmicCount() {
         return cosmicCount;
     }
 
-    public void setCosmicCount(int cosmicCount) {
+    public void setCosmicCount(Integer cosmicCount) {
         this.cosmicCount = cosmicCount;
     }
 
-    public int getSnpCount() {
+    @Field("cnt_snps")
+    public Integer getSnpCount() {
         return snpCount;
     }
 
-    public void setSnpCount(int snpCount) {
+    public void setSnpCount(Integer snpCount) {
         this.snpCount = snpCount;
     }
 }

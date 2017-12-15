@@ -11,13 +11,18 @@ import java.util.List;
 
 public interface MutationAssessorService
 {
+    // variant: hgvs variant (ex: 7:g.140453136A>T)
     MutationAssessor getMutationAssessor(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MutationAssessorWebServiceException, MutationAssessorNotFoundException;
+
+    // variant: mutation assessor variant (ex: 7,140453136,A,T)
+    MutationAssessor getMutationAssessorByMutationAssessorVariant(String variant)
+        throws MutationAssessorNotFoundException, MutationAssessorWebServiceException;
+
+    // variant: hgvs variant (ex: 7:g.140453136A>T)
     List<MutationAssessor> getMutationAssessor(List<String> variants);
 
     MutationAssessor getMutationAssessor(VariantAnnotation annotation)
-        throws MutationAssessorNotFoundException, MutationAssessorWebServiceException;
-    MutationAssessor getMutationAssessor(String variant, String hgvs)
         throws MutationAssessorNotFoundException, MutationAssessorWebServiceException;
 }
