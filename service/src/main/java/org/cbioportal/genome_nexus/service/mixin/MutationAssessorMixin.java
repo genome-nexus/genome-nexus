@@ -19,7 +19,7 @@ public class MutationAssessorMixin
     private String functionalImpact;
 
     @JsonProperty("F_score")
-    private double functionalImpactScore;
+    private Double functionalImpactScore;
 
     @JsonProperty("msa")
     private String msaLink;
@@ -28,10 +28,10 @@ public class MutationAssessorMixin
     private String pdbLink;
 
     @JsonProperty("vc_score")
-    private double variantConservationScore;
+    private Double variantConservationScore;
 
     @JsonProperty("vs_score")
-    private double variantSpecificityScore;
+    private Double variantSpecificityScore;
 
     @JsonProperty("info")
     private String mappingIssue;
@@ -46,29 +46,29 @@ public class MutationAssessorMixin
     private String refseqId;
 
     @JsonProperty("gaps")
-    private double msaGaps;
+    private Double msaGaps;
 
     @JsonProperty("msa_height")
-    private int msaHeight;
+    private Integer msaHeight;
 
     @JsonProperty("chr")
     private String codonStartPosition;
 
     @JsonProperty("up_pos")
-    private int uniprotPosition;
+    private Integer uniprotPosition;
 
     @JsonProperty("up_res")
     private String uniprotResidue;
 
     @JsonProperty("rs_pos")
-    private int refseqPosition;
+    private Integer refseqPosition;
 
     @JsonProperty("rs_res")
     private String refseqResidue;
 
     @JsonProperty("cnt_cosmic")
-    private int cosmicCount;
+    private Integer cosmicCount;
 
     @JsonProperty("cnt_snps")
-    private int snpCount;
+    private Integer snpCount;
 }

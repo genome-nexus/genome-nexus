@@ -24,8 +24,16 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
     protected ExternalResourceFetcher<T> fetcher;
     protected ResourceTransformer<T> transformer;
 
-    public BaseCachedExternalResourceFetcher(ResourceTransformer<T> transformer)
+    public BaseCachedExternalResourceFetcher(String collection,
+                                             R repository,
+                                             Class<T> type,
+                                             ExternalResourceFetcher<T> fetcher,
+                                             ResourceTransformer<T> transformer)
     {
+        this.collection = collection;
+        this.repository = repository;
+        this.type = type;
+        this.fetcher = fetcher;
         this.transformer = transformer;
     }
 

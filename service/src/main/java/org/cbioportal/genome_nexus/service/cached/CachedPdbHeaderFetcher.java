@@ -16,10 +16,10 @@ public class CachedPdbHeaderFetcher extends BaseCachedExternalResourceFetcher<Pd
                                   PdbHeaderRepository repository,
                                   PdbHeaderDataFetcher fetcher)
     {
-        super(transformer);
-        this.collection = PdbHeaderRepositoryImpl.COLLECTION;
-        this.type = PdbHeader.class;
-        this.repository = repository;
-        this.fetcher = fetcher;
+        super(PdbHeaderRepositoryImpl.COLLECTION,
+            repository,
+            PdbHeader.class,
+            fetcher,
+            transformer);
     }
 }
