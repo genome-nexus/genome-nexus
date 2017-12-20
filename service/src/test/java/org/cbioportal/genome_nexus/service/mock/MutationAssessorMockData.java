@@ -17,15 +17,17 @@ public class MutationAssessorMockData implements MockData<MutationAssessor>
 
         // mock data for variant: 7,140453136,A,T
         mutationAssessor = new MutationAssessor();
-        mutationAssessor.setHugoSymbol("GENE1");
+        mutationAssessor.setHugoSymbol("BRAF");
         mutationAssessor.setHgvs("7:g.140453136A>T");
+        mutationAssessor.setMappingIssue("");
 
         mockData.put("7,140453136,A,T", mutationAssessor);
 
         // mock data for variant: 12,25398285,C,A
         mutationAssessor = new MutationAssessor();
-        mutationAssessor.setHugoSymbol("GENE2");
+        mutationAssessor.setHugoSymbol("KRAS");
         mutationAssessor.setHgvs("12:g.25398285C>A");
+        mutationAssessor.setMappingIssue("");
 
         mockData.put("12,25398285,C,A", mutationAssessor);
 
@@ -33,6 +35,7 @@ public class MutationAssessorMockData implements MockData<MutationAssessor>
         mutationAssessor = new MutationAssessor();
         mutationAssessor.setHugoSymbol(null);
         mutationAssessor.setHgvs(null);
+        mutationAssessor.setMappingIssue("Issue!");
 
         mockData.put("INVALID", mutationAssessor);
 
