@@ -30,7 +30,7 @@ public class EnsemblServiceImpl implements EnsemblService
     public EnsemblTranscript getCanonicalEnsemblTranscriptByHugoSymbol(String hugoSymbol, String isoformOverrideSource)
         throws EnsemblTranscriptNotFoundException
     {
-        EnsemblTranscript transcript = this.ensemblRepository.findOneByHugoSymbol(hugoSymbol, isoformOverrideSource);
+        EnsemblTranscript transcript = this.ensemblRepository.findOneByHugoSymbolIgnoreCase(hugoSymbol, isoformOverrideSource);
 
         if (transcript == null) {
             throw new EnsemblTranscriptNotFoundException(hugoSymbol, isoformOverrideSource);
