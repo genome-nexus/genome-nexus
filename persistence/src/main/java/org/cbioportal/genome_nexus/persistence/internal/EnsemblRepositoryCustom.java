@@ -35,5 +35,5 @@ import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 
 public interface EnsemblRepositoryCustom
 {
-    EnsemblTranscript findOneByHugoSymbol(String hugoSymbol, String isoformOverrideSource);
+    EnsemblTranscript findOneByHugoSymbolIgnoreCase(String hugoSymbol, String isoformOverrideSource);
 }

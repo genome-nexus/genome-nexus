@@ -22,19 +22,22 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
     public static final String TRANSCRIPTS_COLLECTION = "ensembl.biomart_transcripts";
 
     @Override
-    public EnsemblTranscript findOneByHugoSymbol(String hugoSymbol, String isoformOverrideSource) {
-        BasicDBObject whereQuery = new BasicDBObject();
-        whereQuery.put("hgnc_symbol", hugoSymbol);
+    public EnsemblTranscript findOneByHugoSymbolIgnoreCase(String hugoSymbol, String isoformOverrideSource) {
+        BasicDBObject regexQuery = new BasicDBObject();
+        // case insensitive exact match query
+        regexQuery.put("hgnc_symbol",
+            new BasicDBObject("$regex", "^" + hugoSymbol + "$")
+                .append("$options", "i"));
 
         Cursor transcriptCursor;
-        Cursor canonicalCursor = mongoTemplate.getCollection(CANONICAL_TRANSCRIPTS_COLLECTION).find(whereQuery);
+        Cursor canonicalCursor = mongoTemplate.getCollection(CANONICAL_TRANSCRIPTS_COLLECTION).find(regexQuery);
 
         if (canonicalCursor.hasNext()) {
             BasicDBObject canonicalTranscriptsPerSource = (BasicDBObject) canonicalCursor.next();
 
             String transcriptId = (String) canonicalTranscriptsPerSource.get(isoformOverrideSource + "_canonical_transcript");
 
-            whereQuery = new BasicDBObject();
+            BasicDBObject whereQuery = new BasicDBObject();
             whereQuery.put(EnsemblTranscript.TRANSCRIPT_ID_FIELD_NAME, transcriptId);
 
             transcriptCursor = mongoTemplate.getCollection(TRANSCRIPTS_COLLECTION).find(whereQuery);
