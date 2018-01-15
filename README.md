@@ -31,3 +31,6 @@ java -jar web/target/web-*.war
 
 ## Data Download
 If you need to update the included date files see [data/README.md](data/README.md)
+
+## Programmatic access through R/Python
+See [notebooks/](notebooks/)
