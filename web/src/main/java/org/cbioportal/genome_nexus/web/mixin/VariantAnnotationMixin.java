@@ -14,8 +14,8 @@ public class VariantAnnotationMixin {
     @ApiModelProperty(value = "Variant key", required = true)
     private String variant;
 
-    @JsonProperty(required = true)
-    @ApiModelProperty(value = "Annotation data as JSON string", required = true)
+    @JsonProperty(required = false)
+    @ApiModelProperty(value = "Annotation data as JSON string", required = false)
     private String annotationJSON;
 
     @JsonProperty(value="id", required = true)
