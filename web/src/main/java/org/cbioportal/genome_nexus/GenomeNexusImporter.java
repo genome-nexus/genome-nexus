@@ -16,6 +16,9 @@ public class GenomeNexusImporter implements CommandLineRunner {
     private String mongoDBURI;
     @Value("${spring.data.mongodb.uri:}")
     public void setMongoDBURI(String mongoDBURI) { this.mongoDBURI =  mongoDBURI; }
+    private String mongoDBImportCommandPrefix;
+    @Value("${spring.data.mongodb.import.command.prefix:}")
+    public void setMongoDBImportCommandPrefix(String mongoDBImportCommandPrefix) { this.mongoDBImportCommandPrefix =  mongoDBImportCommandPrefix; }
 
     protected final Log logger = LogFactory.getLog(getClass());
     final static String[][] IMPORT_RESOURCE_FILES = new String[][]{
@@ -71,7 +74,13 @@ public class GenomeNexusImporter implements CommandLineRunner {
                 File file = new File(GenomeNexusImporter.exportResource(fileName));
                 logger.info("Importing " + fileName + " to mongodb collection " + collection + "...");
 
-                String command = "mongoimport --uri " + mongoDBURI + " --drop --collection " + collection + " " + extraOptions + " --file " + file.getAbsolutePath();
+                String command;
+                if (mongoDBImportCommandPrefix.length() > 0) {
+                    command = mongoDBImportCommandPrefix;
+                } else {
+                    command = "mongoimport --uri " + mongoDBURI;
+                }
+                command += " --drop --collection " + collection + " " + extraOptions + " --file " + file.getAbsolutePath();
                 logger.info("Command: " + command);
                 p = r.exec(command);
                 p.waitFor();
