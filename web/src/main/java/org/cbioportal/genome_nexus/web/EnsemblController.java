@@ -43,12 +43,14 @@ public class EnsemblController
         @ApiParam(value = "An Ensembl gene ID. For example ENSG00000136999")
         @RequestParam(required = false) String geneId,
         @ApiParam(value = "An Ensembl protein ID. For example ENSP00000439985")
-        @RequestParam(required = false) String proteinId)
+        @RequestParam(required = false) String proteinId,
+        @ApiParam(value = "A Hugo Symbol For example ARF5")
+        @RequestParam(required = false) String hugoSymbol)
     {
-        return ensemblService.getEnsemblTranscripts(geneId, proteinId);
+        return ensemblService.getEnsemblTranscripts(geneId, proteinId, hugoSymbol);
     }
 
-    @ApiOperation(value = "Retrieves Ensembl Transcripts by Ensembl transcript IDs, protein IDs, or gene IDs",
+    @ApiOperation(value = "Retrieves Ensembl Transcripts by Ensembl transcript IDs, hugo Symbols, protein IDs, or gene IDs",
         nickname = "fetchEnsemblTranscriptsByEnsemblFilterPOST")
     @RequestMapping(value = "/ensembl/transcript",
         method = RequestMethod.POST,
@@ -56,13 +58,14 @@ public class EnsemblController
     public List<EnsemblTranscript> fetchEnsemblTranscriptsByEnsemblFilterPOST(
         @ApiParam(
             value = EnsemblFilter.TRANSCRIPT_ID_DESC + "<br>OR<br>" +
+                EnsemblFilter.HUGO_SYMBOL_DESC + "<br>OR<br>" +
                 EnsemblFilter.PROTEIN_ID_DESC + "<br>OR<br>" +
                 EnsemblFilter.GENE_ID_DESC,
             required = true)
         @RequestBody EnsemblFilter ensemblFilter)
     {
         return this.ensemblService.getEnsemblTranscripts(
-            ensemblFilter.getTranscriptIds(), ensemblFilter.getGeneIds(), ensemblFilter.getProteinIds());
+            ensemblFilter.getTranscriptIds(), ensemblFilter.getGeneIds(), ensemblFilter.getProteinIds(), ensemblFilter.getHugoSymbols());
     }
 
     @ApiOperation(value = "Retrieves the transcript by an Ensembl transcript ID",

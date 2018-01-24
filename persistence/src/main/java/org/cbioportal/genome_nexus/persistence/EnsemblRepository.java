@@ -16,5 +16,9 @@ public interface EnsemblRepository extends MongoRepository<EnsemblTranscript, St
     List<EnsemblTranscript> findByGeneIdIn(List<String> geneIds);
     List<EnsemblTranscript> findByProteinId(String proteinId);
     List<EnsemblTranscript> findByProteinIdIn(List<String> proteinIds);
+    List<EnsemblTranscript> findByHugoSymbolsIn(List<String> hugoSymbols);
     List<EnsemblTranscript> findByGeneIdAndProteinId(String geneId, String proteinId);
+    List<EnsemblTranscript> findByGeneIdAndProteinIdAndHugoSymbolsIn(String geneId, String proteinId, List<String> hugoSymbols);
+    List<EnsemblTranscript> findByGeneIdAndHugoSymbolsIn(String geneId, List<String> hugoSymbols);
+    List<EnsemblTranscript> findByProteinIdAndHugoSymbolsIn(String proteinId, List<String> hugoSymbols);
 }
