@@ -23,6 +23,39 @@ programmatic interface
 3. Dissemination of the diverse information in a hierarchical digestible way
 for interpreting variants and patients.
 
+## Pre-requisites
+
+#### Mongo DB
+
+##### Alternative 1 - install mongoDB
+Install mongoDB manually.
+
+##### Alternative 2 - start mongoDB in a docker container (assuming genome-nexus is running locally, development mode)
+Start with docker:
+```
+docker network create gn-net
+docker run --name=gn-mongo --restart=always --net=gn-net -p 27017:27017 -d mongo
+```
+Enable the following line in `application.properties`:
+```
+spring.data.mongodb.import.command.prefix=docker run --rm --net=gn-net -v ${user.dir}:${user.dir} -v /tmp:/tmp mongo mongoimport --uri mongodb://gn-mongo:27017/annotator
+```
+##### Alternative 3 - start genome-nexus and mongoDB in docker containers (production mode)
+Create common docker network:
+```
+docker network create gn-net
+```
+Run your genome-nexus container using the network above (`--net` parameter in docker).
+
+Run the mongoDB container:
+```
+docker run --name=gn-mongo --restart=always --net=gn-net -d mongo
+```
+**Only** change the following in `application.properties` (so do **not** enable the property used in Alternative 2 above):
+```
+spring.data.mongodb.uri=mongodb://gn-mongo:27017/annotator
+```
+
 ## Run
 ```
 mvn clean install
