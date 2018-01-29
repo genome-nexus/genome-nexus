@@ -61,8 +61,6 @@ def transform_gff_to_tsv(gff_file):
 
                 rows.append(data_dict)
 
-    print(rows[0:5])
-    print(len(rows))
     exon_info = exon_info.append(rows, ignore_index=True)
     return(exon_info)
 
