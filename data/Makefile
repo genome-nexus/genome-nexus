@@ -6,7 +6,7 @@ ensembl_biomart_geneids_grch37.p13.transcript_info.txt: ensembl_biomart_geneids_
 ensembl_biomart_transcripts.txt: ensembl_biomart_geneids_grch37.p13.transcript_info.txt
 	csvcut -tc transcript_stable_id,gene_stable_id,protein_stable_id,protein_length $< | csvsort -c transcript_stable_id,gene_stable_id,protein_stable_id,protein_length | uniq | csvformat -T > $@
 
-ensembl_exon_info.txt: Homo_sapiens.GRCh37.87.gff3
+ensembl_exon_info.txt: Homo_sapiens.GRCh37.gff3
 	cd ../scripts && python transform_gff_to_tsv_for_exon_info_from_ensembl.py > ../data/$@
 
 ensembl_biomart_transcripts.json: ensembl_biomart_transcripts.txt ensembl_biomart_pfam_grch37.p13.txt ensembl_exon_info.txt
