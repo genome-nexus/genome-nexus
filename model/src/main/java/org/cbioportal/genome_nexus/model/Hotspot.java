@@ -44,68 +44,64 @@ public class Hotspot
 
     private String hugoSymbol;
     private String residue;
+    private Integer tumorTypeCount;
+    private Integer tumorCount;
+    private IntegerRange aminoAcidPosition;
+    private String type;
 
-    private Integer proteinStart;
-    private Integer proteinEnd;
-    private String geneId;
-
-    public String getTranscriptId()
-    {
+    public String getTranscriptId() {
         return transcriptId;
     }
 
-    public void setTranscriptId(String transcriptId)
-    {
+    public void setTranscriptId(String transcriptId) {
         this.transcriptId = transcriptId;
     }
 
-    public Integer getProteinStart()
-    {
-        return proteinStart;
-    }
-
-    public void setProteinStart(Integer proteinStart)
-    {
-        this.proteinStart = proteinStart;
-    }
-
-    public Integer getProteinEnd()
-    {
-        return proteinEnd;
-    }
-
-    public void setProteinEnd(Integer proteinEnd)
-    {
-        this.proteinEnd = proteinEnd;
-    }
-
-    public String getGeneId()
-    {
-        return geneId;
-    }
-
-    public void setGeneId(String geneId)
-    {
-        this.geneId = geneId;
-    }
-
-    public String getHugoSymbol()
-    {
+    public String getHugoSymbol() {
         return hugoSymbol;
     }
 
-    public void setHugoSymbol(String hugoSymbol)
-    {
+    public void setHugoSymbol(String hugoSymbol) {
         this.hugoSymbol = hugoSymbol;
     }
 
-    public String getResidue()
-    {
+    public String getResidue() {
         return residue;
     }
 
-    public void setResidue(String residue)
-    {
+    public void setResidue(String residue) {
         this.residue = residue;
+    }
+
+    public Integer getTumorTypeCount() {
+        return tumorTypeCount;
+    }
+
+    public void setTumorTypeCount(Integer tumorTypeCount) {
+        this.tumorTypeCount = tumorTypeCount;
+    }
+
+    public Integer getTumorCount() {
+        return tumorCount;
+    }
+
+    public void setTumorCount(Integer tumorCount) {
+        this.tumorCount = tumorCount;
+    }
+
+    public IntegerRange getAminoAcidPosition() {
+        return aminoAcidPosition;
+    }
+
+    public void setAminoAcidPosition(IntegerRange aminoAcidPosition) {
+        this.aminoAcidPosition = aminoAcidPosition;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

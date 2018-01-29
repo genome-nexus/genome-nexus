@@ -187,7 +187,11 @@ public class VariantAnnotationServiceTest
         // call the real getHotspots(TranscriptConsequence transcript) method when called with a transcript
         // it is the one calling the getHotspots(String transcriptId)
         Mockito.when(this.cancerHotspotService.getHotspots(
-            Mockito.any(TranscriptConsequence.class))).thenCallRealMethod();
+            Mockito.any(TranscriptConsequence.class), Mockito.any(VariantAnnotation.class))).thenCallRealMethod();
+
+        Mockito.when(this.cancerHotspotService.filterHotspot(Mockito.any(Hotspot.class),
+            Mockito.any(TranscriptConsequence.class),
+            Mockito.any(VariantAnnotation.class))).thenReturn(true);
 
         Mockito.when(this.cancerHotspotService.getHotspots(
             "ENST00000288602")).thenReturn(hotspotMockData.get("ENST00000288602"));

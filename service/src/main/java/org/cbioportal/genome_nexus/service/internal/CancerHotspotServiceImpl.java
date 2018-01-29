@@ -37,6 +37,7 @@ import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
+import org.cbioportal.genome_nexus.service.annotation.VariantClassificationResolver;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
@@ -50,6 +51,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Selcuk Onur Sumer
@@ -61,13 +63,16 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
     private final CancerHotspotDataFetcher externalResourceFetcher;
     private final VariantAnnotationService variantAnnotationService;
+    private final VariantClassificationResolver variantClassificationResolver;
 
     @Autowired
     public CancerHotspotServiceImpl(CancerHotspotDataFetcher externalResourceFetcher,
-                                    VariantAnnotationService variantAnnotationService)
+                                    VariantAnnotationService variantAnnotationService,
+                                    VariantClassificationResolver variantClassificationResolver)
     {
         this.externalResourceFetcher = externalResourceFetcher;
         this.variantAnnotationService = variantAnnotationService;
+        this.variantClassificationResolver = variantClassificationResolver;
     }
 
     @Override
@@ -88,24 +93,15 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     }
 
     @Override
-    public List<Hotspot> getHotspots(TranscriptConsequence transcript) throws CancerHotspotsWebServiceException
+    public List<Hotspot> getHotspots(TranscriptConsequence transcript,
+                                     VariantAnnotation annotation) throws CancerHotspotsWebServiceException
     {
         List<Hotspot> hotspots = new ArrayList<>();
 
         for (Hotspot hotspot : this.getHotspots(transcript.getTranscriptId()))
         {
-            // only include hotspots overlapping the protein change position
-            // of the current transcript
-            if (Numerical.overlaps(hotspot.getResidue(),
-                                   transcript.getProteinStart(),
-                                   transcript.getProteinEnd()))
-            {
-                // TODO use a JSON view instead of copying fields to another model?
-                // we have data duplication here...
-                hotspot.setGeneId(transcript.getGeneId());
-                hotspot.setProteinStart(transcript.getProteinStart());
-                hotspot.setProteinEnd(transcript.getProteinEnd());
-
+            // include only the hotspots matching certain criteria
+            if (this.filterHotspot(hotspot, transcript, annotation)) {
                 hotspots.add(hotspot);
             }
         }
@@ -166,6 +162,51 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         return hotspots;
     }
 
+    protected Boolean filterHotspot(Hotspot hotspot, TranscriptConsequence transcript, VariantAnnotation annotation)
+    {
+        return (
+            // filter by protein position:
+            // only include the hotspot if the protein change position overlaps with the current transcript
+            Numerical.overlaps(hotspot.getResidue(), transcript.getProteinStart(), transcript.getProteinEnd()) &&
+            // filter by mutation type:
+            // only include the hotspot if the variant classification matches the hotspot type
+            this.typeMatches(hotspot.getType(), this.variantClassificationResolver.resolveAll(annotation, transcript))
+        );
+    }
+
+    protected Boolean typeMatches(String hotspotType, Set<String> variantClassifications)
+    {
+        Boolean typeMatches = false;
+
+        for (String variantClassification : variantClassifications)
+        {
+            // just one match is enough
+            if (typeMatches(hotspotType, variantClassification)) {
+                typeMatches = true;
+                break;
+            }
+        }
+
+        return typeMatches;
+    }
+
+    protected Boolean typeMatches(String hotspotType, String variantClassification)
+    {
+        Boolean typeMatches = true;
+
+        // for single residue hotspots, filter out anything but missense mutations
+        if (hotspotType.contains("single residue")) {
+            typeMatches = variantClassification.toLowerCase().contains("missense");
+        }
+        // for in-frame indel hotspots, filter out anything but in-frame mutations
+        else if (hotspotType.contains("in-frame"))  {
+            typeMatches = variantClassification.toLowerCase().contains("inframe") ||
+                variantClassification.toLowerCase().contains("in_frame");
+        }
+
+        return typeMatches;
+    }
+
     private List<Hotspot> getHotspotAnnotations(VariantAnnotation variantAnnotation)
         throws CancerHotspotsWebServiceException
     {
@@ -175,14 +216,15 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         {
             for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
             {
-                hotspots.addAll(getHotspotAnnotations(transcript));
+                hotspots.addAll(getHotspotAnnotations(transcript, variantAnnotation));
             }
         }
 
         return hotspots;
     }
 
-    private List<Hotspot> getHotspotAnnotations(TranscriptConsequence transcript)
+    private List<Hotspot> getHotspotAnnotations(TranscriptConsequence transcript,
+                                                VariantAnnotation annotation)
         throws CancerHotspotsWebServiceException
     {
         // String transcriptId = transcript.getTranscriptId();
@@ -190,7 +232,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
         // hotspotService.setHotspotsURL("http://cancerhotspots.org/api/hotspots/single/");
         // get the hotspot(s) from the web service
-        List<Hotspot> hotspots = this.getHotspots(transcript);
+        List<Hotspot> hotspots = this.getHotspots(transcript, annotation);
 
         // do not cache anything for now
         // hotspotRepository.save(hotspots);

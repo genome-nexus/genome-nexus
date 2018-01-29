@@ -1,6 +1,7 @@
 package org.cbioportal.genome_nexus.service.mock;
 
 import org.cbioportal.genome_nexus.model.Hotspot;
+import org.cbioportal.genome_nexus.model.IntegerRange;
 import org.cbioportal.genome_nexus.service.MockData;
 
 import java.util.ArrayList;
@@ -24,21 +25,19 @@ public class CancerHotspotMockData implements MockData<List<Hotspot>>
 
         hotspot = new Hotspot();
         hotspot.setTranscriptId("ENST00000288602");
-        hotspot.setGeneId("ENSG00000157764");
+        //hotspot.setGeneId("ENSG00000157764");
         hotspot.setHugoSymbol("BRAF");
         hotspot.setResidue("V600");
-        hotspot.setProteinStart(600);
-        hotspot.setProteinEnd(600);
+        hotspot.setAminoAcidPosition(new IntegerRange(600, 600));
 
         hotspots.add(hotspot);
 
         hotspot = new Hotspot();
         hotspot.setTranscriptId("ENST00000288602");
-        hotspot.setGeneId("ENSG00000157764");
+        //hotspot.setGeneId("ENSG00000157764");
         hotspot.setHugoSymbol("BRAF");
         hotspot.setResidue("592-604");
-        hotspot.setProteinStart(600);
-        hotspot.setProteinEnd(600);
+        hotspot.setAminoAcidPosition(new IntegerRange(600, 600));
 
         hotspots.add(hotspot);
 
@@ -49,11 +48,10 @@ public class CancerHotspotMockData implements MockData<List<Hotspot>>
 
         hotspot = new Hotspot();
         hotspot.setTranscriptId("ENST00000256078");
-        hotspot.setGeneId("ENSG00000133703");
+        //hotspot.setGeneId("ENSG00000133703");
         hotspot.setHugoSymbol("KRAS");
         hotspot.setResidue("G12");
-        hotspot.setProteinStart(12);
-        hotspot.setProteinEnd(12);
+        hotspot.setAminoAcidPosition(new IntegerRange(12, 12));
 
         hotspots.add(hotspot);
 
