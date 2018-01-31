@@ -65,8 +65,17 @@ if __name__ == "__main__":
     # Get transcript ids in order to append to correct row
     transcript_ids = transcripts['transcript_stable_id'].tolist()
     for row in transcript_ids:
-        rows_domain.append(domain_dict[row])
-        rows_exons.append(exon_dict[row])
+        # In case no domain or exon information is found, append None,
+        # then the domain or exon line will not be shown in the webservice
+        if len(domain_dict[row]) == 0:
+            rows_domain.append(None)
+        else:
+            rows_domain.append(domain_dict[row])
+
+        if len(exon_dict[row]) == 0:
+            rows_exons.append(None)
+        else:
+            rows_exons.append(exon_dict[row])
 
     # Add to dataframe and write to stdout
     transcripts["domains"] = rows_domain
