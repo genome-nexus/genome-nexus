@@ -57,7 +57,7 @@ def transform_gff_to_tsv(gff_file):
                     data_dict['strand'] = np.NaN
 
                 try:
-                    data_dict['version'] = line_exon_info[7].split("=")[1].replace("\n","")
+                    data_dict['version'] = line_exon_info[7].split("=")[1].strip("\n")
                 except IndexError:
                     data_dict['version'] = np.NaN
 
@@ -70,4 +70,6 @@ def main():
     ## Homo_sapiens.GRCH37.gff3 is local copy from: ftp://ftp.ensembl.org/pub/grch37/release-91/gff3/homo_sapiens/
     tsv_exon_info = transform_gff_to_tsv("../data/Homo_sapiens.GRCh37.gff3.gz")
     tsv_exon_info.to_csv(sys.stdout, sep='\t', index=False)
-main()
+
+if __name__ == "__main__":
+    main()

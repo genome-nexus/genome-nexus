@@ -19,7 +19,7 @@ if __name__ == "__main__":
         for line in domains:
             # Split line and remove enter from last value
             list_line = line.split("\t")
-            list_line[6] = list_line[6].replace("\n", "")
+            list_line[6] = list_line[6].strip("\n")
             # Append information to dict, ensure correct mapping in json later
             # not necessary to check if transcript id is in transcript file,
             # will be done when dictionary is added to the correct rows of the transcript file
@@ -44,7 +44,7 @@ if __name__ == "__main__":
         for line in exons:
             # Split line to retrieve information and
             list_line = line.split("\t")
-            list_line[6] = list_line[6].replace("\n", "")
+            list_line[6] = list_line[6].strip("\n")
             # Add information to dictionary, not necessary to check if
             # transcript id is in transcript file, will be done when dictionary
             # is added to the correct rows of the transcript file
