@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.cbioportal.genome_nexus.persistence.internal.EnsemblRepositoryImpl;
+import java.util.zip.GZIPInputStream;
 
 
 @Component
@@ -22,7 +23,7 @@ public class GenomeNexusImporter implements CommandLineRunner {
 
     protected final Log logger = LogFactory.getLog(getClass());
     final static String[][] IMPORT_RESOURCE_FILES = new String[][]{
-        new String[]{"/ensembl_biomart_transcripts.json", EnsemblRepositoryImpl.TRANSCRIPTS_COLLECTION, "--type json"},
+        new String[]{"/ensembl_biomart_transcripts.json.gz", EnsemblRepositoryImpl.TRANSCRIPTS_COLLECTION, "--type json"},
         new String[]{"/ensembl_biomart_canonical_transcripts_per_hgnc.txt", EnsemblRepositoryImpl.CANONICAL_TRANSCRIPTS_COLLECTION, "--type tsv --headerline"},
         new String[]{"/pfamA.txt", "pfam.domain", "--type tsv --headerline"},
     };
@@ -63,15 +64,57 @@ public class GenomeNexusImporter implements CommandLineRunner {
         return tempFile.getCanonicalPath();
     }
 
+    /**
+     * In case of gzipped file, gunzip it before it can be imported.
+     *
+     * @param inputFile
+     * @return The path to the gunzipped file
+     * @throws Exception
+     */
+    public static String gunzipIt(FileInputStream inputFile) throws Exception{
+
+        byte[] buffer = new byte[1024];
+
+        try{
+
+            GZIPInputStream gzis =
+               new GZIPInputStream(inputFile);
+
+            File tmpFile = File.createTempFile(java.util.UUID.randomUUID().toString(), ".tmp");
+            FileOutputStream out =
+               new FileOutputStream(tmpFile);
+
+           int len;
+           while ((len = gzis.read(buffer)) > 0) {
+               out.write(buffer, 0, len);
+           }
+
+           gzis.close();
+           out.close();
+           return tmpFile.getCanonicalPath();
+
+       }catch(Exception ex){
+          ex.printStackTrace();
+          throw ex;
+       }
+      }
+
     private void importFile(String fileName, String collection, String extraOptions) throws Exception {
         if (mongoDBURI.length() > 0) {
             Runtime r = Runtime.getRuntime();
             Process p = null;
 
-            ClassLoader classLoader = getClass().getClassLoader();
-
             try {
-                File file = new File(GenomeNexusImporter.exportResource(fileName));
+                File file;
+                if (fileName.endsWith(".gz")) {
+                    String tempName = GenomeNexusImporter.exportResource(fileName);
+                    logger.info("Unzip file : " + tempName);
+                    file = new File(gunzipIt(new FileInputStream(tempName)));
+                    logger.info("Gunzipped resource to: " + file.getAbsolutePath());
+                }
+                else {
+                    file = new File(GenomeNexusImporter.exportResource(fileName));
+                }
                 logger.info("Importing " + fileName + " to mongodb collection " + collection + "...");
 
                 String command;
