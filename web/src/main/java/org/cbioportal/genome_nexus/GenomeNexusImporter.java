@@ -108,7 +108,7 @@ public class GenomeNexusImporter implements CommandLineRunner {
                 File file;
                 if (fileName.endsWith(".gz")) {
                     String tempName = GenomeNexusImporter.exportResource(fileName);
-                    logger.info("Unzip file : " + tempName);
+                    logger.info("Gunzip file: " + tempName);
                     file = new File(gunzipIt(new FileInputStream(tempName)));
                     logger.info("Gunzipped resource to: " + file.getAbsolutePath());
                 }
