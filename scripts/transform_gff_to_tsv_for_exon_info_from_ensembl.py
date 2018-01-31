@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
+import gzip
 
 def transform_gff_to_tsv(gff_file):
 
@@ -10,7 +11,8 @@ def transform_gff_to_tsv(gff_file):
     rows = []
 
     # Open gff file and read lines, when line contains exon information, extract this information
-    with open(gff_file, 'r') as gff:
+    # In case of python 3, use 'rt' instead of 'r'
+    with gzip.open(gff_file, 'r') as gff:
         for line in gff:
             list_line = line.split("\t")
             if len(list_line) > 1 and "exon" in list_line[2]:
@@ -66,6 +68,6 @@ def transform_gff_to_tsv(gff_file):
 
 def main():
     ## Homo_sapiens.GRCH37.gff3 is local copy from: ftp://ftp.ensembl.org/pub/grch37/release-91/gff3/homo_sapiens/
-    tsv_exon_info = transform_gff_to_tsv("../data/Homo_sapiens.GRCh37.gff3")
+    tsv_exon_info = transform_gff_to_tsv("../data/Homo_sapiens.GRCh37.gff3.gz")
     tsv_exon_info.to_csv(sys.stdout, sep='\t', index=False)
 main()

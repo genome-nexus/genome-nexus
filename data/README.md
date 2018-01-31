@@ -33,9 +33,8 @@ Gene stable ID, Transcript stable Id, HGNC Symbol, HGNC ID
 2. Click desired Ensembl Release
 3. Click `gff3`
 4. Click `homo_sapiens`
-5. Click Homo_sapiens.GRCh37.[release#].gff3.gz and download will start
-6. Unzip file with the following command: `gunzip Homo_sapiens.GRCh37.[release#].gff3.gz`
-7. Copy the unzipped file to replace `Homo_sapiens.GRCh37.gff3`
+5. Click Homo_sapiens.GRCh37.[release#].gff3.gz and download will start (currently the file from release 87 is used)
+7. Copy the unzipped file to replace `Homo_sapiens.GRCh37.gff3.gz` in the data folder
 
 ## Download and transform data
 ```
