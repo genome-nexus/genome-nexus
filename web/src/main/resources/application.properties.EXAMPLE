@@ -20,8 +20,6 @@ pdb.header_service_url=http://files.rcsb.org/header/PDB_ID.pdb
 
 # MongoDB URI in the form of mongodb://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DB>
 spring.data.mongodb.uri=mongodb://127.0.0.1:27017/annotator
-# Use this if MongoDB is running on docker for example:
-#spring.data.mongodb.import.command.prefix=docker run --rm --net=gn-net -v ${user.dir}:${user.dir} -v /tmp:/tmp mongo mongoimport --uri mongodb://gn-mongo:27017/annotator
 
 # Server port number for the embedded tomcat. This property is required only when building
 # a jar file, and ignored when building a war file.
