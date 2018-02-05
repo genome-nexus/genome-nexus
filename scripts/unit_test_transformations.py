@@ -11,20 +11,10 @@ import difflib
 import os
 import transform_gff_to_tsv_for_exon_info_from_ensembl
 
-
-def setUpModule():
-    """Initialise mock data used throughout the module."""
-
 class TransformTestCase(unittest.TestCase):
 
     """Superclass for testcases that test the transformation steps.
     """
-
-    def setUp(self):
-        """Set up steps, if any"""
-
-    def tearDown(self):
-        """Tear down steps, if any"""
 
     def assertFileGenerated(self, tmp_file_name, expected_file_name):
         """Assert that a file has been generated with the expected contents."""
