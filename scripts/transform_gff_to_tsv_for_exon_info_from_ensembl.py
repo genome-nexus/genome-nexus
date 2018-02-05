@@ -3,7 +3,7 @@ import numpy as np
 import sys
 import gzip
 
-def transform_gff_to_tsv(gff_file):
+def transform_gff_to_internal_format(gff_file):
 
     # Dataframe to append the exon information
     exon_info = pd.DataFrame(columns=['transcriptId', 'exonId', 'exonStart', 'exonEnd', 'rank', 'strand', 'version'])
@@ -66,10 +66,13 @@ def transform_gff_to_tsv(gff_file):
     exon_info = exon_info.append(rows, ignore_index=True)
     return(exon_info)
 
+def transform_gff_to_tsv(gff_file, output):
+    tsv_exon_info = transform_gff_to_internal_format(gff_file)
+    tsv_exon_info.to_csv(output, sep='\t', index=False)
+
 def main():
     ## Homo_sapiens.GRCH37.gff3 is local copy from: ftp://ftp.ensembl.org/pub/grch37/release-91/gff3/homo_sapiens/
-    tsv_exon_info = transform_gff_to_tsv("../data/Homo_sapiens.GRCh37.gff3.gz")
-    tsv_exon_info.to_csv(sys.stdout, sep='\t', index=False)
+    transform_gff_to_tsv("../data/Homo_sapiens.GRCh37.gff3.gz", sys.stdout)
 
 if __name__ == "__main__":
     main()
