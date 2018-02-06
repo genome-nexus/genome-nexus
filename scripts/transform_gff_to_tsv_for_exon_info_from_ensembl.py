@@ -54,9 +54,9 @@ def transform_gff_to_internal_format(gff_file):
                     strand = list_line[6]
                     # Convert plus strand into 1 and minus strand into -1
                     if strand == "+":
-                        data_dict['strand'] = 1
+                        data_dict['strand'] = int(1)
                     elif strand == "-":
-                        data_dict['strand'] = -1
+                        data_dict['strand'] = int(-1)
                     else:
                         data_dict['strand'] = np.NaN
                 except IndexError:
