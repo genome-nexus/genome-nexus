@@ -28,44 +28,44 @@ def transform_gff_to_internal_format(gff_file):
                 try:
                     data_dict['transcriptId'] = line_exon_info[0].split(":")[1]
                 except IndexError:
-                    data_dict['transcriptId'] = np.NaN
+                    data_dict['transcriptId'] = ""
 
                 try:
                     data_dict['exonId'] = line_exon_info[5].split("=")[1]
                 except IndexError:
-                    data_dict['exonId'] = np.NaN
+                    data_dict['exonId'] = ""
 
                 try:
                     data_dict['exonStart'] = list_line[3]
                 except IndexError:
-                    data_dict['exonStart'] = np.NaN
+                    data_dict['exonStart'] = ""
 
                 try:
                     data_dict['exonEnd'] = list_line[4]
                 except IndexError:
-                    data_dict['exonEnd'] = np.NaN
+                    data_dict['exonEnd'] = ""
 
                 try:
                     data_dict['rank'] = line_exon_info[6].split("=")[1]
                 except IndexError:
-                    data_dict['rank'] = np.NaN
+                    data_dict['rank'] = ""
 
                 try:
                     strand = list_line[6]
                     # Convert plus strand into 1 and minus strand into -1
                     if strand == "+":
-                        data_dict['strand'] = int(1)
+                        data_dict['strand'] = "1"
                     elif strand == "-":
-                        data_dict['strand'] = int(-1)
+                        data_dict['strand'] = "-1"
                     else:
-                        data_dict['strand'] = np.NaN
+                        data_dict['strand'] = ""
                 except IndexError:
-                    data_dict['strand'] = np.NaN
+                    data_dict['strand'] = ""
 
                 try:
                     data_dict['version'] = line_exon_info[7].split("=")[1].strip("\n")
                 except IndexError:
-                    data_dict['version'] = np.NaN
+                    data_dict['version'] = ""
 
                 rows.append(data_dict)
 
