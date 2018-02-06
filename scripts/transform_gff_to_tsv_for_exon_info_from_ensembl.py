@@ -1,3 +1,9 @@
+"""
+Copyright (c) 2018 The Hyve B.V.
+This code is licensed under the GNU Affero General Public License (AGPL),
+version 3, or (at your option) any later version.
+"""
+
 import pandas as pd
 import numpy as np
 import sys
