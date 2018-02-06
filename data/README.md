@@ -28,6 +28,14 @@ Gene stable ID, Transcript stable Id, HGNC Symbol, HGNC ID
 5. Click on `Results`, and export all results to a `TSV` file.
 6. Copy over the downoaded file to replace [ensembl_biomart_geneids_grch37.p13.txt](ensembl_biomart_geneids_grch37.p13.is_canonical.txt).
 
+##### Exon information in Ensembl endpoint
+1. Go to Ensembl FTP site ([ftp://ftp.ensembl.org/pub/grch37/](ftp://ftp.ensembl.org/pub/grch37/))
+2. Click desired Ensembl Release
+3. Click `gff3`
+4. Click `homo_sapiens`
+5. Click Homo_sapiens.GRCh37.[release#].gff3.gz and download will start (currently the file from release 87 is used)
+7. Copy the unzipped file to replace `Homo_sapiens.GRCh37.gff3.gz` in the data folder
+
 ## Download and transform data
 ```
 make all # takes about 1h40m from scratch
