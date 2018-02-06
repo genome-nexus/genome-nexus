@@ -77,8 +77,9 @@ def transform_gff_to_tsv(gff_file, output):
     tsv_exon_info.to_csv(output, sep='\t', index=False)
 
 def main():
-    ## Homo_sapiens.GRCH37.gff3 is local copy from: ftp://ftp.ensembl.org/pub/grch37/release-91/gff3/homo_sapiens/
-    transform_gff_to_tsv("../data/Homo_sapiens.GRCh37.gff3.gz", sys.stdout)
+    input_gff_file = sys.argv[1]
+    output = sys.stdout
+    transform_gff_to_tsv(input_gff_file, output)
 
 if __name__ == "__main__":
     main()
