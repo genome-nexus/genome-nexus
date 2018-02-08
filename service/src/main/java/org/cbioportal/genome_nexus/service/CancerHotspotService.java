@@ -32,9 +32,7 @@
 
 package org.cbioportal.genome_nexus.service;
 
-import org.cbioportal.genome_nexus.model.Hotspot;
-import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -49,7 +47,10 @@ public interface CancerHotspotService
     List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspots(TranscriptConsequence transcript, VariantAnnotation annotation) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspots() throws CancerHotspotsWebServiceException;
-    List<Hotspot> getHotspotAnnotations(List<String> variants) throws CancerHotspotsWebServiceException;
-    List<Hotspot> getHotspotAnnotations(String variant)
+    List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants) throws CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations) throws CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspotAnnotationsByVariant(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
 }

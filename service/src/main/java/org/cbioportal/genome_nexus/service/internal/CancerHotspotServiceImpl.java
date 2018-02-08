@@ -32,26 +32,21 @@
 
 package org.cbioportal.genome_nexus.service.internal;
 
-import org.cbioportal.genome_nexus.model.Hotspot;
-import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
-import org.cbioportal.genome_nexus.service.annotation.VariantClassificationResolver;
+import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.service.remote.CancerHotspotDataFetcher;
-import org.cbioportal.genome_nexus.util.Numerical;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Selcuk Onur Sumer
@@ -63,16 +58,19 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
     private final CancerHotspotDataFetcher externalResourceFetcher;
     private final VariantAnnotationService variantAnnotationService;
-    private final VariantClassificationResolver variantClassificationResolver;
+    private final HotspotFilter hotspotFilter;
+    private final NotationConverter notationConverter;
 
     @Autowired
     public CancerHotspotServiceImpl(CancerHotspotDataFetcher externalResourceFetcher,
                                     VariantAnnotationService variantAnnotationService,
-                                    VariantClassificationResolver variantClassificationResolver)
+                                    HotspotFilter hotspotFilter,
+                                    NotationConverter notationConverter)
     {
         this.externalResourceFetcher = externalResourceFetcher;
         this.variantAnnotationService = variantAnnotationService;
-        this.variantClassificationResolver = variantClassificationResolver;
+        this.hotspotFilter = hotspotFilter;
+        this.notationConverter = notationConverter;
     }
 
     @Override
@@ -131,7 +129,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     }
 
     @Override
-    public List<Hotspot> getHotspotAnnotations(String variant)
+    public List<Hotspot> getHotspotAnnotationsByVariant(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
     {
@@ -147,16 +145,53 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     }
 
     @Override
-    public List<Hotspot> getHotspotAnnotations(List<String> variants)
+    public List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants)
         throws CancerHotspotsWebServiceException
     {
         List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants);
 
-        List<Hotspot> hotspots = new ArrayList<>();
+        List<AggregatedHotspots> hotspots = new ArrayList<>();
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)
         {
-            hotspots.addAll(this.getHotspotAnnotations(variantAnnotation));
+            AggregatedHotspots aggregatedHotspots = new AggregatedHotspots();
+            aggregatedHotspots.setHotspots(this.getHotspotAnnotations(variantAnnotation));
+            aggregatedHotspots.setVariant(variantAnnotation.getVariant());
+
+            hotspots.add(aggregatedHotspots);
+        }
+
+        return hotspots;
+    }
+
+    @Override
+    public List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        CancerHotspotsWebServiceException
+    {
+        GenomicLocation location = this.notationConverter.parseGenomicLocation(genomicLocation, ",");
+
+        return this.getHotspotAnnotationsByVariant(this.notationConverter.genomicToHgvs(location));
+    }
+
+    @Override
+    public List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations)
+        throws CancerHotspotsWebServiceException
+    {
+        Map<String, GenomicLocation> variantToGenomicLocation = new LinkedHashMap<>();
+
+        // convert genomic location to hgvs notation (there is always 1-1 mapping)
+        for (GenomicLocation location : genomicLocations) {
+            variantToGenomicLocation.put(notationConverter.genomicToHgvs(location), location);
+        }
+
+        // query hotspots service by variant
+        List<AggregatedHotspots> hotspots = this.getHotspotAnnotationsByVariants(
+            new ArrayList<>(variantToGenomicLocation.keySet()));
+
+        // add genomic location info too
+        for (AggregatedHotspots aggregatedHotspots: hotspots) {
+            aggregatedHotspots.setGenomicLocation(variantToGenomicLocation.get(aggregatedHotspots.getVariant()));
         }
 
         return hotspots;
@@ -164,47 +199,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
     protected Boolean filterHotspot(Hotspot hotspot, TranscriptConsequence transcript, VariantAnnotation annotation)
     {
-        return (
-            // filter by protein position:
-            // only include the hotspot if the protein change position overlaps with the current transcript
-            Numerical.overlaps(hotspot.getResidue(), transcript.getProteinStart(), transcript.getProteinEnd()) &&
-            // filter by mutation type:
-            // only include the hotspot if the variant classification matches the hotspot type
-            this.typeMatches(hotspot.getType(), this.variantClassificationResolver.resolveAll(annotation, transcript))
-        );
-    }
-
-    protected Boolean typeMatches(String hotspotType, Set<String> variantClassifications)
-    {
-        Boolean typeMatches = false;
-
-        for (String variantClassification : variantClassifications)
-        {
-            // just one match is enough
-            if (typeMatches(hotspotType, variantClassification)) {
-                typeMatches = true;
-                break;
-            }
-        }
-
-        return typeMatches;
-    }
-
-    protected Boolean typeMatches(String hotspotType, String variantClassification)
-    {
-        Boolean typeMatches = true;
-
-        // for single residue hotspots, filter out anything but missense mutations
-        if (hotspotType.contains("single residue")) {
-            typeMatches = variantClassification.toLowerCase().contains("missense");
-        }
-        // for in-frame indel hotspots, filter out anything but in-frame mutations
-        else if (hotspotType.contains("in-frame"))  {
-            typeMatches = variantClassification.toLowerCase().contains("inframe") ||
-                variantClassification.toLowerCase().contains("in_frame");
-        }
-
-        return typeMatches;
+        return this.hotspotFilter.filter(hotspot, transcript, annotation);
     }
 
     private List<Hotspot> getHotspotAnnotations(VariantAnnotation variantAnnotation)

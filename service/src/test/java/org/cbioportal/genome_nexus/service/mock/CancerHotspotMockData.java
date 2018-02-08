@@ -29,6 +29,7 @@ public class CancerHotspotMockData implements MockData<List<Hotspot>>
         hotspot.setHugoSymbol("BRAF");
         hotspot.setResidue("V600");
         hotspot.setAminoAcidPosition(new IntegerRange(600, 600));
+        hotspot.setType("single residue");
 
         hotspots.add(hotspot);
 
@@ -37,7 +38,8 @@ public class CancerHotspotMockData implements MockData<List<Hotspot>>
         //hotspot.setGeneId("ENSG00000157764");
         hotspot.setHugoSymbol("BRAF");
         hotspot.setResidue("592-604");
-        hotspot.setAminoAcidPosition(new IntegerRange(600, 600));
+        hotspot.setAminoAcidPosition(new IntegerRange(592, 604));
+        hotspot.setType("in-frame indel");
 
         hotspots.add(hotspot);
 
@@ -52,6 +54,7 @@ public class CancerHotspotMockData implements MockData<List<Hotspot>>
         hotspot.setHugoSymbol("KRAS");
         hotspot.setResidue("G12");
         hotspot.setAminoAcidPosition(new IntegerRange(12, 12));
+        hotspot.setType("single residue");
 
         hotspots.add(hotspot);
 
