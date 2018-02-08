@@ -23,47 +23,39 @@ programmatic interface
 3. Dissemination of the diverse information in a hierarchical digestible way
 for interpreting variants and patients.
 
-## Pre-requisites
-
-#### Mongo DB
-
-##### Alternative 1 - install mongoDB
-Install mongoDB manually.
-
-##### Alternative 2 - start mongoDB in a docker container (assuming genome-nexus is running locally, development mode)
-Start with docker:
-```
-docker network create gn-net
-docker run --name=gn-mongo --restart=always --net=gn-net -p 27017:27017 -d mongo
-```
-Enable the following line in `application.properties`:
-```
-spring.data.mongodb.import.command.prefix=docker run --rm --net=gn-net -v ${user.dir}:${user.dir} -v /tmp:/tmp mongo mongoimport --uri mongodb://gn-mongo:27017/annotator
-```
-##### Alternative 3 - start genome-nexus and mongoDB in docker containers (production mode)
-Create common docker network:
-```
-docker network create gn-net
-```
-Run your genome-nexus container using the network above (`--net` parameter in docker).
-
-Run the mongoDB container:
-```
-docker run --name=gn-mongo --restart=always --net=gn-net -d mongo
-```
-**Only** change the following in `application.properties` (so do **not** enable the property used in Alternative 2 above):
-```
-spring.data.mongodb.uri=mongodb://gn-mongo:27017/annotator
-```
-
 ## Run
+
+### Alternative 1 - run genome-nexus and mongoDB in docker containers
+Run with docker (assumes mvn installed locally):
+```
+mvn  -DskipTests clean install
+docker compose up --build
+```
+The mongo image `genomenexus/gn-mongo` comes with all the required tables
+initialized.
+
+### Alternative 2 - run genome-nexus locally, but mongoDB in docker container
+```
+# the genomenexus/gn-mongo images comes with all the required tables imported
+# change latest to different version if necessary (only need to run this once)
+docker run --name=gn-mongo --restart=always -p 27017:27017 -d genomenexus/gn-mongo:latest 
+mvn  -DskipTests clean install
+java -jar web/target/web-*.war
+```
+
+### Alternative 3 - install mongoDB locally and run with local java
+Install mongoDB manually. Then follow instructions in
+[genome-nexus-importer](https://github.com/genome-nexus/genome-nexus-importer)
+to initialize the database.
+
+After that run this:
 ```
 mvn clean install
 java -jar web/target/web-*.war
 ```
 
-## Data Download
-If you need to update the included date files see [data/README.md](data/README.md)
+## Update data
+If you need to update the data files see [genome-nexus-importer](https://github.com/genome-nexus/genome-nexus-importer)
 
 ## Programmatic access through R/Python
 See [notebooks/](notebooks/)
