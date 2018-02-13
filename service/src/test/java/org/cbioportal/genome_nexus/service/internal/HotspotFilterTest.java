@@ -43,6 +43,12 @@ public class HotspotFilterTest
         indelHotspot.setAminoAcidPosition(new IntegerRange(594, 602));
         indelHotspot.setType("in-frame indel");
 
+        // same mutation as the single residue one, except the hotspot type
+        Hotspot hotspot3d = new Hotspot();
+        hotspot3d.setResidue("V600");
+        hotspot3d.setAminoAcidPosition(new IntegerRange(600, 600));
+        hotspot3d.setType("3d");
+
         TranscriptConsequence singleResidueTranscript = new TranscriptConsequence();
         singleResidueTranscript.setProteinStart(600);
         singleResidueTranscript.setProteinEnd(600);
@@ -54,11 +60,20 @@ public class HotspotFilterTest
         this.mockVariantClassificationResolverMethod(annotation, singleResidueTranscript, "Missense_Mutation");
         this.mockVariantClassificationResolverMethod(annotation, indelTranscript, "In_Frame_Insertion");
 
-        assertTrue(this.hotspotFilter.filter(singleResidueHotspot, singleResidueTranscript, annotation));
-        assertFalse(this.hotspotFilter.filter(singleResidueHotspot, indelTranscript, annotation));
+        assertTrue("Single residue missense hotspot should be selected for single residue transcript",
+            this.hotspotFilter.filter(singleResidueHotspot, singleResidueTranscript, annotation));
+        assertFalse("Single residue missense hotspot should be filtered out for indel transcript",
+            this.hotspotFilter.filter(singleResidueHotspot, indelTranscript, annotation));
 
-        assertTrue(this.hotspotFilter.filter(indelHotspot, indelTranscript, annotation));
-        assertFalse(this.hotspotFilter.filter(indelHotspot, singleResidueTranscript, annotation));
+        assertTrue("Indel hotspot should be selected for indel transcript",
+            this.hotspotFilter.filter(indelHotspot, indelTranscript, annotation));
+        assertFalse("Indel hotspot should be filtered out for single residue transcript",
+            this.hotspotFilter.filter(indelHotspot, singleResidueTranscript, annotation));
+
+        assertTrue("3D hotspot should be selected for single residue transcript",
+            this.hotspotFilter.filter(hotspot3d, singleResidueTranscript, annotation));
+        assertFalse("3D hotspot should be filtered out for indel transcript",
+            this.hotspotFilter.filter(hotspot3d, indelTranscript, annotation));
     }
 
     private void mockVariantClassificationResolverMethod(VariantAnnotation variantAnnotation,

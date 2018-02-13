@@ -62,6 +62,9 @@ public class HotspotFilter
             typeMatches = variantClassification.toLowerCase().contains("inframe") ||
                 variantClassification.toLowerCase().contains("in_frame");
         }
+        else if (hotspotType.contains("3d"))  {
+            typeMatches = variantClassification.toLowerCase().contains("missense");
+        }
 
         return typeMatches;
     }

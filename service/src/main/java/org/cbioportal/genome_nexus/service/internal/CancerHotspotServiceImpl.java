@@ -40,6 +40,7 @@ import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceExc
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.service.remote.CancerHotspot3dDataFetcher;
 import org.cbioportal.genome_nexus.service.remote.CancerHotspotDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,18 +57,21 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 {
     private HotspotCache cache;
 
-    private final CancerHotspotDataFetcher externalResourceFetcher;
+    private final CancerHotspotDataFetcher cancerHotspotDataFetcher;
+    private final CancerHotspot3dDataFetcher cancerHotspot3dDataFetcher;
     private final VariantAnnotationService variantAnnotationService;
     private final HotspotFilter hotspotFilter;
     private final NotationConverter notationConverter;
 
     @Autowired
-    public CancerHotspotServiceImpl(CancerHotspotDataFetcher externalResourceFetcher,
+    public CancerHotspotServiceImpl(CancerHotspotDataFetcher cancerHotspotDataFetcher,
+                                    CancerHotspot3dDataFetcher cancerHotspot3dDataFetcher,
                                     VariantAnnotationService variantAnnotationService,
                                     HotspotFilter hotspotFilter,
                                     NotationConverter notationConverter)
     {
-        this.externalResourceFetcher = externalResourceFetcher;
+        this.cancerHotspotDataFetcher = cancerHotspotDataFetcher;
+        this.cancerHotspot3dDataFetcher = cancerHotspot3dDataFetcher;
         this.variantAnnotationService = variantAnnotationService;
         this.hotspotFilter = hotspotFilter;
         this.notationConverter = notationConverter;
@@ -110,9 +114,23 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     @Override
     public List<Hotspot> getHotspots() throws CancerHotspotsWebServiceException
     {
+        List<Hotspot> hotspots;
+
         try
         {
-            return this.externalResourceFetcher.fetchInstances("");
+            // fetch recurrent hotspots first
+            hotspots = this.cancerHotspotDataFetcher.fetchInstances("");
+
+            // then fetch 3D hotspots
+
+            List<Hotspot> hotspots3d = this.cancerHotspot3dDataFetcher.fetchInstances("");
+
+            // TODO ideally, this should have been done in CancerHotspots web service...
+            for (Hotspot hotspot: hotspots3d) {
+                hotspot.setType("3d");
+            }
+
+            hotspots.addAll(hotspots3d);
         }
         catch (ResourceMappingException e)
         {
@@ -126,6 +144,8 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         {
             throw new CancerHotspotsWebServiceException(e.getMessage());
         }
+
+        return hotspots;
     }
 
     @Override
