@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -56,28 +57,40 @@ public class EnsemblServiceImpl implements EnsemblService
     }
 
     @Override
-    public List<EnsemblTranscript> getEnsemblTranscripts(String geneId, String proteinId)
+    public List<EnsemblTranscript> getEnsemblTranscripts(String geneId, String proteinId, String hugoSymbol)
     {
-        if (geneId == null && proteinId == null)
+        if (geneId == null && proteinId == null && hugoSymbol == null)
         {
             return this.ensemblRepository.findAll();
         }
-        else if (geneId != null && proteinId != null)
-        {
-            return this.ensemblRepository.findByGeneIdAndProteinId(geneId, proteinId);
-        }
-        else if (geneId != null)
+        else if (geneId != null && proteinId == null && hugoSymbol == null)
         {
             return this.ensemblRepository.findByGeneId(geneId);
         }
-        else
+        else if (geneId != null && proteinId != null && hugoSymbol == null)
+        {
+            return this.ensemblRepository.findByGeneIdAndProteinId(geneId, proteinId);
+        }
+        else if (geneId != null && proteinId == null && hugoSymbol != null)
+        {
+            return this.ensemblRepository.findByGeneIdAndHugoSymbolsIn(geneId, Arrays.<String>asList(hugoSymbol));
+        }
+        else if (geneId == null && proteinId != null && hugoSymbol == null)
         {
             return this.ensemblRepository.findByProteinId(proteinId);
+        }
+        else if (geneId == null && proteinId != null && hugoSymbol != null)
+        {
+            return this.ensemblRepository.findByProteinIdAndHugoSymbolsIn(proteinId, Arrays.<String>asList(hugoSymbol));
+        }
+        else
+        {
+            return this.ensemblRepository.findByHugoSymbolsIn(Arrays.<String>asList(hugoSymbol));
         }
     }
 
     @Override
-    public List<EnsemblTranscript> getEnsemblTranscripts(List<String> transcriptIds, List<String> geneIds, List<String> proteinIds) {
+    public List<EnsemblTranscript> getEnsemblTranscripts(List<String> transcriptIds, List<String> geneIds, List<String> proteinIds, List<String> hugoSymbols) {
         if (transcriptIds != null) {
             return this.ensemblRepository.findByTranscriptIdIn(transcriptIds);
         }
@@ -86,6 +99,9 @@ public class EnsemblServiceImpl implements EnsemblService
         }
         else if (proteinIds != null) {
             return this.ensemblRepository.findByProteinIdIn(proteinIds);
+        }
+        else if (hugoSymbols != null) {
+            return this.ensemblRepository.findByHugoSymbolsIn(hugoSymbols);
         }
         else {
             return this.ensemblRepository.findAll();
