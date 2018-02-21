@@ -14,7 +14,7 @@
  */
 
 /*
- * This file is part of cBioPortal Genome Nexus.
+ * This file is part of cBioPortal Cancer Hotspots.
  *
  * cBioPortal is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,27 +30,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cbioportal.genome_nexus.service;
-
-import org.cbioportal.genome_nexus.model.*;
-import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
-import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
-import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
-
-import java.util.List;
+package org.cbioportal.genome_nexus.model;
 
 /**
  * @author Selcuk Onur Sumer
  */
-public interface CancerHotspotService
+public class IntegerRange
 {
-    List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException;
-    List<Hotspot> getHotspots(TranscriptConsequence transcript, VariantAnnotation annotation) throws CancerHotspotsWebServiceException;
-    List<Hotspot> getHotspots() throws CancerHotspotsWebServiceException;
-    List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants) throws CancerHotspotsWebServiceException;
-    List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations) throws CancerHotspotsWebServiceException;
-    List<Hotspot> getHotspotAnnotationsByVariant(String variant)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
-    List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
+    private Integer start;
+    private Integer end;
+
+    public IntegerRange()
+    {
+        this(null, null);
+    }
+
+    public IntegerRange(Integer start)
+    {
+        this(start, null);
+    }
+
+    public IntegerRange(Integer start, Integer end)
+    {
+        this.start = start;
+        this.end = end;
+    }
+
+    public Integer getStart()
+    {
+        return start;
+    }
+
+    public void setStart(Integer start)
+    {
+        this.start = start;
+    }
+
+    public Integer getEnd()
+    {
+        return end;
+    }
+
+    public void setEnd(Integer end)
+    {
+        this.end = end;
+    }
 }

@@ -44,7 +44,7 @@ public class HotspotAnnotationEnricher implements AnnotationEnricher
             for (TranscriptConsequence transcript : annotation.getTranscriptConsequences())
             {
                 try {
-                    hotspotsList.add(hotspotService.getHotspots(transcript));
+                    hotspotsList.add(hotspotService.getHotspots(transcript, annotation));
                 } catch (CancerHotspotsWebServiceException e) {
                     LOG.warn(e.getLocalizedMessage());
                 }
