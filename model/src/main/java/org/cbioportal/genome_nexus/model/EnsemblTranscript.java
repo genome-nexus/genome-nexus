@@ -27,6 +27,9 @@ public class EnsemblTranscript
 
     @Field(value="domains")
     private List<PfamDomainRange> pfamDomains;
+    
+    @Field(value="exons")
+    private List<ExonRange> exons;
 
     public String getTranscriptId() {
         return transcriptId;
@@ -66,6 +69,14 @@ public class EnsemblTranscript
 
     public void setPfamDomains(List<PfamDomainRange> pfamDomains) {
         this.pfamDomains = pfamDomains;
+    }
+    
+    public List<ExonRange> getExons() {
+        return this.exons;
+    }
+
+    public void setExons(List<ExonRange> exons) {
+        this.exons = exons;
     }
 }
 
