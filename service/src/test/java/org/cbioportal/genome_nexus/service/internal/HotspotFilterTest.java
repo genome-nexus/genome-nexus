@@ -4,6 +4,7 @@ import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.IntegerRange;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.service.annotation.ProteinPositionResolver;
 import org.cbioportal.genome_nexus.service.annotation.VariantClassificationResolver;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,9 @@ public class HotspotFilterTest
 
     @Mock
     private VariantClassificationResolver variantClassificationResolver;
+
+    @Mock
+    private ProteinPositionResolver proteinPositionResolver;
 
     @Test
     public void filterHotspotsByPositionAndMutationType()
@@ -60,6 +64,9 @@ public class HotspotFilterTest
         this.mockVariantClassificationResolverMethod(annotation, singleResidueTranscript, "Missense_Mutation");
         this.mockVariantClassificationResolverMethod(annotation, indelTranscript, "In_Frame_Insertion");
 
+        this.mockProteinChangeResolverMethod(annotation, singleResidueTranscript);
+        this.mockProteinChangeResolverMethod(annotation, indelTranscript);
+
         assertTrue("Single residue missense hotspot should be selected for single residue transcript",
             this.hotspotFilter.filter(singleResidueHotspot, singleResidueTranscript, annotation));
         assertFalse("Single residue missense hotspot should be filtered out for indel transcript",
@@ -84,6 +91,16 @@ public class HotspotFilterTest
         returnValue.add(variantClassification);
 
         Mockito.when(this.variantClassificationResolver.resolveAll(
+            variantAnnotation, transcriptConsequence)).thenReturn(returnValue);
+    }
+
+    private void mockProteinChangeResolverMethod(VariantAnnotation variantAnnotation,
+                                                 TranscriptConsequence transcriptConsequence)
+    {
+        IntegerRange returnValue = new IntegerRange(
+            transcriptConsequence.getProteinStart(), transcriptConsequence.getProteinEnd());
+
+        Mockito.when(this.proteinPositionResolver.resolve(
             variantAnnotation, transcriptConsequence)).thenReturn(returnValue);
     }
 }
