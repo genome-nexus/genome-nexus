@@ -111,11 +111,16 @@ public class VariantClassificationResolver
                 String referenceAllele = alleles[0];
                 String variantAllele = alleles[1];
 
-                inframe = Math.abs(referenceAllele.length() - variantAllele.length()) % 3 == 0;
+                inframe = Math.abs(this.calcAlleleLength(referenceAllele) - this.calcAlleleLength(variantAllele)) % 3 == 0;
             }
         }
 
         return inframe;
+    }
+
+    private Integer calcAlleleLength(String allele)
+    {
+        return allele.equals("-") ? 0 : allele.length();
     }
 
     private String resolveVariantClassification(String variant, String variantType, Boolean isInframe)
