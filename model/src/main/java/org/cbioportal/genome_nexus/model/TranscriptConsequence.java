@@ -50,16 +50,16 @@ public class TranscriptConsequence
     private String variantAllele;
     private String codons;
     private String proteinId;
-    private String proteinStart;
-    private String proteinEnd;
+    private Integer proteinStart;
+    private Integer proteinEnd;
     private String geneSymbol;
     private String geneId;
     private String aminoAcids;
-    private String hgncId;
+    private Integer hgncId;
     private String canonical;
-    private String polyphenScore;
+    private Double polyphenScore;
     private String polyphenPrediction;
-    private String siftScore;
+    private Double siftScore;
     private String siftPrediction;
 
     private List<String> refseqTranscriptIds;
@@ -123,12 +123,12 @@ public class TranscriptConsequence
     }
 
     @Field(value="polyphen_score")
-    public String getPolyphenScore()
+    public Double getPolyphenScore()
     {
         return polyphenScore;
     }
 
-    public void setPolyphenScore(String polyphenScore) { this.polyphenScore = polyphenScore; }
+    public void setPolyphenScore(Double polyphenScore) { this.polyphenScore = polyphenScore; }
 
     @Field(value="polyphen_prediction")
     public String getPolyphenPrediction()
@@ -139,12 +139,12 @@ public class TranscriptConsequence
     public void setPolyphenPrediction(String polyphenPrediction) { this.polyphenPrediction = polyphenPrediction; }
 
     @Field(value="sift_score")
-    public String getSiftScore()
+    public Double getSiftScore()
     {
         return siftScore;
     }
 
-    public void setSiftScore(String siftScore) { this.siftScore = siftScore; }
+    public void setSiftScore(Double siftScore) { this.siftScore = siftScore; }
 
     @Field(value="sift_prediction")
     public String getSiftPrediction()
@@ -177,23 +177,23 @@ public class TranscriptConsequence
     }
 
     @Field(value="protein_start")
-    public String getProteinStart()
+    public Integer getProteinStart()
     {
         return proteinStart;
     }
 
-    public void setProteinStart(String proteinStart)
+    public void setProteinStart(Integer proteinStart)
     {
         this.proteinStart = proteinStart;
     }
 
     @Field(value="protein_end")
-    public String getProteinEnd()
+    public Integer getProteinEnd()
     {
         return proteinEnd;
     }
 
-    public void setProteinEnd(String proteinEnd)
+    public void setProteinEnd(Integer proteinEnd)
     {
         this.proteinEnd = proteinEnd;
     }
@@ -232,12 +232,12 @@ public class TranscriptConsequence
     }
 
     @Field(value="hgnc_id")
-    public String getHgncId()
+    public Integer getHgncId()
     {
         return hgncId;
     }
 
-    public void setHgncId(String hgncId)
+    public void setHgncId(Integer hgncId)
     {
         this.hgncId = hgncId;
     }

@@ -19,6 +19,9 @@ public class EnsemblTranscript
     @Field(value="gene_stable_id")
     private String geneId;
 
+    @Field(value="hgnc_symbols")
+    private List<String> hugoSymbols;
+
     @Field(value="protein_stable_id")
     private String proteinId;
 
@@ -27,6 +30,9 @@ public class EnsemblTranscript
 
     @Field(value="domains")
     private List<PfamDomainRange> pfamDomains;
+    
+    @Field(value="exons")
+    private List<ExonRange> exons;
 
     public String getTranscriptId() {
         return transcriptId;
@@ -60,12 +66,28 @@ public class EnsemblTranscript
         this.proteinLength = proteinLength;
     }
 
+    public List<String> getHugoSymbols() {
+        return this.hugoSymbols;
+    }
+
+    public void setHugoSymbols(List<String> hugoSymbols) {
+        this.hugoSymbols = hugoSymbols;
+    }
+
     public List<PfamDomainRange> getPfamDomains() {
         return this.pfamDomains;
     }
 
     public void setPfamDomains(List<PfamDomainRange> pfamDomains) {
         this.pfamDomains = pfamDomains;
+    }
+    
+    public List<ExonRange> getExons() {
+        return this.exons;
+    }
+
+    public void setExons(List<ExonRange> exons) {
+        this.exons = exons;
     }
 }
 

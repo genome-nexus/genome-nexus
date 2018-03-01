@@ -16,10 +16,10 @@ public class CachedVariantAnnotationFetcher extends BaseCachedExternalResourceFe
                                           VariantAnnotationRepository repository,
                                           VEPDataFetcher fetcher)
     {
-        super(transformer);
-        this.collection = VariantAnnotationRepositoryImpl.COLLECTION;
-        this.type = VariantAnnotation.class;
-        this.repository = repository;
-        this.fetcher = fetcher;
+        super(VariantAnnotationRepositoryImpl.COLLECTION,
+            repository,
+            VariantAnnotation.class,
+            fetcher,
+            transformer);
     }
 }

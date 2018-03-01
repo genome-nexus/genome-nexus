@@ -79,17 +79,17 @@ public class NumericalTest
     @Test
     public void overlaps()
     {
-        assertTrue(Numerical.overlaps("667", "666", "668"));
-        assertTrue(Numerical.overlaps("667-700", "666", "668"));
-        assertTrue(Numerical.overlaps("660-667", "666", "668"));
-        assertTrue(Numerical.overlaps("668-680", "666", "668"));
-        assertTrue(Numerical.overlaps("600-666", "666", "668"));
+        assertTrue(Numerical.overlaps("667", 666, 668));
+        assertTrue(Numerical.overlaps("667-700", 666, 668));
+        assertTrue(Numerical.overlaps("660-667", 666, 668));
+        assertTrue(Numerical.overlaps("668-680", 666, 668));
+        assertTrue(Numerical.overlaps("600-666", 666, 668));
 
-        assertFalse(Numerical.overlaps("777", "666", "668"));
-        assertFalse(Numerical.overlaps("700-707", "666", "668"));
-        assertFalse(Numerical.overlaps("600", "666", "668"));
-        assertFalse(Numerical.overlaps("600-606", "666", "668"));
+        assertFalse(Numerical.overlaps("777", 666, 668));
+        assertFalse(Numerical.overlaps("700-707", 666, 668));
+        assertFalse(Numerical.overlaps("600", 666, 668));
+        assertFalse(Numerical.overlaps("600-606", 666, 668));
 
-        assertTrue(Numerical.overlaps("665-669", "666", "668"));
+        assertTrue(Numerical.overlaps("665-669", 666, 668));
     }
 }

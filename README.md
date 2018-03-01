@@ -24,10 +24,38 @@ programmatic interface
 for interpreting variants and patients.
 
 ## Run
+
+### Alternative 1 - run genome-nexus and mongoDB in docker containers
+Run with docker (assumes mvn installed locally):
+```
+mvn  -DskipTests clean install
+docker compose up --build
+```
+The mongo image `genomenexus/gn-mongo` comes with all the required tables
+initialized.
+
+### Alternative 2 - run genome-nexus locally, but mongoDB in docker container
+```
+# the genomenexus/gn-mongo images comes with all the required tables imported
+# change latest to different version if necessary (only need to run this once)
+docker run --name=gn-mongo --restart=always -p 27017:27017 -d genomenexus/gn-mongo:latest 
+mvn  -DskipTests clean install
+java -jar web/target/web-*.war
+```
+
+### Alternative 3 - install mongoDB locally and run with local java
+Install mongoDB manually. Then follow instructions in
+[genome-nexus-importer](https://github.com/genome-nexus/genome-nexus-importer)
+to initialize the database.
+
+After that run this:
 ```
 mvn clean install
 java -jar web/target/web-*.war
 ```
 
-## Data Download
-If you need to update the included date files see [data/README.md](data/README.md)
+## Update data
+If you need to update the data files see [genome-nexus-importer](https://github.com/genome-nexus/genome-nexus-importer)
+
+## Programmatic access through R/Python
+See [notebooks/](notebooks/)

@@ -14,6 +14,6 @@ public interface EnsemblService
         throws EnsemblTranscriptNotFoundException;
     List<EnsemblTranscript> getCanonicalEnsemblTranscriptsByHugoSymbols(List<String> hugoSymbol, String isoformOverrideSource);
 
-    List<EnsemblTranscript> getEnsemblTranscripts(String geneId, String proteinId);
-    List<EnsemblTranscript> getEnsemblTranscripts(List<String> transcriptIds, List<String> geneIds, List<String> proteinIds);
+    List<EnsemblTranscript> getEnsemblTranscripts(String geneId, String proteinId, String hugoSymbol);
+    List<EnsemblTranscript> getEnsemblTranscripts(List<String> transcriptIds, List<String> geneIds, List<String> proteinIds, List<String> hugoSymbols);
 }

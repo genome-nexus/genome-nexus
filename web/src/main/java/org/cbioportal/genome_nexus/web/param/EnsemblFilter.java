@@ -15,6 +15,9 @@ public class EnsemblFilter
     public static final String GENE_ID_DESC =
         "List of Ensembl gene IDs. For example [\"ENSG00000136999\", \"ENSG00000272398\", \"ENSG00000198695\"]";
 
+    public static final String HUGO_SYMBOL_DESC =
+        "List of Hugo Symbols. For example [\"TP53\", \"PIK3CA\", \"BRCA1\"]";
+
     @ApiModelProperty(value = TRANSCRIPT_ID_DESC)
     private List<String> transcriptIds;
 
@@ -23,6 +26,9 @@ public class EnsemblFilter
 
     @ApiModelProperty(value = GENE_ID_DESC)
     private List<String> geneIds;
+
+    @ApiModelProperty(value = HUGO_SYMBOL_DESC)
+    private List<String> hugoSymbols;
 
     public List<String> getTranscriptIds() {
         return transcriptIds;
@@ -46,5 +52,13 @@ public class EnsemblFilter
 
     public void setGeneIds(List<String> geneIds) {
         this.geneIds = geneIds;
+    }
+
+    public List<String> getHugoSymbols() {
+        return hugoSymbols;
+    }
+
+    public void setHugoSymbols(List<String> hugoSymbols) {
+        this.hugoSymbols = hugoSymbols;
     }
 }

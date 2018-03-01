@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.cbioportal.genome_nexus</groupId>
     <artifactId>genome-nexus</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
   </parent>
 
   <profiles>
@@ -67,6 +67,12 @@
       <groupId>io.sentry</groupId>
       <artifactId>sentry-spring</artifactId>
       <version>1.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>de.flapdoodle.embed</groupId>
+      <artifactId>de.flapdoodle.embed.mongo</artifactId>
+      <version>1.50.5</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

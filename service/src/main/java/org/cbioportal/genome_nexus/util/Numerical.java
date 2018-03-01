@@ -82,10 +82,10 @@ public class Numerical
      * @param end   end value
      * @return      true if there is an overlap between values
      */
-    public static boolean overlaps(String input, String start, String end)
+    public static boolean overlaps(String input, Integer start, Integer end)
     {
-        Integer startValue = null;
-        Integer endValue = null;
+        Integer startValue = start;
+        Integer endValue = end;
         Integer minPos = null;
         Integer maxPos = null;
         boolean overlap = false;
@@ -95,14 +95,6 @@ public class Numerical
         {
             minPos = Collections.min(positions);
             maxPos = Collections.max(positions);
-        }
-
-        if (end != null && end.matches("\\d+")) {
-            endValue = Integer.parseInt(end);
-        }
-
-        if (start != null && start.matches("\\d+")) {
-            startValue = Integer.parseInt(start);
         }
 
         NumberRange range;

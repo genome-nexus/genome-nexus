@@ -5,8 +5,9 @@ vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=appli
 # the gene external references URL
 genexrefs.url=http://grch37.rest.ensembl.org/xrefs/id/ACCESSION?content-type=application/json
 
-# Cancer Hotspots web API URL
+# Cancer Hotspots web API URLs
 hotspots.url=http://cancerhotspots.org/api/hotspots/single/
+hotspots.3d.url=http://cancerhotspots.org/3d/api/hotspots/3d/
 
 # Mutation Assessor web API URL
 #"VARIANT" will be replaced with actual variant upon each request.

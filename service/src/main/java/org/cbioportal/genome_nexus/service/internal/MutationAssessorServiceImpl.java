@@ -6,8 +6,8 @@ import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
+import org.cbioportal.genome_nexus.service.cached.CachedMutationAssessorFetcher;
 import org.cbioportal.genome_nexus.service.exception.*;
-import org.cbioportal.genome_nexus.service.remote.MutationAssessorDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -21,17 +21,20 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
 {
     private static final Log LOG = LogFactory.getLog(MutationAssessorServiceImpl.class);
 
-    private final MutationAssessorDataFetcher externalResourceFetcher;
+    private final CachedMutationAssessorFetcher cachedExternalResourceFetcher;
     private final VariantAnnotationService variantAnnotationService;
 
     @Autowired
-    public MutationAssessorServiceImpl(MutationAssessorDataFetcher externalResourceFetcher,
+    public MutationAssessorServiceImpl(CachedMutationAssessorFetcher cachedExternalResourceFetcher,
                                        VariantAnnotationService variantAnnotationService)
     {
-        this.externalResourceFetcher = externalResourceFetcher;
+        this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
         this.variantAnnotationService = variantAnnotationService;
     }
 
+    /**
+     * @param variant   hgvs variant (ex: 7:g.140453136A>T)
+     */
     public MutationAssessor getMutationAssessor(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MutationAssessorWebServiceException, MutationAssessorNotFoundException
@@ -41,6 +44,9 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
         return this.getMutationAssessorByVariantAnnotation(variantAnnotation);
     }
 
+    /**
+     * @param variants   hgvs variants (ex: 7:g.140453136A>T)
+     */
     public List<MutationAssessor> getMutationAssessor(List<String> variants)
     {
         List<MutationAssessor> mutationAssessors = new ArrayList<>();
@@ -71,26 +77,27 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
             throw new MutationAssessorNotFoundException(annotation.getVariant());
         }
 
-        return this.getMutationAssessor(buildRequest(annotation), annotation.getVariant());
+        MutationAssessor mutationAssessor = this.getMutationAssessorByMutationAssessorVariant(buildRequest(annotation));
 
+        // add original hgvs variant value too
+        mutationAssessor.setHgvs(annotation.getVariant());
+
+        return mutationAssessor;
     }
 
-    public MutationAssessor getMutationAssessor(String variant, String hgvs)
+    /**
+     * @param variant   mutation assessor variant (ex: 7,140453136,A,T)
+     */
+    public MutationAssessor getMutationAssessorByMutationAssessorVariant(String variant)
         throws MutationAssessorNotFoundException, MutationAssessorWebServiceException
     {
-        MutationAssessor mutationAssessorObj = null;
+        MutationAssessor mutationAssessor = null;
 
         try {
-            List<MutationAssessor> list = this.externalResourceFetcher.fetchInstances(variant);
+            // get the annotation from the web service and save it to the DB
+            mutationAssessor = cachedExternalResourceFetcher.fetchAndCache(variant);
 
-            if (list.size() != 0) {
-                mutationAssessorObj = list.get(0);
-            }
-
-            if (mutationAssessorObj != null) {
-                mutationAssessorObj.setInput(hgvs);
-            }
-            else {
+            if (mutationAssessor == null) {
                 throw new MutationAssessorNotFoundException(variant);
             }
         } catch (ResourceMappingException e) {
@@ -101,7 +108,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
             throw new MutationAssessorWebServiceException(e.getMessage());
         }
 
-        return mutationAssessorObj;
+        return mutationAssessor;
     }
 
     private MutationAssessor getMutationAssessorByVariantAnnotation(VariantAnnotation variantAnnotation)

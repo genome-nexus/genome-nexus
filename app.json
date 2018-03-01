@@ -35,8 +35,5 @@
     {
       "plan": "mongolab:sandbox"
     }
-  ],
-  "scripts": {
-    "postdeploy": "././scripts/import_mongo.sh ${MONGODB_URI}"
-  }
+  ]
 }

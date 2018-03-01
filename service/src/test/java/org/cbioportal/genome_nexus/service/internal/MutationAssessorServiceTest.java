@@ -1,10 +1,13 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import org.cbioportal.genome_nexus.model.MutationAssessor;
+import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.service.cached.CachedMutationAssessorFetcher;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
-import org.cbioportal.genome_nexus.service.remote.MutationAssessorDataFetcher;
+import org.cbioportal.genome_nexus.service.mock.MutationAssessorMockData;
+import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,9 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -26,65 +26,47 @@ public class MutationAssessorServiceTest
     private MutationAssessorServiceImpl service;
 
     @Mock
-    private MutationAssessorDataFetcher fetcher;
+    private CachedMutationAssessorFetcher fetcher;
+
+    private MutationAssessorMockData mutationAssessorMockData = new MutationAssessorMockData();
+    private VariantAnnotationMockData variantAnnotationMockData = new VariantAnnotationMockData();
 
     @Test
-    public void getMutationAssessor()
+    public void getMutationAssessorByMutationAssessorVariant()
         throws ResourceMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
-        Map<String, List<MutationAssessor>> mockData = this.generateMockData();
+        Map<String, MutationAssessor> mockData = this.mutationAssessorMockData.generateData();
 
         // mock methods in order to prevent hitting the live mutation assessor web API
-        Mockito.when(fetcher.fetchInstances("7,140453136,A,T")).thenReturn(mockData.get("7,140453136,A,T"));
-        Mockito.when(fetcher.fetchInstances("12,25398285,C,A")).thenReturn(mockData.get("12,25398285,C,A"));
-        Mockito.when(fetcher.fetchInstances("INVALID")).thenReturn(mockData.get("INVALID"));
+        Mockito.when(fetcher.fetchAndCache("7,140453136,A,T")).thenReturn(mockData.get("7,140453136,A,T"));
+        Mockito.when(fetcher.fetchAndCache("12,25398285,C,A")).thenReturn(mockData.get("12,25398285,C,A"));
+        Mockito.when(fetcher.fetchAndCache("INVALID")).thenReturn(mockData.get("INVALID"));
 
-        // TODO add more assertions once the mock data is updated
-        MutationAssessor mutationAssessor1 = service.getMutationAssessor("7,140453136,A,T", "7:g.140453136A>T");
-        assertEquals(mutationAssessor1.getHugoSymbol(), mockData.get("7,140453136,A,T").get(0).getHugoSymbol());
+        MutationAssessor mutationAssessor1 = service.getMutationAssessorByMutationAssessorVariant("7,140453136,A,T");
+        assertEquals(mutationAssessor1.getHugoSymbol(), mockData.get("7,140453136,A,T").getHugoSymbol());
 
-        MutationAssessor mutationAssessor2 = service.getMutationAssessor("12,25398285,C,A", "12:g.25398285C>A");
-        assertEquals(mutationAssessor2.getHugoSymbol(), mockData.get("12,25398285,C,A").get(0).getHugoSymbol());
+        MutationAssessor mutationAssessor2 = service.getMutationAssessorByMutationAssessorVariant("12,25398285,C,A");
+        assertEquals(mutationAssessor2.getHugoSymbol(), mockData.get("12,25398285,C,A").getHugoSymbol());
 
-        MutationAssessor mutationAssessor3 = service.getMutationAssessor("INVALID", "INVALID");
-        assertEquals(mutationAssessor3.getHugoSymbol(), mockData.get("INVALID").get(0).getHugoSymbol());
+        MutationAssessor mutationAssessor3 = service.getMutationAssessorByMutationAssessorVariant("INVALID");
+        assertEquals(mutationAssessor3.getHugoSymbol(), mockData.get("INVALID").getHugoSymbol());
     }
 
-    // TODO define a better mock data if needed
-    private Map<String, List<MutationAssessor>> generateMockData()
+    @Test
+    public void getMutationAssessorByVariantAnnotation()
+        throws ResourceMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
-        Map<String, List<MutationAssessor>> mockData = new HashMap<>();
+        Map<String, MutationAssessor> maMockData = this.mutationAssessorMockData.generateData();
+        Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
 
-        List<MutationAssessor> list;
-        MutationAssessor mutationAssessor;
+        // mock methods in order to prevent hitting the live mutation assessor web API
+        Mockito.when(fetcher.fetchAndCache("7,140453136,A,T")).thenReturn(maMockData.get("7,140453136,A,T"));
+        Mockito.when(fetcher.fetchAndCache("12,25398285,C,A")).thenReturn(maMockData.get("12,25398285,C,A"));
 
-        // mock data for variant: 7,140453136,A,T
-        mutationAssessor = new MutationAssessor();
-        mutationAssessor.setHugoSymbol("GENE1");
+        MutationAssessor mutationAssessor1 = service.getMutationAssessor(variantMockData.get("7:g.140453136A>T"));
+        assertEquals(mutationAssessor1.getHugoSymbol(), maMockData.get("7,140453136,A,T").getHugoSymbol());
 
-        list = new ArrayList<>();
-        list.add(mutationAssessor);
-
-        mockData.put("7,140453136,A,T", list);
-
-        // mock data for variant: 12,25398285,C,A
-        mutationAssessor = new MutationAssessor();
-        mutationAssessor.setHugoSymbol("GENE2");
-
-        list = new ArrayList<>();
-        list.add(mutationAssessor);
-
-        mockData.put("12,25398285,C,A", list);
-
-        // mock data for variant: INVALID
-        mutationAssessor = new MutationAssessor();
-        mutationAssessor.setHugoSymbol(null);
-
-        list = new ArrayList<>();
-        list.add(mutationAssessor);
-
-        mockData.put("INVALID", list);
-
-        return mockData;
+        MutationAssessor mutationAssessor2 = service.getMutationAssessor(variantMockData.get("12:g.25398285C>A"));
+        assertEquals(mutationAssessor2.getHugoSymbol(), maMockData.get("12,25398285,C,A").getHugoSymbol());
     }
 }
