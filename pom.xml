@@ -5,7 +5,7 @@
     <artifactId>genome-nexus</artifactId>
     <packaging>pom</packaging>
     <name>Genome Nexus Master</name>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <description>Genome Nexus Master Module</description>
     <url>https://github.com/cBioPortal/genome-nexus/</url>
 
