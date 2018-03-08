@@ -91,16 +91,16 @@ public class EnsemblServiceImpl implements EnsemblService
 
     @Override
     public List<EnsemblTranscript> getEnsemblTranscripts(List<String> transcriptIds, List<String> geneIds, List<String> proteinIds, List<String> hugoSymbols) {
-        if (transcriptIds != null) {
+        if (transcriptIds != null && transcriptIds.size() > 0) {
             return this.ensemblRepository.findByTranscriptIdIn(transcriptIds);
         }
-        else if (geneIds != null) {
+        else if (geneIds != null && geneIds.size() > 0) {
             return this.ensemblRepository.findByGeneIdIn(geneIds);
         }
-        else if (proteinIds != null) {
+        else if (proteinIds != null && proteinIds.size() > 0) {
             return this.ensemblRepository.findByProteinIdIn(proteinIds);
         }
-        else if (hugoSymbols != null) {
+        else if (hugoSymbols != null && hugoSymbols.size() > 0) {
             return this.ensemblRepository.findByHugoSymbolsIn(hugoSymbols);
         }
         else {
