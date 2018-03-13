@@ -35,6 +35,13 @@ public class MutationAssessorDataFetcher extends BaseExternalResourceFetcher<Mut
         return this.transformer.transform(this.fetchStringValue(queryParams), MutationAssessor.class);
     }
 
+    @Override
+    public List<MutationAssessor> fetchInstances(Object requestBody)
+        throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
+    {
+        return this.transformer.transform(this.fetchStringValue(requestBody), MutationAssessor.class);
+    }
+
     public ExternalResourceTransformer getTransformer() {
         return transformer;
     }

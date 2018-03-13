@@ -1,20 +1,17 @@
 package org.cbioportal.genome_nexus.persistence.internal;
 
 import org.cbioportal.genome_nexus.model.SimpleCacheEntity;
-import org.cbioportal.genome_nexus.persistence.GenericMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PlainTextMongoRepositoryImpl implements GenericMongoRepository
+public class PlainTextMongoRepositoryImpl extends BaseGenericMongoRepository
 {
-    protected final MongoTemplate mongoTemplate;
-
     @Autowired
     public PlainTextMongoRepositoryImpl(MongoTemplate mongoTemplate)
     {
-        this.mongoTemplate = mongoTemplate;
+        super(mongoTemplate);
     }
 
     @Override

@@ -202,7 +202,12 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
         // convert genomic location to hgvs notation (there is always 1-1 mapping)
         for (GenomicLocation location : genomicLocations) {
-            variantToGenomicLocation.put(notationConverter.genomicToHgvs(location), location);
+            String hgvsNotation = notationConverter.genomicToHgvs(location);
+
+            // exclude invalid genomic locations
+            if (hgvsNotation != null) {
+                variantToGenomicLocation.put(hgvsNotation, location);
+            }
         }
 
         // query hotspots service by variant

@@ -30,8 +30,13 @@ public class ExternalResourceTransformer<T> implements ResourceTransformer<T>
         return this.mapJsonToInstance(jsonString, type, this.externalResourceObjectMapper);
     }
 
+    public List<DBObject> transform(String jsonString)
+    {
+        return Transformer.convertToDbObject(jsonString);
+    }
+
     /**
-     * Maps the given raw JSON string onto the provided class instance.
+     * Maps the given raw JSON string onto the provided class instances.
      *
      * @param jsonString    raw JSON string
      * @param type          object class

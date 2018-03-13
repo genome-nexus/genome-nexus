@@ -66,12 +66,16 @@ public class NotationConverter
 
         String hgvs;
 
+        // cannot convert invalid locations
+        if (start < 0) {
+            hgvs = null;
+        }
         /*
          Process Insertion
          Example insertion: 17 36002277 36002278 - A
          Example output: 17:g.36002277_36002278insA
          */
-        if(ref.equals("-") || ref.length() == 0)
+        else if(ref.equals("-") || ref.length() == 0)
         {
             try {
                 hgvs = chr + ":g." + start + "_" + String.valueOf(start + 1) + "ins" + var;

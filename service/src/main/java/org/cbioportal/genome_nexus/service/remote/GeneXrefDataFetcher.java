@@ -35,6 +35,13 @@ public class GeneXrefDataFetcher extends BaseExternalResourceFetcher<GeneXref>
         return this.transformer.transform(this.fetchStringValue(queryParams), GeneXref.class);
     }
 
+    @Override
+    public List<GeneXref> fetchInstances(Object requestBody)
+        throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
+    {
+        return this.transformer.transform(this.fetchStringValue(requestBody), GeneXref.class);
+    }
+
     public ExternalResourceTransformer getTransformer() {
         return transformer;
     }
