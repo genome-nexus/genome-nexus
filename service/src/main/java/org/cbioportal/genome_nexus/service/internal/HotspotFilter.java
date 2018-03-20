@@ -1,8 +1,10 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import org.cbioportal.genome_nexus.model.Hotspot;
+import org.cbioportal.genome_nexus.model.IntegerRange;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.service.annotation.ProteinPositionResolver;
 import org.cbioportal.genome_nexus.service.annotation.VariantClassificationResolver;
 import org.cbioportal.genome_nexus.util.Numerical;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +16,24 @@ import java.util.Set;
 public class HotspotFilter
 {
     private final VariantClassificationResolver variantClassificationResolver;
+    private final ProteinPositionResolver proteinPositionResolver;
 
     @Autowired
-    public HotspotFilter(VariantClassificationResolver variantClassificationResolver)
+    public HotspotFilter(VariantClassificationResolver variantClassificationResolver,
+                         ProteinPositionResolver proteinPositionResolver)
     {
         this.variantClassificationResolver = variantClassificationResolver;
+        this.proteinPositionResolver = proteinPositionResolver;
     }
 
     public Boolean filter(Hotspot hotspot, TranscriptConsequence transcript, VariantAnnotation annotation)
     {
+        IntegerRange proteinPos = this.proteinPositionResolver.resolve(annotation, transcript);
+
         return (
             // filter by protein position:
             // only include the hotspot if the protein change position overlaps with the current transcript
-            Numerical.overlaps(hotspot.getResidue(), transcript.getProteinStart(), transcript.getProteinEnd()) &&
+            Numerical.overlaps(hotspot.getResidue(), proteinPos.getStart(), proteinPos.getEnd()) &&
             // filter by mutation type:
             // only include the hotspot if the variant classification matches the hotspot type
             this.typeMatches(hotspot.getType(), this.variantClassificationResolver.resolveAll(annotation, transcript))
