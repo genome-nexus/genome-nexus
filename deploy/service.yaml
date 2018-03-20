@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: gn-spring-boot
+  name: genome-nexus
+  selfLink: /api/v1/namespaces/default/services/genome-nexus
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 31000
+    port: 8888
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    run: gn-spring-boot
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}
