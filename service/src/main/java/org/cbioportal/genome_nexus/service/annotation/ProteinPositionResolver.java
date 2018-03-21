@@ -26,7 +26,9 @@ public class ProteinPositionResolver
         String proteinChange = this.proteinChangeResolver.resolveHgvspShort(annotation, transcriptConsequence);
 
         // special case for duplication
-        if (proteinChange.toLowerCase().contains("dup")) {
+        if (proteinChange != null &&
+            proteinChange.toLowerCase().contains("dup"))
+        {
             proteinPos = this.extractProteinPos(proteinChange);
         }
 
