@@ -89,7 +89,7 @@ public class NotationConverter
          Example SNP   : 2 216809708 216809709 CA T
          Example output: 2:g.216809708_216809709delCAinsT
          */
-        else if (ref.length() > 1) {
+        else if (ref.length() > 1 || var.length() > 1) {
             hgvs = chr + ":g." + start + "_" + end + "del" + ref + "ins" + var;
         }
         /*
