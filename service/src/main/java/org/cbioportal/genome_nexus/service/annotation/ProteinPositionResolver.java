@@ -4,6 +4,7 @@ import org.cbioportal.genome_nexus.model.IntegerRange;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.util.Numerical;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ public class ProteinPositionResolver
         this.proteinChangeResolver = proteinChangeResolver;
     }
 
+    @Nullable
     public IntegerRange resolve(VariantAnnotation annotation, TranscriptConsequence transcriptConsequence)
     {
         IntegerRange proteinPos = null;
@@ -34,13 +36,16 @@ public class ProteinPositionResolver
 
         // for all other cases use the reported protein start and end positions
         // (proteinPos may also be null in case of protein change value parse error)
-        if (proteinPos == null) {
+        if (proteinPos == null &&
+            transcriptConsequence != null)
+        {
             proteinPos = new IntegerRange(transcriptConsequence.getProteinStart(), transcriptConsequence.getProteinEnd());
         }
 
         return proteinPos;
     }
 
+    @Nullable
     private IntegerRange extractProteinPos(String proteinChange)
     {
         IntegerRange proteinPos = null;

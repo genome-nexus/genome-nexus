@@ -1,11 +1,14 @@
 package org.cbioportal.genome_nexus.service.annotation;
 
 import org.cbioportal.genome_nexus.model.GenomicLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
 public class NotationConverter
 {
+    @Nullable
     public GenomicLocation parseGenomicLocation(String genomicLocation, String delimiter)
     {
         String[] parts = genomicLocation.split(delimiter);
@@ -25,6 +28,7 @@ public class NotationConverter
         return location;
     }
 
+    @Nullable
     public String genomicToHgvs(GenomicLocation genomicLocation)
     {
         String chr = genomicLocation.getChromosome();
@@ -73,7 +77,7 @@ public class NotationConverter
                 hgvs = chr + ":g." + start + "_" + String.valueOf(start + 1) + "ins" + var;
             }
             catch (NumberFormatException e) {
-                return "";
+                return null;
             }
         }
         /*
@@ -105,6 +109,7 @@ public class NotationConverter
     }
 
     // TODO factor out to a utility class as a static method if needed
+    @NotNull
     public String longestCommonPrefix(String str1, String str2)
     {
         for (int prefixLen = 0; prefixLen < str1.length(); prefixLen++)

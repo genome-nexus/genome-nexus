@@ -2,6 +2,7 @@ package org.cbioportal.genome_nexus.service.annotation;
 
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +45,7 @@ public class ProteinChangeResolver
      * @param variantAnnotation
      * @return
      */
+    @Nullable
     public String resolveHgvspShort(VariantAnnotation variantAnnotation)
     {
         TranscriptConsequence canonicalTranscript = this.canonicalTranscriptResolver.resolve(variantAnnotation);
@@ -58,6 +60,7 @@ public class ProteinChangeResolver
      * @param transcriptConsequence
      * @return
      */
+    @Nullable
     public String resolveHgvspShort(VariantAnnotation variantAnnotation,
                                     TranscriptConsequence transcriptConsequence)
     {
@@ -85,6 +88,7 @@ public class ProteinChangeResolver
         return hgvspShort;
     }
 
+    @Nullable
     private String resolveHgvspShortFromHgvsp(String hgvsp)
     {
         String hgvspShort = null;
@@ -98,6 +102,7 @@ public class ProteinChangeResolver
         return hgvspShort;
     }
 
+    @Nullable
     private String resolveHgvspShortFromHgvsc(String hgvsc,
                                               VariantAnnotation variantAnnotation,
                                               TranscriptConsequence transcriptConsequence)
@@ -126,7 +131,7 @@ public class ProteinChangeResolver
 
                 hgvspShort = "*" + String.valueOf(pPos);
 
-                if (variantClassification.toLowerCase().startsWith("frame_shift")) {
+                if (variantClassification != null && variantClassification.toLowerCase().startsWith("frame_shift")) {
                     hgvspShort += "fs*";
                 }
                 else {
@@ -138,6 +143,7 @@ public class ProteinChangeResolver
         return hgvspShort;
     }
 
+    @Nullable
     private String resolveHgvspShortFromAAs(TranscriptConsequence transcriptConsequence)
     {
         String hgvspShort = null;
@@ -194,6 +200,7 @@ public class ProteinChangeResolver
         return hgvspShort;
     }
 
+    @Nullable
     private String resolveHgvsc(TranscriptConsequence transcriptConsequence)
     {
         String hgvsc = null;
@@ -207,6 +214,7 @@ public class ProteinChangeResolver
         return hgvsc;
     }
 
+    @Nullable
     private String resolveHgvsp(TranscriptConsequence transcriptConsequence)
     {
         String hgvsp = null;
@@ -220,8 +228,13 @@ public class ProteinChangeResolver
         return hgvsp;
     }
 
+    @Nullable
     private String normalizeHgvsp(String hgvsp)
     {
+        if (hgvsp == null) {
+            return null;
+        }
+
         int index = hgvsp.indexOf(":");
 
         if (hgvsp.contains("(p.%3D)")) {
