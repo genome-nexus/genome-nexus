@@ -2,6 +2,7 @@ package org.cbioportal.genome_nexus.service.annotation;
 
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ public class CanonicalTranscriptResolver
         this.consequencePrioritizer = consequencePrioritizer;
     }
 
+    @Nullable
     public TranscriptConsequence resolve(VariantAnnotation variantAnnotation)
     {
         List<TranscriptConsequence> transcripts = new ArrayList<>();

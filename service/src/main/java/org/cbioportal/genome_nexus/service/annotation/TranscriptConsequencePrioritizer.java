@@ -1,6 +1,7 @@
 package org.cbioportal.genome_nexus.service.annotation;
 
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -12,6 +13,7 @@ public class TranscriptConsequencePrioritizer
 {
     public static final Map<String, Integer> EFFECT_PRIORITY = initEffectPriority();
 
+    @Nullable
     public TranscriptConsequence transcriptWithMostSevereConsequence(List<TranscriptConsequence> transcripts,
                                                                      String mostSevereConsequence)
     {
@@ -49,9 +51,10 @@ public class TranscriptConsequencePrioritizer
         return null;
     }
 
+    @Nullable
     public String pickHighestPriorityConsequence(List<String> consequences)
     {
-        String highestPriorityConsequence = "";
+        String highestPriorityConsequence = null;
         Integer highestPriority = Integer.MAX_VALUE;
 
         for (String consequence : consequences)

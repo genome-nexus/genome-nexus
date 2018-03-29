@@ -2,6 +2,8 @@ package org.cbioportal.genome_nexus.service.annotation;
 
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +37,7 @@ public class VariantClassificationResolver
      * @param variantAnnotation
      * @return
      */
+    @Nullable
     public String resolve(VariantAnnotation variantAnnotation)
     {
         TranscriptConsequence canonicalTranscript = this.canonicalTranscriptResolver.resolve(variantAnnotation);
@@ -51,6 +54,7 @@ public class VariantClassificationResolver
      * @param transcriptConsequence
      * @return
      */
+    @Nullable
     public String resolve(VariantAnnotation variantAnnotation, TranscriptConsequence transcriptConsequence)
     {
         String variantClassification = null;
@@ -65,12 +69,10 @@ public class VariantClassificationResolver
                     variantType, isInframe);
         }
         // use the most severe consequence to resolve the variant classification
-        else
+        else if (variantAnnotation != null)
         {
-            if (variantAnnotation.getMostSevereConsequence() != null) {
-                variantClassification = resolveVariantClassification(
-                    variantAnnotation.getMostSevereConsequence(), variantType, isInframe);
-            }
+            variantClassification = resolveVariantClassification(
+                variantAnnotation.getMostSevereConsequence(), variantType, isInframe);
         }
 
         return variantClassification;
@@ -83,6 +85,7 @@ public class VariantClassificationResolver
      * @param transcriptConsequence
      * @return
      */
+    @NotNull
     public Set<String> resolveAll(VariantAnnotation variantAnnotation, TranscriptConsequence transcriptConsequence)
     {
         Set<String> variantClassifications = new HashSet<>();
@@ -98,11 +101,13 @@ public class VariantClassificationResolver
         return variantClassifications;
     }
 
+    @NotNull
     public Boolean isInframe(VariantAnnotation variantAnnotation)
     {
         Boolean inframe = false;
 
-        if (variantAnnotation.getAlleleString() != null)
+        if (variantAnnotation != null &&
+            variantAnnotation.getAlleleString() != null)
         {
             String[] alleles = variantAnnotation.getAlleleString().split("/", -1);
 
@@ -118,14 +123,23 @@ public class VariantClassificationResolver
         return inframe;
     }
 
+    @NotNull
     private Integer calcAlleleLength(String allele)
     {
-        return allele.equals("-") ? 0 : allele.length();
+        return allele == null || allele.equals("-") ? 0 : allele.length();
     }
 
+    @NotNull
     private String resolveVariantClassification(String variant, String variantType, Boolean isInframe)
     {
-        variant = variant.toLowerCase();
+        String defaultValue = "Targeted_Region";
+
+        if (variant == null || variantType == null) {
+            return defaultValue;
+        }
+        else {
+            variant = variant.toLowerCase();
+        }
 
         if ((variant.equals("frameshift_variant") || variant.equals("protein_altering_variant") ||
             variant.equals("coding_sequence_variant")) &&
@@ -149,7 +163,7 @@ public class VariantClassificationResolver
             }
         }
 
-        return VARIANT_MAP.getOrDefault(variant, "Targeted_Region");
+        return VARIANT_MAP.getOrDefault(variant, defaultValue);
     }
 
     private static Map<String, String> initVariantMap()

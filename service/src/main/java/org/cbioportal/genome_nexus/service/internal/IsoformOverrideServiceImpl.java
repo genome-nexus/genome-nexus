@@ -6,7 +6,6 @@ import org.cbioportal.genome_nexus.persistence.IsoformOverrideRepository;
 import org.cbioportal.genome_nexus.service.IsoformOverrideService;
 import org.cbioportal.genome_nexus.service.exception.IsoformOverrideNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

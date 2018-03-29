@@ -30,7 +30,7 @@ public class HotspotFilter
     {
         IntegerRange proteinPos = this.proteinPositionResolver.resolve(annotation, transcript);
 
-        return (
+        return proteinPos != null && (
             // filter by protein position:
             // only include the hotspot if the protein change position overlaps with the current transcript
             Numerical.overlaps(hotspot.getResidue(), proteinPos.getStart(), proteinPos.getEnd()) &&
