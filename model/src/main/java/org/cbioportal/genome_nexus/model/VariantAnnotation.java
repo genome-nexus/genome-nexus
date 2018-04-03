@@ -64,6 +64,7 @@ public class VariantAnnotation
 
     private MutationAssessorAnnotation mutationAssessorAnnotation;
     private HotspotAnnotation hotspotAnnotation;
+    private VariantAnnotationSummary annotationSummary;
 
     private Map<String, Object> dynamicProps;
 
@@ -211,6 +212,14 @@ public class VariantAnnotation
     public void setTranscriptConsequences(List<TranscriptConsequence> transcriptConsequences)
     {
         this.transcriptConsequences = transcriptConsequences;
+    }
+
+    public VariantAnnotationSummary getAnnotationSummary() {
+        return annotationSummary;
+    }
+
+    public void setAnnotationSummary(VariantAnnotationSummary annotationSummary) {
+        this.annotationSummary = annotationSummary;
     }
 
     @Override

@@ -205,7 +205,7 @@ public class ProteinChangeResolver
     }
 
     @Nullable
-    private String resolveHgvsc(TranscriptConsequence transcriptConsequence)
+    public String resolveHgvsc(TranscriptConsequence transcriptConsequence)
     {
         String hgvsc = null;
 
@@ -219,7 +219,7 @@ public class ProteinChangeResolver
     }
 
     @Nullable
-    private String resolveHgvsp(TranscriptConsequence transcriptConsequence)
+    public String resolveHgvsp(TranscriptConsequence transcriptConsequence)
     {
         String hgvsp = null;
 

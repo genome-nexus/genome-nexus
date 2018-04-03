@@ -8,10 +8,6 @@ import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Component
 public class EntrezGeneIdResolver
 {
@@ -34,40 +30,11 @@ public class EntrezGeneIdResolver
             transcriptConsequence.getGeneId() != null &&
             !transcriptConsequence.getGeneId().trim().isEmpty())
         {
-            // TODO in memory cache?
-            // check hashmap first before hitting api for gene cross-ref data
-//            if (ensemblAccessionEntrezIdMap.containsKey(transcriptConsequence.getGeneId())) {
-//                return ensemblAccessionEntrezIdMap.get(transcriptConsequence.getGeneId());
-//            }
+            GeneXref geneXref = this.geneXrefService.getEntrezGeneXref(transcriptConsequence.getGeneId(),
+                transcriptConsequence.getGeneSymbol());
 
-            // get xrefs from the service
-            List<GeneXref> geneXrefs = this.geneXrefService.getGeneXrefs(transcriptConsequence.getGeneId());
-
-            // filter xrefs by gene symbol first
-            geneXrefs = geneXrefs.stream().filter(xref ->
-                xref.getDbName().equals("EntrezGene") &&
-                xref.getDisplayId().equals(transcriptConsequence.getGeneSymbol())
-            ).collect(Collectors.toList());
-
-            // if more than one xrefs, then further filter by description
-            if (geneXrefs.size() > 1)
-            {
-                Optional<GeneXref> first = geneXrefs.stream().filter(xref ->
-                    !xref.getDescription().toLowerCase().contains("pseudogene") &&
-                    !xref.getDescription().toLowerCase().contains("uncharacterized")
-                ).findFirst();
-
-                if (first.isPresent()) {
-                    entrezGeneId = first.get().getPrimaryId();
-                }
-            }
-            else if (geneXrefs.size() == 1) {
-                entrezGeneId = geneXrefs.get(0).getPrimaryId();
-            }
-
-            // cache if resolved successfully
-            if (entrezGeneId != null) {
-                // TODO ensemblAccessionEntrezIdMap.put(transcriptConsequence.getGeneId(), entrezGeneId);
+            if (geneXref != null) {
+                entrezGeneId = geneXref.getPrimaryId();
             }
         }
 

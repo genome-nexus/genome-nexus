@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class StrandSignResolver
 {
     @Nullable
-    private String resolve(VariantAnnotation variantAnnotation)
+    public String resolve(VariantAnnotation variantAnnotation)
     {
         String sign = null;
         Integer strand = null;

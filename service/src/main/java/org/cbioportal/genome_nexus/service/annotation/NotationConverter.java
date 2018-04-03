@@ -5,9 +5,22 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 @Component
 public class NotationConverter
 {
+    public static final String DEFAULT_DELIMITER = ",";
+
+    @Nullable
+    public GenomicLocation parseGenomicLocation(String genomicLocation)
+    {
+        return this.parseGenomicLocation(genomicLocation, DEFAULT_DELIMITER);
+    }
+
     @Nullable
     public GenomicLocation parseGenomicLocation(String genomicLocation, String delimiter)
     {
@@ -30,6 +43,12 @@ public class NotationConverter
         }
 
         return location;
+    }
+
+    @Nullable
+    public String genomicToHgvs(String genomicLocation)
+    {
+        return this.genomicToHgvs(this.parseGenomicLocation(genomicLocation));
     }
 
     @Nullable
@@ -118,6 +137,31 @@ public class NotationConverter
         }
 
         return hgvs;
+    }
+
+    @NotNull
+    public Map<String, GenomicLocation> genomicToHgvsMap(List<GenomicLocation> genomicLocations)
+    {
+        Map<String, GenomicLocation> variantToGenomicLocation = new LinkedHashMap<>();
+
+        // convert genomic location to hgvs notation (there is always 1-1 mapping)
+        for (GenomicLocation location : genomicLocations) {
+            String hgvs = this.genomicToHgvs(location);
+
+            if (hgvs != null) {
+                variantToGenomicLocation.put(hgvs, location);
+            }
+        }
+
+        return variantToGenomicLocation;
+    }
+
+    public List<String> genomicToHgvs(List<GenomicLocation> genomicLocations)
+    {
+        List<String> hgvsList = new ArrayList<>();
+        hgvsList.addAll(this.genomicToHgvsMap(genomicLocations).keySet());
+
+        return hgvsList;
     }
 
     // TODO factor out to a utility class as a static method if needed
