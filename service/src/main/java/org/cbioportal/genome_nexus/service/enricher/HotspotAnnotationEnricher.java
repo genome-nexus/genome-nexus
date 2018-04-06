@@ -57,22 +57,7 @@ public class HotspotAnnotationEnricher implements AnnotationEnricher
                 hotspotAnnotation.setAnnotation(hotspotsList);
             }
 
-            annotation.setDynamicProp("hotspots", hotspotAnnotation);
-        }
-    }
-
-    private void enrichWithSummary(TranscriptConsequence transcript, List<Hotspot> hotspots)
-    {
-        // add a boolean field to the transcript
-        transcript.setDynamicProp("isHotspot", hotspots.size() > 0);
-    }
-
-    private void enrichWithFullInfo(TranscriptConsequence transcript, List<Hotspot> hotspots)
-    {
-        // attach the full list of hotspots
-        if (hotspots.size() > 0)
-        {
-            transcript.setDynamicProp("hotspots", hotspots);
+            annotation.setHotspotAnnotation(hotspotAnnotation);
         }
     }
 }

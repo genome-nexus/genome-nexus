@@ -99,13 +99,13 @@ public class VariantAnnotationServiceTest
             "7:g.140453136A>T", null, fields);
 
         assertEquals(maMockData.get("7,140453136,A,T"),
-            ((MutationAssessorAnnotation)annotation1.getDynamicProps().get("mutation_assessor")).getAnnotation());
+            annotation1.getMutationAssessorAnnotation().getAnnotation());
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
             "12:g.25398285C>A", null, fields);
 
         assertEquals(maMockData.get("12,25398285,C,A"),
-            ((MutationAssessorAnnotation)annotation2.getDynamicProps().get("mutation_assessor")).getAnnotation());
+            annotation2.getMutationAssessorAnnotation().getAnnotation());
     }
 
     @Test
@@ -128,13 +128,13 @@ public class VariantAnnotationServiceTest
             "7:g.140453136A>T", null, fields);
 
         assertEquals(hotspotMockData.get("ENST00000288602"),
-            ((HotspotAnnotation)annotation1.getDynamicProps().get("hotspots")).getAnnotation().get(0));
+            annotation1.getHotspotAnnotation().getAnnotation().get(0));
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
             "12:g.25398285C>A", null, fields);
 
         assertEquals(hotspotMockData.get("ENST00000256078"),
-            ((HotspotAnnotation)annotation2.getDynamicProps().get("hotspots")).getAnnotation().get(0));
+            annotation2.getHotspotAnnotation().getAnnotation().get(0));
     }
 
     @Test

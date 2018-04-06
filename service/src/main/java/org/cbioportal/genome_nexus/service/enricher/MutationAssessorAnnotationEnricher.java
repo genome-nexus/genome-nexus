@@ -25,23 +25,23 @@ public class MutationAssessorAnnotationEnricher implements AnnotationEnricher
     public void enrich(VariantAnnotation annotation) {
         if (annotation != null)
         {
-            MutationAssessor mutationAssessorObj = null;
+            MutationAssessor mutationAssessor = null;
 
             try {
-                mutationAssessorObj = mutationAssessorService.getMutationAssessor(annotation);
+                mutationAssessor = mutationAssessorService.getMutationAssessor(annotation);
             } catch (MutationAssessorWebServiceException e) {
                 LOG.warn(e.getLocalizedMessage());
             } catch (MutationAssessorNotFoundException e) {
                 // fail silently for this variant annotation
             }
 
-            if (mutationAssessorObj != null &&
-                mutationAssessorObj.getMappingIssue().length() == 0)
+            if (mutationAssessor != null &&
+                mutationAssessor.getMappingIssue().length() == 0)
             {
-                MutationAssessorAnnotation mutationAnnotation = new MutationAssessorAnnotation();
-                mutationAnnotation.setAnnotation(mutationAssessorObj);
+                MutationAssessorAnnotation mutationAssessorAnnotation = new MutationAssessorAnnotation();
+                mutationAssessorAnnotation.setAnnotation(mutationAssessor);
 
-                annotation.setDynamicProp("mutation_assessor", mutationAnnotation);
+                annotation.setMutationAssessorAnnotation(mutationAssessorAnnotation);
             }
         }
     }
