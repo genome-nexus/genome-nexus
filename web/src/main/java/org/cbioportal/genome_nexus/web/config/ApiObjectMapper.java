@@ -1,7 +1,6 @@
 package org.cbioportal.genome_nexus.web.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 import org.cbioportal.genome_nexus.web.mixin.*;
 import org.cbioportal.genome_nexus.model.*;
 
@@ -22,6 +21,7 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(PfamDomain.class, PfamDomainMixin.class);
         mixinMap.put(PdbHeader.class, PdbHeaderMixin.class);
         mixinMap.put(TranscriptConsequence.class, TranscriptConsequenceMixin.class);
+        mixinMap.put(ColocatedVariant.class, ColocatedVariantMixin.class);
         mixinMap.put(VariantAnnotation.class, VariantAnnotationMixin.class);
         mixinMap.put(EnsemblTranscript.class, EnsemblTranscriptMixin.class);
         mixinMap.put(PfamDomainRange.class, PfamDomainRangeMixin.class);
