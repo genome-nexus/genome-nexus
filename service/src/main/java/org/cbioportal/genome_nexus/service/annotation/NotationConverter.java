@@ -11,6 +11,10 @@ public class NotationConverter
     @Nullable
     public GenomicLocation parseGenomicLocation(String genomicLocation, String delimiter)
     {
+        if (genomicLocation == null) {
+            return null;
+        }
+
         String[] parts = genomicLocation.split(delimiter);
         GenomicLocation location = null;
 
@@ -31,6 +35,10 @@ public class NotationConverter
     @Nullable
     public String genomicToHgvs(GenomicLocation genomicLocation)
     {
+        if (genomicLocation == null) {
+            return null;
+        }
+
         String chr = genomicLocation.getChromosome();
         Integer start = genomicLocation.getStart();
         Integer end = genomicLocation.getEnd();
@@ -116,6 +124,10 @@ public class NotationConverter
     @NotNull
     public String longestCommonPrefix(String str1, String str2)
     {
+        if (str1 == null || str2 == null) {
+            return "";
+        }
+
         for (int prefixLen = 0; prefixLen < str1.length(); prefixLen++)
         {
             char c = str1.charAt(prefixLen);

@@ -29,7 +29,7 @@ public class GeneXrefMixin
     @JsonProperty(value = "info_text", required = true)
     private String infoText;
 
-    @JsonProperty(value = "info_types", required = true)
+    @JsonProperty(value = "info_type", required = true)
     private String infoType;
 
     @JsonProperty(value = "db_display_name", required = true)

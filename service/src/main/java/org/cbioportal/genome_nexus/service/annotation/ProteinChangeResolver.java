@@ -91,11 +91,15 @@ public class ProteinChangeResolver
     @Nullable
     private String resolveHgvspShortFromHgvsp(String hgvsp)
     {
-        String hgvspShort = null;
+        if (hgvsp == null) {
+            return null;
+        }
+
+        String hgvspShort = hgvsp;
 
         for (int i = 0; i < 24; i++) {
             if (hgvsp.contains(AA3TO1[i][0])) {
-                hgvspShort = hgvsp.replaceAll(AA3TO1[i][0], AA3TO1[i][1]);
+                hgvspShort = hgvspShort.replaceAll(AA3TO1[i][0], AA3TO1[i][1]);
             }
         }
 

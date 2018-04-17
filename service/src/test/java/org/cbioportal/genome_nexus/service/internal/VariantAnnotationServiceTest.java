@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,8 @@ public class VariantAnnotationServiceTest
 
     @Test
     public void getAnnotationByVariantString()
-        throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
+        throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
+        IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         this.mockVariantFetcherMethods(variantMockData);
@@ -63,7 +65,8 @@ public class VariantAnnotationServiceTest
 
     @Test
     public void getAnnotationsByVariantString()
-        throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
+        throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
+        IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         this.mockVariantFetcherMethods(variantMockData);
@@ -82,7 +85,8 @@ public class VariantAnnotationServiceTest
     @Test
     public void getMutationAssessorEnrichedAnnotationByVariantString()
         throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
-        MutationAssessorWebServiceException, MutationAssessorNotFoundException, IsoformOverrideNotFoundException
+        MutationAssessorWebServiceException, MutationAssessorNotFoundException, IsoformOverrideNotFoundException,
+        IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         Map<String, MutationAssessor> maMockData = this.mutationAssessorMockData.generateData();
@@ -111,7 +115,7 @@ public class VariantAnnotationServiceTest
     @Test
     public void getHotspotEnrichedAnnotationByVariantString()
         throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
-        CancerHotspotsWebServiceException, IsoformOverrideNotFoundException
+        CancerHotspotsWebServiceException, IsoformOverrideNotFoundException, IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         Map<String, List<Hotspot>> hotspotMockData = this.cancerHotspotMockData.generateData();
@@ -140,7 +144,7 @@ public class VariantAnnotationServiceTest
     @Test
     public void getIsorformOverrideEnrichedAnnotationByVariantString()
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException, ResourceMappingException,
-        IsoformOverrideNotFoundException
+        IsoformOverrideNotFoundException, IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         Map<String, IsoformOverride> isoformOverrideMockData = this.isoformOverrideMockData.generateData();

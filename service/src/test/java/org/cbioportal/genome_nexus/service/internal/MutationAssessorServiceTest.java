@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -54,7 +55,8 @@ public class MutationAssessorServiceTest
 
     @Test
     public void getMutationAssessorByVariantAnnotation()
-        throws ResourceMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException
+        throws ResourceMappingException, MutationAssessorWebServiceException, MutationAssessorNotFoundException,
+        IOException
     {
         Map<String, MutationAssessor> maMockData = this.mutationAssessorMockData.generateData();
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();

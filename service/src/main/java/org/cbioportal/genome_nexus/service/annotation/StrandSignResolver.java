@@ -11,7 +11,11 @@ public class StrandSignResolver
     private String resolve(VariantAnnotation variantAnnotation)
     {
         String sign = null;
-        Integer strand = variantAnnotation.getStrand();
+        Integer strand = null;
+
+        if (variantAnnotation != null) {
+            strand = variantAnnotation.getStrand();
+        }
 
         if (strand != null)
         {

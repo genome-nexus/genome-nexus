@@ -37,7 +37,8 @@ public class ProteinPositionResolver
         // for all other cases use the reported protein start and end positions
         // (proteinPos may also be null in case of protein change value parse error)
         if (proteinPos == null &&
-            transcriptConsequence != null)
+            transcriptConsequence != null &&
+            (transcriptConsequence.getProteinStart() != null || transcriptConsequence.getProteinEnd() != null))
         {
             proteinPos = new IntegerRange(transcriptConsequence.getProteinStart(), transcriptConsequence.getProteinEnd());
         }
