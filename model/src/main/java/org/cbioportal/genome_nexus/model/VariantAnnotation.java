@@ -61,6 +61,9 @@ public class VariantAnnotation
     private String mostSevereConsequence;
     private List<TranscriptConsequence> transcriptConsequences;
 
+    private MutationAssessorAnnotation mutationAssessorAnnotation;
+    private HotspotAnnotation hotspotAnnotation;
+
     private Map<String, Object> dynamicProps;
 
     public VariantAnnotation()
@@ -203,6 +206,22 @@ public class VariantAnnotation
     public String toString()
     {
         return annotationJSON;
+    }
+
+    public MutationAssessorAnnotation getMutationAssessorAnnotation() {
+        return mutationAssessorAnnotation;
+    }
+
+    public void setMutationAssessorAnnotation(MutationAssessorAnnotation mutationAssessorAnnotation) {
+        this.mutationAssessorAnnotation = mutationAssessorAnnotation;
+    }
+
+    public HotspotAnnotation getHotspotAnnotation() {
+        return hotspotAnnotation;
+    }
+
+    public void setHotspotAnnotation(HotspotAnnotation hotspotAnnotation) {
+        this.hotspotAnnotation = hotspotAnnotation;
     }
 
     public void setDynamicProp(String key, Object value)

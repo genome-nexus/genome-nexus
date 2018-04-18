@@ -2,6 +2,8 @@ package org.cbioportal.genome_nexus.web.mixin;
 
 import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
+import org.cbioportal.genome_nexus.model.HotspotAnnotation;
+import org.cbioportal.genome_nexus.model.MutationAssessorAnnotation;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 
 import java.util.List;
@@ -57,6 +59,14 @@ public class VariantAnnotationMixin {
     @JsonProperty(value="transcript_consequences", required = true)
     @ApiModelProperty(value = "List of transcripts", required = false)
     private List<TranscriptConsequence> transcriptConsequences;
+
+    @JsonProperty(value="mutation_assessor", required = true)
+    @ApiModelProperty(value = "Mutation Assessor Annotation", required = false)
+    private MutationAssessorAnnotation mutationAssessorAnnotation;
+
+    @JsonProperty(value="hotspots", required = true)
+    @ApiModelProperty(value = "Hotspot Annotation", required = false)
+    private HotspotAnnotation hotspotAnnotation;
 
     @JsonIgnore
     private Map<String, Object> dynamicProps;
