@@ -1,7 +1,9 @@
 package org.cbioportal.genome_nexus.service;
 
+import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 import org.cbioportal.genome_nexus.service.exception.EnsemblTranscriptNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
 
 import java.util.List;
 
@@ -9,6 +11,10 @@ public interface EnsemblService
 {
     EnsemblTranscript getEnsemblTranscriptsByTranscriptId(String transcriptId)
         throws EnsemblTranscriptNotFoundException;
+
+    EnsemblGene getCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol)
+        throws NoEnsemblGeneIdForHugoSymbolException;
+    List<EnsemblGene> getCanonicalEnsemblGeneIdByHugoSymbols(List<String> hugoSymbol);
 
     EnsemblTranscript getCanonicalEnsemblTranscriptByHugoSymbol(String hugoSymbol, String isoformOverrideSource)
         throws EnsemblTranscriptNotFoundException;

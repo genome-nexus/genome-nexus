@@ -31,9 +31,11 @@
 
 package org.cbioportal.genome_nexus.persistence.internal;
 
+import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 
 public interface EnsemblRepositoryCustom
 {
     EnsemblTranscript findOneByHugoSymbolIgnoreCase(String hugoSymbol, String isoformOverrideSource);
+    EnsemblGene getCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol);
 }
