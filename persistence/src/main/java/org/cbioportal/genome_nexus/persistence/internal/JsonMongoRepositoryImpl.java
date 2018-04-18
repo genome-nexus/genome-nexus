@@ -35,7 +35,6 @@ package org.cbioportal.genome_nexus.persistence.internal;
 import com.mongodb.DBObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cbioportal.genome_nexus.persistence.GenericMongoRepository;
 import org.cbioportal.genome_nexus.util.Transformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -47,16 +46,14 @@ import java.util.List;
  * @author Selcuk Onur Sumer
  */
 @Repository
-public class JsonMongoRepositoryImpl implements GenericMongoRepository
+public class JsonMongoRepositoryImpl extends BaseGenericMongoRepository
 {
     private static final Log LOG = LogFactory.getLog(JsonMongoRepositoryImpl.class);
-
-    protected final MongoTemplate mongoTemplate;
 
     @Autowired
     public JsonMongoRepositoryImpl(MongoTemplate mongoTemplate)
     {
-        this.mongoTemplate = mongoTemplate;
+        super(mongoTemplate);
     }
 
     /**

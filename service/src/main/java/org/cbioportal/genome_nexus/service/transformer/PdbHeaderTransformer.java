@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.service.transformer;
 
+import com.mongodb.DBObject;
 import org.cbioportal.genome_nexus.model.PdbHeader;
 import org.cbioportal.genome_nexus.service.ResourceTransformer;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
@@ -28,6 +29,12 @@ public class PdbHeaderTransformer implements ResourceTransformer<PdbHeader>
         }
 
         return list;
+    }
+
+    @Override
+    public List<DBObject> transform(String value) {
+        // TODO implement if needed
+        return null;
     }
 
     private PdbHeader mapToInstance(String pdbTextContent) throws ResourceMappingException

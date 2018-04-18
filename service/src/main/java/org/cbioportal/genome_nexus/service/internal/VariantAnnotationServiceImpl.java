@@ -50,7 +50,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.beans.factory.annotation.*;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -110,6 +110,29 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         return this.getVariantAnnotations(variants, postEnrichmentService);
     }
 
+    private List<VariantAnnotation> getVariantAnnotations(List<String> variants)
+        throws VariantAnnotationWebServiceException
+    {
+        List<VariantAnnotation> variantAnnotations = null;
+
+        try {
+            // get the annotations from the web service and save it to the DB
+            variantAnnotations = cachedExternalResourceFetcher.fetchAndCache(variants);
+        }
+        catch (HttpClientErrorException e) {
+            // in case of web service error, throw an exception to indicate that there is a problem with the service.
+            throw new VariantAnnotationWebServiceException(variants.toString(), e.getResponseBodyAsString(), e.getStatusCode());
+        }
+        catch (ResourceAccessException e) {
+            throw new VariantAnnotationWebServiceException(variants.toString(), e.getMessage());
+        }
+        catch (ResourceMappingException e) {
+            // TODO this indicates that web service returns an incompatible response
+        }
+
+        return variantAnnotations;
+    }
+
     private VariantAnnotation getVariantAnnotation(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
@@ -161,18 +184,19 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     private List<VariantAnnotation> getVariantAnnotations(List<String> variants,
                                                           EnrichmentService postEnrichmentService)
     {
-        List<VariantAnnotation> variantAnnotations = new ArrayList<>();
+        List<VariantAnnotation> variantAnnotations = Collections.emptyList();
 
-        for (String variant: variants)
-        {
-            try {
-                VariantAnnotation annotation = this.getVariantAnnotation(variant, postEnrichmentService);
-                variantAnnotations.add(annotation);
-            } catch (VariantAnnotationWebServiceException e) {
-                LOG.warn(e.getLocalizedMessage());
-            } catch (VariantAnnotationNotFoundException e) {
-                // fail silently for this annotation
+        try {
+            // fetch all annotations at once
+            variantAnnotations = this.getVariantAnnotations(variants);
+
+            if (postEnrichmentService != null) {
+                for (VariantAnnotation annotation: variantAnnotations) {
+                    postEnrichmentService.enrichAnnotation(annotation);
+                }
             }
+        } catch (VariantAnnotationWebServiceException e) {
+            LOG.warn(e.getLocalizedMessage());
         }
 
         return variantAnnotations;

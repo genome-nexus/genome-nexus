@@ -40,6 +40,13 @@ public class PdbHeaderDataFetcher extends BaseExternalResourceFetcher<PdbHeader>
         return this.transformer.transform(rawValue, PdbHeader.class);
     }
 
+    @Override
+    public List<PdbHeader> fetchInstances(Object requestBody)
+        throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
+    {
+        return this.transformer.transform(this.fetchStringValue(requestBody), PdbHeader.class);
+    }
+
     public PdbHeaderTransformer getTransformer() {
         return transformer;
     }

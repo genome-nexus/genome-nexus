@@ -169,6 +169,16 @@ public class VariantAnnotationServiceTest
         // mock methods in order to prevent hitting the live VEP web API
         Mockito.when(this.fetcher.fetchAndCache("7:g.140453136A>T")).thenReturn(variantMockData.get("7:g.140453136A>T"));
         Mockito.when(this.fetcher.fetchAndCache("12:g.25398285C>A")).thenReturn(variantMockData.get("12:g.25398285C>A"));
+
+        List<String> variants = new ArrayList<>(2);
+        variants.add("7:g.140453136A>T");
+        variants.add("12:g.25398285C>A");
+
+        List<VariantAnnotation> returnValue = new ArrayList<>(2);
+        returnValue.add(variantMockData.get("7:g.140453136A>T"));
+        returnValue.add(variantMockData.get("12:g.25398285C>A"));
+
+        Mockito.when(this.fetcher.fetchAndCache(variants)).thenReturn(returnValue);
     }
 
     private void mockMutationAssessorServiceMethods(Map<String, VariantAnnotation> variantMockData,

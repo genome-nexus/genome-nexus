@@ -61,6 +61,15 @@ public abstract class BaseExternalResourceFetcher<T> implements ExternalResource
     }
 
     @Override
+    public String fetchStringValue(Object requestBody)
+        throws HttpClientErrorException, ResourceAccessException
+    {
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.postForObject(this.URI, requestBody, String.class);
+    }
+
+    @Override
     public List<T> fetchInstances(String param)
         throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
     {

@@ -54,6 +54,13 @@ public class CancerHotspotDataFetcher extends BaseExternalResourceFetcher<Hotspo
         return this.transformer.transform(this.fetchStringValue(queryParams), Hotspot.class);
     }
 
+    @Override
+    public List<Hotspot> fetchInstances(Object requestBody)
+        throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
+    {
+        return this.transformer.transform(this.fetchStringValue(requestBody), Hotspot.class);
+    }
+
     public String getHotspotsUrl() {
         return hotspotsUrl;
     }

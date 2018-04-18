@@ -9,7 +9,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VariantAnnotationMixin
 {
-    @JsonProperty(required = true)
+    @JsonProperty(value="input", required = true)
     private String variant;
 
     @JsonProperty(required = true)
