@@ -22,8 +22,8 @@ import static org.junit.Assert.assertEquals;
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
     properties = {
         "vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1",
-        "hotspots.url=http://cancerhotspots.org/api/hotspots/single/",
-        "hotspots.3d.url=http://cancerhotspots.org/3d/api/hotspots/3d/",
+        "hotspots.url=https://www.cancerhotspots.org/api/hotspots/single/",
+        "hotspots.3d.url=https://www.3dhotspots.org/api/hotspots/3d/",
         "spring.data.mongodb.uri=mongodb://localhost/integration",
         "server.port=38888"
     }
