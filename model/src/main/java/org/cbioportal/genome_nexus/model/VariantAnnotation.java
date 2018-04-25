@@ -59,6 +59,7 @@ public class VariantAnnotation
     private String alleleString;  // reference allele & variant allele
     private Integer strand;
     private String mostSevereConsequence;
+    private List<ColocatedVariant> colocatedVariants;
     private List<TranscriptConsequence> transcriptConsequences;
 
     private MutationAssessorAnnotation mutationAssessorAnnotation;
@@ -191,6 +192,16 @@ public class VariantAnnotation
         this.mostSevereConsequence = mostSevereConsequence;
     }
 
+    @Field(value="colocated_variants")
+    public List<ColocatedVariant> getColocatedVariants()
+    {
+        return colocatedVariants;
+    }
+    public void set(List<ColocatedVariant> colocatedVariants)
+    {
+        this.colocatedVariants = colocatedVariants;
+    }
+    
     @Field(value="transcript_consequences")
     public List<TranscriptConsequence> getTranscriptConsequences()
     {
