@@ -32,13 +32,20 @@
 
 package org.cbioportal.genome_nexus.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
 /**
  *
  * @author ochoaa
  */
-public class GeneXref {
+@Document(collection = "ensembl.gene_xref")
+public class GeneXref
+{
+    @Id
+    private String ensemblGeneId;
 
     private String displayId;
     private String primaryId;
@@ -49,6 +56,14 @@ public class GeneXref {
     private String infoText;
     private String infoType;
     private String dbDisplayName;
+
+    public String getEnsemblGeneId() {
+        return ensemblGeneId;
+    }
+
+    public void setEnsemblGeneId(String ensemblGeneId) {
+        this.ensemblGeneId = ensemblGeneId;
+    }
 
     public String getDisplayId() {
         return displayId;

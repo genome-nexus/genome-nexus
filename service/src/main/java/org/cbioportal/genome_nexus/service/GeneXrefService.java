@@ -42,4 +42,5 @@ import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
  */
 public interface GeneXrefService {
     List<GeneXref> getGeneXrefs(String accession) throws EnsemblWebServiceException;
+    GeneXref getEntrezGeneXref(String accession, String geneSymbol) throws EnsemblWebServiceException;
 }

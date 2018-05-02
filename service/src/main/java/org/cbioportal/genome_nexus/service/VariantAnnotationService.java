@@ -32,6 +32,7 @@
 
 package org.cbioportal.genome_nexus.service;
 
+import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -49,4 +50,13 @@ public interface VariantAnnotationService
     VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
     List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, List<String> fields);
+
+    VariantAnnotation getAnnotation(GenomicLocation genomicLocation)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
+    VariantAnnotation getAnnotationByGenomicLocation(String genomicLocation)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
+    List<VariantAnnotation> getAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations);
+    VariantAnnotation getAnnotationByGenomicLocation(String genomicLocation, String isoformOverrideSource, List<String> fields)
+        throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
+    List<VariantAnnotation> getAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations, String isoformOverrideSource, List<String> fields);
 }

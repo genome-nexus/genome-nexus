@@ -38,7 +38,7 @@ import org.cbioportal.genome_nexus.service.EnrichmentService;
 
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -68,7 +68,8 @@ public class VEPEnrichmentService implements EnrichmentService
         // initiate enricher list if not initiated yet
         if (enrichers == null)
         {
-            enrichers = new HashMap<>();
+            // linked hash map ensures that enrichers are executed by the same order they are registered
+            enrichers = new LinkedHashMap<>();
         }
 
         enrichers.put(id, enricher);
@@ -82,6 +83,4 @@ public class VEPEnrichmentService implements EnrichmentService
             enrichers.put(id, null);
         }
     }
-
-
 }

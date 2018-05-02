@@ -17,6 +17,10 @@ public class TranscriptConsequencePrioritizer
     public TranscriptConsequence transcriptWithMostSevereConsequence(List<TranscriptConsequence> transcripts,
                                                                      String mostSevereConsequence)
     {
+        if (transcripts == null) {
+            return null;
+        }
+
         Integer highestPriority = Integer.MAX_VALUE;
         TranscriptConsequence highestPriorityTranscript = null;
 
@@ -54,6 +58,10 @@ public class TranscriptConsequencePrioritizer
     @Nullable
     public String pickHighestPriorityConsequence(List<String> consequences)
     {
+        if (consequences == null) {
+            return null;
+        }
+
         String highestPriorityConsequence = null;
         Integer highestPriority = Integer.MAX_VALUE;
 
@@ -102,24 +110,24 @@ public class TranscriptConsequencePrioritizer
         effectPriority.put("synonymous_variant", 9); // A sequence variant where there is no resulting change to the encoded amino acid
         effectPriority.put("incomplete_terminal_codon_variant", 10); // A sequence variant where at least one base of the final codon of an incompletely annotated transcript is changed
         effectPriority.put("coding_sequence_variant", 11); // A sequence variant that changes the coding sequence
-        effectPriority.put("mature_miRNA_variant", 11); // A transcript variant located with the sequence of the mature miRNA
+        effectPriority.put("mature_mirna_variant", 11); // A transcript variant located with the sequence of the mature miRNA
         effectPriority.put("exon_variant", 11); // A sequence variant that changes exon sequence
-        effectPriority.put("5_prime_UTR_variant", 12); // A UTR variant of the 5" UTR
-        effectPriority.put("5_prime_UTR_premature_start_codon_gain_variant", 12); // snpEff-specific effect, creating a start codon in 5" UTR
-        effectPriority.put("3_prime_UTR_variant", 12); // A UTR variant of the 3" UTR
+        effectPriority.put("5_prime_utr_variant", 12); // A UTR variant of the 5" UTR
+        effectPriority.put("5_prime_utr_premature_start_codon_gain_variant", 12); // snpEff-specific effect, creating a start codon in 5" UTR
+        effectPriority.put("3_prime_utr_variant", 12); // A UTR variant of the 3" UTR
         effectPriority.put("non_coding_exon_variant", 13); // A sequence variant that changes non-coding exon sequence
         effectPriority.put("non_coding_transcript_exon_variant", 13); // snpEff-specific synonym for non_coding_exon_variant
         effectPriority.put("non_coding_transcript_variant", 14); // A transcript variant of a non coding RNA gene
         effectPriority.put("nc_transcript_variant", 14); // A transcript variant of a non coding RNA gene (older alias for non_coding_transcript_variant)
         effectPriority.put("intron_variant", 14); // A transcript variant occurring within an intron
         effectPriority.put("intragenic_variant", 14); // A variant that occurs within a gene but falls outside of all transcript features. This occurs when alternate transcripts of a gene do not share overlapping sequence
-        effectPriority.put("INTRAGENIC", 14); // snpEff-specific synonym of intragenic_variant
-        effectPriority.put("NMD_transcript_variant", 15); // A variant in a transcript that is the target of NMD
+        effectPriority.put("intragenic", 14); // snpEff-specific synonym of intragenic_variant
+        effectPriority.put("nmd_transcript_variant", 15); // A variant in a transcript that is the target of NMD
         effectPriority.put("upstream_gene_variant", 16); // A sequence variant located 5" of a gene
         effectPriority.put("downstream_gene_variant", 16); // A sequence variant located 3" of a gene
-        effectPriority.put("TFBS_ablation", 17); // A feature ablation whereby the deleted region includes a transcription factor binding site
-        effectPriority.put("TFBS_amplification", 17); // A feature amplification of a region containing a transcription factor binding site
-        effectPriority.put("TF_binding_site_variant", 17); // A sequence variant located within a transcription factor binding site
+        effectPriority.put("tfbs_ablation", 17); // A feature ablation whereby the deleted region includes a transcription factor binding site
+        effectPriority.put("tfbs_amplification", 17); // A feature amplification of a region containing a transcription factor binding site
+        effectPriority.put("tf_binding_site_variant", 17); // A sequence variant located within a transcription factor binding site
         effectPriority.put("regulatory_region_ablation", 17); // A feature ablation whereby the deleted region includes a regulatory region
         effectPriority.put("regulatory_region_amplification", 17); // A feature amplification of a region containing a regulatory region
         effectPriority.put("regulatory_region_variant", 17); // A sequence variant located within a regulatory region

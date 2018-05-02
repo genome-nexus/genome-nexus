@@ -151,4 +151,44 @@ public class AnnotationController
     {
         return this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, fields);
     }
+
+    @ApiOperation(value = "Retrieves VEP annotation for the provided list of genomic locations",
+        nickname = "fetchVariantAnnotationByGenomicLocationPOST")
+    @RequestMapping(value = "/annotation/genomic",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<VariantAnnotation> fetchVariantAnnotationByGenomicLocationPOST(
+        @ApiParam(value="List of Genomic Locations",
+            required = true)
+        @RequestBody List<GenomicLocation> genomicLocations,
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+        @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+        @RequestParam(required = false) List<String> fields)
+    {
+        return this.variantAnnotationService.getAnnotationsByGenomicLocations(
+            genomicLocations, isoformOverrideSource, fields);
+    }
+
+    @ApiOperation(value = "Retrieves VEP annotation for the provided genomic location",
+        nickname = "fetchVariantAnnotationByGenomicLocationGET")
+    @RequestMapping(value = "/annotation/genomic/{genomicLocation:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public VariantAnnotation fetchVariantAnnotationByGenomicLocationGET(
+        @ApiParam(value="A genomic location. For example 7,140453136,140453136,A,T",
+            required = true)
+        @PathVariable String genomicLocation,
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+        @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+        @RequestParam(required = false) List<String> fields)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
+    {
+        return this.variantAnnotationService.getAnnotationByGenomicLocation(genomicLocation, isoformOverrideSource, fields);
+    }
 }

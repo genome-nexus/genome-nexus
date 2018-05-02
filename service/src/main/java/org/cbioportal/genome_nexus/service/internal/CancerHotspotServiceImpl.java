@@ -189,7 +189,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
     {
-        GenomicLocation location = this.notationConverter.parseGenomicLocation(genomicLocation, ",");
+        GenomicLocation location = this.notationConverter.parseGenomicLocation(genomicLocation);
 
         return this.getHotspotAnnotationsByVariant(this.notationConverter.genomicToHgvs(location));
     }
@@ -198,17 +198,8 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     public List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations)
         throws CancerHotspotsWebServiceException
     {
-        Map<String, GenomicLocation> variantToGenomicLocation = new LinkedHashMap<>();
-
         // convert genomic location to hgvs notation (there is always 1-1 mapping)
-        for (GenomicLocation location : genomicLocations) {
-            String hgvsNotation = notationConverter.genomicToHgvs(location);
-
-            // exclude invalid genomic locations
-            if (hgvsNotation != null) {
-                variantToGenomicLocation.put(hgvsNotation, location);
-            }
-        }
+        Map<String, GenomicLocation> variantToGenomicLocation = notationConverter.genomicToHgvsMap(genomicLocations);
 
         // query hotspots service by variant
         List<AggregatedHotspots> hotspots = this.getHotspotAnnotationsByVariants(

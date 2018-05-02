@@ -22,7 +22,9 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(PdbHeader.class, PdbHeaderMixin.class);
         mixinMap.put(TranscriptConsequence.class, TranscriptConsequenceMixin.class);
         mixinMap.put(ColocatedVariant.class, ColocatedVariantMixin.class);
+        mixinMap.put(TranscriptConsequenceSummary.class, TranscriptConsequenceSummaryMixin.class);
         mixinMap.put(VariantAnnotation.class, VariantAnnotationMixin.class);
+        mixinMap.put(VariantAnnotationSummary.class, VariantAnnotationSummaryMixin.class);
         mixinMap.put(EnsemblTranscript.class, EnsemblTranscriptMixin.class);
         mixinMap.put(EnsemblGene.class, EnsemblGeneMixin.class);
         mixinMap.put(PfamDomainRange.class, PfamDomainRangeMixin.class);

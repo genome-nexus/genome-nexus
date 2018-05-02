@@ -37,7 +37,9 @@ import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.*;
 
+import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
+import org.cbioportal.genome_nexus.service.enricher.CanonicalTranscriptAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.HotspotAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.MutationAssessorAnnotationEnricher;
@@ -62,22 +64,28 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     private static final Log LOG = LogFactory.getLog(VariantAnnotationServiceImpl.class);
 
     private final CachedVariantAnnotationFetcher cachedExternalResourceFetcher;
+    private final NotationConverter notationConverter;
     private final IsoformOverrideService isoformOverrideService;
     private final CancerHotspotService hotspotService;
     private final MutationAssessorService mutationAssessorService;
+    private final VariantAnnotationSummaryService variantAnnotationSummaryService;
 
     @Autowired
     public VariantAnnotationServiceImpl(CachedVariantAnnotationFetcher cachedExternalResourceFetcher,
+                                        NotationConverter notationConverter,
                                         // Lazy autowire services used for enrichment,
                                         // otherwise we are getting circular dependency issues
                                         @Lazy IsoformOverrideService isoformOverrideService,
                                         @Lazy CancerHotspotService hotspotService,
-                                        @Lazy MutationAssessorService mutationAssessorService)
+                                        @Lazy MutationAssessorService mutationAssessorService,
+                                        @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
+        this.notationConverter = notationConverter;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
         this.mutationAssessorService = mutationAssessorService;
+        this.variantAnnotationSummaryService = variantAnnotationSummaryService;
     }
 
     @Override
@@ -131,6 +139,47 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         }
 
         return variantAnnotations;
+    }
+
+    @Override
+    public VariantAnnotation getAnnotation(GenomicLocation genomicLocation)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
+    {
+        return this.getAnnotation(this.notationConverter.genomicToHgvs(genomicLocation));
+    }
+
+    @Override
+    public VariantAnnotation getAnnotationByGenomicLocation(String genomicLocation)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
+    {
+        return this.getAnnotation(this.notationConverter.parseGenomicLocation(genomicLocation));
+    }
+
+    @Override
+    public List<VariantAnnotation> getAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations)
+    {
+        return this.getAnnotations(this.notationConverter.genomicToHgvs(genomicLocations));
+    }
+
+    @Override
+    public VariantAnnotation getAnnotationByGenomicLocation(String genomicLocation,
+                                                            String isoformOverrideSource,
+                                                            List<String> fields)
+        throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
+    {
+        return this.getAnnotation(this.notationConverter.genomicToHgvs(genomicLocation),
+            isoformOverrideSource,
+            fields);
+    }
+
+    @Override
+    public List<VariantAnnotation> getAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations,
+                                                                    String isoformOverrideSource,
+                                                                    List<String> fields)
+    {
+        return this.getAnnotations(this.notationConverter.genomicToHgvs(genomicLocations),
+            isoformOverrideSource,
+            fields);
     }
 
     private VariantAnnotation getVariantAnnotation(String variant)
@@ -224,10 +273,17 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
             AnnotationEnricher enricher = new HotspotAnnotationEnricher(hotspotService, true);
             postEnrichmentService.registerEnricher("cancerHotspots", enricher);
         }
+
         if (fields != null && fields.contains("mutation_assessor"))
         {
             AnnotationEnricher enricher = new MutationAssessorAnnotationEnricher(mutationAssessorService);
             postEnrichmentService.registerEnricher("mutation_assessor", enricher);
+        }
+
+        if (fields != null && fields.contains("annotation_summary"))
+        {
+            AnnotationEnricher enricher = new CanonicalTranscriptAnnotationEnricher(variantAnnotationSummaryService);
+            postEnrichmentService.registerEnricher("annotation_summary", enricher);
         }
 
         return postEnrichmentService;

@@ -37,6 +37,7 @@ import org.cbioportal.genome_nexus.service.GeneXrefService;
 
 import java.util.*;
 
+import org.cbioportal.genome_nexus.service.cached.CachedEntrezGeneXrefFetcher;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.remote.GeneXrefDataFetcher;
@@ -53,11 +54,14 @@ import org.springframework.web.client.ResourceAccessException;
 public class GeneXrefServiceImpl implements GeneXrefService
 {
     private final GeneXrefDataFetcher externalResourceFetcher;
+    private final CachedEntrezGeneXrefFetcher entrezGeneXrefFetcher;
 
     @Autowired
-    public GeneXrefServiceImpl(GeneXrefDataFetcher externalResourceFetcher)
+    public GeneXrefServiceImpl(GeneXrefDataFetcher externalResourceFetcher,
+                               CachedEntrezGeneXrefFetcher entrezGeneXrefFetcher)
     {
         this.externalResourceFetcher = externalResourceFetcher;
+        this.entrezGeneXrefFetcher = entrezGeneXrefFetcher;
     }
 
     @Override
@@ -81,5 +85,27 @@ public class GeneXrefServiceImpl implements GeneXrefService
         }
 
         return geneXrefs;
+    }
+
+    public GeneXref getEntrezGeneXref(String accession, String geneSymbol) throws EnsemblWebServiceException
+    {
+        GeneXref geneXref;
+
+        try {
+            geneXref = this.entrezGeneXrefFetcher.fetchAndCache(accession, geneSymbol);
+        }
+        catch (ResourceMappingException e) {
+            throw new EnsemblWebServiceException(e.getMessage());
+        }
+        catch (HttpClientErrorException e)
+        {
+            throw new EnsemblWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
+        }
+        catch (ResourceAccessException e)
+        {
+            throw new EnsemblWebServiceException(e.getMessage());
+        }
+
+        return geneXref;
     }
 }

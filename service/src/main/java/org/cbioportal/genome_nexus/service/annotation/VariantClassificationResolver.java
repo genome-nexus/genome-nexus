@@ -20,15 +20,18 @@ public class VariantClassificationResolver
     private final CanonicalTranscriptResolver canonicalTranscriptResolver;
     private final TranscriptConsequencePrioritizer consequencePrioritizer;
     private final VariantTypeResolver variantTypeResolver;
+    private final GenomicLocationResolver genomicLocationResolver;
 
     @Autowired
     public VariantClassificationResolver(CanonicalTranscriptResolver canonicalTranscriptResolver,
                                          VariantTypeResolver variantTypeResolver,
-                                         TranscriptConsequencePrioritizer consequencePrioritizer)
+                                         TranscriptConsequencePrioritizer consequencePrioritizer,
+                                         GenomicLocationResolver genomicLocationResolver)
     {
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
         this.consequencePrioritizer = consequencePrioritizer;
         this.variantTypeResolver = variantTypeResolver;
+        this.genomicLocationResolver = genomicLocationResolver;
     }
 
     /**
@@ -106,18 +109,13 @@ public class VariantClassificationResolver
     {
         Boolean inframe = false;
 
-        if (variantAnnotation != null &&
-            variantAnnotation.getAlleleString() != null)
+        String referenceAllele = this.genomicLocationResolver.resolveReferenceAllele(variantAnnotation);
+        String variantAllele = this.genomicLocationResolver.resolveVariantAllele(variantAnnotation);
+
+        if (referenceAllele != null &&
+            variantAllele != null)
         {
-            String[] alleles = variantAnnotation.getAlleleString().split("/", -1);
-
-            if (alleles.length == 2)
-            {
-                String referenceAllele = alleles[0];
-                String variantAllele = alleles[1];
-
-                inframe = Math.abs(this.calcAlleleLength(referenceAllele) - this.calcAlleleLength(variantAllele)) % 3 == 0;
-            }
+            inframe = Math.abs(this.calcAlleleLength(referenceAllele) - this.calcAlleleLength(variantAllele)) % 3 == 0;
         }
 
         return inframe;

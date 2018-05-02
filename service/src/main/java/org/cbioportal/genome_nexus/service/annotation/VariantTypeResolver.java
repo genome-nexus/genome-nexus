@@ -2,28 +2,32 @@ package org.cbioportal.genome_nexus.service.annotation;
 
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class VariantTypeResolver
 {
+    private final GenomicLocationResolver genomicLocationResolver;
+
+    @Autowired
+    public VariantTypeResolver(GenomicLocationResolver genomicLocationResolver)
+    {
+        this.genomicLocationResolver = genomicLocationResolver;
+    }
+
     @Nullable
     public String resolve(VariantAnnotation variantAnnotation)
     {
         String variantType = null;
 
-        if (variantAnnotation != null &&
-            variantAnnotation.getAlleleString() != null)
+        String referenceAllele = this.genomicLocationResolver.resolveReferenceAllele(variantAnnotation);
+        String variantAllele = this.genomicLocationResolver.resolveVariantAllele(variantAnnotation);
+
+        if (referenceAllele != null &&
+            variantAllele != null)
         {
-            String[] alleles = variantAnnotation.getAlleleString().split("/", -1);
-
-            if (alleles.length == 2)
-            {
-                String referenceAllele = alleles[0];
-                String variantAllele = alleles[1];
-
-                variantType = resolveVariantType(referenceAllele, variantAllele);
-            }
+            variantType = resolveVariantType(referenceAllele, variantAllele);
         }
 
         return variantType;
