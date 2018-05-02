@@ -1,9 +1,11 @@
 package org.cbioportal.genome_nexus.service.internal;
 
+import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 import org.cbioportal.genome_nexus.persistence.EnsemblRepository;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.exception.EnsemblTranscriptNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,35 @@ public class EnsemblServiceImpl implements EnsemblService
     @Override
     public EnsemblTranscript getEnsemblTranscriptsByTranscriptId(String transcriptId) {
         return this.ensemblRepository.findOneByTranscriptId(transcriptId);
+    }
+
+    @Override
+    public EnsemblGene getCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol)
+        throws NoEnsemblGeneIdForHugoSymbolException
+    {
+        EnsemblGene ensemblGene = this.ensemblRepository.getCanonicalEnsemblGeneIdByHugoSymbol(hugoSymbol);
+
+        if (ensemblGene == null) {
+            throw new NoEnsemblGeneIdForHugoSymbolException(hugoSymbol);
+        }
+
+        return ensemblGene;
+    }
+
+    @Override
+    public List<EnsemblGene> getCanonicalEnsemblGeneIdByHugoSymbols(List<String> hugoSymbols) {
+        List<EnsemblGene> ensemblGenes = new ArrayList<>();
+
+        for (String hugoSymbol : hugoSymbols)
+        {
+            try {
+                ensemblGenes.add(this.getCanonicalEnsemblGeneIdByHugoSymbol(hugoSymbol));
+            } catch (NoEnsemblGeneIdForHugoSymbolException e) {
+                // ignore the exception for this hugo symbol
+            }
+        }
+
+        return ensemblGenes;
     }
 
     @Override

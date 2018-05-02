@@ -3,12 +3,15 @@ package org.cbioportal.genome_nexus.web;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.GeneXrefService;
 import org.cbioportal.genome_nexus.service.exception.EnsemblTranscriptNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.cbioportal.genome_nexus.web.param.EnsemblFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,32 @@ public class EnsemblController
     {
         this.ensemblService = ensemblService;
         this.geneXrefService = geneXrefService;
+    }
+
+    @ApiOperation(value = "Retrieves canonical Ensembl Gene ID by Hugo Symbols",
+        nickname = "fetchCanonicalEnsemblGeneIdByHugoSymbolsPOST")
+    @RequestMapping(value = "/ensembl/canonical-gene/hgnc",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<EnsemblGene> fetchCanonicalEnsemblGeneIdByHugoSymbolPOST(
+        @ApiParam(value = "List of Hugo Symbols. For example [\"TP53\",\"PIK3CA\",\"BRCA1\"]",
+            required = true)
+        @RequestBody List<String> hugoSymbols)
+    {
+        return this.ensemblService.getCanonicalEnsemblGeneIdByHugoSymbols(hugoSymbols);
+    }
+
+    @ApiOperation(value = "Retrieves Ensembl canonical gene id by Hugo Symbol",
+        nickname = "fetchCanonicalEnsemblGeneIdByHugoSymbolGET")
+    @RequestMapping(value = "/ensembl/canonical-gene/hgnc/{hugoSymbol}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public EnsemblGene fetchCanonicalEnsemblGeneIdByHugoSymbolGET(
+        @ApiParam(value = "A Hugo Symbol. For example TP53",
+            required = true)
+        @PathVariable String hugoSymbol) throws NoEnsemblGeneIdForHugoSymbolException
+    {
+        return this.ensemblService.getCanonicalEnsemblGeneIdByHugoSymbol(hugoSymbol);
     }
 
     @ApiOperation(value = "Retrieves Ensembl Transcripts by protein ID, and gene ID. " +
