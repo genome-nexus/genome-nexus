@@ -41,10 +41,10 @@ public class CachedEntrezGeneXrefFetcher
         throws ResourceMappingException, HttpClientErrorException, ResourceAccessException
     {
         boolean saveValue = true;
-        GeneXref entrezGeneXref = null;
+        Optional<GeneXref> entrezGeneXrefOptional = null;
 
         try {
-            entrezGeneXref = this.repository.findOne(accession);
+            entrezGeneXrefOptional = this.repository.findById(accession);
         }
         catch (DataAccessResourceFailureException e) {
             LOG.warn("Failed to read from Mongo database - falling back on the external web service. " +
@@ -52,16 +52,16 @@ public class CachedEntrezGeneXrefFetcher
             saveValue = false;
         }
 
-        if (entrezGeneXref == null)
-        {
+        if (!entrezGeneXrefOptional.isPresent()) {
             // get the gene xref from the web service and save it to the DB
             try {
-                entrezGeneXref = this.fetchEntrezGeneXref(accession, geneSymbol);
+                GeneXref entrezGeneXref = this.fetchEntrezGeneXref(accession, geneSymbol);
 
                 if (saveValue && entrezGeneXref != null) {
                     entrezGeneXref.setEnsemblGeneId(accession);
                     this.repository.save(entrezGeneXref);
                 }
+                return entrezGeneXref;
             }
             catch (DataIntegrityViolationException e) {
                 // in case of data integrity violation exception, do not bloat the logs
@@ -69,9 +69,16 @@ public class CachedEntrezGeneXrefFetcher
                 // due to the variant annotation key being too large to index
                 LOG.info(e.getLocalizedMessage());
             }
+            catch (ResourceMappingException e) {
+                LOG.info(e.getLocalizedMessage());
+            }
         }
 
-        return entrezGeneXref;
+        try {
+            return entrezGeneXrefOptional.get();
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
 

@@ -60,14 +60,14 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
     public T fetchAndCache(String id) throws ResourceMappingException
     {
         boolean saveStringValue = true;
-        T instance = null;
+        Optional<T> instance = null;
 
         if (!isValidId(id)) {
             return null;
         }
 
         try {
-            instance = this.repository.findOne(id);
+            instance = this.repository.findById(id);
         }
         catch (DataAccessResourceFailureException e) {
             LOG.warn("Failed to read from Mongo database - falling back on the external web service. " +
@@ -75,7 +75,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
             saveStringValue = false;
         }
 
-        if (instance == null)
+        if (!instance.isPresent())
         {
             // get the annotation from the web service and save it to the DB
             try {
@@ -88,7 +88,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 List<T> list = this.transformer.transform(stringValue, this.type);
 
                 if (list.size() > 0) {
-                    instance = list.get(0);
+                    instance = Optional.of(list.get(0));
                 }
 
                 // save everything to the cache as a properly parsed JSON
@@ -104,7 +104,11 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
             }
         }
 
-        return instance;
+        try {
+            return instance.get();
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
     public List<T> fetchAndCache(List<String> ids) throws ResourceMappingException
@@ -116,7 +120,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
 
         try {
             // add everything already cached into the map
-            for (T instance: this.repository.findAll(uniqueIds))
+            for (T instance: this.repository.findAllById(uniqueIds))
             {
                 String id = this.extractId(instance);
                 idToInstance.put(id, instance);

@@ -37,7 +37,7 @@ import org.cbioportal.genome_nexus.web.config.InternalApi;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -54,7 +54,7 @@ import java.util.HashSet;
 /**
  * @author Benjamin Gross
  */
-@SpringBootApplication(scanBasePackages = {"org.cbioportal.genome_nexus"}) // shorthand for @Configuration, @EnableAutoConfiguration, @ComponentScan
+@SpringBootApplication(scanBasePackages = "org.cbioportal.genome_nexus") // shorthand for @Configuration, @EnableAutoConfiguration, @ComponentScan
 @EnableSwagger2 // enable swagger2 documentation
 public class GenomeNexusAnnotation extends SpringBootServletInitializer
 {

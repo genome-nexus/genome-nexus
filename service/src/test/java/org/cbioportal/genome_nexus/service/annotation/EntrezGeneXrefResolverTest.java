@@ -11,7 +11,7 @@ import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +20,8 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@RunWith(MockitoJUnitRunner.class)
+// TODO: fix unnecessary stub mockito (silence for now)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class EntrezGeneXrefResolverTest
 {
     private EntrezGeneXrefResolver entrezGeneXrefResolver = new EntrezGeneXrefResolver();

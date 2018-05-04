@@ -54,6 +54,8 @@ import org.springframework.beans.factory.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * @author Benjamin Gross
@@ -185,16 +187,14 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     private VariantAnnotation getVariantAnnotation(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        VariantAnnotation variantAnnotation = null;
+        Optional<VariantAnnotation> variantAnnotation = null;
 
         try {
             // get the annotation from the web service and save it to the DB
-            variantAnnotation = cachedExternalResourceFetcher.fetchAndCache(variant);
+            variantAnnotation = Optional.of(cachedExternalResourceFetcher.fetchAndCache(variant));
 
             // include original variant value too
-            if (variantAnnotation != null) {
-                variantAnnotation.setVariant(variant);
-            }
+            variantAnnotation.ifPresent(x -> x.setVariant(variant));
         }
         catch (HttpClientErrorException e) {
             // in case of web service error, throw an exception to indicate that there is a problem with the service.
@@ -209,11 +209,11 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
             throw new VariantAnnotationWebServiceException(variant, e.getMessage());
         }
 
-        if (variantAnnotation == null) {
+        try {
+            return variantAnnotation.get();
+        } catch (NoSuchElementException e) {
             throw new VariantAnnotationNotFoundException(variant);
         }
-
-        return variantAnnotation;
     }
 
     private VariantAnnotation getVariantAnnotation(String variant, EnrichmentService postEnrichmentService)

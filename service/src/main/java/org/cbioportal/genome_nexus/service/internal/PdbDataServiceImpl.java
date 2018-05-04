@@ -34,16 +34,14 @@ public class PdbDataServiceImpl implements PdbDataService
     @Override
     public PdbHeader getPdbHeader(String pdbId) throws PdbHeaderNotFoundException, PdbHeaderWebServiceException
     {
-        PdbHeader pdbHeader = null;
+        Optional<PdbHeader> pdbHeader = null;
 
         try {
             // get the PDB data from the web service and save it to the DB
-            pdbHeader = this.cachedExternalResourceFetcher.fetchAndCache(pdbId);
+            pdbHeader = Optional.of(this.cachedExternalResourceFetcher.fetchAndCache(pdbId));
 
             // include original pdb id value too
-            if (pdbHeader != null) {
-                pdbHeader.setPdbId(pdbId);
-            }
+            pdbHeader.ifPresent(x -> x.setPdbId(pdbId));
         }
         catch (HttpClientErrorException e) {
             // in case of web service error, throw an exception to indicate that there is a problem with the service.
@@ -58,11 +56,11 @@ public class PdbDataServiceImpl implements PdbDataService
             throw new PdbHeaderWebServiceException(pdbId, e.getMessage());
         }
 
-        if (pdbHeader == null) {
+        try {
+            return pdbHeader.get();
+        } catch(NoSuchElementException e) {
             throw new PdbHeaderNotFoundException(pdbId);
         }
-
-        return pdbHeader;
     }
 
     @Override

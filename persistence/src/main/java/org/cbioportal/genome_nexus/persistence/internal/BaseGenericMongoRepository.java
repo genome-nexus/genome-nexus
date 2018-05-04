@@ -1,6 +1,7 @@
 package org.cbioportal.genome_nexus.persistence.internal;
 
 import com.mongodb.DBObject;
+
 import org.cbioportal.genome_nexus.persistence.GenericMongoRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
