@@ -50,10 +50,20 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         this.maxPageSize = maxPageSize;
     }
 
+    // Needs to be overridden to support checking for valid ids
+    protected Boolean isValidId(String id)
+    {
+        return true;
+    }
+
     public T fetchAndCache(String id) throws ResourceMappingException
     {
         boolean saveStringValue = true;
         T instance = null;
+
+        if (!isValidId(id)) {
+            return null;
+        }
 
         try {
             instance = this.repository.findOne(id);
