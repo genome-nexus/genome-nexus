@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -53,26 +50,57 @@ public class CachedVariantAnnotationFetcher extends BaseCachedExternalResourceFe
         return (String)dbObject.get("input");
     }
 
+    @Override
     public List<VariantAnnotation> fetchAndCache(List<String> ids) throws ResourceMappingException
     {
-        ArrayList<String> variantsWithFixedFirstEntry = new ArrayList<>();
+        List<VariantAnnotation> annotations = super.fetchAndCache(ids);
 
-        // we need to add a fixed first entry due to a bug in VEP web service,
-        // basically, the query fails if the first entry in the list is invalid:
-        // https://github.com/Ensembl/ensembl-vep/issues/156
-        variantsWithFixedFirstEntry.add(FIXED_ENTRY);
-        variantsWithFixedFirstEntry.addAll(ids);
+        // post process to remove the fixed entry (or duplicate fix entries depending on the number of total pages)
+        // filter out the fixed entry, so that it won't be included in the final list
+        List<VariantAnnotation> postProcessedAnnotations = annotations.stream().filter(
+            v -> !v.getVariant().equals(FIXED_ENTRY)).collect(Collectors.toList());
 
-        List<VariantAnnotation> annotations = super.fetchAndCache(variantsWithFixedFirstEntry);
+        // very unlikely but in case the fixed entry is already in the original list we want to add it back
+        if (ids.contains(FIXED_ENTRY))
+        {
+            Optional<VariantAnnotation> first = annotations.stream().filter(
+                v -> v.getVariant().equals(FIXED_ENTRY)).findFirst();
 
-        // very unlikely but in case the fixed entry is already in the original list we don't want to remove it
-        if (!ids.contains(FIXED_ENTRY)) {
-            // filter out the fixed entry, so that it won't be included in the final list
-            annotations = annotations.stream().filter(
-                v -> !v.getVariant().equals(FIXED_ENTRY)).collect(Collectors.toList());
+            // TODO add it back to its correct index not just at the end of the list: doable but not straightforward due to possible missing annotation(s)
+            first.ifPresent(postProcessedAnnotations::add);
         }
 
-        return annotations;
+        return postProcessedAnnotations;
+    }
+
+    /**
+     * Overriding the base method in order to add a fixed first entry to the query (due to a bug in VEP web service):
+     * Basically, the query fails if the first entry in the list is invalid.
+     * See https://github.com/Ensembl/ensembl-vep/issues/156 for details.
+     */
+    @Override
+    protected List<Set<String>> generateChunks(Set<String> needToFetch)
+    {
+        List<Set<String>> chunks = new ArrayList<>();
+        List<String> list = new ArrayList<>(needToFetch);
+
+        // -1, because we add fixed entry to the beginning of each and every chunk
+        int chunkSize = this.maxPageSize - 1;
+
+        for (int i = 0; i < list.size(); i += chunkSize)
+        {
+            Set<String> chunk = new LinkedHashSet<>();
+
+            // add the fixed entry to the beginning of the chunk
+            chunk.add(FIXED_ENTRY);
+
+            // append the next slice
+            chunk.addAll(list.subList(i, Math.min(list.size(), i + chunkSize)));
+
+            chunks.add(chunk);
+        }
+
+        return chunks;
     }
 
     @Override
