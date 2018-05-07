@@ -1,6 +1,5 @@
 package org.cbioportal.genome_nexus.persistence.internal;
 
-import com.mongodb.BulkWriteOperation;
 import com.mongodb.DBObject;
 import org.cbioportal.genome_nexus.persistence.GenericMongoRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -19,18 +18,10 @@ public abstract class BaseGenericMongoRepository implements GenericMongoReposito
     @Override
     public void saveDBObjects(String collection, List<DBObject> dbObjects)
     {
-        // nothing to save, abort
-        if (dbObjects == null || dbObjects.size() == 0) {
-            return;
-        }
-
-        BulkWriteOperation bulkWriteOperation =
-            this.mongoTemplate.getCollection(collection).initializeUnorderedBulkOperation();
-
+        // TODO use bulk save instead!
         for (DBObject dbObject: dbObjects) {
-            bulkWriteOperation.insert(dbObject);
+            // save the object into the correct repository
+            this.mongoTemplate.save(dbObject, collection);
         }
-
-        bulkWriteOperation.execute();
     }
 }
