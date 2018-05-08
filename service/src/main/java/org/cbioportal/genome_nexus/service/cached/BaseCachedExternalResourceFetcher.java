@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoRepository<T, String> & GenericMongoRepository>
     implements CachedExternalResourceFetcher<T>
@@ -133,6 +134,9 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         // remove already cached ids from the set, so that we don't query again
         needToFetch.removeAll(alreadyCached);
 
+        // also remove invalid ids
+        needToFetch = needToFetch.stream().filter(this::isValidId).collect(Collectors.toSet());
+
         // fetch missing instances
         if (needToFetch.size() > 0) {
             // get the annotation from the web service and save it to the DB
@@ -145,18 +149,14 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         return new ArrayList<>(values);
     }
 
-    private void fetchAndCache(Set<String> needToFetch,
-                               Map<String, T> idToInstance,
-                               boolean saveValues) throws ResourceMappingException
+    protected void fetchAndCache(Set<String> needToFetch,
+                                 Map<String, T> idToInstance,
+                                 boolean saveValues) throws ResourceMappingException
     {
-        List<String> list = new ArrayList<>(needToFetch);
-
         try {
             // send up to maxPageSize entities per request
-            for (int i = 0; i < list.size(); i += this.maxPageSize)
+            for (Set<String> subSet: this.generateChunks(needToFetch))
             {
-                Set<String> subSet = new LinkedHashSet<>(list.subList(i, Math.min(list.size(), i + this.maxPageSize)));
-
                 // get the raw annotation string from the web service
                 String stringValue = this.fetcher.fetchStringValue(this.buildRequestBody(subSet));
 
@@ -178,6 +178,19 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
             // due to the variant annotation key being too large to index
             LOG.info(e.getLocalizedMessage());
         }
+    }
+
+    protected List<Set<String>> generateChunks(Set<String> needToFetch)
+    {
+        List<Set<String>> chunks = new ArrayList<>();
+        List<String> list = new ArrayList<>(needToFetch);
+
+        // chunk size should be at most maxPageSize
+        for (int i = 0; i < list.size(); i += this.maxPageSize) {
+            chunks.add(new LinkedHashSet<>(list.subList(i, Math.min(list.size(), i + this.maxPageSize))));
+        }
+
+        return chunks;
     }
 
     protected void saveToDb(String value)
