@@ -15,6 +15,8 @@ import org.springframework.web.client.ResourceAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class MutationAssessorServiceImpl implements MutationAssessorService
@@ -91,15 +93,11 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
     public MutationAssessor getMutationAssessorByMutationAssessorVariant(String variant)
         throws MutationAssessorNotFoundException, MutationAssessorWebServiceException
     {
-        MutationAssessor mutationAssessor = null;
+        Optional<MutationAssessor> mutationAssessor = null;
 
         try {
             // get the annotation from the web service and save it to the DB
-            mutationAssessor = cachedExternalResourceFetcher.fetchAndCache(variant);
-
-            if (mutationAssessor == null) {
-                throw new MutationAssessorNotFoundException(variant);
-            }
+            mutationAssessor = Optional.of(cachedExternalResourceFetcher.fetchAndCache(variant));
         } catch (ResourceMappingException e) {
             throw new MutationAssessorWebServiceException(e.getMessage());
         } catch (HttpClientErrorException e) {
@@ -108,7 +106,11 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
             throw new MutationAssessorWebServiceException(e.getMessage());
         }
 
-        return mutationAssessor;
+        try {
+            return mutationAssessor.get();
+        } catch (NoSuchElementException e) {
+            throw new MutationAssessorNotFoundException(variant);
+        }
     }
 
     private MutationAssessor getMutationAssessorByVariantAnnotation(VariantAnnotation variantAnnotation)

@@ -241,7 +241,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         // String transcriptId = transcript.getTranscriptId();
         // Hotspot hotspot = hotspotRepository.findOne(transcriptId);
 
-        // hotspotService.setHotspotsURL("http://cancerhotspots.org/api/hotspots/single/");
+        // hotspotService.setHotspotsURL("https://www.cancerhotspots.org/api/hotspots/single/");
         // get the hotspot(s) from the web service
         List<Hotspot> hotspots = this.getHotspots(transcript, annotation);
 
