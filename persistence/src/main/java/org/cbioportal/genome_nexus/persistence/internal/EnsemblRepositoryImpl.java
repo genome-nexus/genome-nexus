@@ -30,19 +30,33 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
     public static final String TRANSCRIPTS_COLLECTION = "ensembl.biomart_transcripts";
 
     private EnsemblCanonical findOneCanonicalByHugoSymbol(String hugoSymbol) {
-        Query query = new Query();
+        EnsemblCanonical ensemblCanonical;
+        Query query;
 
-        // case insensitive exact match query
+        // check approved symbols
         Criteria approvedSymbolCriteria = Criteria.where("hgnc_symbol").regex("^" + hugoSymbol + "$", "i");
-        // synonyms
-        Criteria synonymCriteria = Criteria.where("synonyms").regex("(^| |,)" + hugoSymbol + "($| |,)", "i");
-        // prev symbols
-        Criteria prevSymbolsCriteria = Criteria.where("previous_symbols").regex("(^| |,)" + hugoSymbol + "($| |,)", "i");
-
-        query.addCriteria(new Criteria().orOperator(approvedSymbolCriteria, synonymCriteria, prevSymbolsCriteria));
-
-        EnsemblCanonical ensemblCanonical = mongoTemplate.findOne(query,
+        query = new Query();
+        query.addCriteria(approvedSymbolCriteria);
+        ensemblCanonical = mongoTemplate.findOne(query,
             EnsemblCanonical.class, CANONICAL_TRANSCRIPTS_COLLECTION);
+
+        if (ensemblCanonical == null) {
+            // check prev symbols
+            Criteria prevSymbolsCriteria = Criteria.where("previous_symbols").regex("(^| |,)" + hugoSymbol + "($| |,)", "i");
+            query = new Query();
+            query.addCriteria(prevSymbolsCriteria);
+            ensemblCanonical = mongoTemplate.findOne(query,
+                EnsemblCanonical.class, CANONICAL_TRANSCRIPTS_COLLECTION);
+
+            if (ensemblCanonical == null) {
+                // check synonyms
+                Criteria synonymCriteria = Criteria.where("synonyms").regex("(^| |,)" + hugoSymbol + "($| |,)", "i");
+                query = new Query();
+                query.addCriteria(synonymCriteria);
+                ensemblCanonical = mongoTemplate.findOne(query,
+                    EnsemblCanonical.class, CANONICAL_TRANSCRIPTS_COLLECTION);
+            }
+        }
 
         return ensemblCanonical;
     }
