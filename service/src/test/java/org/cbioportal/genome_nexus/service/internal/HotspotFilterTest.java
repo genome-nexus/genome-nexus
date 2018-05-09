@@ -39,18 +39,15 @@ public class HotspotFilterTest
 
         Hotspot singleResidueHotspot = new Hotspot();
         singleResidueHotspot.setResidue("V600");
-        singleResidueHotspot.setAminoAcidPosition(new IntegerRange(600, 600));
         singleResidueHotspot.setType("single residue");
 
         Hotspot indelHotspot = new Hotspot();
         indelHotspot.setResidue("594-602");
-        indelHotspot.setAminoAcidPosition(new IntegerRange(594, 602));
         indelHotspot.setType("in-frame indel");
 
         // same mutation as the single residue one, except the hotspot type
         Hotspot hotspot3d = new Hotspot();
         hotspot3d.setResidue("V600");
-        hotspot3d.setAminoAcidPosition(new IntegerRange(600, 600));
         hotspot3d.setType("3d");
 
         TranscriptConsequence singleResidueTranscript = new TranscriptConsequence();
