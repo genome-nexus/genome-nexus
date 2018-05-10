@@ -33,6 +33,11 @@ public class NotationConverter
 
         if (parts.length >= 5)
         {
+            // trim all parts
+            for (int i = 0; i < parts.length; i++) {
+                parts[i] = parts[i].trim();
+            }
+
             location = new GenomicLocation();
 
             location.setChromosome(parts[0]);
@@ -58,11 +63,12 @@ public class NotationConverter
             return null;
         }
 
-        String chr = genomicLocation.getChromosome();
+        // trim string values
+        String chr = genomicLocation.getChromosome().trim();
         Integer start = genomicLocation.getStart();
         Integer end = genomicLocation.getEnd();
-        String ref = genomicLocation.getReferenceAllele();
-        String var = genomicLocation.getVariantAllele();
+        String ref = genomicLocation.getReferenceAllele().trim();
+        String var = genomicLocation.getVariantAllele().trim();
 
         String prefix = "";
 
