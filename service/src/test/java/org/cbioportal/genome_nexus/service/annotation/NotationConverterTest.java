@@ -96,5 +96,9 @@ public class NotationConverterTest
 
         assertEquals("12:g.25398285C>A",
             this.notationConverter.genomicToHgvs("12,25398285,25398285,C,A"));
+
+        assertEquals("Whitespace should be omitted",
+            "17:g.7577122_7577121delGGinsA",
+            this.notationConverter.genomicToHgvs(" 17 , 7577122 , 7577121 , GG , A "));
     }
 }
