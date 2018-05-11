@@ -100,7 +100,8 @@ public class NotationConverter
         String hgvs;
 
         // cannot convert invalid locations
-        if (start < 0) {
+        // Ensembl uses a one-based coordinate system
+        if (start < 1) {
             hgvs = null;
         }
         /*

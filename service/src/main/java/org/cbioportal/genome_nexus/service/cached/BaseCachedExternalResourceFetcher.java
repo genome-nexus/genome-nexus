@@ -11,6 +11,7 @@ import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -155,32 +156,40 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
 
     protected void fetchAndCache(Set<String> needToFetch,
                                  Map<String, T> idToInstance,
-                                 boolean saveValues) throws ResourceMappingException
+                                 boolean saveValues) throws ResourceMappingException, HttpClientErrorException
     {
-        try {
-            // send up to maxPageSize entities per request
-            for (Set<String> subSet: this.generateChunks(needToFetch))
-            {
+        // send up to maxPageSize entities per request
+        for (Set<String> subSet: this.generateChunks(needToFetch))
+        {
+            String stringValue = null;
+
+            try {
                 // get the raw annotation string from the web service
-                String stringValue = this.fetcher.fetchStringValue(this.buildRequestBody(subSet));
+                stringValue = this.fetcher.fetchStringValue(this.buildRequestBody(subSet));
+            } catch (HttpClientErrorException e) {
+                LOG.error("HTTP ERROR " + e.getStatusCode() + " for " + subSet.toString() + ": " + e.getResponseBodyAsString());
+                throw e;
+            }
 
-                // fetch instances to return:
-                // this does not contain all the information obtained from the web service
-                // only the fields mapped to the VariantAnnotation model will be returned
-                List<T> fetched = this.transformer.transform(stringValue, this.type);
-                fetched.forEach(t -> idToInstance.put(this.extractId(t), t));
+            if (stringValue != null) {
+                try {
+                    // fetch instances to return:
+                    // this does not contain all the information obtained from the web service
+                    // only the fields mapped to the VariantAnnotation model will be returned
+                    List<T> fetched = this.transformer.transform(stringValue, this.type);
+                    fetched.forEach(t -> idToInstance.put(this.extractId(t), t));
 
-                // save everything to the cache as a properly parsed JSON
-                if (saveValues) {
-                    this.saveToDb(stringValue);
+                    // save everything to the cache as a properly parsed JSON
+                    if (saveValues) {
+                        this.saveToDb(stringValue);
+                    }
+                } catch (DataIntegrityViolationException e) {
+                    // in case of data integrity violation exception, do not bloat the logs
+                    // this is thrown when the annotationJSON can't be stored by mongo
+                    // due to the variant annotation key being too large to index
+                    LOG.info(e.getLocalizedMessage());
                 }
             }
-        }
-        catch (DataIntegrityViolationException e) {
-            // in case of data integrity violation exception, do not bloat the logs
-            // this is thrown when the annotationJSON can't be stored by mongo
-            // due to the variant annotation key being too large to index
-            LOG.info(e.getLocalizedMessage());
         }
     }
 
