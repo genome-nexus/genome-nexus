@@ -32,11 +32,12 @@
 
 package org.cbioportal.genome_nexus.util;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Selcuk Onur Sumer
@@ -44,27 +45,26 @@ import java.util.List;
 public class Transformer
 {
     /**
-     * Transforms the given jsonString into a list of DBObject instances.
+     * Transforms the given raw JSON into a list of DBObject instances.
      *
-     * @param jsonString    json string
+     * @param rawJson    raw json value
      * @return List of DBObject instances
      */
-    public static List<DBObject> convertToDbObject(String jsonString)
+    public static List<DBObject> convertToDbObjectList(DBObject rawJson)
     {
         List<DBObject> dbObjects = new ArrayList<>();
-        DBObject dbObject = (DBObject) JSON.parse(jsonString);
 
         // if it is a list, just add all into the list
-        if (dbObject instanceof List)
+        if (rawJson instanceof List)
         {
-            for (Object obj: ((List) dbObject))
+            for (Object obj: ((List) rawJson))
             {
-                dbObjects.add((DBObject) obj);
+                dbObjects.add(new BasicDBObject((Map) obj));
             }
         }
         else
         {
-            dbObjects.add(dbObject);
+            dbObjects.add(rawJson);
         }
 
         return dbObjects;

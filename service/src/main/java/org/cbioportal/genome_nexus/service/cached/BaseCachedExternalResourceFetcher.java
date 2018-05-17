@@ -60,7 +60,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
 
     public T fetchAndCache(String id) throws ResourceMappingException
     {
-        boolean saveStringValue = true;
+        boolean saveRawValue = true;
         Optional<T> instance = null;
 
         if (!isValidId(id)) {
@@ -73,7 +73,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         catch (DataAccessResourceFailureException e) {
             LOG.warn("Failed to read from Mongo database - falling back on the external web service. " +
                 "Will not attempt to store variant in Mongo database.");
-            saveStringValue = false;
+            saveRawValue = false;
         }
 
         if (!instance.isPresent())
@@ -81,20 +81,20 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
             // get the annotation from the web service and save it to the DB
             try {
                 // get the raw annotation string from the web service
-                String stringValue = this.fetcher.fetchStringValue(id);
+                DBObject rawValue = this.fetcher.fetchRawValue(id);
 
                 // construct an instance to return:
                 // this does not contain all the information obtained from the web service
                 // only the fields mapped to the VariantAnnotation model will be returned
-                List<T> list = this.transformer.transform(stringValue, this.type);
+                List<T> list = this.transformer.transform(rawValue, this.type);
 
                 if (list.size() > 0) {
                     instance = Optional.of(list.get(0));
                 }
 
                 // save everything to the cache as a properly parsed JSON
-                if (saveStringValue) {
-                    this.repository.saveStringValue(this.collection, id, stringValue);
+                if (saveRawValue) {
+                    this.repository.saveDBObject(this.collection, id, rawValue);
                 }
             }
             catch (DataIntegrityViolationException e) {
@@ -161,27 +161,27 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         // send up to maxPageSize entities per request
         for (Set<String> subSet: this.generateChunks(needToFetch))
         {
-            String stringValue = null;
+            DBObject rawValue;
 
             try {
                 // get the raw annotation string from the web service
-                stringValue = this.fetcher.fetchStringValue(this.buildRequestBody(subSet));
+                rawValue = this.fetcher.fetchRawValue(this.buildRequestBody(subSet));
             } catch (HttpClientErrorException e) {
                 LOG.error("HTTP ERROR " + e.getStatusCode() + " for " + subSet.toString() + ": " + e.getResponseBodyAsString());
                 throw e;
             }
 
-            if (stringValue != null) {
+            if (rawValue != null) {
                 try {
                     // fetch instances to return:
                     // this does not contain all the information obtained from the web service
                     // only the fields mapped to the VariantAnnotation model will be returned
-                    List<T> fetched = this.transformer.transform(stringValue, this.type);
+                    List<T> fetched = this.transformer.transform(rawValue, this.type);
                     fetched.forEach(t -> idToInstance.put(this.extractId(t), t));
 
                     // save everything to the cache as a properly parsed JSON
                     if (saveValues) {
-                        this.saveToDb(stringValue);
+                        this.saveToDb(rawValue);
                     }
                 } catch (DataIntegrityViolationException e) {
                     // in case of data integrity violation exception, do not bloat the logs
@@ -206,9 +206,9 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         return chunks;
     }
 
-    protected void saveToDb(String value)
+    protected void saveToDb(DBObject rawValue)
     {
-        List<DBObject> dbObjects = this.transformer.transform(value);
+        List<DBObject> dbObjects = this.transformer.transform(rawValue);
 
         for (DBObject dbObject: dbObjects) {
             dbObject.put("_id", this.extractId(dbObject));

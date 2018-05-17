@@ -113,7 +113,7 @@ public class CachedVariantAnnotationFetcher extends BaseCachedExternalResourceFe
         return requestBody;
     }
 
-    protected void saveToDb(String value)
+    protected void saveToDb(DBObject value)
     {
         List<DBObject> dbObjects = this.transformer.transform(value);
 

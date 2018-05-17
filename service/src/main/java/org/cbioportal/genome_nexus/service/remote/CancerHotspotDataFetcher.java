@@ -1,5 +1,7 @@
 package org.cbioportal.genome_nexus.service.remote;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.DBObject;
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
@@ -31,7 +33,7 @@ public class CancerHotspotDataFetcher extends BaseExternalResourceFetcher<Hotspo
     }
 
     @Override
-    public String fetchStringValue(Map<String, String> queryParams)
+    public DBObject fetchRawValue(Map<String, String> queryParams)
         throws HttpClientErrorException, ResourceAccessException
     {
         String variables = queryParams.get(MAIN_QUERY_PARAM);
@@ -44,21 +46,21 @@ public class CancerHotspotDataFetcher extends BaseExternalResourceFetcher<Hotspo
         }
 
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(uri, String.class);
+        return restTemplate.getForObject(uri, BasicDBList.class);
     }
 
     @Override
     public List<Hotspot> fetchInstances(Map<String, String> queryParams)
         throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
     {
-        return this.transformer.transform(this.fetchStringValue(queryParams), Hotspot.class);
+        return this.transformer.transform(this.fetchRawValue(queryParams), Hotspot.class);
     }
 
     @Override
     public List<Hotspot> fetchInstances(Object requestBody)
         throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
     {
-        return this.transformer.transform(this.fetchStringValue(requestBody), Hotspot.class);
+        return this.transformer.transform(this.fetchRawValue(requestBody), Hotspot.class);
     }
 
     public String getHotspotsUrl() {
