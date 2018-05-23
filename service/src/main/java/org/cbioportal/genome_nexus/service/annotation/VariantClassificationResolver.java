@@ -204,7 +204,7 @@ public class VariantClassificationResolver
         variantMap.put("5_prime_utr_variant",           "5'UTR");
         variantMap.put("5_prime_utr_premature_start_codon_gain_variant", "5'UTR");
         variantMap.put("3_prime_utr_variant",           "3'UTR");
-        variantMap.put("TF_binding_site_variant",       "IGR");
+        variantMap.put("tf_binding_site_variant",       "IGR");
         variantMap.put("regulatory_region_variant",     "IGR");
         variantMap.put("regulatory_region",             "IGR");
         variantMap.put("intergenic_variant",            "IGR");
