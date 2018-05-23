@@ -60,13 +60,13 @@ public class JsonMongoRepositoryImpl extends BaseGenericMongoRepository
      * Parses and saves the entire content of the annotation JSON object to the database.
      *
      * @param key  key (used as an id)
-     * @param json raw JSON value
+     * @param value raw JSON value
      */
     @Override
-    public void saveStringValue(String collection, String key, String json)
+    public void saveDBObject(String collection, String key, DBObject value)
     {
         // parse the given json string to get a proper object
-        List<DBObject> list = Transformer.convertToDbObject(json);
+        List<DBObject> list = Transformer.convertToDbObjectList(value);
 
         // assuming json contains only a single json object
         if (list.size() != 1) {

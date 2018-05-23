@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ResourceTransformer<T>
 {
-    List<T> transform(String value, Class<T> type) throws ResourceMappingException;
-    List<DBObject> transform(String value);
+    List<T> transform(DBObject value, Class<T> type) throws ResourceMappingException;
+    List<DBObject> transform(DBObject value);
 }

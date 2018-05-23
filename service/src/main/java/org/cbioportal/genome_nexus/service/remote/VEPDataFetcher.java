@@ -32,14 +32,14 @@ public class VEPDataFetcher extends BaseExternalResourceFetcher<VariantAnnotatio
     public List<VariantAnnotation> fetchInstances(Map<String, String> queryParams)
         throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
     {
-        return this.transformer.transform(this.fetchStringValue(queryParams), VariantAnnotation.class);
+        return this.transformer.transform(this.fetchRawValue(queryParams), VariantAnnotation.class);
     }
 
     @Override
     public List<VariantAnnotation> fetchInstances(Object requestBody)
         throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
     {
-        return this.transformer.transform(this.fetchStringValue(requestBody), VariantAnnotation.class);
+        return this.transformer.transform(this.fetchRawValue(requestBody), VariantAnnotation.class);
     }
 
     public ExternalResourceTransformer getTransformer() {

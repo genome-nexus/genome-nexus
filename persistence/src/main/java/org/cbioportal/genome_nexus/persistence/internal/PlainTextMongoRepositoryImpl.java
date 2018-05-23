@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.persistence.internal;
 
+import com.mongodb.DBObject;
 import org.cbioportal.genome_nexus.model.SimpleCacheEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -15,8 +16,10 @@ public class PlainTextMongoRepositoryImpl extends BaseGenericMongoRepository
     }
 
     @Override
-    public void saveStringValue(String collection, String key, String plainText)
+    public void saveDBObject(String collection, String key, DBObject value)
     {
+        String plainText = value.get(key).toString();
+
         if (plainText != null && plainText.length() > 0)
         {
             // TODO sanitize value before caching?

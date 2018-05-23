@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface GenericMongoRepository
 {
-    void saveStringValue(String collection, String key, String value);
+    void saveDBObject(String collection, String key, DBObject value);
     void saveDBObjects(String collection, List<DBObject> dbObjects);
 }

@@ -2,7 +2,6 @@ package org.cbioportal.genome_nexus.service.transformer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 import org.cbioportal.genome_nexus.service.ResourceTransformer;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.util.Transformer;
@@ -25,26 +24,28 @@ public class ExternalResourceTransformer<T> implements ResourceTransformer<T>
         this.externalResourceObjectMapper = externalResourceObjectMapper;
     }
 
-    public List<T> transform(String jsonString, Class<T> type) throws ResourceMappingException
+    @Override
+    public List<T> transform(DBObject json, Class<T> type) throws ResourceMappingException
     {
-        return this.mapJsonToInstance(jsonString, type, this.externalResourceObjectMapper);
+        return this.mapJsonToInstance(json, type, this.externalResourceObjectMapper);
     }
 
-    public List<DBObject> transform(String jsonString)
+    @Override
+    public List<DBObject> transform(DBObject rawJson)
     {
-        return Transformer.convertToDbObject(jsonString);
+        return Transformer.convertToDbObjectList(rawJson);
     }
 
     /**
-     * Maps the given raw JSON string onto the provided class instances.
+     * Maps the given raw JSON DBObject onto the provided class instances.
      *
-     * @param jsonString    raw JSON string
+     * @param rawJson       raw JSON value
      * @param type          object class
      * @param objectMapper  custom object mapper
      * @return a list of instances of the provided class
      * @throws ResourceMappingException
      */
-    private List<T> mapJsonToInstance(String jsonString, Class<T> type, ObjectMapper objectMapper)
+    private List<T> mapJsonToInstance(DBObject rawJson, Class<T> type, ObjectMapper objectMapper)
         throws ResourceMappingException
     {
         List<T> list = new ArrayList<>();
@@ -56,12 +57,10 @@ public class ExternalResourceTransformer<T> implements ResourceTransformer<T>
         }
 
         try {
-            for (DBObject dbObject: Transformer.convertToDbObject(jsonString))
+            for (DBObject dbObject: Transformer.convertToDbObjectList(rawJson))
             {
-                String toMap = JSON.serialize(dbObject);
-
-                // map json string onto the given class type
-                list.add(mapper.readValue(toMap, type));
+                // convert DBObject to a proper instance of the given class type
+                list.add(mapper.convertValue(dbObject, type));
             }
         } catch (Exception e) {
             throw new ResourceMappingException(e.getMessage());

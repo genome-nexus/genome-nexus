@@ -1,5 +1,7 @@
 package org.cbioportal.genome_nexus.service.remote;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.DBObject;
 import org.cbioportal.genome_nexus.service.ExternalResourceFetcher;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.springframework.web.client.HttpClientErrorException;
@@ -34,7 +36,7 @@ public abstract class BaseExternalResourceFetcher<T> implements ExternalResource
      * This method should be overridden if the query has more than one parameter.
      */
     @Override
-    public String fetchStringValue(Map<String, String> queryParams)
+    public DBObject fetchRawValue(Map<String, String> queryParams)
         throws HttpClientErrorException, ResourceAccessException
     {
         // get the value of the main (single) parameter
@@ -46,27 +48,24 @@ public abstract class BaseExternalResourceFetcher<T> implements ExternalResource
             uri = uri.replace(this.placeholder, paramValue);
         }
 
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(uri, String.class);
+        return this.getForObject(uri, queryParams);
     }
 
     @Override
-    public String fetchStringValue(String param)
+    public DBObject fetchRawValue(String param)
         throws HttpClientErrorException, ResourceAccessException
     {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put(this.mainQueryParam, param);
 
-        return this.fetchStringValue(queryParams);
+        return this.fetchRawValue(queryParams);
     }
 
     @Override
-    public String fetchStringValue(Object requestBody)
+    public DBObject fetchRawValue(Object requestBody)
         throws HttpClientErrorException, ResourceAccessException
     {
-        RestTemplate restTemplate = new RestTemplate();
-
-        return restTemplate.postForObject(this.URI, requestBody, String.class);
+        return this.postForObject(this.URI, requestBody);
     }
 
     @Override
@@ -77,5 +76,25 @@ public abstract class BaseExternalResourceFetcher<T> implements ExternalResource
         queryParams.put(this.mainQueryParam, param);
 
         return this.fetchInstances(queryParams);
+    }
+
+    /**
+     * By default assuming that response is a List. For all other response types this method should be overridden.
+     */
+    protected DBObject getForObject(String uri, Map<String, String> queryParams)
+    {
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.getForObject(uri, BasicDBList.class);
+    }
+
+    /**
+     * By default assuming that response is a List. For all other response types this method should be overridden.
+     */
+    protected DBObject postForObject(String uri, Object requestBody)
+    {
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.postForObject(uri, requestBody, BasicDBList.class);
     }
 }
