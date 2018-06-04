@@ -28,7 +28,7 @@ public class AnnotationSummaryController
     }
 
     @ApiOperation(value = "Retrieves VEP annotation summary for the provided list of variants",
-        nickname = "fetchVariantAnnotationPOST")
+        nickname = "fetchVariantAnnotationSummaryPOST")
     @RequestMapping(value = "/annotation/summary",
         method = RequestMethod.POST,
         produces = "application/json")
