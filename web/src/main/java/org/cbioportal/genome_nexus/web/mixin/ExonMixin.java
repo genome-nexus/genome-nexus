@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ExonRangeMixin {
+public class ExonMixin {
     @ApiModelProperty(value = "Exon id", position=1, required = true)
     private String exonId;
 
