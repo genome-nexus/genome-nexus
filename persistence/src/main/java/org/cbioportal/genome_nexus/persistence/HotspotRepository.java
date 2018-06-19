@@ -35,7 +35,12 @@ package org.cbioportal.genome_nexus.persistence;
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
+
 /**
  * @author Selcuk Onur Sumer
  */
-public interface HotspotRepository extends MongoRepository<Hotspot, String> {}
+public interface HotspotRepository extends MongoRepository<Hotspot, String>
+{
+    List<Hotspot> findByHugoSymbol(String hugoSymbol);
+}

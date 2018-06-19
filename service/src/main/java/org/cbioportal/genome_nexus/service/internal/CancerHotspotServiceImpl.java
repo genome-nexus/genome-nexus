@@ -33,19 +33,15 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import org.cbioportal.genome_nexus.model.*;
+import org.cbioportal.genome_nexus.persistence.HotspotRepository;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
-import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
-import org.cbioportal.genome_nexus.service.remote.CancerHotspot3dDataFetcher;
-import org.cbioportal.genome_nexus.service.remote.CancerHotspotDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
 
 import java.util.*;
 
@@ -55,52 +51,36 @@ import java.util.*;
 @Service
 public class CancerHotspotServiceImpl implements CancerHotspotService
 {
-    private HotspotCache cache;
-
-    private final CancerHotspotDataFetcher cancerHotspotDataFetcher;
-    private final CancerHotspot3dDataFetcher cancerHotspot3dDataFetcher;
+    private final HotspotRepository hotspotRepository;
     private final VariantAnnotationService variantAnnotationService;
     private final HotspotFilter hotspotFilter;
     private final NotationConverter notationConverter;
 
     @Autowired
-    public CancerHotspotServiceImpl(CancerHotspotDataFetcher cancerHotspotDataFetcher,
-                                    CancerHotspot3dDataFetcher cancerHotspot3dDataFetcher,
+    public CancerHotspotServiceImpl(HotspotRepository hotspotRepository,
                                     VariantAnnotationService variantAnnotationService,
                                     HotspotFilter hotspotFilter,
                                     NotationConverter notationConverter)
     {
-        this.cancerHotspotDataFetcher = cancerHotspotDataFetcher;
-        this.cancerHotspot3dDataFetcher = cancerHotspot3dDataFetcher;
+        this.hotspotRepository = hotspotRepository;
         this.variantAnnotationService = variantAnnotationService;
         this.hotspotFilter = hotspotFilter;
         this.notationConverter = notationConverter;
     }
 
     @Override
-    public List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException
+    public List<Hotspot> getHotspots(String hugoSymbol) throws CancerHotspotsWebServiceException
     {
-        // get it by using the specific API
-//        try
-//        {
-//            return Transformer.mapJsonToInstance(getHotspotsJSON(transcriptId), Hotspot.class);
-//        }
-//        catch (IOException e)
-//        {
-//            return Collections.emptyList();
-//        }
-
-        //use cache instead
-        return getHotspotsFromCache(transcriptId);
+        return this.hotspotRepository.findByHugoSymbol(hugoSymbol);
     }
 
     @Override
     public List<Hotspot> getHotspots(TranscriptConsequence transcript,
                                      VariantAnnotation annotation) throws CancerHotspotsWebServiceException
     {
-        List<Hotspot> hotspots = new ArrayList<>();
+        Set<Hotspot> hotspots = new LinkedHashSet<>();
 
-        for (Hotspot hotspot : this.getHotspots(transcript.getTranscriptId()))
+        for (Hotspot hotspot : this.getHotspots(transcript.getGeneSymbol()))
         {
             // include only the hotspots matching certain criteria
             if (this.filterHotspot(hotspot, transcript, annotation)) {
@@ -108,44 +88,13 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
             }
         }
 
-        return hotspots;
+        return new ArrayList<>(hotspots);
     }
 
     @Override
-    public List<Hotspot> getHotspots() throws CancerHotspotsWebServiceException
+    public List<Hotspot> getHotspots()
     {
-        List<Hotspot> hotspots;
-
-        try
-        {
-            // fetch recurrent hotspots first
-            hotspots = this.cancerHotspotDataFetcher.fetchInstances("");
-
-            // then fetch 3D hotspots
-
-            List<Hotspot> hotspots3d = this.cancerHotspot3dDataFetcher.fetchInstances("");
-
-            // TODO ideally, this should have been done in CancerHotspots web service...
-            for (Hotspot hotspot: hotspots3d) {
-                hotspot.setType("3d");
-            }
-
-            hotspots.addAll(hotspots3d);
-        }
-        catch (ResourceMappingException e)
-        {
-            throw new CancerHotspotsWebServiceException(e.getMessage());
-        }
-        catch (HttpClientErrorException e)
-        {
-            throw new CancerHotspotsWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
-        }
-        catch (ResourceAccessException e)
-        {
-            throw new CancerHotspotsWebServiceException(e.getMessage());
-        }
-
-        return hotspots;
+        return this.hotspotRepository.findAll();
     }
 
     @Override
@@ -221,56 +170,17 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     private List<Hotspot> getHotspotAnnotations(VariantAnnotation variantAnnotation)
         throws CancerHotspotsWebServiceException
     {
-        List<Hotspot> hotspots = new ArrayList<>();
+        // we don't want to return duplicate items, so using a set here
+        Set<Hotspot> hotspots = new LinkedHashSet<>();
 
         if (variantAnnotation.getTranscriptConsequences() != null)
         {
             for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
             {
-                hotspots.addAll(getHotspotAnnotations(transcript, variantAnnotation));
+                hotspots.addAll(this.getHotspots(transcript, variantAnnotation));
             }
         }
 
-        return hotspots;
-    }
-
-    private List<Hotspot> getHotspotAnnotations(TranscriptConsequence transcript,
-                                                VariantAnnotation annotation)
-        throws CancerHotspotsWebServiceException
-    {
-        // String transcriptId = transcript.getTranscriptId();
-        // Hotspot hotspot = hotspotRepository.findOne(transcriptId);
-
-        // hotspotService.setHotspotsURL("https://www.cancerhotspots.org/api/hotspots/single/");
-        // get the hotspot(s) from the web service
-        List<Hotspot> hotspots = this.getHotspots(transcript, annotation);
-
-        // do not cache anything for now
-        // hotspotRepository.save(hotspots);
-
-        return hotspots;
-    }
-
-    private List<Hotspot> getHotspotsFromCache(String transcriptId) throws CancerHotspotsWebServiceException
-    {
-        // if null: not initialized yet
-        if (cache == null)
-        {
-            List<Hotspot> hotspots = this.getHotspots();
-
-            if (hotspots.size() > 0)
-            {
-                this.cache = new HotspotCache(hotspots);
-            }
-        }
-
-        List<Hotspot> hotspots = null;
-
-        // still null: error at initialization
-        if (cache != null) {
-            hotspots = cache.findByTranscriptId(transcriptId);
-        }
-
-        return hotspots;
+        return new ArrayList<>(hotspots);
     }
 }

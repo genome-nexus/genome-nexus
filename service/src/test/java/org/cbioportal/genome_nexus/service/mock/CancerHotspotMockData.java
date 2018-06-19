@@ -24,21 +24,21 @@ public class CancerHotspotMockData implements MockData<List<Hotspot>>
         hotspots = new ArrayList<>(2);
 
         hotspot = new Hotspot();
-        hotspot.setTranscriptId("ENST00000288602");
+        //hotspot.setTranscriptId("ENST00000288602");
         //hotspot.setGeneId("ENSG00000157764");
         hotspot.setHugoSymbol("BRAF");
         hotspot.setResidue("V600");
-        hotspot.setAminoAcidPosition(new IntegerRange(600, 600));
+        //hotspot.setAminoAcidPosition(new IntegerRange(600, 600));
         hotspot.setType("single residue");
 
         hotspots.add(hotspot);
 
         hotspot = new Hotspot();
-        hotspot.setTranscriptId("ENST00000288602");
+        //hotspot.setTranscriptId("ENST00000288602");
         //hotspot.setGeneId("ENSG00000157764");
         hotspot.setHugoSymbol("BRAF");
         hotspot.setResidue("592-604");
-        hotspot.setAminoAcidPosition(new IntegerRange(592, 604));
+        //hotspot.setAminoAcidPosition(new IntegerRange(592, 604));
         hotspot.setType("in-frame indel");
 
         hotspots.add(hotspot);
@@ -49,11 +49,11 @@ public class CancerHotspotMockData implements MockData<List<Hotspot>>
         hotspots = new ArrayList<>(1);
 
         hotspot = new Hotspot();
-        hotspot.setTranscriptId("ENST00000256078");
+        //hotspot.setTranscriptId("ENST00000256078");
         //hotspot.setGeneId("ENSG00000133703");
         hotspot.setHugoSymbol("KRAS");
         hotspot.setResidue("G12");
-        hotspot.setAminoAcidPosition(new IntegerRange(12, 12));
+        //hotspot.setAminoAcidPosition(new IntegerRange(12, 12));
         hotspot.setType("single residue");
 
         hotspots.add(hotspot);

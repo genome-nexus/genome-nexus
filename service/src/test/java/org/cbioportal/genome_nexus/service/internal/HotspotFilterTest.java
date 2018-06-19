@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,18 +39,17 @@ public class HotspotFilterTest
 
         Hotspot singleResidueHotspot = new Hotspot();
         singleResidueHotspot.setResidue("V600");
-        singleResidueHotspot.setAminoAcidPosition(new IntegerRange(600, 600));
         singleResidueHotspot.setType("single residue");
+        singleResidueHotspot.setMissenseCount(30);
+        singleResidueHotspot.setTumorCount(30);
 
         Hotspot indelHotspot = new Hotspot();
         indelHotspot.setResidue("594-602");
-        indelHotspot.setAminoAcidPosition(new IntegerRange(594, 602));
         indelHotspot.setType("in-frame indel");
 
         // same mutation as the single residue one, except the hotspot type
         Hotspot hotspot3d = new Hotspot();
         hotspot3d.setResidue("V600");
-        hotspot3d.setAminoAcidPosition(new IntegerRange(600, 600));
         hotspot3d.setType("3d");
 
         TranscriptConsequence singleResidueTranscript = new TranscriptConsequence();
@@ -61,26 +60,51 @@ public class HotspotFilterTest
         indelTranscript.setProteinStart(599);
         indelTranscript.setProteinEnd(613);
 
+        // splice site mutation
+        Hotspot spliceSiteHotspot = new Hotspot();
+        spliceSiteHotspot.setResidue("X1010");
+        spliceSiteHotspot.setType("splice site");
+        spliceSiteHotspot.setSpliceCount(16);
+
+        TranscriptConsequence spliceSiteTranscript = new TranscriptConsequence();
+        spliceSiteTranscript.setProteinStart(1010);
+        spliceSiteTranscript.setProteinEnd(1010);
+
         this.mockVariantClassificationResolverMethod(annotation, singleResidueTranscript, "Missense_Mutation");
         this.mockVariantClassificationResolverMethod(annotation, indelTranscript, "In_Frame_Insertion");
+        this.mockVariantClassificationResolverMethod(annotation, spliceSiteTranscript, "Splice_Site");
 
         this.mockProteinChangeResolverMethod(annotation, singleResidueTranscript);
         this.mockProteinChangeResolverMethod(annotation, indelTranscript);
+        this.mockProteinChangeResolverMethod(annotation, spliceSiteTranscript);
 
         assertTrue("Single residue missense hotspot should be selected for single residue transcript",
             this.hotspotFilter.filter(singleResidueHotspot, singleResidueTranscript, annotation));
         assertFalse("Single residue missense hotspot should be filtered out for indel transcript",
             this.hotspotFilter.filter(singleResidueHotspot, indelTranscript, annotation));
+        assertFalse("Single residue missense hotspot should be filtered out for splice site transcript",
+            this.hotspotFilter.filter(singleResidueHotspot, spliceSiteTranscript, annotation));
 
         assertTrue("Indel hotspot should be selected for indel transcript",
             this.hotspotFilter.filter(indelHotspot, indelTranscript, annotation));
         assertFalse("Indel hotspot should be filtered out for single residue transcript",
             this.hotspotFilter.filter(indelHotspot, singleResidueTranscript, annotation));
+        assertFalse("Indel hotspot should be filtered out for splice site transcript",
+            this.hotspotFilter.filter(indelHotspot, spliceSiteTranscript, annotation));
+
+        assertTrue("Splice site hotspot should be selected for splice site transcript",
+            this.hotspotFilter.filter(spliceSiteHotspot, spliceSiteTranscript, annotation));
+        assertFalse("Splice site hotspot should be filtered out for indel transcript",
+            this.hotspotFilter.filter(spliceSiteHotspot, indelTranscript, annotation));
+        assertFalse("Splice site hotspot should be filtered out for the single residue transcript",
+            this.hotspotFilter.filter(spliceSiteHotspot, singleResidueTranscript, annotation));
 
         assertTrue("3D hotspot should be selected for single residue transcript",
             this.hotspotFilter.filter(hotspot3d, singleResidueTranscript, annotation));
         assertFalse("3D hotspot should be filtered out for indel transcript",
             this.hotspotFilter.filter(hotspot3d, indelTranscript, annotation));
+        assertFalse("3D hotspot should be filtered out for splice site transcript",
+            this.hotspotFilter.filter(hotspot3d, spliceSiteTranscript, annotation));
     }
 
     private void mockVariantClassificationResolverMethod(VariantAnnotation variantAnnotation,

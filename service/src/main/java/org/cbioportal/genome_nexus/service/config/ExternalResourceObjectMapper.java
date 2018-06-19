@@ -16,7 +16,6 @@ public class ExternalResourceObjectMapper extends ObjectMapper
         Map<Class<?>, Class<?>> mixinMap = new HashMap<>();
 
         mixinMap.put(GeneXref.class, GeneXrefMixin.class);
-        mixinMap.put(Hotspot.class, HotspotMixin.class);
         mixinMap.put(MutationAssessor.class, MutationAssessorMixin.class);
         mixinMap.put(TranscriptConsequence.class, TranscriptConsequenceMixin.class);
         mixinMap.put(VariantAnnotation.class, VariantAnnotationMixin.class);
