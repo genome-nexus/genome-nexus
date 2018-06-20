@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:8-jre
 # copy application WAR (with libraries inside)
 COPY web/target/*.war /app.war
 # specify default command
