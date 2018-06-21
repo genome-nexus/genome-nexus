@@ -34,38 +34,28 @@ package org.cbioportal.genome_nexus.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "hotspot.mutation")
+@Document(collection = "hotspots")
 public class Hotspot
 {
-    // TODO this is an auto generated id, we may need a composite id instead
+    // TODO transcriptId is not a unique identifier, we may need a composite id...
     @Id
-    private String id;
+    private String transcriptId;
 
-    @Field(value="hugo_symbol")
     private String hugoSymbol;
-
-    @Field(value="residue")
     private String residue;
-
-    @Field(value="tumor_count")
+    private Integer tumorTypeCount;
     private Integer tumorCount;
-
-    @Field(value="type")
+    private IntegerRange aminoAcidPosition;
     private String type;
 
-    @Field(value="missense_count")
-    private Integer missenseCount;
+    public String getTranscriptId() {
+        return transcriptId;
+    }
 
-    @Field(value="trunc_count")
-    private Integer truncatingCount;
-
-    @Field(value="inframe_count")
-    private Integer inframeCount;
-
-    @Field(value="splice_count")
-    private Integer spliceCount;
+    public void setTranscriptId(String transcriptId) {
+        this.transcriptId = transcriptId;
+    }
 
     public String getHugoSymbol() {
         return hugoSymbol;
@@ -83,6 +73,14 @@ public class Hotspot
         this.residue = residue;
     }
 
+    public Integer getTumorTypeCount() {
+        return tumorTypeCount;
+    }
+
+    public void setTumorTypeCount(Integer tumorTypeCount) {
+        this.tumorTypeCount = tumorTypeCount;
+    }
+
     public Integer getTumorCount() {
         return tumorCount;
     }
@@ -91,67 +89,19 @@ public class Hotspot
         this.tumorCount = tumorCount;
     }
 
+    public IntegerRange getAminoAcidPosition() {
+        return aminoAcidPosition;
+    }
+
+    public void setAminoAcidPosition(IntegerRange aminoAcidPosition) {
+        this.aminoAcidPosition = aminoAcidPosition;
+    }
+
     public String getType() {
         return type;
     }
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Integer getMissenseCount() {
-        return missenseCount;
-    }
-
-    public void setMissenseCount(Integer missenseCount) {
-        this.missenseCount = missenseCount;
-    }
-
-    public Integer getTruncatingCount() {
-        return truncatingCount;
-    }
-
-    public void setTruncatingCount(Integer truncatingCount) {
-        this.truncatingCount = truncatingCount;
-    }
-
-    public Integer getInframeCount() {
-        return inframeCount;
-    }
-
-    public void setInframeCount(Integer inframeCount) {
-        this.inframeCount = inframeCount;
-    }
-
-    public Integer getSpliceCount() {
-        return spliceCount;
-    }
-
-    public void setSpliceCount(Integer spliceCount) {
-        this.spliceCount = spliceCount;
-    }
-
-    @Override
-    public int hashCode() {
-        return (hugoSymbol + residue + type + tumorCount).hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (obj instanceof Hotspot) {
-            return this.hashCode() == obj.hashCode();
-        }
-        else {
-            return super.equals(obj);
-        }
     }
 }
