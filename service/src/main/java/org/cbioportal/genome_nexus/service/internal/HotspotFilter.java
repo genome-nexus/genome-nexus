@@ -30,8 +30,7 @@ public class HotspotFilter
     {
         IntegerRange proteinPos = this.proteinPositionResolver.resolve(annotation, transcript);
 
-        return (
-            proteinPos != null &&
+        return proteinPos != null && (
             // filter by protein position:
             // only include the hotspot if the protein change position overlaps with the current transcript
             Numerical.overlaps(hotspot.getResidue(), proteinPos.getStart(), proteinPos.getEnd()) &&
@@ -64,9 +63,6 @@ public class HotspotFilter
         // for single residue hotspots, filter out anything but missense mutations
         if (hotspotType.contains("single residue")) {
             typeMatches = variantClassification.toLowerCase().contains("missense");
-        }
-        else if (hotspotType.contains("splice site")) {
-            typeMatches = variantClassification.toLowerCase().contains("splice");
         }
         // for in-frame indel hotspots, filter out anything but in-frame mutations
         else if (hotspotType.contains("in-frame"))  {

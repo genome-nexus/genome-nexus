@@ -200,7 +200,7 @@ public class VariantAnnotationServiceTest
         throws CancerHotspotsWebServiceException
     {
         // call the real getHotspots(TranscriptConsequence transcript) method when called with a transcript
-        // it is the one calling the getHotspots(String hugoSymbol)
+        // it is the one calling the getHotspots(String transcriptId)
         Mockito.when(this.cancerHotspotService.getHotspots(
             Mockito.any(TranscriptConsequence.class), Mockito.any(VariantAnnotation.class))).thenCallRealMethod();
 
@@ -209,9 +209,9 @@ public class VariantAnnotationServiceTest
             Mockito.any(VariantAnnotation.class))).thenReturn(true);
 
         Mockito.when(this.cancerHotspotService.getHotspots(
-            "BRAF")).thenReturn(hotspotMockData.get("ENST00000288602"));
+            "ENST00000288602")).thenReturn(hotspotMockData.get("ENST00000288602"));
         Mockito.when(this.cancerHotspotService.getHotspots(
-            "KRAS")).thenReturn(hotspotMockData.get("ENST00000256078"));
+            "ENST00000256078")).thenReturn(hotspotMockData.get("ENST00000256078"));
     }
 
     private void mockIsoformOverrideServiceMethods(Map<String, IsoformOverride> isoformOverrideMockData)

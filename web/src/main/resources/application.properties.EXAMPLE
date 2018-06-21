@@ -7,6 +7,10 @@ vep.max_page_size=200
 # the gene external references URL
 genexrefs.url=http://grch37.rest.ensembl.org/xrefs/id/ACCESSION?content-type=application/json
 
+# Cancer Hotspots web API URLs
+hotspots.url=https://www.cancerhotspots.org/api/hotspots/single/
+hotspots.3d.url=https://www.3dhotspots.org/api/hotspots/3d/
+
 # Mutation Assessor web API URL
 #"VARIANT" will be replaced with actual variant upon each request.
 mutationAssessor.url=http://mutationassessor.org/r3/?cm=var&var=VARIANT&frm=json&fts=input,rgaa,rgvt,msa,pdb,F_impact,F_score,vc_score,vs_score,info,var,gene,uprot,rsprot,gaps,msa_height,chr,rs_pos,rs_res,up_pos,up_res,cnt_cosmic,cnt_snps
