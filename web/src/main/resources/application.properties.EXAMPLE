@@ -1,8 +1,8 @@
 # VEP web API URL with additional parameters. Note that "VARIANT" field will be replaced with
 # the actual variant value before each VEP request.
 vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1
-# 300 is the max page size allowed by the public VEP service, it might be possible to increase this for a private instance
-vep.max_page_size=300
+# 200 is the max page size allowed by the public VEP service, it might be possible to increase this for a private instance
+vep.max_page_size=200
 
 # the gene external references URL
 genexrefs.url=http://grch37.rest.ensembl.org/xrefs/id/ACCESSION?content-type=application/json
