@@ -33,6 +33,7 @@
 package org.cbioportal.genome_nexus.persistence;
 
 import org.cbioportal.genome_nexus.model.Hotspot;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
@@ -42,5 +43,6 @@ import java.util.List;
  */
 public interface HotspotRepository extends MongoRepository<Hotspot, String>
 {
+    @Cacheable("hotspotsByHugoSymbol")
     List<Hotspot> findByHugoSymbol(String hugoSymbol);
 }
