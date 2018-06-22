@@ -12,7 +12,7 @@ services:
     depends_on:
       - db
   db:
-    build: https://github.com/genome-nexus/genome-nexus-importer.git#91adbf34dd40c6a2ccf4a97f09ffd814d8cd15b6
+    build: https://github.com/genome-nexus/genome-nexus-importer.git#v0.3
     restart: always
     ports:
       - "27017:27017"

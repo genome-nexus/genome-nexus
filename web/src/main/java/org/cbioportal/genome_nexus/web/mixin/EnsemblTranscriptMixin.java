@@ -25,7 +25,9 @@ public class EnsemblTranscriptMixin {
     @ApiModelProperty(value = "Pfam domains", position=5, dataType="List")
     private List<PfamDomainRangeMixin> pfamDomains;
 
-    @ApiModelProperty(value = "Exon information", position=6, dataType="List")
-    private List<ExonRangeMixin> exons;
+    @ApiModelProperty(value = "Exon information", position=7, dataType="List")
+    private List<ExonMixin> exons;
 
+    @ApiModelProperty(value = "UTR information", position=8, dataType="List")
+    private List<UntranslatedRegionMixin> utrs;
 }

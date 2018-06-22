@@ -2,15 +2,15 @@ package org.cbioportal.genome_nexus.model;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public class ExonRange
+public class Exon
 {
-    @Field(value="exonId")
+    @Field(value="id")
     private String exonId;
 
-    @Field(value="exonStart")
+    @Field(value="start")
     private Integer exonStart;
 
-    @Field(value="exonEnd")
+    @Field(value="end")
     private Integer exonEnd;
 
     @Field(value="rank")
@@ -43,10 +43,10 @@ public class ExonRange
     }
 
     public void setExonEnd(Integer exonEnd) {
-        this.exonStart = exonEnd;
+        this.exonEnd = exonEnd;
     }
-    
-        public Integer getRank() {
+
+    public Integer getRank() {
         return this.rank;
     }
 

@@ -30,9 +30,12 @@ public class EnsemblTranscript
 
     @Field(value="domains")
     private List<PfamDomainRange> pfamDomains;
-    
+
     @Field(value="exons")
-    private List<ExonRange> exons;
+    private List<Exon> exons;
+
+    @Field(value="utrs")
+    private List<UntranslatedRegion> utrs;
 
     public String getTranscriptId() {
         return transcriptId;
@@ -81,13 +84,21 @@ public class EnsemblTranscript
     public void setPfamDomains(List<PfamDomainRange> pfamDomains) {
         this.pfamDomains = pfamDomains;
     }
-    
-    public List<ExonRange> getExons() {
+
+    public List<Exon> getExons() {
         return this.exons;
     }
 
-    public void setExons(List<ExonRange> exons) {
+    public void setExons(List<Exon> exons) {
         this.exons = exons;
+    }
+
+    public List<UntranslatedRegion> getUtrs() {
+        return this.utrs;
+    }
+
+    public void setUtrs(List<UntranslatedRegion> utrs) {
+        this.utrs = utrs;
     }
 }
 
