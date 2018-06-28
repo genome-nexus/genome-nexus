@@ -30,16 +30,6 @@ public class PfamController
         this.pfamDomainService = pfamDomainService;
     }
 
-    @ApiOperation(value = "Retrieves all PFAM domains",
-        nickname = "fetchPfamDomainsGET")
-    @RequestMapping(value = "/pfam/domain",
-        method = RequestMethod.GET,
-        produces = "application/json")
-    public List<PfamDomain> fetchPfamDomainsGET()
-    {
-        return pfamDomainService.getAllPfamDomains();
-    }
-
     @ApiOperation(value = "Retrieves PFAM domains by PFAM domain accession IDs",
         nickname = "fetchPfamDomainsByPfamAccessionPOST")
     @RequestMapping(value = "/pfam/domain",

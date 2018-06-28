@@ -92,7 +92,7 @@ public class EnsemblServiceImpl implements EnsemblService
     {
         if (geneId == null && proteinId == null && hugoSymbol == null)
         {
-            return this.ensemblRepository.findAll();
+            return new ArrayList<EnsemblTranscript>();
         }
         else if (geneId != null && proteinId == null && hugoSymbol == null)
         {
@@ -135,7 +135,7 @@ public class EnsemblServiceImpl implements EnsemblService
             return this.ensemblRepository.findByHugoSymbolsIn(hugoSymbols);
         }
         else {
-            return this.ensemblRepository.findAll();
+            return new ArrayList<EnsemblTranscript>();
         }
     }
 }

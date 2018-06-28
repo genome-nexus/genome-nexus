@@ -24,11 +24,6 @@ public class PfamDomainServiceImpl implements PfamDomainService
     }
 
     @Override
-    public List<PfamDomain> getAllPfamDomains() {
-        return this.pfamDomainRepository.findAll();
-    }
-
-    @Override
     public PfamDomain getPfamDomainByPfamAccession(String pfamDomainAccession) throws PfamDomainNotFoundException
     {
         PfamDomain domain = this.pfamDomainRepository.findOneByPfamAccession(pfamDomainAccession);
