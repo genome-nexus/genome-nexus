@@ -11,6 +11,5 @@ import java.util.List;
 public interface PfamDomainService
 {
     PfamDomain getPfamDomainByPfamAccession(String pfamDomainAccession) throws PfamDomainNotFoundException;
-    List<PfamDomain> getAllPfamDomains();
     List<PfamDomain> getPfamDomainsByPfamAccession(List<String> pfamDomainAccessions);
 }
