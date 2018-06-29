@@ -29,7 +29,7 @@ for interpreting variants and patients.
 Run with docker (assumes mvn installed locally):
 ```
 mvn  -DskipTests clean install
-docker compose up --build
+docker-compose up --build
 ```
 The mongo image `genomenexus/gn-mongo` comes with all the required tables
 initialized.
