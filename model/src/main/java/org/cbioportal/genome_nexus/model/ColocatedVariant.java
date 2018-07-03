@@ -118,4 +118,11 @@ public class ColocatedVariant
         this.gnomad_eas_allele = gnomad_eas_allele;
     }
 
+    private String dbSnpId;
+
+    @Field(value="id")
+    public String getdbSnpId()
+    {
+    return dbSnpId;
+    }
 }
