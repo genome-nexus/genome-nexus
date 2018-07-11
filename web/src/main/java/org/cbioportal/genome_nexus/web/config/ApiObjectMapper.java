@@ -3,6 +3,8 @@ package org.cbioportal.genome_nexus.web.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cbioportal.genome_nexus.web.mixin.*;
 import org.cbioportal.genome_nexus.model.*;
+import org.cbioportal.genome_nexus.service.mixin.AnnMixin;
+import org.cbioportal.genome_nexus.service.mixin.VcfMixin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,10 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(UntranslatedRegion.class, UntranslatedRegionMixin.class);
         mixinMap.put(GenomicLocation.class, GenomicLocationMixin.class);
         mixinMap.put(AggregatedHotspots.class, AggregatedHotspotsMixin.class);
+        mixinMap.put(MyVariantInfo.class, MyVariantInfoMixin.class);
+        mixinMap.put(Snpeff.class, SnpeffMixin.class);
+        mixinMap.put(Ann.class, AnnMixin.class);
+        mixinMap.put(Vcf.class, VcfMixin.class);
 
         super.setMixIns(mixinMap);
     }

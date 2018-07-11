@@ -19,6 +19,11 @@ public class ExternalResourceObjectMapper extends ObjectMapper
         mixinMap.put(MutationAssessor.class, MutationAssessorMixin.class);
         mixinMap.put(TranscriptConsequence.class, TranscriptConsequenceMixin.class);
         mixinMap.put(VariantAnnotation.class, VariantAnnotationMixin.class);
+        mixinMap.put(MyVariantInfo.class, MyVariantInfoMixin.class);
+        mixinMap.put(Snpeff.class, SnpeffMixin.class);
+        mixinMap.put(Ann.class, AnnMixin.class);
+        mixinMap.put(Vcf.class, VcfMixin.class);
+        
 
         super.setMixIns(mixinMap);
     }
