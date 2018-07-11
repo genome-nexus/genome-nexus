@@ -3,6 +3,7 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.IsoformOverrideService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
+import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.exception.*;
 import org.cbioportal.genome_nexus.service.mock.CancerHotspotMockData;
@@ -14,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -42,6 +44,9 @@ public class VariantAnnotationServiceTest
     @Mock
     private CancerHotspotServiceImpl cancerHotspotService;
 
+    @Spy
+    private NotationConverter notationConverter;
+
     private VariantAnnotationMockData variantAnnotationMockData = new VariantAnnotationMockData();
     private MutationAssessorMockData mutationAssessorMockData = new MutationAssessorMockData();
     private CancerHotspotMockData cancerHotspotMockData = new CancerHotspotMockData();
@@ -62,6 +67,19 @@ public class VariantAnnotationServiceTest
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation("12:g.25398285C>A");
         assertEquals(variantMockData.get("12:g.25398285C>A").getStart(), annotation2.getStart());
         assertEquals(variantMockData.get("12:g.25398285C>A").getVariant(), annotation2.getVariant());
+
+        VariantAnnotation annotation3 = variantAnnotationService.getAnnotation("X:g.41242962_41242963insGA");
+        assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getStart(), annotation3.getStart());
+        assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getVariant(), annotation3.getVariant());
+
+        // should convert chr prefix to 
+        VariantAnnotation annotation4 = variantAnnotationService.getAnnotation("chr23:g.41242962_41242963insGA");
+        assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getStart(), annotation4.getStart());
+        assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getVariant(), annotation4.getVariant());
+
+        VariantAnnotation annotation5 = variantAnnotationService.getAnnotation("chr24:g.41242962_41242963insGA");
+        assertEquals(variantMockData.get("Y:g.41242962_41242963insGA").getStart(), annotation5.getStart());
+        assertEquals(variantMockData.get("Y:g.41242962_41242963insGA").getVariant(), annotation5.getVariant());
     }
 
     @Test
@@ -72,15 +90,21 @@ public class VariantAnnotationServiceTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         this.mockVariantFetcherMethods(variantMockData);
 
-        List<String> variants = new ArrayList<>(2);
+        List<String> variants = new ArrayList<>(4);
         variants.add("7:g.140453136A>T");
         variants.add("12:g.25398285C>A");
+        variants.add("chr23:g.41242962_41242963insGA");
+        variants.add("chr24:g.41242962_41242963insGA");
 
         List<VariantAnnotation> annotations = variantAnnotationService.getAnnotations(variants);
         assertEquals(variantMockData.get("7:g.140453136A>T").getStart(), annotations.get(0).getStart());
         assertEquals(variantMockData.get("7:g.140453136A>T").getVariant(), annotations.get(0).getVariant());
         assertEquals(variantMockData.get("12:g.25398285C>A").getStart(), annotations.get(1).getStart());
         assertEquals(variantMockData.get("12:g.25398285C>A").getVariant(), annotations.get(1).getVariant());
+        assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getStart(), annotations.get(2).getStart());
+        assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getVariant(), annotations.get(2).getVariant());
+        assertEquals(variantMockData.get("Y:g.41242962_41242963insGA").getStart(), annotations.get(3).getStart());
+        assertEquals(variantMockData.get("Y:g.41242962_41242963insGA").getVariant(), annotations.get(3).getVariant());
     }
 
     @Test
@@ -174,14 +198,20 @@ public class VariantAnnotationServiceTest
         // mock methods in order to prevent hitting the live VEP web API
         Mockito.when(this.fetcher.fetchAndCache("7:g.140453136A>T")).thenReturn(variantMockData.get("7:g.140453136A>T"));
         Mockito.when(this.fetcher.fetchAndCache("12:g.25398285C>A")).thenReturn(variantMockData.get("12:g.25398285C>A"));
+        Mockito.when(this.fetcher.fetchAndCache("X:g.41242962_41242963insGA")).thenReturn(variantMockData.get("X:g.41242962_41242963insGA"));
+        Mockito.when(this.fetcher.fetchAndCache("Y:g.41242962_41242963insGA")).thenReturn(variantMockData.get("Y:g.41242962_41242963insGA"));
 
-        List<String> variants = new ArrayList<>(2);
+        List<String> variants = new ArrayList<>(4);
         variants.add("7:g.140453136A>T");
         variants.add("12:g.25398285C>A");
+        variants.add("X:g.41242962_41242963insGA");
+        variants.add("Y:g.41242962_41242963insGA");
 
-        List<VariantAnnotation> returnValue = new ArrayList<>(2);
+        List<VariantAnnotation> returnValue = new ArrayList<>(3);
         returnValue.add(variantMockData.get("7:g.140453136A>T"));
         returnValue.add(variantMockData.get("12:g.25398285C>A"));
+        returnValue.add(variantMockData.get("X:g.41242962_41242963insGA"));
+        returnValue.add(variantMockData.get("Y:g.41242962_41242963insGA"));
 
         Mockito.when(this.fetcher.fetchAndCache(variants)).thenReturn(returnValue);
     }

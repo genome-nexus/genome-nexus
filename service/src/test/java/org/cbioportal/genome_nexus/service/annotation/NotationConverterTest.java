@@ -29,6 +29,22 @@ public class NotationConverterTest
         assertEquals((Integer)9784948, location.getEnd());
         assertEquals("-", location.getReferenceAllele());
         assertEquals("AGA", location.getVariantAllele());
+
+        GenomicLocation location2 = this.notationConverter.parseGenomicLocation("chr23,41242962,41242963,-,GA");
+
+        assertEquals("X", location2.getChromosome());
+        assertEquals((Integer)41242962, location2.getStart());
+        assertEquals((Integer)41242963, location2.getEnd());
+        assertEquals("-", location2.getReferenceAllele());
+        assertEquals("GA", location2.getVariantAllele());
+
+        GenomicLocation location3 = this.notationConverter.parseGenomicLocation("chr24,41242962,41242963,-,GA");
+
+        assertEquals("Y", location3.getChromosome());
+        assertEquals((Integer)41242962, location3.getStart());
+        assertEquals((Integer)41242963, location3.getEnd());
+        assertEquals("-", location3.getReferenceAllele());
+        assertEquals("GA", location3.getVariantAllele());
     }
 
     @Test
@@ -54,6 +70,24 @@ public class NotationConverterTest
 
         assertEquals("22:g.36689419_36689421delCCT",
             this.notationConverter.genomicToHgvs("22,36689419,36689421,CCT,-"));
+            
+        assertEquals("X:g.41242962_41242963insGA",
+            this.notationConverter.genomicToHgvs("X,41242962,41242963,-,GA"));
+
+        assertEquals("X:g.41242962_41242963insGA",
+            this.notationConverter.genomicToHgvs("chrX,41242962,41242963,-,GA"));
+
+        assertEquals("X:g.41242962_41242963insGA",
+            this.notationConverter.genomicToHgvs("chr23,41242962,41242963,-,GA"));
+
+        assertEquals("Y:g.41242962_41242963insGA",
+            this.notationConverter.genomicToHgvs("Y,41242962,41242963,-,GA"));
+
+        assertEquals("Y:g.41242962_41242963insGA",
+            this.notationConverter.genomicToHgvs("chrY,41242962,41242963,-,GA"));
+
+        assertEquals("Y:g.41242962_41242963insGA",
+            this.notationConverter.genomicToHgvs("chr24,41242962,41242963,-,GA"));
 
         assertEquals("3:g.14106026_14106037delCCAGCAGTAGCT",
             this.notationConverter.genomicToHgvs("3,14106026,14106037,CCAGCAGTAGCT,-"));
