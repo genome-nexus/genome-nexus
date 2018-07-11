@@ -6,6 +6,7 @@ import org.cbioportal.genome_nexus.model.HotspotAnnotation;
 import org.cbioportal.genome_nexus.model.MutationAssessorAnnotation;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
+import org.cbioportal.genome_nexus.model.MyVariantInfoAnnotation;
 
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,10 @@ public class VariantAnnotationMixin {
     @JsonProperty(value="annotation_summary", required = true)
     @ApiModelProperty(value = "Variant Annotation Summary", required = false)
     private VariantAnnotationSummary annotationSummary;
+
+    @JsonProperty(value="my_variant_info", required = true)
+    @ApiModelProperty(value = "My Variant Info Annotation", required = false)
+    private MyVariantInfoAnnotation myVariantInfoAnnotation;
 
     @JsonIgnore
     private Map<String, Object> dynamicProps;

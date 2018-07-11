@@ -63,6 +63,7 @@ public class VariantAnnotation
     private List<TranscriptConsequence> transcriptConsequences;
 
     private MutationAssessorAnnotation mutationAssessorAnnotation;
+    private MyVariantInfoAnnotation myVariantInfoAnnotation;
     private HotspotAnnotation hotspotAnnotation;
     private VariantAnnotationSummary annotationSummary;
 
@@ -202,7 +203,7 @@ public class VariantAnnotation
     {
         this.colocatedVariants = colocatedVariants;
     }
-    
+
     @Field(value="transcript_consequences")
     public List<TranscriptConsequence> getTranscriptConsequences()
     {
@@ -234,6 +235,14 @@ public class VariantAnnotation
 
     public void setMutationAssessorAnnotation(MutationAssessorAnnotation mutationAssessorAnnotation) {
         this.mutationAssessorAnnotation = mutationAssessorAnnotation;
+    }
+
+    public MyVariantInfoAnnotation getMyVariantInfoAnnotation() {
+        return myVariantInfoAnnotation;
+    }
+
+    public void setMyVariantInfoAnnotation(MyVariantInfoAnnotation myVariantInfoAnnotation) {
+        this.myVariantInfoAnnotation = myVariantInfoAnnotation;
     }
 
     public HotspotAnnotation getHotspotAnnotation() {
