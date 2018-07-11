@@ -15,6 +15,14 @@ public class NotationConverter
 {
     public static final String DEFAULT_DELIMITER = ",";
 
+    public String hgvsNormalizer(String hgvs) {
+        return hgvs.replace("chr","").replace("23:g.","X:g.").replace("24:g.","Y:g.");
+    }
+
+    public String chromosomeNormalizer(String chromosome) {
+        return chromosome.trim().replace("chr","").replace("23","X").replace("24","Y");
+    }
+
     @Nullable
     public GenomicLocation parseGenomicLocation(String genomicLocation)
     {
@@ -40,7 +48,7 @@ public class NotationConverter
 
             location = new GenomicLocation();
 
-            location.setChromosome(parts[0]);
+            location.setChromosome(this.chromosomeNormalizer(parts[0]));
             location.setStart(Integer.parseInt(parts[1]));
             location.setEnd(Integer.parseInt(parts[2]));
             location.setReferenceAllele(parts[3]);
@@ -64,7 +72,7 @@ public class NotationConverter
         }
 
         // trim string values
-        String chr = genomicLocation.getChromosome().trim();
+        String chr = this.chromosomeNormalizer(genomicLocation.getChromosome().trim());
         Integer start = genomicLocation.getStart();
         Integer end = genomicLocation.getEnd();
         String ref = genomicLocation.getReferenceAllele().trim();
