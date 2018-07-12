@@ -57,6 +57,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Benjamin Gross
@@ -98,13 +99,16 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     public VariantAnnotation getAnnotation(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.getVariantAnnotation(variant, null);
+        return this.getVariantAnnotation(notationConverter.hgvsNormalizer(variant), null);
     }
 
     @Override
     public List<VariantAnnotation> getAnnotations(List<String> variants)
     {
-        return this.getVariantAnnotations(variants, null);
+        return this.getVariantAnnotations(
+            variants.stream().map(v -> notationConverter.hgvsNormalizer(v)).collect(Collectors.toList()),
+            null
+        );
     }
 
     @Override
@@ -113,7 +117,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
 
-        return this.getVariantAnnotation(variant, postEnrichmentService);
+        return this.getVariantAnnotation(notationConverter.hgvsNormalizer(variant), postEnrichmentService);
     }
 
     @Override
@@ -121,7 +125,10 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
 
-        return this.getVariantAnnotations(variants, postEnrichmentService);
+        return this.getVariantAnnotations(
+            variants.stream().map(v -> notationConverter.hgvsNormalizer(v)).collect(Collectors.toList()),
+            postEnrichmentService
+        );
     }
 
     private List<VariantAnnotation> getVariantAnnotations(List<String> variants)
