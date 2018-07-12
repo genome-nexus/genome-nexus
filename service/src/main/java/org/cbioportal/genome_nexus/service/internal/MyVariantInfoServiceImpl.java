@@ -88,7 +88,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     }
 
     /**
-     * @param variant   mutation assessor variant (ex: 7,140453136,A,T)
+     * @param variant my varint info variant (ex: 1:g.35367G>A)
      */
     public MyVariantInfo getMyVariantInfoByMyVariantInfoVariant(String variant)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException
@@ -129,7 +129,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
 
     private String buildRequest(VariantAnnotation annotation)
     {
-        StringBuilder sb = new StringBuilder(annotation.getVariant());
+        StringBuilder sb = new StringBuilder(annotation.getVariantId());
         sb.insert(0,"chr");
         return sb.toString();
     }

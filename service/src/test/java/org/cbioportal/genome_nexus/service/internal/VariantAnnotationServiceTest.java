@@ -1,28 +1,42 @@
 package org.cbioportal.genome_nexus.service.internal;
 
-import org.cbioportal.genome_nexus.model.*;
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.cbioportal.genome_nexus.model.Hotspot;
+import org.cbioportal.genome_nexus.model.IsoformOverride;
+import org.cbioportal.genome_nexus.model.MutationAssessor;
+import org.cbioportal.genome_nexus.model.MyVariantInfo;
+import org.cbioportal.genome_nexus.model.TranscriptConsequence;
+import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.IsoformOverrideService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
+import org.cbioportal.genome_nexus.service.MyVariantInfoService;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
-import org.cbioportal.genome_nexus.service.exception.*;
+import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.IsoformOverrideNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.MyVariantInfoNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.service.mock.CancerHotspotMockData;
 import org.cbioportal.genome_nexus.service.mock.IsoformOverrideMockData;
 import org.cbioportal.genome_nexus.service.mock.MutationAssessorMockData;
 import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
+import org.cbioportal.genome_nexus.service.mock.MyVariantInfoMockData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class VariantAnnotationServiceTest
@@ -42,10 +56,14 @@ public class VariantAnnotationServiceTest
     @Mock
     private CancerHotspotServiceImpl cancerHotspotService;
 
+    @Mock
+    private MyVariantInfoService myVariantInfoService; //might be impl
+
     private VariantAnnotationMockData variantAnnotationMockData = new VariantAnnotationMockData();
     private MutationAssessorMockData mutationAssessorMockData = new MutationAssessorMockData();
     private CancerHotspotMockData cancerHotspotMockData = new CancerHotspotMockData();
     private IsoformOverrideMockData isoformOverrideMockData = new IsoformOverrideMockData();
+    private MyVariantInfoMockData myVariantInfoMockData = new MyVariantInfoMockData();
 
     @Test
     public void getAnnotationByVariantString()
@@ -87,15 +105,17 @@ public class VariantAnnotationServiceTest
     public void getMutationAssessorEnrichedAnnotationByVariantString()
         throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
         MutationAssessorWebServiceException, MutationAssessorNotFoundException, IsoformOverrideNotFoundException,
-        IOException
+        IOException, MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         Map<String, MutationAssessor> maMockData = this.mutationAssessorMockData.generateData();
         Map<String, IsoformOverride> isoformOverrideMockData = this.isoformOverrideMockData.generateData();
+        Map<String, MyVariantInfo> mviMockData = this.myVariantInfoMockData.generateData();
 
         this.mockVariantFetcherMethods(variantMockData);
         this.mockMutationAssessorServiceMethods(variantMockData, maMockData);
         this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
+        this.mockMyVariantInfoServiceMethods(variantMockData, mviMockData);
 
         List<String> fields = new ArrayList<>(1);
         fields.add("mutation_assessor");
@@ -194,6 +214,15 @@ public class VariantAnnotationServiceTest
             variantMockData.get("7:g.140453136A>T"))).thenReturn(maMockData.get("7,140453136,A,T"));
         Mockito.when(this.mutationAssessorService.getMutationAssessor(
             variantMockData.get("12:g.25398285C>A"))).thenReturn(maMockData.get("12,25398285,C,A"));
+    }
+
+    private void mockMyVariantInfoServiceMethods(Map<String, VariantAnnotation> variantMockData,
+            Map<String, MyVariantInfo> mviMockData)
+            throws MyVariantInfoWebServiceException, MyVariantInfoNotFoundException {
+        Mockito.when(this.myVariantInfoService.getMyVariantInfo(variantMockData.get("7:g.140453136A>T")))
+                .thenReturn(mviMockData.get("chr7:g.140453136A>T"));
+        Mockito.when(this.myVariantInfoService.getMyVariantInfo(variantMockData.get("12:g.25398285C>A")))
+                .thenReturn(mviMockData.get("chr12:g.25398285C>A"));
     }
 
     private void mockHotspotServiceMethods(Map<String, List<Hotspot>> hotspotMockData)
