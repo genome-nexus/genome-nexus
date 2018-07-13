@@ -8,7 +8,7 @@ public class Snpeff
 {
     private String license;
 
-    private List<Ann> ann;
+    //private List<Ann> ann;
 
     @Field(value="license")
     public String getLicense()
@@ -21,14 +21,14 @@ public class Snpeff
       this.license = license;
     }
 
-    @Field(value="ann")
-    public List<Ann> getAnn()
-    {
-      return ann;
-    }
+    // @Field(value="ann")
+    // public List<Ann> getAnn()
+    // {
+    //   return ann;
+    // }
 
-    public void setAnn(List<Ann> ann)
-    {
-      this.ann = ann;
-    }
+    // public void setAnn(List<Ann> ann)
+    // {
+    //   this.ann = ann;
+    // }
 }
