@@ -1,5 +1,10 @@
 package org.cbioportal.genome_nexus.service.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.MyVariantInfo;
@@ -7,16 +12,15 @@ import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.cached.CachedMyVariantInfoFetcher;
-import org.cbioportal.genome_nexus.service.exception.*;
+import org.cbioportal.genome_nexus.service.exception.MyVariantInfoNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class MyVariantInfoServiceImpl implements MyVariantInfoService
