@@ -58,7 +58,7 @@ public abstract class BaseExternalResourceFetcher<T> implements ExternalResource
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put(this.mainQueryParam, param);
 
-         return this.fetchRawValue(queryParams);
+        return this.fetchRawValue(queryParams);
     }
 
     @Override

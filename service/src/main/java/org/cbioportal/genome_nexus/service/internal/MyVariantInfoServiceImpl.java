@@ -75,10 +75,11 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     public MyVariantInfo getMyVariantInfo(VariantAnnotation annotation)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException
     {
-        // checks annotation is SNP
+        // checks annotation is SNP or indel
         if (annotation.getStart() == null
-            || !annotation.getStart().equals(annotation.getEnd())
-            || !annotation.getAlleleString().matches("[A-Z]/[A-Z]"))
+            || !annotation.getVariantId().matches("(.*)del(.*)|(.*)ins(.*)")
+            && (!annotation.getStart().equals(annotation.getEnd())
+            || !annotation.getAlleleString().matches("[A-Z]/[A-Z]")))
         {
             throw new MyVariantInfoNotFoundException(annotation.getVariant());
         }
@@ -134,7 +135,10 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     private String buildRequest(VariantAnnotation annotation)
     {
         StringBuilder sb = new StringBuilder(annotation.getVariantId());
-        sb.insert(0,"chr");
+        if(!sb.toString().startsWith("chr"))
+        {
+            sb.insert(0,"chr");
+        }
         return sb.toString();
     }
 
