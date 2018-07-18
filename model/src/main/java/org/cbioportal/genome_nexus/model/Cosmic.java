@@ -25,7 +25,7 @@ public class Cosmic {
 		this._license = _license;
 	}
    	@Field(value = "alt")
-	public String getalt()
+	public String getAlt()
 	{
 		return alt;
 	}
@@ -35,7 +35,7 @@ public class Cosmic {
 		this.alt = alt;
 	}
    	@Field(value = "chrom")
-	public String getchrom()
+	public String getChrom()
 	{
 		return chrom;
 	}
@@ -45,17 +45,17 @@ public class Cosmic {
 		this.chrom = chrom;
 	}
    	@Field(value = "cosmic_id")
-	public String getcosmicId()
+	public String getCosmicId()
 	{
 		return cosmicId;
 	}
 
-	public void setCosmicid(String cosmicId)
+	public void setCosmicId(String cosmicId)
 	{
 		this.cosmicId = cosmicId;
 	}
    	@Field(value = "hg19")
-	public Hg19 gethg19()
+	public Hg19 getHg19()
 	{
 		return hg19;
 	}
@@ -65,27 +65,27 @@ public class Cosmic {
 		this.hg19 = hg19;
 	}
    	@Field(value = "mut_freq")
-	public Double getmutFreq()
+	public Double getMutFreq()
 	{
 		return mutFreq;
 	}
 
-	public void setMutfreq(Double mutFreq)
+	public void setMutFreq(Double mutFreq)
 	{
 		this.mutFreq = mutFreq;
 	}
    	@Field(value = "mut_nt")
-	public String getmutNt()
+	public String getMutNt()
 	{
 		return mutNt;
 	}
 
-	public void setMutnt(String mutNt)
+	public void setMutNt(String mutNt)
 	{
 		this.mutNt = mutNt;
 	}
    	@Field(value = "ref")
-	public String getref()
+	public String getRef()
 	{
 		return ref;
 	}
@@ -95,12 +95,12 @@ public class Cosmic {
 		this.ref = ref;
 	}
    	@Field(value = "tumor_site")
-	public String gettumorSite()
+	public String getTumorSite()
 	{
 		return tumorSite;
 	}
 
-	public void setTumorsite(String tumorSite)
+	public void setTumorSite(String tumorSite)
 	{
 		this.tumorSite = tumorSite;
 	}

@@ -15,7 +15,7 @@ public class MyVariantInfo
     private Vcf vcf;
     private Dbsnp dbsnp;
     private Cosmic cosmic;
-    // private ClinVar clinVar;
+    private ClinVar clinVar;
 
     @Field(value="id")
     public String getHgvs()
@@ -73,11 +73,24 @@ public class MyVariantInfo
     }
     
     @Field(value = "cosmic")
-    public Cosmic getCosmic() {
+    public Cosmic getCosmic() 
+    {
       return cosmic;
     }
 
-    public void setCosmic(Cosmic cosmic) {
+    public void setCosmic(Cosmic cosmic) 
+    {
       this.cosmic = cosmic;
+    }
+    
+    @Field(value = "clinvar")
+    public ClinVar getClinVar() 
+    {
+      return clinVar;
+    }
+
+    public void setClinVar(ClinVar clinVar) 
+    {
+      this.clinVar = clinVar;
     }
 }
