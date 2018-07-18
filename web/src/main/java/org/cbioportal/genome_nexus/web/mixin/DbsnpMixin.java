@@ -30,8 +30,8 @@ private String _class;
 @ApiModelProperty(value = "dbsnp_build", required = false)
 private Integer dbsnpBuild;
 
-// @ApiModelProperty(value = "flags", required = false)
-// private Flags flags;
+@ApiModelProperty(value = "flags", required = false)
+private String flags;
 
 @ApiModelProperty(value = "gene", required = false)
 private Gene gene;

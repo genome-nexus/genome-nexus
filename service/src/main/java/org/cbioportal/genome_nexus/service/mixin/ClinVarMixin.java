@@ -38,10 +38,4 @@ private Hg38 hg38;
 
 @JsonProperty(value = "hgvs", required = true)
 private Hgvs hgvs;
-
-// @JsonProperty(value = "coding", required = true)
-// private Coding coding;
-
-// @JsonProperty(value = "genomic", required = true)
-// private Genomic genomic;
 }

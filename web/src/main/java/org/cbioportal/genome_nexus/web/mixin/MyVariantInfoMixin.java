@@ -2,6 +2,7 @@ package org.cbioportal.genome_nexus.web.mixin;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import org.cbioportal.genome_nexus.model.ClinVar;
 import org.cbioportal.genome_nexus.model.Cosmic;
 import org.cbioportal.genome_nexus.model.Dbsnp;
 import org.cbioportal.genome_nexus.model.Snpeff;
@@ -30,6 +31,6 @@ public class MyVariantInfoMixin
     @ApiModelProperty(value = "cosmic", required = false)
     private Cosmic cosmic;
 
-    // @ApiModelProperty(value = "clinvar", required = false)
-    // private Clinvar clinvar;
+    @ApiModelProperty(value = "clinvar", required = false)
+    private ClinVar clinvar;
 }

@@ -12,7 +12,7 @@ public class ClinVar {
 	private Gene gene;
 	private Hg19 hg19;
 	private Hg38 hg38;
-	//private Hgvs hgvs;
+	private Hgvs hgvs;
 
    	@Field(value = "license")
 	public String get_license()
@@ -94,14 +94,14 @@ public class ClinVar {
 	{
 		this.hg38 = hg38;
 	}
-   	// @Field(value = "hgvs")
-	// public Hgvs getHgvs()
-	// {
-	// 	return hgvs;
-	// }
+   	@Field(value = "hgvs")
+	public Hgvs getHgvs()
+	{
+		return hgvs;
+	}
 
-	// public void setHgvs(Hgvs hgvs)
-	// {
-	// 	this.hgvs = hgvs;
-	// }
+	public void setHgvs(Hgvs hgvs)
+	{
+		this.hgvs = hgvs;
+	}
 }

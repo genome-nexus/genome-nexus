@@ -30,8 +30,8 @@ private String _class;
 @JsonProperty(value = "dbsnp_build", required = true)
 private Integer dbsnpBuild;
 
-// @JsonProperty(value = "flags", required = true)
-// private Flags flags;
+@JsonProperty(value = "flags", required = true)
+private String flags;
 
 @JsonProperty(value = "gene", required = true)
 private Gene gene;

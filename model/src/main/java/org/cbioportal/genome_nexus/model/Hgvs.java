@@ -1,31 +1,33 @@
 package org.cbioportal.genome_nexus.model;
 
+import java.util.List;
+
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Hgvs {
 
-	// private List<Coding> coding;
-	// private List<Genomic> genomic;
+	private List<String> coding;
+	private List<String> genomic;
 
-   	// @Field(value = "coding")
-	// public Coding getCoding()
-	// {
-	// 	return coding;
-	// }
+   	@Field(value = "coding")
+	public List<String> getCoding()
+	{
+		return coding;
+	}
 
-	// public void setCoding(List<Coding> coding)
-	// {
-	// 	this.coding = coding;
-	// }
-   	// @Field(value = "genomic")
-	// public Genomic getGenomic()
-	// {
-	// 	return genomic;
-	// }
+	public void setCoding(List<String> coding)
+	{
+		this.coding = coding;
+	}
+   	@Field(value = "genomic")
+	public List<String> getGenomic()
+	{
+		return genomic;
+	}
 
-	// public void setGenomic(List<Genomic> genomic)
-	// {
-	// 	this.genomic = genomic;
-	// }
+	public void setGenomic(List<String> genomic)
+	{
+		this.genomic = genomic;
+	}
 
 }

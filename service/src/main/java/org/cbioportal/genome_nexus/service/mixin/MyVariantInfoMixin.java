@@ -3,6 +3,8 @@ package org.cbioportal.genome_nexus.service.mixin;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.cbioportal.genome_nexus.model.ClinVar;
+import org.cbioportal.genome_nexus.model.Cosmic;
 import org.cbioportal.genome_nexus.model.Snpeff;
 import org.cbioportal.genome_nexus.model.Vcf;
 
@@ -25,9 +27,9 @@ public class MyVariantInfoMixin
     @JsonProperty(value = "dbsnp", required = true)
     private Integer dbsnp;
 
-    // @JsonProperty(value = "cosmic", required = true)
-    // private Cosmic cosmic;
+    @JsonProperty(value = "cosmic", required = true)
+    private Cosmic cosmic;
 
-    // @JsonProperty(value = "clinvar", required = true)
-    // private ClinVar clinvar;
+    @JsonProperty(value = "clinvar", required = true)
+    private ClinVar clinvar;
 }

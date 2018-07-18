@@ -38,8 +38,3 @@ private Hg38 hg38;
 @ApiModelProperty(value = "hgvs", required = false)
 private Hgvs hgvs;
 }
-// @ApiModelProperty(value = "coding", required = false)
-// private Coding coding;
-
-// @ApiModelProperty(value = "genomic", required = false)
-// private Genomic genomic;}

@@ -2,18 +2,18 @@ package org.cbioportal.genome_nexus.model;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-// import java.util.List;
+import java.util.List;
 
 public class Dbsnp {
     private String license;
     private String alleleOrigin;
-    // private List<Alleles> alleles;
+    private List<Alleles> alleles;
     private String alt;
     private String chrom;
     private String _class;
     private Integer dbsnpBuild;
-    // private List<Flag> flag;
-    // private Gene gene;
+    private List<String> flags;
+    private Gene gene;
     private Hg19 hg19;
     private String ref;
     private String rsid;
@@ -41,14 +41,14 @@ public class Dbsnp {
         this.alleleOrigin = alleleOrigin;
     }
 
-    // @Field(value = "alleles")
-    // public List<Alleles> getAlleles() {
-    //     return alleles;
-    // }
+    @Field(value = "alleles")
+    public List<Alleles> getAlleles() {
+        return alleles;
+    }
 
-    // public void setAlleles(List<Alleles> alleles) {
-    //     this.alleles = alleles;
-    // }
+    public void setAlleles(List<Alleles> alleles) {
+        this.alleles = alleles;
+    }
 
     @Field(value = "alt")
     public String getAlt() {
@@ -86,23 +86,25 @@ public class Dbsnp {
         this.dbsnpBuild = dbsnpBuild;
     }
 
-    // @Field(value = "flag")
-    // public List<Flag> getFlag() {
-    // return flag;
-    // }
+    @Field(value = "flags")
+    public List<String> getFlags() 
+    {
+    return flags;
+    }
 
-    // public void setFlag(List<Flag> alleles) {
-    // this.flag = flag;
-    // }
+    public void setFlag(List<String> flags) 
+    {
+    this.flags = flags;
+    }
 
-    // @Field(value = "gene")
-    // public Gene getGene() {
-    //     return gene;
-    // }
+    @Field(value = "gene")
+    public Gene getGene() {
+        return gene;
+    }
 
-    // public void setGene(Gene gene) {
-    //     this.gene = gene;
-    // }
+    public void setGene(Gene gene) {
+        this.gene = gene;
+    }
 
     @Field(value = "hg19")
     public Hg19 getHg19() {
