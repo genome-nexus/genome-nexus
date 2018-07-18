@@ -137,12 +137,10 @@ public class VariantAnnotationServiceTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         Map<String, MutationAssessor> maMockData = this.mutationAssessorMockData.generateData();
         Map<String, IsoformOverride> isoformOverrideMockData = this.isoformOverrideMockData.generateData();
-        Map<String, MyVariantInfo> mviMockData = this.myVariantInfoMockData.generateData();
 
         this.mockVariantFetcherMethods(variantMockData);
         this.mockMutationAssessorServiceMethods(variantMockData, maMockData);
         this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
-        this.mockMyVariantInfoServiceMethods(variantMockData, mviMockData);
 
         List<String> fields = new ArrayList<>(1);
         fields.add("mutation_assessor");
@@ -158,6 +156,36 @@ public class VariantAnnotationServiceTest
 
         assertEquals(maMockData.get("12,25398285,C,A"),
             annotation2.getMutationAssessorAnnotation().getAnnotation());
+    }
+
+    @Test
+    public void getMyVariantInfoEnrichedAnnotationByVariantString()
+        throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
+        MyVariantInfoWebServiceException, MyVariantInfoNotFoundException, IsoformOverrideNotFoundException,
+        IOException, MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
+    {
+        Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
+        Map<String, MyVariantInfo> mviMockData = this.myVariantInfoMockData.generateData();
+        Map<String, IsoformOverride> isoformOverrideMockData = this.isoformOverrideMockData.generateData();
+
+        this.mockVariantFetcherMethods(variantMockData);
+        this.mockMyVariantInfoServiceMethods(variantMockData, mviMockData);
+        this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
+
+        List<String> fields = new ArrayList<>(1);
+        fields.add("my_variant_info");
+
+        VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
+            "7:g.140453136A>T", null, fields);
+
+        assertEquals(mviMockData.get("7:g.140453136A>T"),
+            annotation1.getMyVariantInfoAnnotation().getAnnotation());
+
+        VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
+            "12:g.25398285C>A", null, fields);
+
+        assertEquals(mviMockData.get("12:g.25398285C>A"),
+            annotation2.getMyVariantInfoAnnotation().getAnnotation());
     }
 
     @Test
@@ -252,10 +280,10 @@ public class VariantAnnotationServiceTest
     private void mockMyVariantInfoServiceMethods(Map<String, VariantAnnotation> variantMockData,
             Map<String, MyVariantInfo> mviMockData)
             throws MyVariantInfoWebServiceException, MyVariantInfoNotFoundException {
-        Mockito.when(this.myVariantInfoService.getMyVariantInfo(variantMockData.get("7:g.140453136A>T")))
-                .thenReturn(mviMockData.get("chr7:g.140453136A>T"));
-        Mockito.when(this.myVariantInfoService.getMyVariantInfo(variantMockData.get("12:g.25398285C>A")))
-                .thenReturn(mviMockData.get("chr12:g.25398285C>A"));
+        Mockito.when(this.myVariantInfoService.getMyVariantInfo(
+            variantMockData.get("7:g.140453136A>T"))).thenReturn(mviMockData.get("7:g.140453136A>T"));
+        Mockito.when(this.myVariantInfoService.getMyVariantInfo(
+            variantMockData.get("12:g.25398285C>A"))).thenReturn(mviMockData.get("12:g.25398285C>A"));
     }
 
     private void mockHotspotServiceMethods(Map<String, List<Hotspot>> hotspotMockData)
