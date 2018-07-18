@@ -1,12 +1,37 @@
 package org.cbioportal.genome_nexus.service.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cbioportal.genome_nexus.model.*;
-import org.cbioportal.genome_nexus.service.mixin.*;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.cbioportal.genome_nexus.model.Alleles;
+import org.cbioportal.genome_nexus.model.Ann;
+import org.cbioportal.genome_nexus.model.Cosmic;
+import org.cbioportal.genome_nexus.model.Dbsnp;
+import org.cbioportal.genome_nexus.model.Gene;
+import org.cbioportal.genome_nexus.model.GeneXref;
+import org.cbioportal.genome_nexus.model.Hg19;
+import org.cbioportal.genome_nexus.model.MutationAssessor;
+import org.cbioportal.genome_nexus.model.MyVariantInfo;
+import org.cbioportal.genome_nexus.model.Snpeff;
+import org.cbioportal.genome_nexus.model.TranscriptConsequence;
+import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.model.Vcf;
+import org.cbioportal.genome_nexus.service.mixin.AllelesMixin;
+import org.cbioportal.genome_nexus.service.mixin.AnnMixin;
+import org.cbioportal.genome_nexus.service.mixin.CosmicMixin;
+import org.cbioportal.genome_nexus.service.mixin.DbsnpMixin;
+import org.cbioportal.genome_nexus.service.mixin.GeneMixin;
+import org.cbioportal.genome_nexus.service.mixin.GeneXrefMixin;
+import org.cbioportal.genome_nexus.service.mixin.Hg19Mixin;
+import org.cbioportal.genome_nexus.service.mixin.MutationAssessorMixin;
+import org.cbioportal.genome_nexus.service.mixin.MyVariantInfoMixin;
+import org.cbioportal.genome_nexus.service.mixin.SnpeffMixin;
+import org.cbioportal.genome_nexus.service.mixin.TranscriptConsequenceMixin;
+import org.cbioportal.genome_nexus.service.mixin.VariantAnnotationMixin;
+import org.cbioportal.genome_nexus.service.mixin.VcfMixin;
+import org.springframework.stereotype.Component;
 
 @Component("defaultExternalResourceObjectMapper")
 public class ExternalResourceObjectMapper extends ObjectMapper
@@ -26,7 +51,9 @@ public class ExternalResourceObjectMapper extends ObjectMapper
         mixinMap.put(Dbsnp.class, DbsnpMixin.class);
         mixinMap.put(Gene.class, GeneMixin.class);
         mixinMap.put(Alleles.class, AllelesMixin.class);
-    
+        mixinMap.put(Hg19.class, Hg19Mixin.class);
+        mixinMap.put(Cosmic.class, CosmicMixin.class);
+
         super.setMixIns(mixinMap);
     }
 }

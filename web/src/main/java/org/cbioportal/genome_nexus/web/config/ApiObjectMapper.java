@@ -42,6 +42,7 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(Gene.class, GeneMixin.class);
         mixinMap.put(Alleles.class, AllelesMixin.class);
         mixinMap.put(Hg19.class, Hg19Mixin.class);
+        mixinMap.put(Cosmic.class, CosmicMixin.class);
 
         super.setMixIns(mixinMap);
     }

@@ -14,7 +14,7 @@ public class MyVariantInfo
     private Snpeff snpeff;
     private Vcf vcf;
     private Dbsnp dbsnp;
-    // private Cosmic cosmic;
+    private Cosmic cosmic;
     // private ClinVar clinVar;
 
     @Field(value="id")
@@ -70,5 +70,14 @@ public class MyVariantInfo
     public void setDbsnp(Dbsnp dbsnp) 
     {
       this.dbsnp = dbsnp;
+    }
+    
+    @Field(value = "cosmic")
+    public Cosmic getCosmic() {
+      return cosmic;
+    }
+
+    public void setCosmic(Cosmic cosmic) {
+      this.cosmic = cosmic;
     }
 }

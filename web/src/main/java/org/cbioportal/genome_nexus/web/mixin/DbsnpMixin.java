@@ -11,31 +11,45 @@ public class DbsnpMixin
 {
 @ApiModelProperty(value = "_license", required = false)
 private String _license;
+
 @ApiModelProperty(value = "allele_origin", required = false)
 private String alleleOrigin;
+
 @ApiModelProperty(value = "alleles", required = false)
 private Alleles alleles;
+
 @ApiModelProperty(value = "alt", required = false)
 private String alt;
+
 @ApiModelProperty(value = "chrom", required = false)
 private String chrom;
+
 @ApiModelProperty(value = "class", required = false)
 private String _class;
+
 @ApiModelProperty(value = "dbsnp_build", required = false)
 private Integer dbsnpBuild;
+
 // @ApiModelProperty(value = "flags", required = false)
 // private Flags flags;
+
 @ApiModelProperty(value = "gene", required = false)
 private Gene gene;
+
 @ApiModelProperty(value = "hg19", required = false)
 private Hg19 hg19;
+
 @ApiModelProperty(value = "ref", required = false)
 private String ref;
+
 @ApiModelProperty(value = "rsid", required = false)
 private String rsid;
+
 @ApiModelProperty(value = "validated", required = false)
 private Boolean validated;
+
 @ApiModelProperty(value = "var_subtype", required = false)
 private String varSubtype;
+
 @ApiModelProperty(value = "vartype", required = false)
 private String vartype;}

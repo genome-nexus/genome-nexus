@@ -146,7 +146,7 @@ public class Dbsnp {
     }
 
     public void setVarSubtype(String var_subtype) {
-        this.varSubtype = var_subtype;
+        this.varSubtype = varSubtype;
     }
 
     @Field(value = "vartype")
