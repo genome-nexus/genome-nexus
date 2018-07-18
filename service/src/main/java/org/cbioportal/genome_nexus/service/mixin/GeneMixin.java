@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class GeneMixin
 {
     @JsonProperty(value = "geneid", required = false)
-    private String geneid;
+    private String geneId;
 
     @JsonProperty(value = "symbol", required = false)
     private String symbol;

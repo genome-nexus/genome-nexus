@@ -7,29 +7,29 @@ import io.swagger.annotations.ApiModelProperty;
 public class AnnMixin
 {
     @ApiModelProperty(value = "distance_to_feature", required = false)
-    private String distance_to_feature;
+    private String distanceToFeature;
 
     @ApiModelProperty(value = "effect", required = false)
     private String effect;
 
     @ApiModelProperty(value = "feature_id", required = false)
-    private String feature_id;
+    private String featureId;
 
     @ApiModelProperty(value = "feature_type", required = false)
-    private String feature_type;
+    private String featureType;
 
     @ApiModelProperty(value = "gene_id", required = false)
-    private String gene_id;
+    private String geneId;
 
     @ApiModelProperty(value = "gene_name", required = false)
-    private String gene_name;
+    private String geneName;
 
     @ApiModelProperty(value = "hgvs_c", required = false)
-    private String hgvs_c;
+    private String hgvsC;
 
     @ApiModelProperty(value = "putative_impact", required = false)
-    private String putative_impact;
+    private String putativeImpact;
 
     @ApiModelProperty(value = "transcript_biotype", required = false)
-    private String transcript_biotype;
+    private String transcriptBiotype;
 }

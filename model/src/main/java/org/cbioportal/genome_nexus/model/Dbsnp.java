@@ -6,19 +6,19 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Dbsnp {
     private String license;
-    private String allele_origin;
+    private String alleleOrigin;
     // private List<Alleles> alleles;
     private String alt;
     private String chrom;
     private String _class;
-    private Integer dbsnp_build;
+    private Integer dbsnpBuild;
     // private List<Flag> flag;
     // private Gene gene;
     private Hg19 hg19;
     private String ref;
     private String rsid;
     private Boolean validated;
-    private String var_subtype;
+    private String varSubtype;
     private String vartype;
 
 
@@ -34,11 +34,11 @@ public class Dbsnp {
     
     @Field(value = "allele_origin")
     public String getAllele_origin() {
-        return allele_origin;
+        return alleleOrigin;
     }
 
-    public void setAllele_origin(String allele_origin) {
-        this.allele_origin = allele_origin;
+    public void setAllele_origin(String alleleOrigin) {
+        this.alleleOrigin = alleleOrigin;
     }
 
     // @Field(value = "alleles")
@@ -78,12 +78,12 @@ public class Dbsnp {
     }
 
     @Field(value = "dbsnp_build")
-    public Integer getDbsnp_build() {
-        return dbsnp_build;
+    public Integer getDbsnpBuild() {
+        return dbsnpBuild;
     }
 
-    public void setDbsnp_build(Integer dbsnp_build) {
-        this.dbsnp_build = dbsnp_build;
+    public void setDbsnpBuild(Integer dbsnpBuild) {
+        this.dbsnpBuild = dbsnpBuild;
     }
 
     // @Field(value = "flag")
@@ -141,12 +141,12 @@ public class Dbsnp {
     }
 
     @Field(value = "var_subtype")
-    public String getVar_subtype() {
-        return var_subtype;
+    public String getVarSubtype() {
+        return varSubtype;
     }
 
-    public void setVar_subtype(String var_subtype) {
-        this.var_subtype = var_subtype;
+    public void setVarSubtype(String var_subtype) {
+        this.varSubtype = var_subtype;
     }
 
     @Field(value = "vartype")

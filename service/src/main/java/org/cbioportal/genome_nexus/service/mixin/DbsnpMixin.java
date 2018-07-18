@@ -11,7 +11,7 @@ public class DbsnpMixin
 @JsonProperty(value = "_license", required = true)
 private String _license;
 @JsonProperty(value = "allele_origin", required = true)
-private String allele_origin;
+private String alleleOrigin;
 @JsonProperty(value = "alleles", required = true)
 private Alleles alleles;
 @JsonProperty(value = "alt", required = true)
@@ -21,7 +21,7 @@ private String chrom;
 @JsonProperty(value = "class", required = true)
 private String _class;
 @JsonProperty(value = "dbsnp_build", required = true)
-private Integer dbsnp_build;
+private Integer dbsnpBuild;
 // @JsonProperty(value = "flags", required = true)
 // private Flags flags;
 @JsonProperty(value = "gene", required = true)
@@ -35,6 +35,6 @@ private String rsid;
 @JsonProperty(value = "validated", required = true)
 private Boolean validated;
 @JsonProperty(value = "var_subtype", required = true)
-private String var_subtype;
+private String varSubtype;
 @JsonProperty(value = "vartype", required = true)
 private String vartype;}

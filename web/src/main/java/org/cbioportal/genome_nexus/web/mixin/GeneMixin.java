@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class GeneMixin
 {
     @ApiModelProperty(value = "geneid", required = false)
-    private String geneid;
+    private String geneId;
 
     @ApiModelProperty(value = "symbol", required = false)
     private String symbol;

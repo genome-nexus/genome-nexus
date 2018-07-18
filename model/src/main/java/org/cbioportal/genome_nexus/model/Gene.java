@@ -3,16 +3,16 @@ package org.cbioportal.genome_nexus.model;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Gene {
-    private String geneid;
+    private String geneId;
     private String symbol;
 
     @Field(value = "geneid")
     public String getGeneid() {
-        return geneid;
+        return geneId;
     }
 
-    public void setGeneid(String geneid) {
-        this.geneid = geneid;
+    public void setGeneid(String geneId) {
+        this.geneId = geneId;
     }
 
     @Field(value = "symbol")
