@@ -1,7 +1,6 @@
 package org.cbioportal.genome_nexus.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author Selcuk Onur Sumer

@@ -1,8 +1,8 @@
 package org.cbioportal.genome_nexus.web.mixin;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.cbioportal.genome_nexus.model.Dbsnp;
 import org.cbioportal.genome_nexus.model.Snpeff;
 import org.cbioportal.genome_nexus.model.Vcf;
 
@@ -22,4 +22,13 @@ public class MyVariantInfoMixin
 
     @ApiModelProperty(value = "vcf", required = false)
     private Vcf vcf;
+
+    @ApiModelProperty(value = "dbsnp", required = false)
+    private Dbsnp dbsnp;
+
+    // @ApiModelProperty(value = "cosmic", required = false)
+    // private Cosmic cosmic;
+
+    // @ApiModelProperty(value = "clinvar", required = false)
+    // private Clinvar clinvar;
 }

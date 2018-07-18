@@ -123,6 +123,6 @@ public class ColocatedVariant
     @Field(value="id")
     public String getdbSnpId()
     {
-    return dbSnpId;
+        return dbSnpId;
     }
 }

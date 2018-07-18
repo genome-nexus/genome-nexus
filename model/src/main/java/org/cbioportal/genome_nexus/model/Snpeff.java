@@ -2,7 +2,7 @@ package org.cbioportal.genome_nexus.model;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.List;
+//import java.util.List;
 
 public class Snpeff
 {

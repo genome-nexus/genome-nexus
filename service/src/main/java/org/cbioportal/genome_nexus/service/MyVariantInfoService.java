@@ -16,7 +16,7 @@ public interface MyVariantInfoService
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MyVariantInfoWebServiceException, MyVariantInfoNotFoundException;
 
-    // variant: mutation assessor variant (ex: 7,140453136,A,T)
+    // variant: myvariantinfo variant (ex: 7,140453136,A,T)
     MyVariantInfo getMyVariantInfoByMyVariantInfoVariant(String variant)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException;
 

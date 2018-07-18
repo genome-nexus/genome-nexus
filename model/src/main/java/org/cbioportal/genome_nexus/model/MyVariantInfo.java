@@ -13,6 +13,9 @@ public class MyVariantInfo
 
     private Snpeff snpeff;
     private Vcf vcf;
+    private Dbsnp dbsnp;
+    // private Cosmic cosmic;
+    // private ClinVar clinVar;
 
     @Field(value="id")
     public String getHgvs()
@@ -56,5 +59,16 @@ public class MyVariantInfo
     public void setVcf(Vcf vcf)
     {
       this.vcf = vcf;
+    }
+
+    @Field(value = "dbsnp")
+    public Dbsnp getDbsnp() 
+    {
+      return dbsnp;
+    }
+
+    public void setDbsnp(Dbsnp dbsnp) 
+    {
+      this.dbsnp = dbsnp;
     }
 }

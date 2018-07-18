@@ -1,0 +1,15 @@
+package org.cbioportal.genome_nexus.service.mixin;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class GeneMixin
+{
+    @JsonProperty(value = "geneid", required = false)
+    private String geneid;
+
+    @JsonProperty(value = "symbol", required = false)
+    private String symbol;
+}

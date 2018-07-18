@@ -21,4 +21,13 @@ public class MyVariantInfoMixin
 
     @JsonProperty(value = "vcf", required = true)
     private Vcf vcf;
+    
+    @JsonProperty(value = "dbsnp", required = true)
+    private Integer dbsnp;
+
+    // @JsonProperty(value = "cosmic", required = true)
+    // private Cosmic cosmic;
+
+    // @JsonProperty(value = "clinvar", required = true)
+    // private ClinVar clinvar;
 }
