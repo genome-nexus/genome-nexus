@@ -30,7 +30,7 @@ public class MyVariantInfoController
         this.myVariantInfoService = myVariantInfoService;
     }
 
-    @ApiOperation(value = "Retrieves my variant information for the provided list of variants",
+    @ApiOperation(value = "Retrieves myvariant information for the provided list of variants",
         nickname = "fetchMyVariantInfoAnnotationGET")
     @RequestMapping(value = "/my_variant_info/{variant:.+}",
         method = RequestMethod.GET,
@@ -46,7 +46,7 @@ public class MyVariantInfoController
         return this.myVariantInfoService.getMyVariantInfo(variant);
     }
 
-    @ApiOperation(value = "Retrieves my variant information for the provided list of variants",
+    @ApiOperation(value = "Retrieves myvariant information for the provided list of variants",
         nickname = "postMyVariantInfoAnnotation")
     @RequestMapping(value = "/my_variant_info",
         method = RequestMethod.POST,
