@@ -7,29 +7,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AnnMixin
 {
     @JsonProperty(value = "distance_to_feature", required = true)
-    private String distance_to_feature;
+    private String distanceToFeature;
 
     @JsonProperty(value = "effect", required = true)
     private String effect;
 
     @JsonProperty(value = "feature_id", required = true)
-    private String feature_id;
+    private String featureId;
 
     @JsonProperty(value = "feature_type", required = true)
-    private String feature_type;
+    private String featureType;
 
     @JsonProperty(value = "gene_id", required = true)
-    private String gene_id;
+    private String geneId;
 
     @JsonProperty(value = "gene_name", required = true)
-    private String gene_name;
+    private String geneName;
 
     @JsonProperty(value = "hgvs_c", required = true)
-    private String hgvs_c;
+    private String hgvsCoding;
 
     @JsonProperty(value = "putative_impact", required = true)
-    private String putative_impact;
+    private String putativeImpact;
 
     @JsonProperty(value = "transcript_biotype", required = true)
-    private String transcript_biotype;
+    private String transcriptBiotype;
 }

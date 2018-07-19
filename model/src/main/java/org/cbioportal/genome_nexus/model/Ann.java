@@ -9,7 +9,7 @@ public class Ann {
   private String featureType;
   private String geneId;
   private String geneName;
-  private String hgvsC;
+  private String hgvsCoding;
   private String putativeImpact;
   private String transcriptBiotype;
 
@@ -68,12 +68,12 @@ public class Ann {
   }
 
   @Field(value = "hgvs_c")
-  public String getHgvsC() {
-    return hgvsC;
+  public String getHgvsCoding() {
+    return hgvsCoding;
   }
 
-  public void setHgvsC(String hgvsC) {
-    this.hgvsC = hgvsC;
+  public void setHgvsC(String hgvsCoding) {
+    this.hgvsCoding = hgvsCoding;
   }
 
   @Field(value = "putative_impact")

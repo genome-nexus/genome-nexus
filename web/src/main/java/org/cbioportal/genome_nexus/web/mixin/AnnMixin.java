@@ -25,7 +25,7 @@ public class AnnMixin
     private String geneName;
 
     @ApiModelProperty(value = "hgvs_c", required = false)
-    private String hgvsC;
+    private String hgvsCoding;
 
     @ApiModelProperty(value = "putative_impact", required = false)
     private String putativeImpact;

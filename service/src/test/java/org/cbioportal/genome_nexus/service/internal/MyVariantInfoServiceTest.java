@@ -62,8 +62,8 @@ public class MyVariantInfoServiceTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
 
         // mock methods in order to prevent hitting the live mutation assessor web API
-        Mockito.when(fetcher.fetchAndCache("7:g.140453136A>T")).thenReturn(mviMockData.get("7:g.140453136A>T"));
-        Mockito.when(fetcher.fetchAndCache("12:g.25398285C>A")).thenReturn(mviMockData.get("12:g.25398285C>A"));
+        Mockito.when(fetcher.fetchAndCache("chr7:g.140453136A>T")).thenReturn(mviMockData.get("7:g.140453136A>T"));
+        Mockito.when(fetcher.fetchAndCache("chr12:g.25398285C>A")).thenReturn(mviMockData.get("12:g.25398285C>A"));
 
         MyVariantInfo myVariantInfo1 = service.getMyVariantInfo(variantMockData.get("7:g.140453136A>T"));
         assertEquals(myVariantInfo1.getVersion(), mviMockData.get("7:g.140453136A>T").getVersion());
