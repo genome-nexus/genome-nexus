@@ -16,6 +16,7 @@ public class MyVariantInfo
     private Dbsnp dbsnp;
     private Cosmic cosmic;
     private ClinVar clinVar;
+    private Mutdb mutdb;
 
     @Field(value="id")
     public String getHgvs()
@@ -92,5 +93,14 @@ public class MyVariantInfo
     public void setClinVar(ClinVar clinVar) 
     {
       this.clinVar = clinVar;
+    }
+
+      @Field(value = "mutdb")
+    public Mutdb getMutdb() {
+      return mutdb;
+    }
+
+    public void setMutdb(Mutdb mutdb) {
+      this.mutdb = mutdb;
     }
 }

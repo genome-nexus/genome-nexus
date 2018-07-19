@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.cbioportal.genome_nexus.model.ClinVar;
 import org.cbioportal.genome_nexus.model.Cosmic;
+import org.cbioportal.genome_nexus.model.Mutdb;
 import org.cbioportal.genome_nexus.model.Snpeff;
 import org.cbioportal.genome_nexus.model.Vcf;
 
@@ -32,4 +33,7 @@ public class MyVariantInfoMixin
 
     @JsonProperty(value = "clinvar", required = true)
     private ClinVar clinvar;
+
+    @JsonProperty(value = "mutdb", required = true)
+    private Mutdb mutdb;
 }
