@@ -11,7 +11,7 @@ public class MyVariantInfo
     private String hgvs; // the hgvs id
     private Integer version;
 
-    private Snpeff snpeff;
+    //private Snpeff snpeff;
     private Vcf vcf;
     private Dbsnp dbsnp;
     private Cosmic cosmic;
@@ -40,16 +40,16 @@ public class MyVariantInfo
       this.version = version;
     }
 
-    @Field(value="snpeff")
-    public Snpeff getSnpeff()
-    {
-      return snpeff;
-    }
+    // @Field(value="snpeff")
+    // public Snpeff getSnpeff()
+    // {
+    //   return snpeff;
+    // }
 
-    public void setSnpeff(Snpeff snpeff)
-    {
-      this.snpeff = snpeff;
-    }
+    // public void setSnpeff(Snpeff snpeff)
+    // {
+    //   this.snpeff = snpeff;
+    // }
 
     @Field(value="vcf")
     public Vcf getVcf()
