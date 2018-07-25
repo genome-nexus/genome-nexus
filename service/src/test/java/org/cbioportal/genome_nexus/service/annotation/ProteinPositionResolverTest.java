@@ -69,4 +69,26 @@ public class ProteinPositionResolverTest
         assertEquals("Protein end position should NOT be derived from protein change in regular cases",
             proteinPos.getEnd(), new Integer(78));
     }
+
+
+    @Test
+    public void resolveProteinChangeForSplice()
+    {
+        VariantAnnotation annotation = new VariantAnnotation();
+        annotation.setVariantId("17:g.7577018C>A");
+
+        TranscriptConsequence transcriptSplice = new TranscriptConsequence();
+        transcriptSplice.setProteinStart(78);
+        transcriptSplice.setProteinEnd(78);
+
+        Mockito.when(this.proteinChangeResolver.resolveHgvspShort(annotation, transcriptSplice)).thenReturn("X307_splice");
+
+        IntegerRange proteinPos = proteinPositionResolver.resolve(annotation, transcriptSplice);
+
+        assertEquals("Protein start position should be derived from protein change for splice sites",
+            proteinPos.getStart(), new Integer(307));
+
+        assertEquals("Protein end position should be derived from protein change for splice sites",
+            proteinPos.getEnd(), new Integer(307));
+    }
 }
