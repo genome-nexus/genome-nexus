@@ -11,6 +11,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.util.Arrays;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ProteinPositionResolverTest

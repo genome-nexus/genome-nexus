@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.service.annotation;
 
+import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.mock.CanonicalTranscriptResolverMocker;
 import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -168,6 +170,28 @@ public class ProteinChangeResolverTest
             this.proteinChangeResolver.resolveHgvspShort(
                 variantMockData.get("22:g.29091840_29091841delTGinsCA"),
                 variantMockData.get("22:g.29091840_29091841delTGinsCA").getTranscriptConsequences().get(0)
+            )
+        );
+
+        assertEquals(
+            "p.X210_splice",
+            this.proteinChangeResolver.resolveHgvspShort(
+                variantMockData.get("7:g.55220240G>T"),
+                variantMockData.get("7:g.55220240G>T").getTranscriptConsequences().get(0)
+            )
+        );
+    }
+
+    @Test
+    public void resolveHgvsp() throws IOException
+    {
+        Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
+        this.variantClassificationResolverMocker.mockMethods(variantMockData, this.variantClassificationResolver);
+
+        assertNull(
+            "Hgvsp is null when most severe consequence is splice",
+            this.proteinChangeResolver.resolveHgvsp(
+                variantMockData.get("7:g.55220240G>T").getTranscriptConsequences().get(0)
             )
         );
     }
