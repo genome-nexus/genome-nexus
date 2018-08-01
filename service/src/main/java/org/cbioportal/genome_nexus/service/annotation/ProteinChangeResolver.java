@@ -85,11 +85,6 @@ public class ProteinChangeResolver
             hgvspShort = this.resolveHgvspShortFromAAs(transcriptConsequence);
         }
 
-        // remove the leading "p." if exists
-        if (hgvspShort != null && hgvspShort.startsWith("p.")) {
-            hgvspShort = hgvspShort.substring(2);
-        }
-
         return hgvspShort;
     }
 
