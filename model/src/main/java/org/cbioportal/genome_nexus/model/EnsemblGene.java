@@ -9,6 +9,7 @@ public class EnsemblGene
     private String hugoSymbol;
     private String[] synonyms;
     private String[] previousSymbols;
+    private String entrezGeneId;
 
     public EnsemblGene(EnsemblCanonical cn)
     {
@@ -16,6 +17,7 @@ public class EnsemblGene
         this.hugoSymbol = cn.getHugoSymbol();
         this.synonyms = cn.getSynonyms();
         this.previousSymbols = cn.getPreviousSymbols();
+        this.entrezGeneId = cn.getEntrezGeneId();
     }
 
     public String getGeneId() {
@@ -32,6 +34,10 @@ public class EnsemblGene
 
     public String[] getPreviousSymbols() {
         return this.previousSymbols;
+    }
+
+    public String getEntrezGeneId() {
+        return this.entrezGeneId;
     }
 }
 
