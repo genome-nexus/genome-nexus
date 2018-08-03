@@ -33,6 +33,12 @@ public class ProteinPositionResolver
         {
             proteinPos = this.extractProteinPos(proteinChange);
         }
+        // special case for splice
+        if (proteinChange != null &&
+            proteinChange.toLowerCase().contains("x"))
+        {
+            proteinPos = this.extractProteinPos(proteinChange);
+        }
 
         // for all other cases use the reported protein start and end positions
         // (proteinPos may also be null in case of protein change value parse error)
