@@ -132,7 +132,7 @@ public class VariantClassificationResolver
     {
         String defaultValue = "Targeted_Region";
 
-        if (variant == null || variantType == null) {
+        if (variant == null || (variantType == null && !variant.contains("splice"))) {
             return defaultValue;
         }
         else {

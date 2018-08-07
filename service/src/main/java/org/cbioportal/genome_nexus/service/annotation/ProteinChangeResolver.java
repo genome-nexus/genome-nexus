@@ -155,6 +155,8 @@ public class ProteinChangeResolver
         try {
             String[] aaParts = transcriptConsequence.getAminoAcids().split("/");
 
+            // TODO: always using get(0) here, maybe better to get most
+            // impactful consequence and use that?
             if (transcriptConsequence.getConsequenceTerms() != null &&
                 transcriptConsequence.getConsequenceTerms().get(0).toLowerCase().contains("inframe_insertion"))
             {
@@ -223,8 +225,13 @@ public class ProteinChangeResolver
     {
         String hgvsp = null;
 
+        String variantClassification = this.variantClassificationResolver.resolve(null, transcriptConsequence);
+
+        // only use hgvsp if the most severe impact is not a splice variant
         if (transcriptConsequence != null &&
-            transcriptConsequence.getHgvsp() != null)
+            transcriptConsequence.getHgvsp() != null &&
+            !(variantClassification != null && variantClassification.toLowerCase().contains("splice"))
+            )
         {
             hgvsp = this.normalizeHgvsp(transcriptConsequence.getHgvsp());
         }

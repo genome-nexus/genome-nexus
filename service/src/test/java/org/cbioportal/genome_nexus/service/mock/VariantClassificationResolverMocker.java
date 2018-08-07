@@ -124,5 +124,11 @@ public class VariantClassificationResolverMocker
         ).thenReturn(
             "In_Frame_Del"
         );
+
+        Mockito.when(
+            variantClassificationResolver.resolve(null, variantMockData.get("7:g.55220240G>T").getTranscriptConsequences().get(0))
+        ).thenReturn(
+            "Splice_Region"
+        );
     }
 }
