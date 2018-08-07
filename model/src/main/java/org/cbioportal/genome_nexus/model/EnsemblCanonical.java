@@ -39,6 +39,8 @@ public class EnsemblCanonical
     private String refseqIds;
     @Field(value="uniprot_id")
     private String uniprotId;
+    @Field(value="entrez_gene_id")
+    private String entrezGeneId;
 
     private static String[] splitByComma(String input) {
         Pattern p = Pattern.compile("\\s*,\\s*");
@@ -86,5 +88,15 @@ public class EnsemblCanonical
 
     public String getEnsemblCanonicalTranscriptId() {
         return this.ensemblCanonicalTranscriptId;
+    }
+
+    public String getEntrezGeneId() {
+        // remove .0 for backwards compatibility with databases where
+        // entrez_gene_id field is a float
+        if (this.entrezGeneId != null && this.entrezGeneId.endsWith(".0")) {
+            return this.entrezGeneId.substring(0, this.entrezGeneId.length() - 2);
+        } else {
+            return this.entrezGeneId;
+        }
     }
 }

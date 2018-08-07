@@ -16,4 +16,7 @@ public class EnsemblGeneMixin {
 
     @ApiModelProperty(value = "Previous Hugo symbols", position=4, required = false)
     private String[] previousSymbols;
+
+    @ApiModelProperty(value = "Entrez Gene Id", position=5, required = false)
+    private String entrezGeneId;
 }
