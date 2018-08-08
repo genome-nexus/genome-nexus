@@ -5,6 +5,7 @@ import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 import org.cbioportal.genome_nexus.persistence.EnsemblRepository;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.exception.EnsemblTranscriptNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForEntrezGeneIdException;
 import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,19 @@ public class EnsemblServiceImpl implements EnsemblService
     }
 
     @Override
+    public EnsemblGene getCanonicalEnsemblGeneIdByEntrezGeneId(String entrezGeneId)
+        throws NoEnsemblGeneIdForEntrezGeneIdException
+    {
+        EnsemblGene ensemblGene = this.ensemblRepository.getCanonicalEnsemblGeneIdByEntrezGeneId(entrezGeneId);
+
+        if (ensemblGene == null) {
+            throw new NoEnsemblGeneIdForEntrezGeneIdException(entrezGeneId);
+        }
+
+        return ensemblGene;
+    }
+
+    @Override
     public List<EnsemblGene> getCanonicalEnsemblGeneIdByHugoSymbols(List<String> hugoSymbols) {
         List<EnsemblGene> ensemblGenes = new ArrayList<>();
 
@@ -51,6 +65,22 @@ public class EnsemblServiceImpl implements EnsemblService
             try {
                 ensemblGenes.add(this.getCanonicalEnsemblGeneIdByHugoSymbol(hugoSymbol));
             } catch (NoEnsemblGeneIdForHugoSymbolException e) {
+                // ignore the exception for this hugo symbol
+            }
+        }
+
+        return ensemblGenes;
+    }
+
+    @Override
+    public List<EnsemblGene> getCanonicalEnsemblGeneIdByEntrezGeneIds(List<String> entrezGeneIds) {
+        List<EnsemblGene> ensemblGenes = new ArrayList<>();
+
+        for (String entrezGeneId : entrezGeneIds)
+        {
+            try {
+                ensemblGenes.add(this.getCanonicalEnsemblGeneIdByEntrezGeneId(entrezGeneId));
+            } catch (NoEnsemblGeneIdForEntrezGeneIdException e) {
                 // ignore the exception for this hugo symbol
             }
         }

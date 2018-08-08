@@ -170,5 +170,13 @@ public class VariantClassificationResolverTest
                 variantMockData.get("19:g.46141892_46141893delTCinsAA").getTranscriptConsequences().get(1)
             )
         );
+
+        assertEquals(
+            "Splice_Region",
+            this.variantClassificationResolver.resolve(
+                null,
+                variantMockData.get("7:g.55220240G>T").getTranscriptConsequences().get(0)
+            )
+        );
     }
 }

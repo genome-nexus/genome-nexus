@@ -12,6 +12,7 @@ import org.cbioportal.genome_nexus.service.GeneXrefService;
 import org.cbioportal.genome_nexus.service.exception.EnsemblTranscriptNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
+import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForEntrezGeneIdException;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.cbioportal.genome_nexus.web.param.EnsemblFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,32 @@ public class EnsemblController
         @PathVariable String hugoSymbol) throws NoEnsemblGeneIdForHugoSymbolException
     {
         return this.ensemblService.getCanonicalEnsemblGeneIdByHugoSymbol(hugoSymbol);
+    }
+
+    @ApiOperation(value = "Retrieves canonical Ensembl Gene ID by Entrez Gene Ids",
+        nickname = "fetchCanonicalEnsemblGeneIdByEntrezGeneIdsPOST")
+    @RequestMapping(value = "/ensembl/canonical-gene/entrez",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<EnsemblGene> fetchCanonicalEnsemblGeneIdByEntrezGeneIdPOST(
+        @ApiParam(value = "List of Entrez Gene Ids. For example [\"23140\",\"26009\",\"100131879\"]",
+            required = true)
+        @RequestBody List<String> entrezGeneIds)
+    {
+        return this.ensemblService.getCanonicalEnsemblGeneIdByEntrezGeneIds(entrezGeneIds);
+    }
+
+    @ApiOperation(value = "Retrieves Ensembl canonical gene id by Entrez Gene Id",
+        nickname = "fetchCanonicalEnsemblGeneIdByEntrezGeneIdGET")
+    @RequestMapping(value = "/ensembl/canonical-gene/entrez/{entrezGeneId}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public EnsemblGene fetchCanonicalEnsemblGeneIdByEntrezGeneIdGET(
+        @ApiParam(value = "An Entrez Gene Id. For example 23140",
+            required = true)
+        @PathVariable String entrezGeneId) throws NoEnsemblGeneIdForEntrezGeneIdException
+    {
+        return this.ensemblService.getCanonicalEnsemblGeneIdByEntrezGeneId(entrezGeneId);
     }
 
     @ApiOperation(value = "Retrieves Ensembl Transcripts by protein ID, and gene ID. " +

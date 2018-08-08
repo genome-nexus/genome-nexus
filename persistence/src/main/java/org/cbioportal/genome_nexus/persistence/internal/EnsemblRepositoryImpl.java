@@ -61,9 +61,33 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
         return ensemblCanonical;
     }
 
+    private EnsemblCanonical findOneCanonicalByEntrezGeneId(String entrezGeneId) {
+        EnsemblCanonical ensemblCanonical;
+        Query query;
+
+        // search by entrez gene id
+        Criteria criteria = Criteria.where("entrez_gene_id").is(Integer.valueOf(entrezGeneId));
+        query = new Query();
+        query.addCriteria(criteria);
+        ensemblCanonical = mongoTemplate.findOne(query,
+            EnsemblCanonical.class, CANONICAL_TRANSCRIPTS_COLLECTION);
+
+        return ensemblCanonical;
+    }
+
     @Override
     public EnsemblGene getCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol) {
         EnsemblCanonical ensemblCanonical = this.findOneCanonicalByHugoSymbol(hugoSymbol);
+        if (ensemblCanonical != null) {
+            return new EnsemblGene(ensemblCanonical);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public EnsemblGene getCanonicalEnsemblGeneIdByEntrezGeneId(String entrezGeneId) {
+        EnsemblCanonical ensemblCanonical = this.findOneCanonicalByEntrezGeneId(entrezGeneId);
         if (ensemblCanonical != null) {
             return new EnsemblGene(ensemblCanonical);
         } else {

@@ -38,4 +38,5 @@ public interface EnsemblRepositoryCustom
 {
     EnsemblTranscript findOneByHugoSymbolIgnoreCase(String hugoSymbol, String isoformOverrideSource);
     EnsemblGene getCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol);
+    EnsemblGene getCanonicalEnsemblGeneIdByEntrezGeneId(String ensemblGeneId);
 }
