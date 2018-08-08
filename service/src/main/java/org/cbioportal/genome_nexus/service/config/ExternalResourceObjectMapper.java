@@ -7,7 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.cbioportal.genome_nexus.model.*;
 
+import org.cbioportal.genome_nexus.model.my_variant_info_model.*;
+
 import org.cbioportal.genome_nexus.service.mixin.*;
+
+import org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin.*;
 
 import org.springframework.stereotype.Component;
 

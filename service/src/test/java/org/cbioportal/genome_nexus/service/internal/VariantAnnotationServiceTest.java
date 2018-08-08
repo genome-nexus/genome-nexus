@@ -10,7 +10,7 @@ import java.util.Map;
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.IsoformOverride;
 import org.cbioportal.genome_nexus.model.MutationAssessor;
-import org.cbioportal.genome_nexus.model.MyVariantInfo;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.IsoformOverrideService;
@@ -61,7 +61,7 @@ public class VariantAnnotationServiceTest
 
 
     @Mock
-    private MyVariantInfoService myVariantInfoService; //might be impl
+    private MyVariantInfoService myVariantInfoService;
 
     @Spy
     private NotationConverter notationConverter;

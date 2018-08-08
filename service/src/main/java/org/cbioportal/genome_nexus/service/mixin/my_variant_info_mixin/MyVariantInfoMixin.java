@@ -1,13 +1,13 @@
-package org.cbioportal.genome_nexus.service.mixin;
+package org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.cbioportal.genome_nexus.model.ClinVar;
-import org.cbioportal.genome_nexus.model.Cosmic;
-import org.cbioportal.genome_nexus.model.Mutdb;
-import org.cbioportal.genome_nexus.model.Snpeff;
-import org.cbioportal.genome_nexus.model.Vcf;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.ClinVar;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Cosmic;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Mutdb;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Snpeff;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Vcf;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)

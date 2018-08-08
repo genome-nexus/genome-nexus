@@ -1,4 +1,4 @@
-package org.cbioportal.genome_nexus.service.mixin;
+package org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

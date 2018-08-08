@@ -1,6 +1,6 @@
 package org.cbioportal.genome_nexus.service;
 
-import org.cbioportal.genome_nexus.model.MyVariantInfo;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceException;

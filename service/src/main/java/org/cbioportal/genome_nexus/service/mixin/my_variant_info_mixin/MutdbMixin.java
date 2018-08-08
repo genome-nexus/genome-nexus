@@ -1,8 +1,8 @@
-package org.cbioportal.genome_nexus.service.mixin;
+package org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.cbioportal.genome_nexus.model.Hg19;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Hg19;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MutdbMixin

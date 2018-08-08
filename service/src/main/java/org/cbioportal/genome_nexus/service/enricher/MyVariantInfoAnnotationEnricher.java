@@ -3,8 +3,8 @@ package org.cbioportal.genome_nexus.service.enricher;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cbioportal.genome_nexus.model.MyVariantInfo;
-import org.cbioportal.genome_nexus.model.MyVariantInfoAnnotation;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfoAnnotation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;

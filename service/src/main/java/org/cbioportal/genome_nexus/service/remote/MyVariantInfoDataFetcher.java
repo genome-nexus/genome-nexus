@@ -1,6 +1,6 @@
 package org.cbioportal.genome_nexus.service.remote;
 
-import org.cbioportal.genome_nexus.model.MyVariantInfo;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
 import org.springframework.beans.factory.annotation.Autowired;

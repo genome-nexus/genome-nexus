@@ -1,12 +1,12 @@
-package org.cbioportal.genome_nexus.web.mixin;
+package org.cbioportal.genome_nexus.web.mixin.my_variant_info_mixin;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import org.cbioportal.genome_nexus.model.ClinVar;
-import org.cbioportal.genome_nexus.model.Cosmic;
-import org.cbioportal.genome_nexus.model.Dbsnp;
-import org.cbioportal.genome_nexus.model.Snpeff;
-import org.cbioportal.genome_nexus.model.Vcf;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.ClinVar;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Cosmic;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Dbsnp;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Snpeff;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Vcf;
 
 import io.swagger.annotations.ApiModelProperty;
 

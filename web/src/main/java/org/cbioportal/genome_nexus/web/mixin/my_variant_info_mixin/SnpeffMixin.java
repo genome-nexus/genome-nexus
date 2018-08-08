@@ -1,7 +1,7 @@
-package org.cbioportal.genome_nexus.web.mixin;
+package org.cbioportal.genome_nexus.web.mixin.my_variant_info_mixin;
 
 import java.util.List;
-import org.cbioportal.genome_nexus.model.Ann;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Ann;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

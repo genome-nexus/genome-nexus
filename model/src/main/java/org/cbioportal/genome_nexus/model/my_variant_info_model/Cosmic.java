@@ -1,4 +1,4 @@
-package org.cbioportal.genome_nexus.model;
+package org.cbioportal.genome_nexus.model.my_variant_info_model;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 

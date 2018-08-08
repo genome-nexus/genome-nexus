@@ -3,7 +3,7 @@ package org.cbioportal.genome_nexus.web;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.cbioportal.genome_nexus.model.MyVariantInfo;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceException;

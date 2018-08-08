@@ -3,7 +3,7 @@ package org.cbioportal.genome_nexus.service.mock;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cbioportal.genome_nexus.model.MyVariantInfo;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
 import org.cbioportal.genome_nexus.service.MockData;
 
 public class MyVariantInfoMockData implements MockData<MyVariantInfo>

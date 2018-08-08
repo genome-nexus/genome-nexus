@@ -6,7 +6,7 @@ import org.cbioportal.genome_nexus.model.HotspotAnnotation;
 import org.cbioportal.genome_nexus.model.MutationAssessorAnnotation;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
-import org.cbioportal.genome_nexus.model.MyVariantInfoAnnotation;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfoAnnotation;
 
 import java.util.List;
 import java.util.Map;
