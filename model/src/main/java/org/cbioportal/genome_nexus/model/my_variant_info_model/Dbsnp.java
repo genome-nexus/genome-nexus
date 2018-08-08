@@ -147,7 +147,7 @@ public class Dbsnp {
         return varSubtype;
     }
 
-    public void setVarSubtype(String var_subtype) {
+    public void setVarSubtype(String varSubtype) {
         this.varSubtype = varSubtype;
     }
 
