@@ -2,12 +2,12 @@ package org.cbioportal.genome_nexus.model.my_variant_info_model;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public class Hg38 {
+public class Hg38
+{
 
-	private String start;
-	private String end;
+	@Field(value = "start")
+	public String start;
 
-   	@Field(value = "start")
 	public String getStart()
 	{
 		return start;
@@ -17,7 +17,9 @@ public class Hg38 {
 	{
 		this.start = start;
 	}
-   	@Field(value = "end")
+	@Field(value = "end")
+	public String end;
+
 	public String getEnd()
 	{
 		return end;

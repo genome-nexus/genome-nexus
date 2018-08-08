@@ -2,19 +2,12 @@ package org.cbioportal.genome_nexus.model.my_variant_info_model;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public class Cosmic {
+public class Cosmic
+{
 
-	private  String _license;
-	private  String alt;
-	private  String chrom;
-	private  String cosmicId;
-	private Hg19 hg19;
-	private Double mutFreq;
-	private  String mutNt;
-	private  String ref;
-	private  String tumorSite;
+	@Field(value = "_license")
+	public String _license;
 
-   	@Field(value = "_license")
 	public String get_license()
 	{
 		return _license;
@@ -24,7 +17,9 @@ public class Cosmic {
 	{
 		this._license = _license;
 	}
-   	@Field(value = "alt")
+	@Field(value = "alt")
+	public String alt;
+
 	public String getAlt()
 	{
 		return alt;
@@ -34,7 +29,9 @@ public class Cosmic {
 	{
 		this.alt = alt;
 	}
-   	@Field(value = "chrom")
+	@Field(value = "chrom")
+	public String chrom;
+
 	public String getChrom()
 	{
 		return chrom;
@@ -44,7 +41,9 @@ public class Cosmic {
 	{
 		this.chrom = chrom;
 	}
-   	@Field(value = "cosmic_id")
+	@Field(value = "cosmic_id")
+	public String cosmicId;
+
 	public String getCosmicId()
 	{
 		return cosmicId;
@@ -54,7 +53,9 @@ public class Cosmic {
 	{
 		this.cosmicId = cosmicId;
 	}
-   	@Field(value = "hg19")
+	@Field(value = "hg19")
+	public Hg19 hg19;
+
 	public Hg19 getHg19()
 	{
 		return hg19;
@@ -64,7 +65,9 @@ public class Cosmic {
 	{
 		this.hg19 = hg19;
 	}
-   	@Field(value = "mut_freq")
+	@Field(value = "mut_freq")
+	public Double mutFreq;
+
 	public Double getMutFreq()
 	{
 		return mutFreq;
@@ -74,7 +77,9 @@ public class Cosmic {
 	{
 		this.mutFreq = mutFreq;
 	}
-   	@Field(value = "mut_nt")
+	@Field(value = "mut_nt")
+	public String mutNt;
+
 	public String getMutNt()
 	{
 		return mutNt;
@@ -84,7 +89,9 @@ public class Cosmic {
 	{
 		this.mutNt = mutNt;
 	}
-   	@Field(value = "ref")
+	@Field(value = "ref")
+	public String ref;
+
 	public String getRef()
 	{
 		return ref;
@@ -94,7 +101,9 @@ public class Cosmic {
 	{
 		this.ref = ref;
 	}
-   	@Field(value = "tumor_site")
+	@Field(value = "tumor_site")
+	public String tumorSite;
+
 	public String getTumorSite()
 	{
 		return tumorSite;

@@ -1,34 +1,35 @@
 package org.cbioportal.genome_nexus.model.my_variant_info_model;
 
-import org.springframework.data.mongodb.core.mapping.Field;
+import java.util.List;
 
-//import java.util.List;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Snpeff
 {
-    private String license;
 
-    //private List<Ann> ann;
+	@Field(value = "license")
+	public String license;
 
-    @Field(value="license")
-    public String getLicense()
-    {
-      return license;
-    }
+	public String getLicense()
+	{
+		return license;
+	}
 
-    public void setLicense(String license)
-    {
-      this.license = license;
-    }
+	public void setLicense(String license)
+	{
+		this.license = license;
+	}
+	@Field(value = "ann")
+	public List<Ann> ann;
 
-    // @Field(value="ann")
-    // public List<Ann> getAnn()
-    // {
-    //   return ann;
-    // }
+	public List<Ann> getAnn()
+	{
+		return ann;
+	}
 
-    // public void setAnn(List<Ann> ann)
-    // {
-    //   this.ann = ann;
-    // }
+	public void setAnn(List<Ann> ann)
+	{
+		this.ann = ann;
+	}
+
 }

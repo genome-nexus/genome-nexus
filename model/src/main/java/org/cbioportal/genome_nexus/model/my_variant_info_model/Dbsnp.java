@@ -1,163 +1,191 @@
 package org.cbioportal.genome_nexus.model.my_variant_info_model;
 
-import org.springframework.data.mongodb.core.mapping.Field;
-
 import java.util.List;
 
-public class Dbsnp {
-    private String license;
-    private String alleleOrigin;
-    private List<Alleles> alleles;
-    private String alt;
-    private String chrom;
-    private String _class;
-    private Integer dbsnpBuild;
-    private List<String> flags;
-    private Gene gene;
-    private Hg19 hg19;
-    private String ref;
-    private String rsid;
-    private Boolean validated;
-    private String varSubtype;
-    private String vartype;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+public class Dbsnp
+{
 
-    @Field(value = "license")
-    public String getLicense()
-    {
-        return license;
-    }
+	@Field(value = "license")
+	public String license;
 
-    public void setLicense(String license) {
-        this.license = license;
-    }
-    
-    @Field(value = "allele_origin")
-    public String getAllele_origin() {
-        return alleleOrigin;
-    }
+	public String getLicense()
+	{
+		return license;
+	}
 
-    public void setAllele_origin(String alleleOrigin) {
-        this.alleleOrigin = alleleOrigin;
-    }
+	public void setLicense(String license)
+	{
+		this.license = license;
+	}
+	@Field(value = "allele_origin")
+	public String alleleOrigin;
 
-    @Field(value = "alleles")
-    public List<Alleles> getAlleles() {
-        return alleles;
-    }
+	public String getAlleleOrigin()
+	{
+		return alleleOrigin;
+	}
 
-    public void setAlleles(List<Alleles> alleles) {
-        this.alleles = alleles;
-    }
+	public void setAlleleOrigin(String alleleOrigin)
+	{
+		this.alleleOrigin = alleleOrigin;
+	}
+	@Field(value = "alleles")
+	public List<Alleles> alleles;
 
-    @Field(value = "alt")
-    public String getAlt() {
-        return alt;
-    }
+	public List<Alleles> getAlleles()
+	{
+		return alleles;
+	}
 
-    public void setAlt(String alt) {
-        this.alt = alt;
-    }
+	public void setAlleles(List<Alleles> alleles)
+	{
+		this.alleles = alleles;
+	}
+	@Field(value = "alt")
+	public String alt;
 
-    @Field(value = "chrom")
-    public String getChrom() {
-        return chrom;
-    }
+	public String getAlt()
+	{
+		return alt;
+	}
 
-    public void setChrom(String chrom) {
-        this.chrom = chrom;
-    }
+	public void setAlt(String alt)
+	{
+		this.alt = alt;
+	}
+	@Field(value = "chrom")
+	public String chrom;
 
-    @Field(value = "_class")
-    public String get_class() {
-        return _class;
-    }
+	public String getChrom()
+	{
+		return chrom;
+	}
 
-    public void set_class(String _class) {
-        this._class = _class;
-    }
+	public void setChrom(String chrom)
+	{
+		this.chrom = chrom;
+	}
+	@Field(value = "_class")
+	public String _class;
 
-    @Field(value = "dbsnp_build")
-    public Integer getDbsnpBuild() {
-        return dbsnpBuild;
-    }
+	public String get_class()
+	{
+		return _class;
+	}
 
-    public void setDbsnpBuild(Integer dbsnpBuild) {
-        this.dbsnpBuild = dbsnpBuild;
-    }
+	public void set_class(String _class)
+	{
+		this._class = _class;
+	}
+	@Field(value = "dbsnp_build")
+	public Integer dbsnpBuild;
 
-    @Field(value = "flags")
-    public List<String> getFlags() 
-    {
-    return flags;
-    }
+	public Integer getDbsnpBuild()
+	{
+		return dbsnpBuild;
+	}
 
-    public void setFlag(List<String> flags) 
-    {
-    this.flags = flags;
-    }
+	public void setDbsnpBuild(Integer dbsnpBuild)
+	{
+		this.dbsnpBuild = dbsnpBuild;
+	}
+	@Field(value = "flags")
+	public List<String> flags;
 
-    @Field(value = "gene")
-    public Gene getGene() {
-        return gene;
-    }
+	public List<String> getFlags()
+	{
+		return flags;
+	}
 
-    public void setGene(Gene gene) {
-        this.gene = gene;
-    }
+	public void setFlags(List<String> flags)
+	{
+		this.flags = flags;
+	}
+	@Field(value = "gene")
+	public Gene gene;
 
-    @Field(value = "hg19")
-    public Hg19 getHg19() {
-        return hg19;
-    }
+	public Gene getGene()
+	{
+		return gene;
+	}
 
-    public void setHg19(Hg19 hg19) {
-        this.hg19 = hg19;
-    }
+	public void setGene(Gene gene)
+	{
+		this.gene = gene;
+	}
+	@Field(value = "hg19")
+	public Hg19 hg19;
 
-    @Field(value = "ref")
-    public String getRef() {
-        return ref;
-    }
+	public Hg19 getHg19()
+	{
+		return hg19;
+	}
 
-    public void setRef(String ref) {
-        this.ref = ref;
-    }
+	public void setHg19(Hg19 hg19)
+	{
+		this.hg19 = hg19;
+	}
+	@Field(value = "ref")
+	public String ref;
 
-    @Field(value = "rsid")
-    public String getRsid() {
-        return rsid;
-    }
+	public String getRef()
+	{
+		return ref;
+	}
 
-    public void setRsid(String rsid) {
-        this.rsid = rsid;
-    }
+	public void setRef(String ref)
+	{
+		this.ref = ref;
+	}
+	@Field(value = "rsid")
+	public String rsid;
 
-    @Field(value = "validated")
-    public Boolean getValidated() {
-        return validated;
-    }
+	public String getRsid()
+	{
+		return rsid;
+	}
 
-    public void setValidated(Boolean validated) {
-        this.validated = validated;
-    }
+	public void setRsid(String rsid)
+	{
+		this.rsid = rsid;
+	}
+	@Field(value = "validated")
+	public Boolean validated;
 
-    @Field(value = "var_subtype")
-    public String getVarSubtype() {
-        return varSubtype;
-    }
+	public Boolean getValidated()
+	{
+		return validated;
+	}
 
-    public void setVarSubtype(String varSubtype) {
-        this.varSubtype = varSubtype;
-    }
+	public void setValidated(Boolean validated)
+	{
+		this.validated = validated;
+	}
+	@Field(value = "var_subtype")
+	public String varSubtype;
 
-    @Field(value = "vartype")
-    public String getVartype() {
-        return vartype;
-    }
+	public String getVarSubtype()
+	{
+		return varSubtype;
+	}
 
-    public void setVartype(String vartype) {
-        this.vartype = vartype;
-    }
+	public void setVarSubtype(String varSubtype)
+	{
+		this.varSubtype = varSubtype;
+	}
+	@Field(value = "vartype")
+	public String vartype;
+
+	public String getVartype()
+	{
+		return vartype;
+	}
+
+	public void setVartype(String vartype)
+	{
+		this.vartype = vartype;
+	}
 
 }

@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public class Hgvs {
+public class Hgvs
+{
 
-	private List<String> coding;
-	private List<String> genomic;
+	@Field(value = "coding")
+	public List<String> coding;
 
-   	@Field(value = "coding")
 	public List<String> getCoding()
 	{
 		return coding;
@@ -19,7 +19,9 @@ public class Hgvs {
 	{
 		this.coding = coding;
 	}
-   	@Field(value = "genomic")
+	@Field(value = "genomic")
+	public List<String> genomic;
+
 	public List<String> getGenomic()
 	{
 		return genomic;

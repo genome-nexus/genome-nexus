@@ -2,19 +2,12 @@ package org.cbioportal.genome_nexus.model.my_variant_info_model;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public class ClinVar {
+public class ClinVar
+{
 
-	private String _license;
-	private Integer alleleId;
-	private String alt;
-	private String chrom;
-	private String cytogenic;
-	private Gene gene;
-	private Hg19 hg19;
-	private Hg38 hg38;
-	private Hgvs hgvs;
+	@Field(value = "_license")
+	public String _license;
 
-   	@Field(value = "license")
 	public String get_license()
 	{
 		return _license;
@@ -24,7 +17,9 @@ public class ClinVar {
 	{
 		this._license = _license;
 	}
-   	@Field(value = "allele_id")
+	@Field(value = "allele_id")
+	public Integer alleleId;
+
 	public Integer getAlleleId()
 	{
 		return alleleId;
@@ -34,7 +29,9 @@ public class ClinVar {
 	{
 		this.alleleId = alleleId;
 	}
-   	@Field(value = "alt")
+	@Field(value = "alt")
+	public String alt;
+
 	public String getAlt()
 	{
 		return alt;
@@ -44,7 +41,9 @@ public class ClinVar {
 	{
 		this.alt = alt;
 	}
-   	@Field(value = "chrom")
+	@Field(value = "chrom")
+	public String chrom;
+
 	public String getChrom()
 	{
 		return chrom;
@@ -54,7 +53,9 @@ public class ClinVar {
 	{
 		this.chrom = chrom;
 	}
-   	@Field(value = "cytogenic")
+	@Field(value = "cytogenic")
+	public String cytogenic;
+
 	public String getCytogenic()
 	{
 		return cytogenic;
@@ -64,7 +65,9 @@ public class ClinVar {
 	{
 		this.cytogenic = cytogenic;
 	}
-   	@Field(value = "gene")
+	@Field(value = "gene")
+	public Gene gene;
+
 	public Gene getGene()
 	{
 		return gene;
@@ -74,7 +77,9 @@ public class ClinVar {
 	{
 		this.gene = gene;
 	}
-   	@Field(value = "hg19")
+	@Field(value = "hg19")
+	public Hg19 hg19;
+
 	public Hg19 getHg19()
 	{
 		return hg19;
@@ -84,7 +89,9 @@ public class ClinVar {
 	{
 		this.hg19 = hg19;
 	}
-   	@Field(value = "hg38")
+	@Field(value = "hg38")
+	public Hg38 hg38;
+
 	public Hg38 getHg38()
 	{
 		return hg38;
@@ -94,7 +101,9 @@ public class ClinVar {
 	{
 		this.hg38 = hg38;
 	}
-   	@Field(value = "hgvs")
+	@Field(value = "hgvs")
+	public Hgvs hgvs;
+
 	public Hgvs getHgvs()
 	{
 		return hgvs;
@@ -104,4 +113,5 @@ public class ClinVar {
 	{
 		this.hgvs = hgvs;
 	}
+
 }
