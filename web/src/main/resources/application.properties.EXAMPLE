@@ -2,6 +2,9 @@
 # the actual variant value before each VEP request.
 vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1
 
+# VEP web API URL for ids with additional parameters. Note that "VARIANT" field will be replaced with the actual id value before each VEP request.
+vep.url=http://grch37.rest.ensembl.org/vep/human/id/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1
+
 # 200 is the max page size allowed by the public VEP service, it might be possible to increase this for a private instance
 vep.max_page_size=200
 

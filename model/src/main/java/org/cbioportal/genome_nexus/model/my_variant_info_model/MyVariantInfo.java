@@ -5,101 +5,102 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class MyVariantInfo
 {
 
-	@Field(value = "hgvs")
-	public String hgvs;
+    @Field(value = "hgvs")
+    private String hgvs;
 
-	public String getHgvs()
-	{
-		return hgvs;
-	}
+    @Field(value = "version")
+    private Integer version;
 
-	public void setHgvs(String hgvs)
-	{
-		this.hgvs = hgvs;
-	}
-	@Field(value = "version")
-	public Integer version;
+    @Field(value = "snpeff")
+    private Snpeff snpeff;
 
-	public Integer getVersion()
-	{
-		return version;
-	}
+    @Field(value = "vcf")
+    private Vcf vcf;
 
-	public void setVersion(Integer version)
-	{
-		this.version = version;
-	}
-	@Field(value = "snpeff")
-	public Snpeff snpeff;
+    @Field(value = "dbsnp")
+    private Dbsnp dbsnp;
 
-	public Snpeff getSnpeff()
-	{
-		return snpeff;
-	}
+    @Field(value = "cosmic")
+    private Cosmic cosmic;
 
-	public void setSnpeff(Snpeff snpeff)
-	{
-		this.snpeff = snpeff;
-	}
-	@Field(value = "vcf")
-	public Vcf vcf;
+    @Field(value = "clin_var")
+    private ClinVar clinVar;
 
-	public Vcf getVcf()
-	{
-		return vcf;
-	}
+    @Field(value = "mutdb")
+    private Mutdb mutdb;
 
-	public void setVcf(Vcf vcf)
-	{
-		this.vcf = vcf;
-	}
-	@Field(value = "dbsnp")
-	public Dbsnp dbsnp;
 
-	public Dbsnp getDbsnp()
-	{
-		return dbsnp;
-	}
+    public String getHgvs()
+    {
+        return hgvs;
+    }
 
-	public void setDbsnp(Dbsnp dbsnp)
-	{
-		this.dbsnp = dbsnp;
-	}
-	@Field(value = "cosmic")
-	public Cosmic cosmic;
+    public void setHgvs(String hgvs)
+    {
+        this.hgvs = hgvs;
+    }
+    public Integer getVersion()
+    {
+        return version;
+    }
 
-	public Cosmic getCosmic()
-	{
-		return cosmic;
-	}
+    public void setVersion(Integer version)
+    {
+        this.version = version;
+    }
+    public Snpeff getSnpeff()
+    {
+        return snpeff;
+    }
 
-	public void setCosmic(Cosmic cosmic)
-	{
-		this.cosmic = cosmic;
-	}
-	@Field(value = "clin_var")
-	public ClinVar clinVar;
+    public void setSnpeff(Snpeff snpeff)
+    {
+        this.snpeff = snpeff;
+    }
+    public Vcf getVcf()
+    {
+        return vcf;
+    }
 
-	public ClinVar getClinVar()
-	{
-		return clinVar;
-	}
+    public void setVcf(Vcf vcf)
+    {
+        this.vcf = vcf;
+    }
+    public Dbsnp getDbsnp()
+    {
+        return dbsnp;
+    }
 
-	public void setClinVar(ClinVar clinVar)
-	{
-		this.clinVar = clinVar;
-	}
-	@Field(value = "mutdb")
-	public Mutdb mutdb;
+    public void setDbsnp(Dbsnp dbsnp)
+    {
+        this.dbsnp = dbsnp;
+    }
+    public Cosmic getCosmic()
+    {
+        return cosmic;
+    }
 
-	public Mutdb getMutdb()
-	{
-		return mutdb;
-	}
+    public void setCosmic(Cosmic cosmic)
+    {
+        this.cosmic = cosmic;
+    }
+    public ClinVar getClinVar()
+    {
+        return clinVar;
+    }
 
-	public void setMutdb(Mutdb mutdb)
-	{
-		this.mutdb = mutdb;
-	}
+    public void setClinVar(ClinVar clinVar)
+    {
+        this.clinVar = clinVar;
+    }
+    public Mutdb getMutdb()
+    {
+        return mutdb;
+    }
+
+    public void setMutdb(Mutdb mutdb)
+    {
+        this.mutdb = mutdb;
+    }
 
 }

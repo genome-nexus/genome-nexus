@@ -5,113 +5,114 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Ann
 {
 
-	@Field(value = "distance_to_feature")
-	public String distanceToFeature;
+    @Field(value = "distance_to_feature")
+    private String distanceToFeature;
 
-	public String getDistanceToFeature()
-	{
-		return distanceToFeature;
-	}
+    @Field(value = "effect")
+    private String effect;
 
-	public void setDistanceToFeature(String distanceToFeature)
-	{
-		this.distanceToFeature = distanceToFeature;
-	}
-	@Field(value = "effect")
-	public String effect;
+    @Field(value = "feature_id")
+    private String featureId;
 
-	public String getEffect()
-	{
-		return effect;
-	}
+    @Field(value = "feature_type")
+    private String featureType;
 
-	public void setEffect(String effect)
-	{
-		this.effect = effect;
-	}
-	@Field(value = "feature_id")
-	public String featureId;
+    @Field(value = "gene_id")
+    private String geneId;
 
-	public String getFeatureId()
-	{
-		return featureId;
-	}
+    @Field(value = "gene_name")
+    private String geneName;
 
-	public void setFeatureId(String featureId)
-	{
-		this.featureId = featureId;
-	}
-	@Field(value = "feature_type")
-	public String featureType;
+    @Field(value = "hgvs_coding")
+    private String hgvsCoding;
 
-	public String getFeatureType()
-	{
-		return featureType;
-	}
+    @Field(value = "putative_impact")
+    private String putativeImpact;
 
-	public void setFeatureType(String featureType)
-	{
-		this.featureType = featureType;
-	}
-	@Field(value = "gene_id")
-	public String geneId;
+    @Field(value = "transcript_biotype")
+    private String transcriptBiotype;
 
-	public String getGeneId()
-	{
-		return geneId;
-	}
 
-	public void setGeneId(String geneId)
-	{
-		this.geneId = geneId;
-	}
-	@Field(value = "gene_name")
-	public String geneName;
+    public String getDistanceToFeature()
+    {
+        return distanceToFeature;
+    }
 
-	public String getGeneName()
-	{
-		return geneName;
-	}
+    public void setDistanceToFeature(String distanceToFeature)
+    {
+        this.distanceToFeature = distanceToFeature;
+    }
+    public String getEffect()
+    {
+        return effect;
+    }
 
-	public void setGeneName(String geneName)
-	{
-		this.geneName = geneName;
-	}
-	@Field(value = "hgvs_coding")
-	public String hgvsCoding;
+    public void setEffect(String effect)
+    {
+        this.effect = effect;
+    }
+    public String getFeatureId()
+    {
+        return featureId;
+    }
 
-	public String getHgvsCoding()
-	{
-		return hgvsCoding;
-	}
+    public void setFeatureId(String featureId)
+    {
+        this.featureId = featureId;
+    }
+    public String getFeatureType()
+    {
+        return featureType;
+    }
 
-	public void setHgvsCoding(String hgvsCoding)
-	{
-		this.hgvsCoding = hgvsCoding;
-	}
-	@Field(value = "putative_impact")
-	public String putativeImpact;
+    public void setFeatureType(String featureType)
+    {
+        this.featureType = featureType;
+    }
+    public String getGeneId()
+    {
+        return geneId;
+    }
 
-	public String getPutativeImpact()
-	{
-		return putativeImpact;
-	}
+    public void setGeneId(String geneId)
+    {
+        this.geneId = geneId;
+    }
+    public String getGeneName()
+    {
+        return geneName;
+    }
 
-	public void setPutativeImpact(String putativeImpact)
-	{
-		this.putativeImpact = putativeImpact;
-	}
-	@Field(value = "transcript_biotype")
-	public String transcriptBiotype;
+    public void setGeneName(String geneName)
+    {
+        this.geneName = geneName;
+    }
+    public String getHgvsCoding()
+    {
+        return hgvsCoding;
+    }
 
-	public String getTranscriptBiotype()
-	{
-		return transcriptBiotype;
-	}
+    public void setHgvsCoding(String hgvsCoding)
+    {
+        this.hgvsCoding = hgvsCoding;
+    }
+    public String getPutativeImpact()
+    {
+        return putativeImpact;
+    }
 
-	public void setTranscriptBiotype(String transcriptBiotype)
-	{
-		this.transcriptBiotype = transcriptBiotype;
-	}
+    public void setPutativeImpact(String putativeImpact)
+    {
+        this.putativeImpact = putativeImpact;
+    }
+    public String getTranscriptBiotype()
+    {
+        return transcriptBiotype;
+    }
+
+    public void setTranscriptBiotype(String transcriptBiotype)
+    {
+        this.transcriptBiotype = transcriptBiotype;
+    }
 
 }

@@ -65,11 +65,11 @@ public class AnnotationController
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
         hidden = true,
         nickname = "getVariantAnnotation")
-	@RequestMapping(value = "/hgvs/{variants:.+}",
+    @RequestMapping(value = "/hgvs/{variants:.+}",
         method = RequestMethod.GET,
         produces = "application/json")
     @Deprecated
-	public List<VariantAnnotation> getVariantAnnotation(
+    public List<VariantAnnotation> getVariantAnnotation(
         @PathVariable
         @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962_41242963insGA",
             required = true,
@@ -130,7 +130,7 @@ public class AnnotationController
         @RequestParam(required = false) List<String> fields)
     {
         return this.variantAnnotationService.getAnnotations(variants, isoformOverrideSource, fields);
-	}
+    }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided variant",
         nickname = "fetchVariantAnnotationGET")

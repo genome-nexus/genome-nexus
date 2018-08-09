@@ -5,113 +5,114 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Cosmic
 {
 
-	@Field(value = "_license")
-	public String _license;
+    @Field(value = "_license")
+    private String license;
 
-	public String get_license()
-	{
-		return _license;
-	}
+    @Field(value = "alt")
+    private String alt;
 
-	public void set_license(String _license)
-	{
-		this._license = _license;
-	}
-	@Field(value = "alt")
-	public String alt;
+    @Field(value = "chrom")
+    private String chrom;
 
-	public String getAlt()
-	{
-		return alt;
-	}
+    @Field(value = "cosmic_id")
+    private String cosmicId;
 
-	public void setAlt(String alt)
-	{
-		this.alt = alt;
-	}
-	@Field(value = "chrom")
-	public String chrom;
+    @Field(value = "hg19")
+    private Hg19 hg19;
 
-	public String getChrom()
-	{
-		return chrom;
-	}
+    @Field(value = "mut_freq")
+    private Double mutFreq;
 
-	public void setChrom(String chrom)
-	{
-		this.chrom = chrom;
-	}
-	@Field(value = "cosmic_id")
-	public String cosmicId;
+    @Field(value = "mut_nt")
+    private String mutNt;
 
-	public String getCosmicId()
-	{
-		return cosmicId;
-	}
+    @Field(value = "ref")
+    private String ref;
 
-	public void setCosmicId(String cosmicId)
-	{
-		this.cosmicId = cosmicId;
-	}
-	@Field(value = "hg19")
-	public Hg19 hg19;
+    @Field(value = "tumor_site")
+    private String tumorSite;
 
-	public Hg19 getHg19()
-	{
-		return hg19;
-	}
 
-	public void setHg19(Hg19 hg19)
-	{
-		this.hg19 = hg19;
-	}
-	@Field(value = "mut_freq")
-	public Double mutFreq;
+    public String get_license()
+    {
+        return license;
+    }
 
-	public Double getMutFreq()
-	{
-		return mutFreq;
-	}
+    public void set_license(String license)
+    {
+        this.license = license;
+    }
+    public String getAlt()
+    {
+        return alt;
+    }
 
-	public void setMutFreq(Double mutFreq)
-	{
-		this.mutFreq = mutFreq;
-	}
-	@Field(value = "mut_nt")
-	public String mutNt;
+    public void setAlt(String alt)
+    {
+        this.alt = alt;
+    }
+    public String getChrom()
+    {
+        return chrom;
+    }
 
-	public String getMutNt()
-	{
-		return mutNt;
-	}
+    public void setChrom(String chrom)
+    {
+        this.chrom = chrom;
+    }
+    public String getCosmicId()
+    {
+        return cosmicId;
+    }
 
-	public void setMutNt(String mutNt)
-	{
-		this.mutNt = mutNt;
-	}
-	@Field(value = "ref")
-	public String ref;
+    public void setCosmicId(String cosmicId)
+    {
+        this.cosmicId = cosmicId;
+    }
+    public Hg19 getHg19()
+    {
+        return hg19;
+    }
 
-	public String getRef()
-	{
-		return ref;
-	}
+    public void setHg19(Hg19 hg19)
+    {
+        this.hg19 = hg19;
+    }
+    public Double getMutFreq()
+    {
+        return mutFreq;
+    }
 
-	public void setRef(String ref)
-	{
-		this.ref = ref;
-	}
-	@Field(value = "tumor_site")
-	public String tumorSite;
+    public void setMutFreq(Double mutFreq)
+    {
+        this.mutFreq = mutFreq;
+    }
+    public String getMutNt()
+    {
+        return mutNt;
+    }
 
-	public String getTumorSite()
-	{
-		return tumorSite;
-	}
+    public void setMutNt(String mutNt)
+    {
+        this.mutNt = mutNt;
+    }
+    public String getRef()
+    {
+        return ref;
+    }
 
-	public void setTumorSite(String tumorSite)
-	{
-		this.tumorSite = tumorSite;
-	}
+    public void setRef(String ref)
+    {
+        this.ref = ref;
+    }
+    public String getTumorSite()
+    {
+        return tumorSite;
+    }
+
+    public void setTumorSite(String tumorSite)
+    {
+        this.tumorSite = tumorSite;
+    }
 
 }

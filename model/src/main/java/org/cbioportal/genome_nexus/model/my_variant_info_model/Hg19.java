@@ -5,29 +5,30 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Hg19
 {
 
-	@Field(value = "start")
-	public Integer start;
+    @Field(value = "start")
+    private Integer start;
 
-	public Integer getStart()
-	{
-		return start;
-	}
+    @Field(value = "end")
+    private Integer end;
 
-	public void setStart(Integer start)
-	{
-		this.start = start;
-	}
-	@Field(value = "end")
-	public Integer end;
 
-	public Integer getEnd()
-	{
-		return end;
-	}
+    public Integer getStart()
+    {
+        return start;
+    }
 
-	public void setEnd(Integer end)
-	{
-		this.end = end;
-	}
+    public void setStart(Integer start)
+    {
+        this.start = start;
+    }
+    public Integer getEnd()
+    {
+        return end;
+    }
+
+    public void setEnd(Integer end)
+    {
+        this.end = end;
+    }
 
 }

@@ -13,7 +13,7 @@ import org.cbioportal.genome_nexus.model.my_variant_info_model.Hgvs;
 public class ClinVarMixin
 {
 @JsonProperty(value = "license", required = true)
-private String _license;
+private String license;
 
 @JsonProperty(value = "allele_id", required = true)
 private Integer alleleId;

@@ -5,101 +5,102 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Mutdb
 {
 
-	@Field(value = "rsid")
-	public String rsid;
+    @Field(value = "rsid")
+    private String rsid;
 
-	public String getRsid()
-	{
-		return rsid;
-	}
+    @Field(value = "ref")
+    private String ref;
 
-	public void setRsid(String rsid)
-	{
-		this.rsid = rsid;
-	}
-	@Field(value = "ref")
-	public String ref;
+    @Field(value = "alt")
+    private String alt;
 
-	public String getRef()
-	{
-		return ref;
-	}
+    @Field(value = "uniprot_id")
+    private String uniprotId;
 
-	public void setRef(String ref)
-	{
-		this.ref = ref;
-	}
-	@Field(value = "alt")
-	public String alt;
+    @Field(value = "mutpred_score")
+    private Double mutpredScore;
 
-	public String getAlt()
-	{
-		return alt;
-	}
+    @Field(value = "cosmic_id")
+    private String cosmicId;
 
-	public void setAlt(String alt)
-	{
-		this.alt = alt;
-	}
-	@Field(value = "uniprot_id")
-	public String uniprotId;
+    @Field(value = "chrom")
+    private String chrom;
 
-	public String getUniprotId()
-	{
-		return uniprotId;
-	}
+    @Field(value = "hg19")
+    private Hg19 hg19;
 
-	public void setUniprotId(String uniprotId)
-	{
-		this.uniprotId = uniprotId;
-	}
-	@Field(value = "mutpred_score")
-	public Double mutpredScore;
 
-	public Double getMutpredScore()
-	{
-		return mutpredScore;
-	}
+    public String getRsid()
+    {
+        return rsid;
+    }
 
-	public void setMutpredScore(Double mutpredScore)
-	{
-		this.mutpredScore = mutpredScore;
-	}
-	@Field(value = "cosmic_id")
-	public String cosmicId;
+    public void setRsid(String rsid)
+    {
+        this.rsid = rsid;
+    }
+    public String getRef()
+    {
+        return ref;
+    }
 
-	public String getCosmicId()
-	{
-		return cosmicId;
-	}
+    public void setRef(String ref)
+    {
+        this.ref = ref;
+    }
+    public String getAlt()
+    {
+        return alt;
+    }
 
-	public void setCosmicId(String cosmicId)
-	{
-		this.cosmicId = cosmicId;
-	}
-	@Field(value = "chrom")
-	public String chrom;
+    public void setAlt(String alt)
+    {
+        this.alt = alt;
+    }
+    public String getUniprotId()
+    {
+        return uniprotId;
+    }
 
-	public String getChrom()
-	{
-		return chrom;
-	}
+    public void setUniprotId(String uniprotId)
+    {
+        this.uniprotId = uniprotId;
+    }
+    public Double getMutpredScore()
+    {
+        return mutpredScore;
+    }
 
-	public void setChrom(String chrom)
-	{
-		this.chrom = chrom;
-	}
-	@Field(value = "hg19")
-	public Hg19 hg19;
+    public void setMutpredScore(Double mutpredScore)
+    {
+        this.mutpredScore = mutpredScore;
+    }
+    public String getCosmicId()
+    {
+        return cosmicId;
+    }
 
-	public Hg19 getHg19()
-	{
-		return hg19;
-	}
+    public void setCosmicId(String cosmicId)
+    {
+        this.cosmicId = cosmicId;
+    }
+    public String getChrom()
+    {
+        return chrom;
+    }
 
-	public void setHg19(Hg19 hg19)
-	{
-		this.hg19 = hg19;
-	}
+    public void setChrom(String chrom)
+    {
+        this.chrom = chrom;
+    }
+    public Hg19 getHg19()
+    {
+        return hg19;
+    }
+
+    public void setHg19(Hg19 hg19)
+    {
+        this.hg19 = hg19;
+    }
 
 }

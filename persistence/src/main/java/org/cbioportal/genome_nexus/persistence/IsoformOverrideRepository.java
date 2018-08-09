@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public interface IsoformOverrideRepository
 {
-	/**
+    /**
      * Retrieves one IsoformOverride instance matching the given id.
      *
      * @param id transcript id of the isoform
@@ -18,14 +18,14 @@ public interface IsoformOverrideRepository
      */
     IsoformOverride findIsoformOverride(String id);
 
-	/**
-	 * Returns all available IsoformOverrides as a list.
+    /**
+     * Returns all available IsoformOverrides as a list.
      * @return List of IsoformOverride instances
      */
     List<IsoformOverride> findAllAsList();
 
-	/**
-	 * Returns all available IsoformOverrides as a map keyed on transcript id.
+    /**
+     * Returns all available IsoformOverrides as a map keyed on transcript id.
      * @return Map of IsoformOverrides keyed on transcript id
      */
     Map<String, IsoformOverride> findAllAsMap();

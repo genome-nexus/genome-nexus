@@ -5,29 +5,30 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class MyVariantInfoAnnotation
 {
 
-	@Field(value = "license")
-	public String license;
+    @Field(value = "license")
+    private String license;
 
-	public String getLicense()
-	{
-		return license;
-	}
+    @Field(value = "annotation")
+    private MyVariantInfo annotation;
 
-	public void setLicense(String license)
-	{
-		this.license = license;
-	}
-	@Field(value = "annotation")
-	public MyVariantInfo annotation;
 
-	public MyVariantInfo getAnnotation()
-	{
-		return annotation;
-	}
+    public String getLicense()
+    {
+        return license;
+    }
 
-	public void setAnnotation(MyVariantInfo annotation)
-	{
-		this.annotation = annotation;
-	}
+    public void setLicense(String license)
+    {
+        this.license = license;
+    }
+    public MyVariantInfo getAnnotation()
+    {
+        return annotation;
+    }
+
+    public void setAnnotation(MyVariantInfo annotation)
+    {
+        this.annotation = annotation;
+    }
 
 }

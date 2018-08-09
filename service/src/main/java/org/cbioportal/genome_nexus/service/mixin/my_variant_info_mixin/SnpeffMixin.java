@@ -13,6 +13,6 @@ public class SnpeffMixin
     @JsonProperty(value = "license", required = true)
     private String license;
 
-    @JsonProperty(value = "ann", required = true)
-    private List<Ann> ann;
+    // @JsonProperty(value = "ann", required = true)
+    // private List<Ann> ann;
 }

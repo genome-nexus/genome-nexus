@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class CosmicMixin
 {
 @ApiModelProperty(value = "_license", required = false)
-private String _license;
+private String license;
 
 @ApiModelProperty(value = "alt", required = false)
 private String alt;
@@ -32,4 +32,5 @@ private String mutNt;
 private String ref;
 
 @ApiModelProperty(value = "tumor_site", required = false)
-private String tumorSite;}
+private String tumorSite;
+}

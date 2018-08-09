@@ -5,113 +5,114 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class ClinVar
 {
 
-	@Field(value = "_license")
-	public String _license;
+    @Field(value = "_license")
+    private String license;
 
-	public String get_license()
-	{
-		return _license;
-	}
+    @Field(value = "allele_id")
+    private Integer alleleId;
 
-	public void set_license(String _license)
-	{
-		this._license = _license;
-	}
-	@Field(value = "allele_id")
-	public Integer alleleId;
+    @Field(value = "alt")
+    private String alt;
 
-	public Integer getAlleleId()
-	{
-		return alleleId;
-	}
+    @Field(value = "chrom")
+    private String chrom;
 
-	public void setAlleleId(Integer alleleId)
-	{
-		this.alleleId = alleleId;
-	}
-	@Field(value = "alt")
-	public String alt;
+    @Field(value = "cytogenic")
+    private String cytogenic;
 
-	public String getAlt()
-	{
-		return alt;
-	}
+    @Field(value = "gene")
+    private Gene gene;
 
-	public void setAlt(String alt)
-	{
-		this.alt = alt;
-	}
-	@Field(value = "chrom")
-	public String chrom;
+    @Field(value = "hg19")
+    private Hg19 hg19;
 
-	public String getChrom()
-	{
-		return chrom;
-	}
+    @Field(value = "hg38")
+    private Hg38 hg38;
 
-	public void setChrom(String chrom)
-	{
-		this.chrom = chrom;
-	}
-	@Field(value = "cytogenic")
-	public String cytogenic;
+    @Field(value = "hgvs")
+    private Hgvs hgvs;
 
-	public String getCytogenic()
-	{
-		return cytogenic;
-	}
 
-	public void setCytogenic(String cytogenic)
-	{
-		this.cytogenic = cytogenic;
-	}
-	@Field(value = "gene")
-	public Gene gene;
+    public String get_license()
+    {
+        return license;
+    }
 
-	public Gene getGene()
-	{
-		return gene;
-	}
+    public void set_license(String license)
+    {
+        this.license = license;
+    }
+    public Integer getAlleleId()
+    {
+        return alleleId;
+    }
 
-	public void setGene(Gene gene)
-	{
-		this.gene = gene;
-	}
-	@Field(value = "hg19")
-	public Hg19 hg19;
+    public void setAlleleId(Integer alleleId)
+    {
+        this.alleleId = alleleId;
+    }
+    public String getAlt()
+    {
+        return alt;
+    }
 
-	public Hg19 getHg19()
-	{
-		return hg19;
-	}
+    public void setAlt(String alt)
+    {
+        this.alt = alt;
+    }
+    public String getChrom()
+    {
+        return chrom;
+    }
 
-	public void setHg19(Hg19 hg19)
-	{
-		this.hg19 = hg19;
-	}
-	@Field(value = "hg38")
-	public Hg38 hg38;
+    public void setChrom(String chrom)
+    {
+        this.chrom = chrom;
+    }
+    public String getCytogenic()
+    {
+        return cytogenic;
+    }
 
-	public Hg38 getHg38()
-	{
-		return hg38;
-	}
+    public void setCytogenic(String cytogenic)
+    {
+        this.cytogenic = cytogenic;
+    }
+    public Gene getGene()
+    {
+        return gene;
+    }
 
-	public void setHg38(Hg38 hg38)
-	{
-		this.hg38 = hg38;
-	}
-	@Field(value = "hgvs")
-	public Hgvs hgvs;
+    public void setGene(Gene gene)
+    {
+        this.gene = gene;
+    }
+    public Hg19 getHg19()
+    {
+        return hg19;
+    }
 
-	public Hgvs getHgvs()
-	{
-		return hgvs;
-	}
+    public void setHg19(Hg19 hg19)
+    {
+        this.hg19 = hg19;
+    }
+    public Hg38 getHg38()
+    {
+        return hg38;
+    }
 
-	public void setHgvs(Hgvs hgvs)
-	{
-		this.hgvs = hgvs;
-	}
+    public void setHg38(Hg38 hg38)
+    {
+        this.hg38 = hg38;
+    }
+    public Hgvs getHgvs()
+    {
+        return hgvs;
+    }
+
+    public void setHgvs(Hgvs hgvs)
+    {
+        this.hgvs = hgvs;
+    }
 
 }

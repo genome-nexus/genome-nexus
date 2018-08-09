@@ -5,29 +5,30 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Gene
 {
 
-	@Field(value = "gene_id")
-	public String geneId;
+    @Field(value = "gene_id")
+    private String geneId;
 
-	public String getGeneId()
-	{
-		return geneId;
-	}
+    @Field(value = "symbol")
+    private String symbol;
 
-	public void setGeneId(String geneId)
-	{
-		this.geneId = geneId;
-	}
-	@Field(value = "symbol")
-	public String symbol;
 
-	public String getSymbol()
-	{
-		return symbol;
-	}
+    public String getGeneId()
+    {
+        return geneId;
+    }
 
-	public void setSymbol(String symbol)
-	{
-		this.symbol = symbol;
-	}
+    public void setGeneId(String geneId)
+    {
+        this.geneId = geneId;
+    }
+    public String getSymbol()
+    {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol)
+    {
+        this.symbol = symbol;
+    }
 
 }

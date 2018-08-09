@@ -10,7 +10,7 @@ import org.cbioportal.genome_nexus.model.my_variant_info_model.Hg19;
 public class DbsnpMixin
 {
 @JsonProperty(value = "_license", required = true)
-private String _license;
+private String license;
 
 @JsonProperty(value = "allele_origin", required = true)
 private String alleleOrigin;
@@ -52,4 +52,5 @@ private Boolean validated;
 private String varSubtype;
 
 @JsonProperty(value = "vartype", required = true)
-private String vartype;}
+private String vartype;
+}

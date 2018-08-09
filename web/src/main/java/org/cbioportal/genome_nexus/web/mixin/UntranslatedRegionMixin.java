@@ -1,6 +1,5 @@
 package org.cbioportal.genome_nexus.web.mixin;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 
 public class UntranslatedRegionMixin {

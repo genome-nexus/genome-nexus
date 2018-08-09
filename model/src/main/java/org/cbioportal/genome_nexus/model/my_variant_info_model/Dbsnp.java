@@ -7,185 +7,186 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Dbsnp
 {
 
-	@Field(value = "license")
-	public String license;
+    @Field(value = "license")
+    private String license;
 
-	public String getLicense()
-	{
-		return license;
-	}
+    @Field(value = "allele_origin")
+    private String alleleOrigin;
 
-	public void setLicense(String license)
-	{
-		this.license = license;
-	}
-	@Field(value = "allele_origin")
-	public String alleleOrigin;
+    @Field(value = "alleles")
+    private List<Alleles> alleles;
 
-	public String getAlleleOrigin()
-	{
-		return alleleOrigin;
-	}
+    @Field(value = "alt")
+    private String alt;
 
-	public void setAlleleOrigin(String alleleOrigin)
-	{
-		this.alleleOrigin = alleleOrigin;
-	}
-	@Field(value = "alleles")
-	public List<Alleles> alleles;
+    @Field(value = "chrom")
+    private String chrom;
 
-	public List<Alleles> getAlleles()
-	{
-		return alleles;
-	}
+    @Field(value = "_class")
+    private String _class;
 
-	public void setAlleles(List<Alleles> alleles)
-	{
-		this.alleles = alleles;
-	}
-	@Field(value = "alt")
-	public String alt;
+    @Field(value = "dbsnp_build")
+    private Integer dbsnpBuild;
 
-	public String getAlt()
-	{
-		return alt;
-	}
+    @Field(value = "flags")
+    private List<String> flags;
 
-	public void setAlt(String alt)
-	{
-		this.alt = alt;
-	}
-	@Field(value = "chrom")
-	public String chrom;
+    @Field(value = "gene")
+    private Gene gene;
 
-	public String getChrom()
-	{
-		return chrom;
-	}
+    @Field(value = "hg19")
+    private Hg19 hg19;
 
-	public void setChrom(String chrom)
-	{
-		this.chrom = chrom;
-	}
-	@Field(value = "_class")
-	public String _class;
+    @Field(value = "ref")
+    private String ref;
 
-	public String get_class()
-	{
-		return _class;
-	}
+    @Field(value = "rsid")
+    private String rsid;
 
-	public void set_class(String _class)
-	{
-		this._class = _class;
-	}
-	@Field(value = "dbsnp_build")
-	public Integer dbsnpBuild;
+    @Field(value = "validated")
+    private Boolean validated;
 
-	public Integer getDbsnpBuild()
-	{
-		return dbsnpBuild;
-	}
+    @Field(value = "var_subtype")
+    private String varSubtype;
 
-	public void setDbsnpBuild(Integer dbsnpBuild)
-	{
-		this.dbsnpBuild = dbsnpBuild;
-	}
-	@Field(value = "flags")
-	public List<String> flags;
+    @Field(value = "vartype")
+    private String vartype;
 
-	public List<String> getFlags()
-	{
-		return flags;
-	}
 
-	public void setFlags(List<String> flags)
-	{
-		this.flags = flags;
-	}
-	@Field(value = "gene")
-	public Gene gene;
+    public String getLicense()
+    {
+        return license;
+    }
 
-	public Gene getGene()
-	{
-		return gene;
-	}
+    public void setLicense(String license)
+    {
+        this.license = license;
+    }
+    public String getAlleleOrigin()
+    {
+        return alleleOrigin;
+    }
 
-	public void setGene(Gene gene)
-	{
-		this.gene = gene;
-	}
-	@Field(value = "hg19")
-	public Hg19 hg19;
+    public void setAlleleOrigin(String alleleOrigin)
+    {
+        this.alleleOrigin = alleleOrigin;
+    }
+    public List<Alleles> getAlleles()
+    {
+        return alleles;
+    }
 
-	public Hg19 getHg19()
-	{
-		return hg19;
-	}
+    public void setAlleles(List<Alleles> alleles)
+    {
+        this.alleles = alleles;
+    }
+    public String getAlt()
+    {
+        return alt;
+    }
 
-	public void setHg19(Hg19 hg19)
-	{
-		this.hg19 = hg19;
-	}
-	@Field(value = "ref")
-	public String ref;
+    public void setAlt(String alt)
+    {
+        this.alt = alt;
+    }
+    public String getChrom()
+    {
+        return chrom;
+    }
 
-	public String getRef()
-	{
-		return ref;
-	}
+    public void setChrom(String chrom)
+    {
+        this.chrom = chrom;
+    }
+    public String get_class()
+    {
+        return _class;
+    }
 
-	public void setRef(String ref)
-	{
-		this.ref = ref;
-	}
-	@Field(value = "rsid")
-	public String rsid;
+    public void set_class(String _class)
+    {
+        this._class = _class;
+    }
+    public Integer getDbsnpBuild()
+    {
+        return dbsnpBuild;
+    }
 
-	public String getRsid()
-	{
-		return rsid;
-	}
+    public void setDbsnpBuild(Integer dbsnpBuild)
+    {
+        this.dbsnpBuild = dbsnpBuild;
+    }
+    public List<String> getFlags()
+    {
+        return flags;
+    }
 
-	public void setRsid(String rsid)
-	{
-		this.rsid = rsid;
-	}
-	@Field(value = "validated")
-	public Boolean validated;
+    public void setFlags(List<String> flags)
+    {
+        this.flags = flags;
+    }
+    public Gene getGene()
+    {
+        return gene;
+    }
 
-	public Boolean getValidated()
-	{
-		return validated;
-	}
+    public void setGene(Gene gene)
+    {
+        this.gene = gene;
+    }
+    public Hg19 getHg19()
+    {
+        return hg19;
+    }
 
-	public void setValidated(Boolean validated)
-	{
-		this.validated = validated;
-	}
-	@Field(value = "var_subtype")
-	public String varSubtype;
+    public void setHg19(Hg19 hg19)
+    {
+        this.hg19 = hg19;
+    }
+    public String getRef()
+    {
+        return ref;
+    }
 
-	public String getVarSubtype()
-	{
-		return varSubtype;
-	}
+    public void setRef(String ref)
+    {
+        this.ref = ref;
+    }
+    public String getRsid()
+    {
+        return rsid;
+    }
 
-	public void setVarSubtype(String varSubtype)
-	{
-		this.varSubtype = varSubtype;
-	}
-	@Field(value = "vartype")
-	public String vartype;
+    public void setRsid(String rsid)
+    {
+        this.rsid = rsid;
+    }
+    public Boolean getValidated()
+    {
+        return validated;
+    }
 
-	public String getVartype()
-	{
-		return vartype;
-	}
+    public void setValidated(Boolean validated)
+    {
+        this.validated = validated;
+    }
+    public String getVarSubtype()
+    {
+        return varSubtype;
+    }
 
-	public void setVartype(String vartype)
-	{
-		this.vartype = vartype;
-	}
+    public void setVarSubtype(String varSubtype)
+    {
+        this.varSubtype = varSubtype;
+    }
+    public String getVartype()
+    {
+        return vartype;
+    }
+
+    public void setVartype(String vartype)
+    {
+        this.vartype = vartype;
+    }
 
 }

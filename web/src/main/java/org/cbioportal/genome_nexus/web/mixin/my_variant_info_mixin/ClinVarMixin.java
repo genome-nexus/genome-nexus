@@ -12,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class ClinVarMixin
 {
 @ApiModelProperty(value = "license", required = false)
-private String _license;
+private String license;
 
 @ApiModelProperty(value = "allele_id", required = false)
 private Integer alleleId;

@@ -31,4 +31,5 @@ private String cosmicId;
 private String chrom;
 
 @ApiModelProperty(value = "hg19", required = false)
-private Hg19 hg19;}
+private Hg19 hg19;
+}
