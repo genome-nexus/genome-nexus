@@ -11,30 +11,30 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClinVarMixin
 {
-@ApiModelProperty(value = "license", required = false)
-private String license;
+    @ApiModelProperty(value = "license", required = false)
+    private String license;
 
-@ApiModelProperty(value = "allele_id", required = false)
-private Integer alleleId;
+    @ApiModelProperty(value = "allele_id", required = false)
+    private Integer alleleId;
 
-@ApiModelProperty(value = "alt", required = false)
-private String alt;
+    @ApiModelProperty(value = "alt", required = false)
+    private String alt;
 
-@ApiModelProperty(value = "chrom", required = false)
-private String chrom;
+    @ApiModelProperty(value = "chrom", required = false)
+    private String chrom;
 
-@ApiModelProperty(value = "cytogenic", required = false)
-private String cytogenic;
+    @ApiModelProperty(value = "cytogenic", required = false)
+    private String cytogenic;
 
-@ApiModelProperty(value = "gene", required = false)
-private Gene gene;
+    @ApiModelProperty(value = "gene", required = false)
+    private Gene gene;
 
-@ApiModelProperty(value = "hg19", required = false)
-private Hg19 hg19;
+    @ApiModelProperty(value = "hg19", required = false)
+    private Hg19 hg19;
 
-@ApiModelProperty(value = "hg38", required = false)
-private Hg38 hg38;
+    @ApiModelProperty(value = "hg38", required = false)
+    private Hg38 hg38;
 
-@ApiModelProperty(value = "hgvs", required = false)
-private Hgvs hgvs;
+    @ApiModelProperty(value = "hgvs", required = false)
+    private Hgvs hgvs;
 }

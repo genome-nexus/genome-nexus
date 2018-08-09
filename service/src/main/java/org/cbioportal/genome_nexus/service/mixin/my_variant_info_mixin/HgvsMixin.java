@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HgvsMixin
 {
-@JsonProperty(value = "coding", required = true)
-private String coding;
+    @JsonProperty(value = "coding", required = true)
+    private String coding;
 
-@JsonProperty(value = "genomic", required = true)
-private String genomic;
+    @JsonProperty(value = "genomic", required = true)
+    private String genomic;
 }

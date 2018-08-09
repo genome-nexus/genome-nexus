@@ -7,27 +7,27 @@ import org.cbioportal.genome_nexus.model.my_variant_info_model.Hg19;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MutdbMixin
 {
-@JsonProperty(value = "rsid", required = true)
-private String rsid;
+    @JsonProperty(value = "rsid", required = true)
+    private String rsid;
 
-@JsonProperty(value = "ref", required = true)
-private String ref;
+    @JsonProperty(value = "ref", required = true)
+    private String ref;
 
-@JsonProperty(value = "alt", required = true)
-private String alt;
+    @JsonProperty(value = "alt", required = true)
+    private String alt;
 
-@JsonProperty(value = "uniprot_id", required = true)
-private String uniprotId;
+    @JsonProperty(value = "uniprot_id", required = true)
+    private String uniprotId;
 
-@JsonProperty(value = "mutpred_score", required = true)
-private Double mutpredScore;
+    @JsonProperty(value = "mutpred_score", required = true)
+    private Double mutpredScore;
 
-@JsonProperty(value = "cosmic_id", required = true)
-private String cosmicId;
+    @JsonProperty(value = "cosmic_id", required = true)
+    private String cosmicId;
 
-@JsonProperty(value = "chrom", required = true)
-private String chrom;
+    @JsonProperty(value = "chrom", required = true)
+    private String chrom;
 
-@JsonProperty(value = "hg19", required = true)
-private Hg19 hg19;
+    @JsonProperty(value = "hg19", required = true)
+    private Hg19 hg19;
 }

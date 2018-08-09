@@ -26,7 +26,7 @@ public class MyVariantInfoDataFetcher extends BaseExternalResourceFetcher<MyVari
 
     @Autowired
     public MyVariantInfoDataFetcher(ExternalResourceTransformer<MyVariantInfo> transformer,
-                                       @Value("${myvariantinfo.url}") String myVariantInfoUrl)
+                                       @Value("${myvariantinfo.url:http://myvariant.info/v1/variant/VARIANT}") String myVariantInfoUrl)
     {
         super(myVariantInfoUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
         this.transformer = transformer;

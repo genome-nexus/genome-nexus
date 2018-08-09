@@ -9,27 +9,27 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MutdbMixin
 {
-@ApiModelProperty(value = "rsid", required = false)
-private String rsid;
+    @ApiModelProperty(value = "rsid", required = false)
+    private String rsid;
 
-@ApiModelProperty(value = "ref", required = false)
-private String ref;
+    @ApiModelProperty(value = "ref", required = false)
+    private String ref;
 
-@ApiModelProperty(value = "alt", required = false)
-private String alt;
+    @ApiModelProperty(value = "alt", required = false)
+    private String alt;
 
-@ApiModelProperty(value = "uniprot_id", required = false)
-private String uniprotId;
+    @ApiModelProperty(value = "uniprot_id", required = false)
+    private String uniprotId;
 
-@ApiModelProperty(value = "mutpred_score", required = false)
-private Double mutpredScore;
+    @ApiModelProperty(value = "mutpred_score", required = false)
+    private Double mutpredScore;
 
-@ApiModelProperty(value = "cosmic_id", required = false)
-private String cosmicId;
+    @ApiModelProperty(value = "cosmic_id", required = false)
+    private String cosmicId;
 
-@ApiModelProperty(value = "chrom", required = false)
-private String chrom;
+    @ApiModelProperty(value = "chrom", required = false)
+    private String chrom;
 
-@ApiModelProperty(value = "hg19", required = false)
-private Hg19 hg19;
+    @ApiModelProperty(value = "hg19", required = false)
+    private Hg19 hg19;
 }

@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Hg38Mixin
 {
-@JsonProperty(value = "start", required = true)
-private String start;
+    @JsonProperty(value = "start", required = true)
+    private String start;
 
-@JsonProperty(value = "end", required = true)
-private String end;
+    @JsonProperty(value = "end", required = true)
+    private String end;
 }

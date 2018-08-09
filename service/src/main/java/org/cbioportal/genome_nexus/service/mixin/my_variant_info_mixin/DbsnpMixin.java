@@ -9,48 +9,48 @@ import org.cbioportal.genome_nexus.model.my_variant_info_model.Hg19;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DbsnpMixin
 {
-@JsonProperty(value = "_license", required = true)
-private String license;
+    @JsonProperty(value = "_license", required = true)
+    private String license;
 
-@JsonProperty(value = "allele_origin", required = true)
-private String alleleOrigin;
+    @JsonProperty(value = "allele_origin", required = true)
+    private String alleleOrigin;
 
-@JsonProperty(value = "alleles", required = true)
-private Alleles alleles;
+    @JsonProperty(value = "alleles", required = true)
+    private Alleles alleles;
 
-@JsonProperty(value = "alt", required = true)
-private String alt;
+    @JsonProperty(value = "alt", required = true)
+    private String alt;
 
-@JsonProperty(value = "chrom", required = true)
-private String chrom;
+    @JsonProperty(value = "chrom", required = true)
+    private String chrom;
 
-@JsonProperty(value = "class", required = true)
-private String _class;
+    @JsonProperty(value = "class", required = true)
+    private String _class;
 
-@JsonProperty(value = "dbsnp_build", required = true)
-private Integer dbsnpBuild;
+    @JsonProperty(value = "dbsnp_build", required = true)
+    private Integer dbsnpBuild;
 
-@JsonProperty(value = "flags", required = true)
-private String flags;
+    @JsonProperty(value = "flags", required = true)
+    private String flags;
 
-@JsonProperty(value = "gene", required = true)
-private Gene gene;
+    @JsonProperty(value = "gene", required = true)
+    private Gene gene;
 
-@JsonProperty(value = "hg19", required = true)
-private Hg19 hg19;
+    @JsonProperty(value = "hg19", required = true)
+    private Hg19 hg19;
 
-@JsonProperty(value = "ref", required = true)
-private String ref;
+    @JsonProperty(value = "ref", required = true)
+    private String ref;
 
-@JsonProperty(value = "rsid", required = true)
-private String rsid;
+    @JsonProperty(value = "rsid", required = true)
+    private String rsid;
 
-@JsonProperty(value = "validated", required = true)
-private Boolean validated;
+    @JsonProperty(value = "validated", required = true)
+    private Boolean validated;
 
-@JsonProperty(value = "var_subtype", required = true)
-private String varSubtype;
+    @JsonProperty(value = "var_subtype", required = true)
+    private String varSubtype;
 
-@JsonProperty(value = "vartype", required = true)
-private String vartype;
+    @JsonProperty(value = "vartype", required = true)
+    private String vartype;
 }
