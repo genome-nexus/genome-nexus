@@ -1,5 +1,10 @@
 package org.cbioportal.genome_nexus.service.annotation;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.util.Map;
+
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
 import org.junit.Test;
@@ -7,11 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.io.IOException;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 // TODO: fix unnecessary stub tests 
 @RunWith(MockitoJUnitRunner.Silent.class)

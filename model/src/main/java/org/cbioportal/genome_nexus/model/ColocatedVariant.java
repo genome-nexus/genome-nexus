@@ -34,10 +34,6 @@ package org.cbioportal.genome_nexus.model;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 public class ColocatedVariant
 {
     private String gnomad_nfe_maf;
@@ -118,4 +114,11 @@ public class ColocatedVariant
         this.gnomad_eas_allele = gnomad_eas_allele;
     }
 
+    private String dbSnpId;
+
+    @Field(value="id")
+    public String getdbSnpId()
+    {
+        return dbSnpId;
+    }
 }
