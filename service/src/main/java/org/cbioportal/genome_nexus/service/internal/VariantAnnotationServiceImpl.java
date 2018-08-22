@@ -39,10 +39,12 @@ import org.cbioportal.genome_nexus.service.*;
 
 import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
+import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.enricher.CanonicalTranscriptAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.HotspotAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.IsoformAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.MutationAssessorAnnotationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.MyVariantInfoAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -67,28 +69,34 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     private static final Log LOG = LogFactory.getLog(VariantAnnotationServiceImpl.class);
 
     private final CachedVariantAnnotationFetcher cachedExternalResourceFetcher;
+    private final CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher;
     private final NotationConverter notationConverter;
     private final IsoformOverrideService isoformOverrideService;
     private final CancerHotspotService hotspotService;
     private final MutationAssessorService mutationAssessorService;
     private final VariantAnnotationSummaryService variantAnnotationSummaryService;
+    private final MyVariantInfoService myVariantInfoService;
 
     @Autowired
     public VariantAnnotationServiceImpl(CachedVariantAnnotationFetcher cachedExternalResourceFetcher,
+                                        CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher,
                                         NotationConverter notationConverter,
                                         // Lazy autowire services used for enrichment,
                                         // otherwise we are getting circular dependency issues
                                         @Lazy IsoformOverrideService isoformOverrideService,
                                         @Lazy CancerHotspotService hotspotService,
                                         @Lazy MutationAssessorService mutationAssessorService,
+                                        @Lazy MyVariantInfoService myVariantInfoService,
                                         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
+        this.cachedVariantIdAnnotationFetcher = cachedVariantIdAnnotationFetcher;
         this.notationConverter = notationConverter;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
         this.mutationAssessorService = mutationAssessorService;
         this.variantAnnotationSummaryService = variantAnnotationSummaryService;
+        this.myVariantInfoService = myVariantInfoService;
     }
 
     @Override
@@ -285,6 +293,12 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         {
             AnnotationEnricher enricher = new MutationAssessorAnnotationEnricher(mutationAssessorService);
             postEnrichmentService.registerEnricher("mutation_assessor", enricher);
+        }
+
+        if (fields != null && fields.contains("my_variant_info"))
+        {
+            AnnotationEnricher enricher = new MyVariantInfoAnnotationEnricher(myVariantInfoService);
+            postEnrichmentService.registerEnricher("my_variant_info", enricher);
         }
 
         if (fields != null && fields.contains("annotation_summary"))
