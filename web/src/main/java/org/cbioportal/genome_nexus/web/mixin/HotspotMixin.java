@@ -13,6 +13,9 @@ public class HotspotMixin
     @ApiModelProperty(value = "Hugo gene symbol")
     private String hugoSymbol;
 
+    @ApiModelProperty(value = "Ensembl Transcript Id")
+    private String transcriptId;
+
     @ApiModelProperty(value = "Hotspot residue")
     private String residue;
 
