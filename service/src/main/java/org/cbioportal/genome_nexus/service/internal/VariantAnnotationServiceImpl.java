@@ -39,6 +39,7 @@ import org.cbioportal.genome_nexus.service.*;
 
 import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
+import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.enricher.CanonicalTranscriptAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.HotspotAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.IsoformAnnotationEnricher;
@@ -68,6 +69,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     private static final Log LOG = LogFactory.getLog(VariantAnnotationServiceImpl.class);
 
     private final CachedVariantAnnotationFetcher cachedExternalResourceFetcher;
+    private final CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher;
     private final NotationConverter notationConverter;
     private final IsoformOverrideService isoformOverrideService;
     private final CancerHotspotService hotspotService;
@@ -77,6 +79,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
 
     @Autowired
     public VariantAnnotationServiceImpl(CachedVariantAnnotationFetcher cachedExternalResourceFetcher,
+                                        CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher,
                                         NotationConverter notationConverter,
                                         // Lazy autowire services used for enrichment,
                                         // otherwise we are getting circular dependency issues
@@ -87,6 +90,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
                                         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
+        this.cachedVariantIdAnnotationFetcher = cachedVariantIdAnnotationFetcher;
         this.notationConverter = notationConverter;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
