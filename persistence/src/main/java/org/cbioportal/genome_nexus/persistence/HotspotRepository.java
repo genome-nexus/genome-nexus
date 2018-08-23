@@ -43,6 +43,6 @@ import java.util.List;
  */
 public interface HotspotRepository extends MongoRepository<Hotspot, String>
 {
-    @Cacheable("hotspotsByHugoSymbol")
-    List<Hotspot> findByHugoSymbol(String hugoSymbol);
+    @Cacheable("hotspotsByTranscriptId")
+    List<Hotspot> findByTranscriptId(String transcriptId);
 }
