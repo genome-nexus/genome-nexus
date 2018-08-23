@@ -1,6 +1,7 @@
 [
     {
         "hugo_symbol": "BRAF",
+        "transcript_id": "ENST00000288602",
         "residue": "N581",
         "type": "single residue",
         "tumor_count": 21,
@@ -11,6 +12,7 @@
     },
     {
         "hugo_symbol": "BRAF",
+        "transcript_id": "ENST00000288602",
         "residue": "N581",
         "type": "3d",
         "tumor_count": 11,
@@ -21,6 +23,7 @@
     },
     {
         "hugo_symbol": "ERBB2",
+        "transcript_id": "ENST00000269571",
         "residue": "L755",
         "type": "single residue",
         "tumor_count": 44,
@@ -31,6 +34,7 @@
     },
     {
         "hugo_symbol": "ERBB2",
+        "transcript_id": "ENST00000269571",
         "residue": "V697",
         "type": "single residue",
         "tumor_count": 4,
@@ -41,6 +45,7 @@
     },
     {
         "hugo_symbol": "KRAS",
+        "transcript_id": "ENST00000256078",
         "residue": "G12",
         "type": "single residue",
         "tumor_count": 2175,
@@ -51,6 +56,7 @@
     },
     {
         "hugo_symbol": "NRAS",
+        "transcript_id": "ENST00000369535",
         "residue": "G12",
         "type": "single residue",
         "tumor_count": 74,
@@ -61,6 +67,7 @@
     },
     {
         "hugo_symbol": "KRAS",
+        "transcript_id": "ENST00000256078",
         "residue": "G12",
         "type": "3d",
         "tumor_count": 735,
@@ -71,6 +78,7 @@
     },
     {
         "hugo_symbol": "KRAS",
+        "transcript_id": "ENST00000256078",
         "residue": "E63",
         "type": "3d",
         "tumor_count": 2,
@@ -81,6 +89,7 @@
     },
     {
         "hugo_symbol": "EGFR",
+        "transcript_id": "ENST00000275493",
         "residue": "745-759",
         "type": "in-frame indel",
         "tumor_count": 155,
@@ -91,6 +100,7 @@
     },
     {
         "hugo_symbol": "EGFR",
+        "transcript_id": "ENST00000275493",
         "residue": "764-774",
         "type": "in-frame indel",
         "tumor_count": 33,
@@ -101,6 +111,7 @@
     },
     {
         "hugo_symbol": "EGFR",
+        "transcript_id": "ENST00000275493",
         "residue": "709-710",
         "type": "in-frame indel",
         "tumor_count": 9,
@@ -108,5 +119,16 @@
         "trunc_count": 0,
         "inframe_count": 9,
         "splice_count": 0
+    },
+    {
+        "hugoSymbol": "DNMT1",
+        "transcript_id": "ENST00000340748",
+        "residue": "E432",
+        "tumorCount": 7,
+        "type": "single residue",
+        "missenseCount": 7,
+        "truncatingCount": 0,
+        "inframeCount": 0,
+        "spliceCount": 0
     }
 ]

@@ -226,4 +226,43 @@ public class CancerHotspotsIntegrationTest
         assertEquals(this.notationConverter.genomicToHgvs(genomicLocationsInstances.get(1)),
             this.notationConverter.genomicToHgvs(aggregatedHotspots[1].getGenomicLocation()));
     }
+
+    @Test
+    public void testDifferentTranscriptHotspots()
+    {
+        String baseUrl = "http://localhost:38888/cancer_hotspots/genomic/";
+
+        // genomic location strings (needed for GET requests)
+        String[] genomicLocations = {
+            // This variant has a protein change that is the same as hotspot
+            // DNMT1 E432 but it's on a different transcript than the one that
+            // was used for the hotspot paper
+            "19,10267171,10267171,T,C",
+        };
+
+        //////////////////
+        // GET requests //
+        //////////////////
+
+        Hotspot[] hotspots0 = this.fetchHotspotsGET(genomicLocations[0]);
+
+        assertEquals(0, hotspots0.length);
+
+        // genomic location instances (needed for POST requests)
+        List<GenomicLocation> genomicLocationsInstances = Arrays.stream(genomicLocations).map(
+            g -> this.notationConverter.parseGenomicLocation(g, ",")).collect(Collectors.toList());
+
+        //////////////////
+        // POST request //
+        //////////////////
+
+        AggregatedHotspots[] aggregatedHotspots = restTemplate.postForObject(
+            baseUrl, genomicLocationsInstances, AggregatedHotspots[].class);
+
+        // for each genomic location we should have one matching AggregatedHotspots instance
+        assertEquals(genomicLocations.length, aggregatedHotspots.length);
+
+        // GET and POST requests should return exact same hotspots
+        assertEquals(aggregatedHotspots[0].getHotspots().size(), hotspots0.length);
+    }
 }
