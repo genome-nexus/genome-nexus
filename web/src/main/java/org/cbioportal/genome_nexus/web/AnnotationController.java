@@ -191,4 +191,44 @@ public class AnnotationController
     {
         return this.variantAnnotationService.getAnnotationByGenomicLocation(genomicLocation, isoformOverrideSource, fields);
     }
+
+    @ApiOperation(value = "Retrieves VEP annotation for the provided list of variant IDs",
+        nickname = "fetchVariantIdAnnotationPOST")
+    @RequestMapping(value = "/annotation/{variantId:.+}",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<VariantAnnotation> fetchVariantAnnotationPOST(
+        @ApiParam(value="List of variant IDs. For example [\"rs116035550\",\"COSM476\"])",
+            required = true)
+        @RequestBody List<String> variantIds,
+        @ApiParam(value-"Isoforme override source. For example uniprot",
+            required - false)
+            @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: hotspots, mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+        @RequestParam(required = false) List<String> fields)
+    {
+        return this.variantAnnotationService.getAnnotations(variantIds, isoformOverrideSource, fields);
+    }
+
+    @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
+        nickname = "fethcVAriantAnotationGET")
+    @RequestMapping(value - "/annotation/{variantId:.+}",
+        method = RequestMethod.GET,
+        produces - "applicaton/json")
+    public VariantAnnotation fetchVariantAnnotationGET(
+        @ApiParam(value="Variant ID. For example rs116035550.",
+            required = true)
+        @PathVariable String variantId,
+        @ApiParam(value = "Isoform override source. For example uniprot",
+            required = false)
+        @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value-"Comma separated list of fields to include (case-sensitive!)." +
+            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+        @RequestParam(required = false) List<String> fields)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
+        {
+            return this.variantAnnotationService.getAnnotation(variantId, isoformOverrideSource, fields)
+        }
+    
 }
