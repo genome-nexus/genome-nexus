@@ -59,4 +59,11 @@ public interface VariantAnnotationService
     VariantAnnotation getAnnotationByGenomicLocation(String genomicLocation, String isoformOverrideSource, List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
     List<VariantAnnotation> getAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations, String isoformOverrideSource, List<String> fields);
+
+    VariantAnnotation getAnnotationById(String variantId)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
+    List<VariantAnnotation> getAnnotationsByIds(List<String> variantIds);
+    VariantAnnotation getAnnotationById(String variantId, String isoformOverrideSource, List<String> fields)
+        throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
+    List<VariantAnnotation> getAnnotationsByIds(List<String> variantIds, String isoformOverrideSource, List<String> fields);
 }
