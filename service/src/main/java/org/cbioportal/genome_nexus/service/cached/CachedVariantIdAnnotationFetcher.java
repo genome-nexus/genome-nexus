@@ -20,7 +20,7 @@ public class CachedVariantIdAnnotationFetcher extends BaseCachedExternalResource
     public CachedVariantIdAnnotationFetcher(ExternalResourceTransformer<VariantAnnotation> transformer,
                                             VariantAnnotationRepository repository,
                                             VEPDataFetcher fetcher,
-                                            @Value("$vep.max_page_size:200") Integer maxPageSize)
+                                            @Value("${vep.max_page_size:200}") Integer maxPageSize)
     {
         super(VariantAnnotationRepositoryImpl.COLLECTION,
             repository,
