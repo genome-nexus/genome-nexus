@@ -186,7 +186,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     @Override
     public List<VariantAnnotation> getAnnotationsByIds(List<String> variantIds)
     {
-        return this.getVariantIdAnnotations(variantIds);
+        return this.getVariantIdAnnotations(variantIds, null);
     }
 
     @Override
@@ -297,9 +297,10 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     private VariantAnnotation getVariantIdAnnotation(String variantId)
             throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
+        Optional<VariantAnnotation> variantAnnotation = null;
         try {
             // get the annotation from the web service and save it to the DB
-            VariantAnnotation variantAnnotation = Optional.of(cachedVariantIdAnnotationFetcher.fetchAndCache(variantId));
+            variantAnnotation = Optional.of(cachedVariantIdAnnotationFetcher.fetchAndCache(variantId));
 
             // include original variant value too
             variantAnnotation.ifPresent(x -> x.setVariant(variantId));
@@ -324,6 +325,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     }
 
     private List<VariantAnnotation> getVariantIdAnnotations(List<String> variantIds)
+            throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         List<VariantAnnotation> variantAnnotations = null;
 
