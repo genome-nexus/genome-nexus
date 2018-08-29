@@ -60,7 +60,7 @@ public class CachedVariantIdAnnotationFetcher extends BaseCachedExternalResource
     {
         HashMap<String, Object> requestBody = new HashMap<>();
 
-        requestBody.put("dbsnp_ids", ids);
+        requestBody.put("ids", ids);
 
         return requestBody;
     }

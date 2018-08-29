@@ -203,7 +203,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
 
-        return this.getVariantAnnotations(variantIds, postEnrichmentService);
+        return this.getVariantAnnotationsByIds(variantIds, postEnrichmentService);
     }
 
     private VariantAnnotation getVariantAnnotation(String variant)

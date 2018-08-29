@@ -49,7 +49,7 @@ public class VEPIdIntegrationTest
 
         VariantAnnotation ann0 = this.fetchVariantAnnotationByIdGET(dbSNPIds[0]);
 
-        assertEquals(dbSNPIds[0], ann0.getVariantId());
+        assertEquals(dbSNPIds[0], ann0.getVariant());
 
         //////////////////
         // POST request //
@@ -59,11 +59,10 @@ public class VEPIdIntegrationTest
 
         // for each dbsnpid we should have one matching variantannotation
         // instance, except the invalid one
-        assertEquals(dbSNPIds.length, anns.length - 1);
+        assertEquals(dbSNPIds.length -1, anns.length);
 
         // GET and POST requests should return exact same dbsnp ids
-        assertEquals(dbSNPIds[0], anns[0].getVariantId());
-        assertEquals(dbSNPIds[1], anns[1].getVariantId());
-        assertEquals(dbSNPIds[2], anns[2].getVariantId());
+        assertEquals(dbSNPIds[0], anns[0].getVariant());
+        assertEquals(dbSNPIds[1], anns[1].getVariant());
     }
 }
