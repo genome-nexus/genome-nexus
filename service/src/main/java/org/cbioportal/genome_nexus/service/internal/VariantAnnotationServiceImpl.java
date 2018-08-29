@@ -349,7 +349,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     private VariantAnnotation getVariantIdAnnotation(String variantId, EnrichmentService postEnrichmentService)
             throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        VariantAnnotation annotation = this.getVariantAnnotation(variantId);
+        VariantAnnotation annotation = this.getVariantIdAnnotation(variantId);
 
         if (annotation != null && postEnrichmentService != null) {
             postEnrichmentService.enrichAnnotation(annotation);

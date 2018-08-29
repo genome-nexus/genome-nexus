@@ -6,7 +6,7 @@ import org.cbioportal.genome_nexus.persistence.VariantAnnotationRepository;
 import org.cbioportal.genome_nexus.persistence.internal.VariantAnnotationRepositoryImpl;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
-import org.cbioportal.genome_nexus.service.remote.VEPDataFetcher;
+import org.cbioportal.genome_nexus.service.remote.VEPIdDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class CachedVariantIdAnnotationFetcher extends BaseCachedExternalResource
     @Autowired
     public CachedVariantIdAnnotationFetcher(ExternalResourceTransformer<VariantAnnotation> transformer,
                                             VariantAnnotationRepository repository,
-                                            VEPDataFetcher fetcher,
+                                            VEPIdDataFetcher fetcher,
                                             @Value("${vep.max_page_size:200}") Integer maxPageSize)
     {
         super(VariantAnnotationRepositoryImpl.COLLECTION,
