@@ -180,13 +180,13 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     public VariantAnnotation getAnnotationById(String variantId)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.getVariantIdAnnotation(variantId);
+        return this.getVariantAnnotationById(variantId);
     }
 
     @Override
     public List<VariantAnnotation> getAnnotationsByIds(List<String> variantIds)
     {
-        return this.getVariantIdAnnotations(variantIds, null);
+        return this.getVariantAnnotationsByIds(variantIds, null);
     }
 
     @Override
@@ -195,7 +195,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
 
-        return this.getVariantIdAnnotation(variantId, postEnrichmentService);
+        return this.getVariantAnnotationById(variantId, postEnrichmentService);
     }
 
     @Override
@@ -294,7 +294,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         return variantAnnotations;
     }
 
-    private VariantAnnotation getVariantIdAnnotation(String variantId)
+    private VariantAnnotation getVariantAnnotationById(String variantId)
             throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         Optional<VariantAnnotation> variantAnnotation = null;
@@ -324,8 +324,8 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         }
     }
 
-    private List<VariantAnnotation> getVariantIdAnnotations(List<String> variantIds)
-            throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
+    private List<VariantAnnotation> getVariantAnnotationsByIds(List<String> variantIds)
+            throws VariantAnnotationWebServiceException
     {
         List<VariantAnnotation> variantAnnotations = null;
 
@@ -346,10 +346,10 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         return variantAnnotations;
     }
 
-    private VariantAnnotation getVariantIdAnnotation(String variantId, EnrichmentService postEnrichmentService)
+    private VariantAnnotation getVariantAnnotationById(String variantId, EnrichmentService postEnrichmentService)
             throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        VariantAnnotation annotation = this.getVariantIdAnnotation(variantId);
+        VariantAnnotation annotation = this.getVariantAnnotationById(variantId);
 
         if (annotation != null && postEnrichmentService != null) {
             postEnrichmentService.enrichAnnotation(annotation);
@@ -358,13 +358,13 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         return annotation;
     }
 
-    private List<VariantAnnotation> getVariantIdAnnotations(List<String> variantIds, EnrichmentService postEnrichmentService)
+    private List<VariantAnnotation> getVariantAnnotationsByIds(List<String> variantIds, EnrichmentService postEnrichmentService)
     {
         List<VariantAnnotation> variantAnnotations = Collections.emptyList();
 
         try {
             // fetch all annotations at once
-            variantAnnotations = this.getVariantAnnotations(variantIds);
+            variantAnnotations = this.getVariantAnnotationsByIds(variantIds);
 
             if (postEnrichmentService != null) {
                 for (VariantAnnotation annotation : variantAnnotations) {

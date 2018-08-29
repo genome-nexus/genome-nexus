@@ -193,7 +193,7 @@ public class AnnotationController
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of dbSNP ids",
-        nickname = "fetchVariantIdAnnotationPOST")
+        nickname = "fetchVariantAnnotationByIdPOST")
     @RequestMapping(value = "/annotation/id/",
         method = RequestMethod.POST,
         produces = "application/json")
@@ -212,11 +212,11 @@ public class AnnotationController
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the give dbSNP id",
-        nickname = "fetchVariantIdAnnotationGET")
+        nickname = "fetchVariantAnnotationByIdGET")
     @RequestMapping(value = "/annotation/id/{variantId:.+}",
         method = RequestMethod.GET,
         produces = "application/json")
-    public VariantAnnotation fetchVariantIdAnnotationGET(
+    public VariantAnnotation fetchVariantAnnotationByIdGET(
         @ApiParam(value="dbSNP id. For example rs116035550.",
             required = true)
         @PathVariable String variantId,
