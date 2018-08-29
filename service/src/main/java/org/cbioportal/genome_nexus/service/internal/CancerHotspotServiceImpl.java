@@ -69,9 +69,9 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     }
 
     @Override
-    public List<Hotspot> getHotspots(String hugoSymbol) throws CancerHotspotsWebServiceException
+    public List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException
     {
-        return this.hotspotRepository.findByHugoSymbol(hugoSymbol);
+        return this.hotspotRepository.findByTranscriptId(transcriptId);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     {
         Set<Hotspot> hotspots = new LinkedHashSet<>();
 
-        for (Hotspot hotspot : this.getHotspots(transcript.getGeneSymbol()))
+        for (Hotspot hotspot : this.getHotspots(transcript.getTranscriptId()))
         {
             // include only the hotspots matching certain criteria
             if (this.filterHotspot(hotspot, transcript, annotation)) {

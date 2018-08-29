@@ -48,6 +48,10 @@ public class Hotspot
     @Field(value="hugo_symbol")
     private String hugoSymbol;
 
+    @Indexed
+    @Field(value="transcript_id")
+    private String transcriptId;
+
     @Field(value="residue")
     private String residue;
 
@@ -75,6 +79,14 @@ public class Hotspot
 
     public void setHugoSymbol(String hugoSymbol) {
         this.hugoSymbol = hugoSymbol;
+    }
+
+    public String getTranscriptId() {
+        return this.transcriptId;
+    }
+
+    public void setTranscriptId(String transcriptId) {
+        this.transcriptId = transcriptId;
     }
 
     public String getResidue() {

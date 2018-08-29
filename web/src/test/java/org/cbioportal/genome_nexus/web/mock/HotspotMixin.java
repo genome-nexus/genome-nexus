@@ -8,6 +8,9 @@ public class HotspotMixin
 {
     @JsonProperty(value="hugo_symbol")
     private String hugoSymbol;
+    
+    @JsonProperty(value="transcript_id")
+    private String transcriptId;
 
     @JsonProperty(value="residue")
     private String residue;
