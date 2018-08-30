@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 )
 public class VEPIdIntegrationTest
 {
-    private final static String BASE_URL = "http://localhost:38891/annotation/id/";
+    private final static String BASE_URL = "http://localhost:38891/annotation/dbsnp/";
 
     private RestTemplate restTemplate = new RestTemplate();
 
