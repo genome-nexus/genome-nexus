@@ -14,7 +14,7 @@ mutationAssessor.url=http://mutationassessor.org/r3/?cm=var&var=VARIANT&frm=json
 
 # my variant info web API URL
 #"VARIANT" will be replaced with actual variant upon each request.
-myvariantinfo.url=http://myvariant.info/v1/variant/VARIANT
+myvariantinfo.url=https://myvariant.info/v1/variant/VARIANT
 
 # Comma separated list of isoform_overrides_resource:overrides_filename pairs.
 vep.isoform.overrides=uniprot:isoform_overrides_uniprot.txt,mskcc:isoform_overrides_at_mskcc.txt
