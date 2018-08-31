@@ -45,9 +45,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
     {
-        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant);
-
-        return this.getMyVariantInfoByVariantAnnotation(variantAnnotation);
+        return this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(variant));
     }
 
     /**
@@ -56,12 +54,11 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     public List<MyVariantInfo> getMyVariantInfo(List<String> variants)
     {
         List<MyVariantInfo> myVariantInfos = new ArrayList<>();
-        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants);
 
-        for (VariantAnnotation variantAnnotation : variantAnnotations)
+        for (String variant : variants)
         {
             try {
-                myVariantInfos.add(this.getMyVariantInfoByVariantAnnotation(variantAnnotation));
+                myVariantInfos.add(this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(variant)));
             } catch (MyVariantInfoWebServiceException e) {
                 LOG.warn(e.getLocalizedMessage());
             } catch (MyVariantInfoNotFoundException e) {
@@ -75,16 +72,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     public MyVariantInfo getMyVariantInfo(VariantAnnotation annotation)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException
     {
-        // checks annotation is SNP or indel
-        if (annotation.getStart() == null
-            || !annotation.getVariantId().matches("(.*)del(.*)|(.*)ins(.*)")
-            && (!annotation.getStart().equals(annotation.getEnd())
-            || !annotation.getAlleleString().matches("[A-Z]/[A-Z]")))
-        {
-            throw new MyVariantInfoNotFoundException(annotation.getVariant());
-        }
-
-        MyVariantInfo myVariantInfo = this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(annotation));
+        MyVariantInfo myVariantInfo = this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(annotation.getVariantId()));
 
         // add original hgvs variant value too
         myVariantInfo.setHgvs(annotation.getVariant());
@@ -132,10 +120,10 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
         }
     }
 
-    private String buildRequest(VariantAnnotation annotation)
+    private String buildRequest(String variant)
     {
-        StringBuilder sb = new StringBuilder(annotation.getVariantId());
-        if(!sb.toString().startsWith("chr"))
+        StringBuilder sb = new StringBuilder(variant);
+        if(sb.toString().contains("g.") && !sb.toString().startsWith("chr"))
         {
             sb.insert(0,"chr");
         }

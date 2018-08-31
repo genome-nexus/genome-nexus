@@ -32,7 +32,7 @@ public class MyVariantInfoController
 
     @ApiOperation(value = "Retrieves myvariant information for the provided list of variants",
         nickname = "fetchMyVariantInfoAnnotationGET")
-    @RequestMapping(value = "/my_variant_info/{variant:.+}",
+    @RequestMapping(value = "/my_variant_info/variant/{variant:.+}",
         method = RequestMethod.GET,
         produces = "application/json")
     public MyVariantInfo fetchMyVariantInfoAnnotationGET(
@@ -48,7 +48,7 @@ public class MyVariantInfoController
 
     @ApiOperation(value = "Retrieves myvariant information for the provided list of variants",
         nickname = "postMyVariantInfoAnnotation")
-    @RequestMapping(value = "/my_variant_info",
+    @RequestMapping(value = "/my_variant_info/variant",
         method = RequestMethod.POST,
         produces = "application/json")
     public List<MyVariantInfo> fetchMyVariantInfoAnnotationPOST(
