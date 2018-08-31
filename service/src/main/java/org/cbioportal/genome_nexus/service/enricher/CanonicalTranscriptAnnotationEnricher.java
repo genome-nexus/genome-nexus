@@ -19,7 +19,7 @@ public class CanonicalTranscriptAnnotationEnricher implements AnnotationEnricher
     public void enrich(VariantAnnotation annotation)
     {
         VariantAnnotationSummary annotationSummary =
-            this.variantAnnotationSummaryService.getAnnotationSummaryForCanonical(annotation);
+            this.variantAnnotationSummaryService.getAnnotationSummary(annotation);
 
         annotation.setAnnotationSummary(annotationSummary);
     }

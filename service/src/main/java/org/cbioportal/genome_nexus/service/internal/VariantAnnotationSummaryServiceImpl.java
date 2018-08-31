@@ -83,9 +83,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
 
         if (annotationSummary != null && canonicalTranscript != null)
         {
-            List<TranscriptConsequenceSummary> summaries = new ArrayList<>(1);
-            summaries.add(this.getTranscriptSummary(annotation, canonicalTranscript));
-            annotationSummary.setTranscriptConsequences(summaries);
+            annotationSummary.setTranscriptConsequenceSummary(this.getTranscriptSummary(annotation, canonicalTranscript));
             annotationSummary.setCanonicalTranscriptId(canonicalTranscript.getTranscriptId());
         }
 
@@ -141,7 +139,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                 summaries.add(this.getTranscriptSummary(annotation, transcriptConsequence));
             }
 
-            annotationSummary.setTranscriptConsequences(summaries);
+            annotationSummary.setTranscriptConsequenceSummaries(summaries);
         }
 
         return annotationSummary;
