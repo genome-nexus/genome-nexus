@@ -32,7 +32,7 @@
     }
   ],
   "scripts": {
-      "postdeploy": "export GENOME_NEXUS_IMPORT_COMMIT=7f3b1823d9cc418a697154cbbfbd996152f16c54 && IMPORT_DIR=$(bash <(curl -L \"https://github.com/genome-nexus/genome-nexus-importer/blob/${GENOME_NEXUS_IMPORT_COMMIT}/scripts/download_files_from_github_url.sh?raw=true\") https://github.com/genome-nexus/genome-nexus-importer/tree/${GENOME_NEXUS_IMPORT_COMMIT}/export) && sleep 1s && bash $IMPORT_DIR/scripts/import_mongo.sh ${MONGODB_URI} && rm -rf $IMPORT_DIR"
+      "postdeploy": "export GENOME_NEXUS_IMPORT_COMMIT=b890e87bd868467b8c7a2aa3f94b7fc7b6766c3c && IMPORT_DIR=$(bash <(curl -L \"https://github.com/genome-nexus/genome-nexus-importer/blob/${GENOME_NEXUS_IMPORT_COMMIT}/scripts/download_files_from_github_url.sh?raw=true\") https://github.com/genome-nexus/genome-nexus-importer/tree/${GENOME_NEXUS_IMPORT_COMMIT}/export) && sleep 1s && bash $IMPORT_DIR/scripts/import_mongo.sh ${MONGODB_URI} && rm -rf $IMPORT_DIR"
   },
   "addons" : [
     {
