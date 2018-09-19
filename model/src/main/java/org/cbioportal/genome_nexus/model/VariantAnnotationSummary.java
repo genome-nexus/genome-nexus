@@ -10,6 +10,12 @@ public class VariantAnnotationSummary
     private String variantType;
     private String assemblyName;
     private String canonicalTranscriptId;
+    // old list of consequence summaries that only lists the canonical summary
+    // when calling annotation/ and lists all when calling annotation/summary/
+    // This has been replaced by tanscriptConsequenceSummary and
+    // transcriptConsequenceSummaries respectively
+    @Deprecated
+    private List<TranscriptConsequenceSummary> transcriptConsequences;
     // all transcript consequences annotated with e.g. proteinStart/End
     private List<TranscriptConsequenceSummary> transcriptConsequenceSummaries;
     // most impactful canonical annotation, when looking to pick a single
@@ -62,6 +68,14 @@ public class VariantAnnotationSummary
 
     public void setCanonicalTranscriptId(String canonicalTranscriptId) {
         this.canonicalTranscriptId = canonicalTranscriptId;
+    }
+
+    public List<TranscriptConsequenceSummary> getTranscriptConsequences() {
+        return this.transcriptConsequences;
+    }
+
+    public void setTranscriptConsequences(List<TranscriptConsequenceSummary> transcriptConsequences) {
+        this.transcriptConsequences = transcriptConsequences;
     }
 
     public List<TranscriptConsequenceSummary> getTranscriptConsequenceSummaries() {

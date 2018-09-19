@@ -35,4 +35,7 @@ public class VariantAnnotationSummaryMixin
 
     @ApiModelProperty(value = "All transcript consequence summaries", required = true)
     private List<TranscriptConsequenceSummary> transcriptConsequenceSummaries;
+
+    @ApiModelProperty(value = "(Deprecated) Transcript consequence summaries (list of one when using annotation/, multiple when using annotation/summary/", required = true)
+    private List<TranscriptConsequenceSummary> transcriptConsequences;
 }
