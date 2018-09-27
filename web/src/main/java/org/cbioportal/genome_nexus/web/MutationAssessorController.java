@@ -36,7 +36,7 @@ public class MutationAssessorController
         method = RequestMethod.GET,
         produces = "application/json")
     public MutationAssessor fetchMutationAssessorAnnotationGET(
-        @ApiParam(value="A variants. For example 7:g.140453136A>T",
+        @ApiParam(value="A variant. For example 7:g.140453136A>T",
             required = true,
             allowMultiple = true)
         @PathVariable String variant)

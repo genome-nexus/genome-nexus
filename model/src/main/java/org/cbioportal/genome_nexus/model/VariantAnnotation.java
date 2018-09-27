@@ -32,13 +32,14 @@
 
 package org.cbioportal.genome_nexus.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfoAnnotation;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
  * @author Benjamin Gross
@@ -63,6 +64,7 @@ public class VariantAnnotation
     private List<TranscriptConsequence> transcriptConsequences;
 
     private MutationAssessorAnnotation mutationAssessorAnnotation;
+    private MyVariantInfoAnnotation myVariantInfoAnnotation;
     private HotspotAnnotation hotspotAnnotation;
     private VariantAnnotationSummary annotationSummary;
 
@@ -202,7 +204,7 @@ public class VariantAnnotation
     {
         this.colocatedVariants = colocatedVariants;
     }
-    
+
     @Field(value="transcript_consequences")
     public List<TranscriptConsequence> getTranscriptConsequences()
     {
@@ -234,6 +236,14 @@ public class VariantAnnotation
 
     public void setMutationAssessorAnnotation(MutationAssessorAnnotation mutationAssessorAnnotation) {
         this.mutationAssessorAnnotation = mutationAssessorAnnotation;
+    }
+
+    public MyVariantInfoAnnotation getMyVariantInfoAnnotation() {
+        return myVariantInfoAnnotation;
+    }
+
+    public void setMyVariantInfoAnnotation(MyVariantInfoAnnotation myVariantInfoAnnotation) {
+        this.myVariantInfoAnnotation = myVariantInfoAnnotation;
     }
 
     public HotspotAnnotation getHotspotAnnotation() {

@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface IsoformOverrideRepoFactory
 {
-	/**
+    /**
      * Get the IsoformOverrideRepository instance corresponding to the given source id.
      *
      * @param id    source id for the repository
@@ -15,7 +15,7 @@ public interface IsoformOverrideRepoFactory
      */
     IsoformOverrideRepository getRepository(String id);
 
-	/**
+    /**
      * Returns the list of all available isoform override data source names.
      *
      * @return list of available override sources

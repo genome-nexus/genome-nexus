@@ -65,11 +65,11 @@ public class AnnotationController
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
         hidden = true,
         nickname = "getVariantAnnotation")
-	@RequestMapping(value = "/hgvs/{variants:.+}",
+    @RequestMapping(value = "/hgvs/{variants:.+}",
         method = RequestMethod.GET,
         produces = "application/json")
     @Deprecated
-	public List<VariantAnnotation> getVariantAnnotation(
+    public List<VariantAnnotation> getVariantAnnotation(
         @PathVariable
         @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962_41242963insGA",
             required = true,
@@ -130,7 +130,7 @@ public class AnnotationController
         @RequestParam(required = false) List<String> fields)
     {
         return this.variantAnnotationService.getAnnotations(variants, isoformOverrideSource, fields);
-	}
+    }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided variant",
         nickname = "fetchVariantAnnotationGET")
@@ -191,4 +191,44 @@ public class AnnotationController
     {
         return this.variantAnnotationService.getAnnotationByGenomicLocation(genomicLocation, isoformOverrideSource, fields);
     }
+
+    @ApiOperation(value = "Retrieves VEP annotation for the provided list of dbSNP ids",
+        nickname = "fetchVariantAnnotationByIdPOST")
+    @RequestMapping(value = "/annotation/dbsnp/",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<VariantAnnotation> fetchVariantbyDbSnpIdAnnotationPOST(
+        @ApiParam(value="List of variant IDs. For example [\"rs116035550\"]",
+            required = true)
+        @RequestBody List<String> variantIds,
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+            @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: annotation_summary", required = false, defaultValue = "annotation_summary")
+        @RequestParam(required = false) List<String> fields)
+    {
+        return this.variantAnnotationService.getAnnotationsByIds(variantIds, isoformOverrideSource, fields);
+    }
+
+    @ApiOperation(value = "Retrieves VEP annotation for the give dbSNP id",
+        nickname = "fetchVariantAnnotationByIdGET")
+    @RequestMapping(value = "/annotation/dbsnp/{variantId:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public VariantAnnotation fetchVariantAnnotationByDbSnpIdGET(
+        @ApiParam(value="dbSNP id. For example rs116035550.",
+            required = true)
+        @PathVariable String variantId,
+        @ApiParam(value="Isoform override source. For example uniprot",
+            required = false)
+        @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
+            "For example: annotation_summary", required = false, defaultValue = "annotation_summary")
+        @RequestParam(required = false) List<String> fields)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
+    {
+        return this.variantAnnotationService.getAnnotationById(variantId, isoformOverrideSource, fields);
+    }
+
 }

@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  */
 public class Numerical
 {
-	/**
+    /**
      * Extracts positive integers from the given input string.
      *
      * @param input input string
@@ -71,7 +71,7 @@ public class Numerical
         return list;
     }
 
-	/**
+    /**
      * Checks if the given input value overlaps the start and end values.
      * Input value can be a range value too.
      *
