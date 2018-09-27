@@ -197,7 +197,7 @@ public class AnnotationController
     @RequestMapping(value = "/annotation/dbsnp/",
         method = RequestMethod.POST,
         produces = "application/json")
-    public List<VariantAnnotation> fetchVariantIdAnnotationPOST(
+    public List<VariantAnnotation> fetchVariantbyDbSnpIdAnnotationPOST(
         @ApiParam(value="List of variant IDs. For example [\"rs116035550\"]",
             required = true)
         @RequestBody List<String> variantIds,
@@ -216,7 +216,7 @@ public class AnnotationController
     @RequestMapping(value = "/annotation/dbsnp/{variantId:.+}",
         method = RequestMethod.GET,
         produces = "application/json")
-    public VariantAnnotation fetchVariantAnnotationByIdGET(
+    public VariantAnnotation fetchVariantAnnotationByDbSnpIdGET(
         @ApiParam(value="dbSNP id. For example rs116035550.",
             required = true)
         @PathVariable String variantId,
