@@ -19,6 +19,9 @@ public class EnsemblTranscript
     @Field(value="gene_stable_id")
     private String geneId;
 
+    @Field(value="refseq_mrna_id")
+    private String refseqMrnaId;
+
     @Field(value="hgnc_symbols")
     private List<String> hugoSymbols;
 
@@ -75,6 +78,14 @@ public class EnsemblTranscript
 
     public void setHugoSymbols(List<String> hugoSymbols) {
         this.hugoSymbols = hugoSymbols;
+    }
+
+    public String getRefseqMrnaId() {
+        return this.refseqMrnaId;
+    }
+
+    public void setRefseqMrnaId(String refseqMrnaId) {
+        this.refseqMrnaId = refseqMrnaId;
     }
 
     public List<PfamDomainRange> getPfamDomains() {
