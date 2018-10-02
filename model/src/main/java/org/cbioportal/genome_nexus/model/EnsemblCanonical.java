@@ -21,7 +21,7 @@ public class EnsemblCanonical
     private String genomeNexusCanonicalTranscriptId;
     @Field(value="uniprot_canonical_transcript")
     private String uniprotCanonicalTranscriptId;
-    @Field(value="mskcc_canonical_trancript")
+    @Field(value="mskcc_canonical_transcript")
     private String mskccCanonicalTranscriptId;
     @Field(value="hgnc_id")
     private String hgncId;
@@ -59,12 +59,16 @@ public class EnsemblCanonical
             switch (isoformOverrideSource) {
                 case "mskcc":
                     canonicalTranscriptId = this.mskccCanonicalTranscriptId;
+                    break;
                 case "uniprot":
                     canonicalTranscriptId = this.uniprotCanonicalTranscriptId;
+                    break;
                 case "ensembl":
                     canonicalTranscriptId = this.ensemblCanonicalTranscriptId;
+                    break;
                 default:
                     canonicalTranscriptId = this.uniprotCanonicalTranscriptId;
+                    break;
             }
             return canonicalTranscriptId;
         }
