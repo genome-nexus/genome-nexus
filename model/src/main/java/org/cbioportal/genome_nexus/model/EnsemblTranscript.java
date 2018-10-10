@@ -21,6 +21,9 @@ public class EnsemblTranscript
 
     @Field(value="refseq_mrna_id")
     private String refseqMrnaId;
+ 
+    @Field(value="ccds_id")
+    private String ccdsId;
 
     @Field(value="hgnc_symbols")
     private List<String> hugoSymbols;
@@ -86,6 +89,14 @@ public class EnsemblTranscript
 
     public void setRefseqMrnaId(String refseqMrnaId) {
         this.refseqMrnaId = refseqMrnaId;
+    }
+
+    public String getCcdsId() {
+        return this.ccdsId;
+    }
+
+    public void setCcdsId(String ccdsId) {
+        this.ccdsId = ccdsId;
     }
 
     public List<PfamDomainRange> getPfamDomains() {

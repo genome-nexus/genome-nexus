@@ -28,9 +28,12 @@ public class EnsemblTranscriptMixin {
     @ApiModelProperty(value = "RefSeq mRNA ID", position=7)
     private String refseqMrnaId;
 
-    @ApiModelProperty(value = "Exon information", position=8, dataType="List")
+    @ApiModelProperty(value = "Consensus CDS (CCDS) ID", position=8)
+    private String ccdsId;
+
+    @ApiModelProperty(value = "Exon information", position=9, dataType="List")
     private List<ExonMixin> exons;
 
-    @ApiModelProperty(value = "UTR information", position=9, dataType="List")
+    @ApiModelProperty(value = "UTR information", position=10, dataType="List")
     private List<UntranslatedRegionMixin> utrs;
 }
