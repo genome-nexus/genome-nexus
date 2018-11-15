@@ -213,7 +213,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
 
         try {
             // get the annotation from the web service and save it to the DB
-            variantAnnotation = Optional.of(cachedExternalResourceFetcher.fetchAndCache(variant));
+            variantAnnotation = Optional.ofNullable(cachedExternalResourceFetcher.fetchAndCache(variant));
 
             // include original variant value too
             variantAnnotation.ifPresent(x -> x.setVariant(variant));
@@ -300,7 +300,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         Optional<VariantAnnotation> variantAnnotation = null;
         try {
             // get the annotation from the web service and save it to the DB
-            variantAnnotation = Optional.of(cachedVariantIdAnnotationFetcher.fetchAndCache(variantId));
+            variantAnnotation = Optional.ofNullable(cachedVariantIdAnnotationFetcher.fetchAndCache(variantId));
 
             // include original variant value too
             variantAnnotation.ifPresent(x -> x.setVariant(variantId));
