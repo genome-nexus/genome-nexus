@@ -90,7 +90,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
 
         try {
             // get the annotation from the web service and save it to the DB
-            myVariantInfo = Optional.of(cachedExternalResourceFetcher.fetchAndCache(variant));
+            myVariantInfo = Optional.ofNullable(cachedExternalResourceFetcher.fetchAndCache(variant));
         } catch (ResourceMappingException e) {
             throw new MyVariantInfoWebServiceException(e.getMessage());
         } catch (HttpClientErrorException e) {

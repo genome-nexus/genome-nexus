@@ -89,7 +89,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 List<T> list = this.transformer.transform(rawValue, this.type);
 
                 if (list.size() > 0) {
-                    instance = Optional.of(list.get(0));
+                    instance = Optional.ofNullable(list.get(0));
                 }
 
                 // save everything to the cache as a properly parsed JSON
