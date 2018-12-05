@@ -37,6 +37,7 @@ import org.cbioportal.genome_nexus.persistence.HotspotRepository;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.service.annotation.VariantAnnotationInputFormat;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -102,7 +103,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
     {
-        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant);
+        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant, VariantAnnotationInputFormat.HGVS);
         List<Hotspot> hotspots = new ArrayList<>();
 
         if (variantAnnotation != null)
@@ -117,7 +118,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     public List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants)
         throws CancerHotspotsWebServiceException
     {
-        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants);
+        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants, VariantAnnotationInputFormat.HGVS);
 
         List<AggregatedHotspots> hotspots = new ArrayList<>();
 

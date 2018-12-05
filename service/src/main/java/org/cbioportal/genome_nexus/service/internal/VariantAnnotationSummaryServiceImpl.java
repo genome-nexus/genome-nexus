@@ -72,7 +72,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         return this.getAnnotationSummaryForCanonical(
-            this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, null));
+            this.variantAnnotationService.getAnnotation(variant, VariantAnnotationInputFormat.HGVS, isoformOverrideSource, null));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         return this.getAnnotationSummary(
-            this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, null));
+            this.variantAnnotationService.getAnnotation(variant, VariantAnnotationInputFormat.HGVS, isoformOverrideSource, null));
     }
 
     @Override
@@ -109,7 +109,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         List<VariantAnnotationSummary> summaries = new ArrayList<>();
 
         List<VariantAnnotation> annotations =
-            this.variantAnnotationService.getAnnotations(variants, isoformOverrideSource, null);
+            this.variantAnnotationService.getAnnotations(variants, VariantAnnotationInputFormat.HGVS, isoformOverrideSource, null);
 
         for (VariantAnnotation annotation: annotations) {
             summaries.add(this.getAnnotationSummary(annotation));
@@ -123,7 +123,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         List<VariantAnnotationSummary> summaries = new ArrayList<>();
 
         List<VariantAnnotation> annotations =
-            this.variantAnnotationService.getAnnotations(variants, isoformOverrideSource, null);
+            this.variantAnnotationService.getAnnotations(variants, VariantAnnotationInputFormat.HGVS, isoformOverrideSource, null);
 
         for (VariantAnnotation annotation: annotations) {
             summaries.add(this.getAnnotationSummaryForCanonical(annotation));

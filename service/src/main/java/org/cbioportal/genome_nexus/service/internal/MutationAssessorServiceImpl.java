@@ -6,6 +6,7 @@ import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
+import org.cbioportal.genome_nexus.service.annotation.VariantAnnotationInputFormat;
 import org.cbioportal.genome_nexus.service.cached.CachedMutationAssessorFetcher;
 import org.cbioportal.genome_nexus.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
-        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant);
+        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant, VariantAnnotationInputFormat.HGVS);
 
         return this.getMutationAssessorByVariantAnnotation(variantAnnotation);
     }
@@ -52,7 +53,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
     public List<MutationAssessor> getMutationAssessor(List<String> variants)
     {
         List<MutationAssessor> mutationAssessors = new ArrayList<>();
-        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants);
+        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants, VariantAnnotationInputFormat.HGVS);
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)
         {

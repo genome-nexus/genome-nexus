@@ -34,6 +34,7 @@ package org.cbioportal.genome_nexus.service;
 
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.service.annotation.VariantAnnotationInputFormat;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 
@@ -44,12 +45,12 @@ import java.util.List;
  */
 public interface VariantAnnotationService
 {
-    VariantAnnotation getAnnotation(String variant)
+    VariantAnnotation getAnnotation(String variant, VariantAnnotationInputFormat format)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
-    List<VariantAnnotation> getAnnotations(List<String> variants);
-    VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, List<String> fields)
+    List<VariantAnnotation> getAnnotations(List<String> variants, VariantAnnotationInputFormat format);
+    VariantAnnotation getAnnotation(String variant, VariantAnnotationInputFormat format, String isoformOverrideSource, List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
-    List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, List<String> fields);
+    List<VariantAnnotation> getAnnotations(List<String> variants, VariantAnnotationInputFormat format, String isoformOverrideSource, List<String> fields);
 
     VariantAnnotation getAnnotation(GenomicLocation genomicLocation)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
@@ -59,11 +60,4 @@ public interface VariantAnnotationService
     VariantAnnotation getAnnotationByGenomicLocation(String genomicLocation, String isoformOverrideSource, List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
     List<VariantAnnotation> getAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations, String isoformOverrideSource, List<String> fields);
-
-    VariantAnnotation getAnnotationById(String variantId)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
-    List<VariantAnnotation> getAnnotationsByIds(List<String> variantIds);
-    VariantAnnotation getAnnotationById(String variantId, String isoformOverrideSource, List<String> fields)
-        throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
-    List<VariantAnnotation> getAnnotationsByIds(List<String> variantIds, String isoformOverrideSource, List<String> fields);
 }
