@@ -75,6 +75,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     private final CachedVariantAnnotationFetcher cachedExternalResourceFetcher;
     private final CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher;
     private final CachedVariantRegionAnnotationFetcher cachedVariantRegionAnnotationFetcher;
+    private final Boolean isRegionAnnotationEnabled;
     private final NotationConverter notationConverter;
     private final IsoformOverrideService isoformOverrideService;
     private final CancerHotspotService hotspotService;
@@ -104,6 +105,7 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         this.mutationAssessorService = mutationAssessorService;
         this.variantAnnotationSummaryService = variantAnnotationSummaryService;
         this.myVariantInfoService = myVariantInfoService;
+        this.isRegionAnnotationEnabled = cachedVariantRegionAnnotationFetcher.hasValidURI();
     }
 
     @Override
@@ -148,7 +150,11 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     public VariantAnnotation getAnnotation(GenomicLocation genomicLocation)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.getAnnotation(this.notationConverter.genomicToEnsemblRestRegion(genomicLocation), VariantAnnotationInputFormat.REGION);
+        if (this.isRegionAnnotationEnabled) {
+            return this.getAnnotation(this.notationConverter.genomicToEnsemblRestRegion(genomicLocation), VariantAnnotationInputFormat.REGION);
+        } else {
+            return this.getAnnotation(this.notationConverter.genomicToHgvs(genomicLocation), VariantAnnotationInputFormat.HGVS);
+        }
     }
 
     @Override
@@ -161,7 +167,11 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     @Override
     public List<VariantAnnotation> getAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations)
     {
-        return this.getAnnotations(this.notationConverter.genomicToEnsemblRestRegion(genomicLocations), VariantAnnotationInputFormat.REGION);
+        if (this.isRegionAnnotationEnabled) {
+            return this.getAnnotations(this.notationConverter.genomicToEnsemblRestRegion(genomicLocations), VariantAnnotationInputFormat.REGION);
+        } else {
+            return this.getAnnotations(this.notationConverter.genomicToHgvs(genomicLocations), VariantAnnotationInputFormat.HGVS);
+        }
     }
 
     @Override
@@ -170,10 +180,21 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
                                                             List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
-        return this.getAnnotation(this.notationConverter.genomicToEnsemblRestRegion(genomicLocation),
-            VariantAnnotationInputFormat.REGION,
-            isoformOverrideSource,
-            fields);
+        if (this.isRegionAnnotationEnabled) {
+            return this.getAnnotation(
+                this.notationConverter.genomicToEnsemblRestRegion(genomicLocation),
+                VariantAnnotationInputFormat.REGION,
+                isoformOverrideSource,
+                fields
+            );
+        } else {
+            return this.getAnnotation(
+                this.notationConverter.genomicToHgvs(genomicLocation),
+                VariantAnnotationInputFormat.HGVS,
+                isoformOverrideSource,
+                fields
+            );
+        }
     }
 
     @Override
@@ -181,10 +202,21 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
                                                                     String isoformOverrideSource,
                                                                     List<String> fields)
     {
-        return this.getAnnotations(this.notationConverter.genomicToEnsemblRestRegion(genomicLocations),
-            VariantAnnotationInputFormat.REGION,
-            isoformOverrideSource,
-            fields);
+        if (this.isRegionAnnotationEnabled) {
+            return this.getAnnotations(
+                this.notationConverter.genomicToEnsemblRestRegion(genomicLocations),
+                VariantAnnotationInputFormat.REGION,
+                isoformOverrideSource,
+                fields
+            );
+        } else {
+            return this.getAnnotations(
+                this.notationConverter.genomicToHgvs(genomicLocations),
+                VariantAnnotationInputFormat.HGVS,
+                isoformOverrideSource,
+                fields
+            );
+        }
     }
 
     private BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> getExternalResourceFetcher(VariantAnnotationInputFormat format) {

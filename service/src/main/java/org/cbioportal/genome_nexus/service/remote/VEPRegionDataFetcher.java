@@ -31,7 +31,7 @@ public class VEPRegionDataFetcher extends BaseExternalResourceFetcher<VariantAnn
 
     @Autowired
     public VEPRegionDataFetcher(ExternalResourceTransformer<VariantAnnotation> externalResourceTransformer,
-                                @Value("${gn_vep.region.url}") String vepRegionUrl)
+                                @Value("${gn_vep.region.url:}") String vepRegionUrl)
     {
         super(vepRegionUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
         this.transformer = externalResourceTransformer;

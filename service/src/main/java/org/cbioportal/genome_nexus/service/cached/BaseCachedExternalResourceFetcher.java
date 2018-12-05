@@ -52,6 +52,10 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         this.maxPageSize = maxPageSize;
     }
 
+    public Boolean hasValidURI() {
+        return this.fetcher.hasValidURI();
+    }
+
     // Needs to be overridden to support checking for valid ids
     protected Boolean isValidId(String id)
     {

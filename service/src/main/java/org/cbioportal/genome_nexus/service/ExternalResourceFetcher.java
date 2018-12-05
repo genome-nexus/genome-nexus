@@ -10,6 +10,7 @@ import java.util.Map;
 
 public interface ExternalResourceFetcher<T>
 {
+    Boolean hasValidURI();
     DBObject fetchRawValue(Map<String, String> queryParams) throws HttpClientErrorException, ResourceAccessException;
     DBObject fetchRawValue(String param) throws HttpClientErrorException, ResourceAccessException;
     DBObject fetchRawValue(Object requestBody) throws HttpClientErrorException, ResourceAccessException;
