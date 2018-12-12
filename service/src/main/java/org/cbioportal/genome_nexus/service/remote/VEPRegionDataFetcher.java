@@ -59,6 +59,13 @@ public class VEPRegionDataFetcher extends BaseExternalResourceFetcher<VariantAnn
         return (DBObject) restTemplate.getForObject(uri, BasicDBObject.class);
     }
 
+    @Override
+    public DBObject fetchRawValue(Object requestBody)
+        throws HttpClientErrorException, ResourceAccessException
+    {
+        return this.postForObject(this.URI.replace("/" + PLACEHOLDER, ""), requestBody);
+    }
+
     public ExternalResourceTransformer getTransformer(){
         return transformer;
     }
