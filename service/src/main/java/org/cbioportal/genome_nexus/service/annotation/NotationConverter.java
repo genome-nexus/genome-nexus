@@ -179,9 +179,6 @@ public class NotationConverter
         if(!ref.equals(var)) {
             prefix = longestCommonPrefix(ref, var);
         }
-//        else {
-//            log.warn("Warning: Reference allele extracted from " + chr + ":" + start + "-" + end + " matches alt allele.");
-//        }
 
         // Remove common prefix and adjust variant position accordingly
         if (prefix.length() > 0)
