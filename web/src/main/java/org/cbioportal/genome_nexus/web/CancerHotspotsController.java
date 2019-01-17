@@ -92,12 +92,12 @@ public class CancerHotspotsController
     }
 
     @ApiOperation(value = "Retrieves hotspot annotations for the provided transcript ID",
-    nickname = "fetchHotspotAnnotationByTranscriptIdGET")
+        nickname = "fetchHotspotAnnotationByTranscriptIdGET")
     @RequestMapping(value = "/cancer_hotspots/transcript/{transcriptId}",
         method = RequestMethod.GET,
         produces = "application/json")
     public List<Hotspot> fetchHotspotAnnotationByTranscriptIdGET(
-        @ApiParam(value="A Transcript ID. For example ENST00000288602",
+        @ApiParam(value="A Transcript Id. For example ENST00000288602",
             required = true,
             allowMultiple = true)
         @PathVariable String transcriptId)

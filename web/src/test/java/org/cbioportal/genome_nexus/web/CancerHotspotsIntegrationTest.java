@@ -284,14 +284,8 @@ public class CancerHotspotsIntegrationTest
 
     assertEquals(2, hotspots0.length);
     assertEquals("BRAF", hotspots0[0].getHugoSymbol());
-    assertEquals("ENST00000288602", hotspots0[0].getTranscriptId());
-    assertEquals("V600", hotspots0[0].getResidue());
-    assertEquals("897", hotspots0[0].getTumorCount());
+    assertEquals("N581", hotspots0[0].getResidue());
     assertEquals("single residue", hotspots0[0].getType());
-    assertEquals("897", hotspots0[0].getMissenseCount());
-    assertEquals("0", hotspots0[0].getTruncatingCount());
-    assertEquals("0", hotspots0[0].getInframeCount());
-    assertEquals("0", hotspots0[0].getSpliceCount());
 
     for (int i = 0; i < hotspots0.length; i++) {
         assertEquals(transcriptIds[0], hotspots0[i].getTranscriptId());
