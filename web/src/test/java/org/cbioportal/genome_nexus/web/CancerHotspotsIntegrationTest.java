@@ -69,6 +69,11 @@ public class CancerHotspotsIntegrationTest
         return this.restTemplate.getForObject(BASE_URL + genomicLocation, Hotspot[].class);
     }
 
+    private Hotspot[] fetchHotspotsByTranscriptGET(String transcriptId)
+    {
+        return this.restTemplate.getForObject("http://localhost:38888/cancer_hotspots/transcript/" + transcriptId, Hotspot[].class);
+    }
+
     private AggregatedHotspots[] fetchHotspotsPOST(List<GenomicLocation> genomicLocationsInstances)
     {
         return this.restTemplate.postForObject(BASE_URL, genomicLocationsInstances, AggregatedHotspots[].class);
@@ -265,4 +270,34 @@ public class CancerHotspotsIntegrationTest
         // GET and POST requests should return exact same hotspots
         assertEquals(aggregatedHotspots[0].getHotspots().size(), hotspots0.length);
     }
+
+    @Test
+    public void testTranscriptIdHotspots()
+  {
+    String[] transcriptIds = {"ENST00000288602", "Not an id"};
+
+    //////////////////
+    // GET requests //
+    //////////////////
+
+    Hotspot[] hotspots0 = this.fetchHotspotsByTranscriptGET(transcriptIds[0]);
+
+    assertEquals(2, hotspots0.length);
+    assertEquals("BRAF", hotspots0[0].getHugoSymbol());
+    assertEquals("ENST00000288602", hotspots0[0].getTranscriptId());
+    assertEquals("V600", hotspots0[0].getResidue());
+    assertEquals("897", hotspots0[0].getTumorCount());
+    assertEquals("single residue", hotspots0[0].getType());
+    assertEquals("897", hotspots0[0].getMissenseCount());
+    assertEquals("0", hotspots0[0].getTruncatingCount());
+    assertEquals("0", hotspots0[0].getInframeCount());
+    assertEquals("0", hotspots0[0].getSpliceCount());
+
+    for (int i = 0; i < hotspots0.length; i++) {
+        assertEquals(transcriptIds[0], hotspots0[i].getTranscriptId());
+    }
+
+    Hotspot[] hotspots1 = this.fetchHotspotsByTranscriptGET(transcriptIds[1]);
+    assertEquals(0, hotspots1.length);
+  }
 }

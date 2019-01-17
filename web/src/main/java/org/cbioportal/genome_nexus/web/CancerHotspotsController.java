@@ -90,4 +90,20 @@ public class CancerHotspotsController
     {
         return this.hotspotService.getHotspotAnnotationsByGenomicLocations(genomicLocations);
     }
+
+    @ApiOperation(value = "Retrieves hotspot annotations for the provided transcript ID",
+    nickname = "fetchHotspotAnnotationByTranscriptIdGET")
+    @RequestMapping(value = "/cancer_hotspots/transcript/{transcriptId}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<Hotspot> fetchHotspotAnnotationByTranscriptIdGET(
+        @ApiParam(value="A Transcript ID. For example ENST00000288602",
+            required = true,
+            allowMultiple = true)
+        @PathVariable String transcriptId)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        CancerHotspotsWebServiceException
+    {
+        return this.hotspotService.getHotspots(transcriptId);
+    }
 }
