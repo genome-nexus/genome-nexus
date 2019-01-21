@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.Hotspot;
+import org.cbioportal.genome_nexus.model.ProteinLocation;
 import org.cbioportal.genome_nexus.model.AggregatedHotspots;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
@@ -105,5 +106,19 @@ public class CancerHotspotsController
         CancerHotspotsWebServiceException
     {
         return this.hotspotService.getHotspots(transcriptId);
+    }
+
+    @ApiOperation(value = "Retrieves hotspot annotations for the provided transcript id, protein location and mutaion type",
+        nickname = "fetchHotspotAnnotationByProteinLocationsPOST")
+    @RequestMapping(value = "/cancer_hotspots/proteinLocations",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<List<Hotspot>> fetchHotspotAnnotationByProteinLocationsPOST(
+        @ApiParam(value="List of transcript id, protein start location, protein end location, mutation type. For example: ",
+            required = true,
+            allowMultiple = true)
+        @RequestBody List<ProteinLocation> proteinLocations) throws CancerHotspotsWebServiceException
+    {
+        return this.hotspotService.getHotspotAnnotationsByProteinLocations(proteinLocations);
     }
 }

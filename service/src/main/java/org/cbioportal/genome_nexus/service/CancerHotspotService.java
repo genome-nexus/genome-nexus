@@ -53,4 +53,5 @@ public interface CancerHotspotService
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
     List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
+    List<List<Hotspot>> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations) throws CancerHotspotsWebServiceException;
 }

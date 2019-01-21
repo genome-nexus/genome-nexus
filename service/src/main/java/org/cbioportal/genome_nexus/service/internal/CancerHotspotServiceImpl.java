@@ -183,4 +183,18 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
         return new ArrayList<>(hotspots);
     }
+
+    @Override
+    public List<List<Hotspot>> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations)
+        throws CancerHotspotsWebServiceException
+    {
+
+        List<List<Hotspot>> hotspots = new ArrayList<>();
+        for (ProteinLocation proteinLocation : proteinLocations)
+        {
+            hotspots.add(proteinLocation.filterHotspot(this.getHotspots(proteinLocation.getTranscriptId()), proteinLocation));
+        }
+        
+        return hotspots;
+    }
 }
