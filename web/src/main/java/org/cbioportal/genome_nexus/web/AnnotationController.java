@@ -33,16 +33,20 @@
 package org.cbioportal.genome_nexus.web;
 
 import io.swagger.annotations.*;
+
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.service.*;
+import org.cbioportal.genome_nexus.web.validation.*;
 
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
+
 
 /**
  * @author Benjamin Gross
@@ -51,6 +55,7 @@ import java.util.*;
 @RestController // shorthand for @Controller, @ResponseBody
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")
+@Validated
 public class AnnotationController
 {
     private final VariantAnnotationService variantAnnotationService;
@@ -180,7 +185,7 @@ public class AnnotationController
     public VariantAnnotation fetchVariantAnnotationByGenomicLocationGET(
         @ApiParam(value="A genomic location. For example 7,140453136,140453136,A,T",
             required = true)
-        @PathVariable String genomicLocation,
+        @PathVariable @ValidGenomicLocation String genomicLocation,
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
         @RequestParam(required = false) String isoformOverrideSource,
@@ -232,3 +237,4 @@ public class AnnotationController
     }
 
 }
+
