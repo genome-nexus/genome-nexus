@@ -12,6 +12,7 @@ import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundEx
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final VariantTypeResolver variantTypeResolver;
 
     @Autowired
-    public VariantAnnotationSummaryServiceImpl(VariantAnnotationService variantAnnotationService,
+    public VariantAnnotationSummaryServiceImpl(@Qualifier("VariantAnnotationServiceImplHgvs") VariantAnnotationService variantAnnotationService,
                                                CanonicalTranscriptResolver canonicalTranscriptResolver,
                                                CodonChangeResolver codonChangeResolver,
                                                ConsequenceTermsResolver consequenceTermsResolver,
@@ -72,7 +73,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         return this.getAnnotationSummaryForCanonical(
-            this.variantAnnotationService.getAnnotation(variant, VariantAnnotationInputFormat.HGVS, isoformOverrideSource, null));
+            this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, null));
     }
 
     @Override
@@ -101,7 +102,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         return this.getAnnotationSummary(
-            this.variantAnnotationService.getAnnotation(variant, VariantAnnotationInputFormat.HGVS, isoformOverrideSource, null));
+            this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, null));
     }
 
     @Override
@@ -109,7 +110,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         List<VariantAnnotationSummary> summaries = new ArrayList<>();
 
         List<VariantAnnotation> annotations =
-            this.variantAnnotationService.getAnnotations(variants, VariantAnnotationInputFormat.HGVS, isoformOverrideSource, null);
+            this.variantAnnotationService.getAnnotations(variants, isoformOverrideSource, null);
 
         for (VariantAnnotation annotation: annotations) {
             summaries.add(this.getAnnotationSummary(annotation));
@@ -123,7 +124,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         List<VariantAnnotationSummary> summaries = new ArrayList<>();
 
         List<VariantAnnotation> annotations =
-            this.variantAnnotationService.getAnnotations(variants, VariantAnnotationInputFormat.HGVS, isoformOverrideSource, null);
+            this.variantAnnotationService.getAnnotations(variants, isoformOverrideSource, null);
 
         for (VariantAnnotation annotation: annotations) {
             summaries.add(this.getAnnotationSummaryForCanonical(annotation));

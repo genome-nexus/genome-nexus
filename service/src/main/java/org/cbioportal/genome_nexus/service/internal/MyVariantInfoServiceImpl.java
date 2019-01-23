@@ -18,6 +18,7 @@ import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -32,7 +33,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
 
     @Autowired
     public MyVariantInfoServiceImpl(CachedMyVariantInfoFetcher cachedExternalResourceFetcher,
-                                       VariantAnnotationService variantAnnotationService)
+                                    @Qualifier("VariantAnnotationServiceImplHgvs") VariantAnnotationService variantAnnotationService)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
         this.variantAnnotationService = variantAnnotationService;

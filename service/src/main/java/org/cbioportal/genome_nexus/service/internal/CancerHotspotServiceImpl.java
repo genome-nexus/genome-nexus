@@ -37,11 +37,11 @@ import org.cbioportal.genome_nexus.persistence.HotspotRepository;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
-import org.cbioportal.genome_nexus.service.annotation.VariantAnnotationInputFormat;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -59,7 +59,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
     @Autowired
     public CancerHotspotServiceImpl(HotspotRepository hotspotRepository,
-                                    VariantAnnotationService variantAnnotationService,
+                                    @Qualifier("VariantAnnotationServiceImplHgvs") VariantAnnotationService variantAnnotationService,
                                     HotspotFilter hotspotFilter,
                                     NotationConverter notationConverter)
     {
@@ -103,7 +103,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
     {
-        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant, VariantAnnotationInputFormat.HGVS);
+        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant);
         List<Hotspot> hotspots = new ArrayList<>();
 
         if (variantAnnotation != null)
@@ -118,7 +118,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     public List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants)
         throws CancerHotspotsWebServiceException
     {
-        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants, VariantAnnotationInputFormat.HGVS);
+        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants);
 
         List<AggregatedHotspots> hotspots = new ArrayList<>();
 

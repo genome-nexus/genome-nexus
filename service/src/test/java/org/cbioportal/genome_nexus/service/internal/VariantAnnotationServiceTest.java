@@ -17,7 +17,6 @@ import org.cbioportal.genome_nexus.service.IsoformOverrideService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
 import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
-import org.cbioportal.genome_nexus.service.annotation.VariantAnnotationInputFormat;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantRegionAnnotationFetcher;
@@ -47,7 +46,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class VariantAnnotationServiceTest
 {
     @InjectMocks
-    private VariantAnnotationServiceImpl variantAnnotationService;
+    private VariantAnnotationServiceImplHgvs variantAnnotationService;
 
     @Mock
     private CachedVariantAnnotationFetcher fetcher;
@@ -88,24 +87,24 @@ public class VariantAnnotationServiceTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         this.mockVariantFetcherMethods(variantMockData);
 
-        VariantAnnotation annotation1 = variantAnnotationService.getAnnotation("7:g.140453136A>T", VariantAnnotationInputFormat.HGVS);
+        VariantAnnotation annotation1 = variantAnnotationService.getAnnotation("7:g.140453136A>T");
         assertEquals(variantMockData.get("7:g.140453136A>T").getStart(), annotation1.getStart());
         assertEquals(variantMockData.get("7:g.140453136A>T").getVariant(), annotation1.getVariant());
 
-        VariantAnnotation annotation2 = variantAnnotationService.getAnnotation("12:g.25398285C>A", VariantAnnotationInputFormat.HGVS);
+        VariantAnnotation annotation2 = variantAnnotationService.getAnnotation("12:g.25398285C>A");
         assertEquals(variantMockData.get("12:g.25398285C>A").getStart(), annotation2.getStart());
         assertEquals(variantMockData.get("12:g.25398285C>A").getVariant(), annotation2.getVariant());
 
-        VariantAnnotation annotation3 = variantAnnotationService.getAnnotation("X:g.41242962_41242963insGA", VariantAnnotationInputFormat.HGVS);
+        VariantAnnotation annotation3 = variantAnnotationService.getAnnotation("X:g.41242962_41242963insGA");
         assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getStart(), annotation3.getStart());
         assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getVariant(), annotation3.getVariant());
 
         // should convert chr prefix to 
-        VariantAnnotation annotation4 = variantAnnotationService.getAnnotation("chr23:g.41242962_41242963insGA", VariantAnnotationInputFormat.HGVS);
+        VariantAnnotation annotation4 = variantAnnotationService.getAnnotation("chr23:g.41242962_41242963insGA");
         assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getStart(), annotation4.getStart());
         assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getVariant(), annotation4.getVariant());
 
-        VariantAnnotation annotation5 = variantAnnotationService.getAnnotation("chr24:g.41242962_41242963insGA", VariantAnnotationInputFormat.HGVS);
+        VariantAnnotation annotation5 = variantAnnotationService.getAnnotation("chr24:g.41242962_41242963insGA");
         assertEquals(variantMockData.get("Y:g.41242962_41242963insGA").getStart(), annotation5.getStart());
         assertEquals(variantMockData.get("Y:g.41242962_41242963insGA").getVariant(), annotation5.getVariant());
     }
@@ -124,7 +123,7 @@ public class VariantAnnotationServiceTest
         variants.add("chr23:g.41242962_41242963insGA");
         variants.add("chr24:g.41242962_41242963insGA");
 
-        List<VariantAnnotation> annotations = variantAnnotationService.getAnnotations(variants, VariantAnnotationInputFormat.HGVS);
+        List<VariantAnnotation> annotations = variantAnnotationService.getAnnotations(variants);
         assertEquals(variantMockData.get("7:g.140453136A>T").getStart(), annotations.get(0).getStart());
         assertEquals(variantMockData.get("7:g.140453136A>T").getVariant(), annotations.get(0).getVariant());
         assertEquals(variantMockData.get("12:g.25398285C>A").getStart(), annotations.get(1).getStart());
@@ -153,13 +152,13 @@ public class VariantAnnotationServiceTest
         fields.add("mutation_assessor");
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", VariantAnnotationInputFormat.HGVS, null, fields);
+            "7:g.140453136A>T", null, fields);
 
         assertEquals(maMockData.get("7,140453136,A,T"),
             annotation1.getMutationAssessorAnnotation().getAnnotation());
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
-            "12:g.25398285C>A", VariantAnnotationInputFormat.HGVS, null, fields);
+            "12:g.25398285C>A", null, fields);
 
         assertEquals(maMockData.get("12,25398285,C,A"),
             annotation2.getMutationAssessorAnnotation().getAnnotation());
@@ -183,13 +182,13 @@ public class VariantAnnotationServiceTest
         fields.add("my_variant_info");
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", VariantAnnotationInputFormat.HGVS, null, fields);
+            "7:g.140453136A>T", null, fields);
 
         assertEquals(mviMockData.get("7:g.140453136A>T"),
             annotation1.getMyVariantInfoAnnotation().getAnnotation());
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
-            "12:g.25398285C>A", VariantAnnotationInputFormat.HGVS, null, fields);
+            "12:g.25398285C>A", null, fields);
 
         assertEquals(mviMockData.get("12:g.25398285C>A"),
             annotation2.getMyVariantInfoAnnotation().getAnnotation());
@@ -212,13 +211,13 @@ public class VariantAnnotationServiceTest
         fields.add("hotspots");
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", VariantAnnotationInputFormat.HGVS, null, fields);
+            "7:g.140453136A>T", null, fields);
 
         assertEquals(hotspotMockData.get("ENST00000288602"),
             annotation1.getHotspotAnnotation().getAnnotation().get(0));
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
-            "12:g.25398285C>A", VariantAnnotationInputFormat.HGVS, null, fields);
+            "12:g.25398285C>A", null, fields);
 
         assertEquals(hotspotMockData.get("ENST00000256078"),
             annotation2.getHotspotAnnotation().getAnnotation().get(0));
@@ -236,14 +235,14 @@ public class VariantAnnotationServiceTest
         this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", VariantAnnotationInputFormat.HGVS, "mskcc", null);
+            "7:g.140453136A>T", "mskcc", null);
 
         // first transcript of this annotation should be marked as canonical, the second one should NOT be marked
         assertEquals("1", annotation1.getTranscriptConsequences().get(0).getCanonical());
         assertEquals(null, annotation1.getTranscriptConsequences().get(1).getCanonical());
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", VariantAnnotationInputFormat.HGVS, "uniprot", null);
+            "7:g.140453136A>T", "uniprot", null);
 
         // second transcript of this annotation should be marked as canonical, the first one should NOT be marked
         assertEquals(null, annotation2.getTranscriptConsequences().get(0).getCanonical());

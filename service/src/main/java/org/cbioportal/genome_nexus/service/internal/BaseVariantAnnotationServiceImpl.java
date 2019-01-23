@@ -38,12 +38,7 @@ import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.persistence.VariantAnnotationRepository;
 import org.cbioportal.genome_nexus.service.*;
 
-import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
-import org.cbioportal.genome_nexus.service.annotation.VariantAnnotationInputFormat;
 import org.cbioportal.genome_nexus.service.cached.BaseCachedExternalResourceFetcher;
-import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
-import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
-import org.cbioportal.genome_nexus.service.cached.CachedVariantRegionAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.enricher.CanonicalTranscriptAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.HotspotAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.IsoformAnnotationEnricher;
@@ -52,11 +47,8 @@ import org.cbioportal.genome_nexus.service.enricher.MyVariantInfoAnnotationEnric
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.beans.factory.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -64,209 +56,86 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * @author Benjamin Gross
- */
-@Service
-public class VariantAnnotationServiceImpl implements VariantAnnotationService
+public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotationService
 {
-    private static final Log LOG = LogFactory.getLog(VariantAnnotationServiceImpl.class);
+    private static final Log LOG = LogFactory.getLog(BaseVariantAnnotationServiceImpl.class);
 
-    private final CachedVariantAnnotationFetcher cachedExternalResourceFetcher;
-    private final CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher;
-    private final CachedVariantRegionAnnotationFetcher cachedVariantRegionAnnotationFetcher;
-    private final Boolean isRegionAnnotationEnabled;
-    private final NotationConverter notationConverter;
+    private final BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher;
     private final IsoformOverrideService isoformOverrideService;
     private final CancerHotspotService hotspotService;
     private final MutationAssessorService mutationAssessorService;
     private final VariantAnnotationSummaryService variantAnnotationSummaryService;
     private final MyVariantInfoService myVariantInfoService;
 
-    @Autowired
-    public VariantAnnotationServiceImpl(CachedVariantAnnotationFetcher cachedExternalResourceFetcher,
-                                        CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher,
-                                        CachedVariantRegionAnnotationFetcher cachedVariantRegionAnnotationFetcher,
-                                        NotationConverter notationConverter,
+    public BaseVariantAnnotationServiceImpl(BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher,
                                         // Lazy autowire services used for enrichment,
                                         // otherwise we are getting circular dependency issues
-                                        @Lazy IsoformOverrideService isoformOverrideService,
-                                        @Lazy CancerHotspotService hotspotService,
-                                        @Lazy MutationAssessorService mutationAssessorService,
-                                        @Lazy MyVariantInfoService myVariantInfoService,
-                                        @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService)
+                                        IsoformOverrideService isoformOverrideService,
+                                        CancerHotspotService hotspotService,
+                                        MutationAssessorService mutationAssessorService,
+                                        MyVariantInfoService myVariantInfoService,
+                                        VariantAnnotationSummaryService variantAnnotationSummaryService)
     {
-        this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
-        this.cachedVariantIdAnnotationFetcher = cachedVariantIdAnnotationFetcher;
-        this.cachedVariantRegionAnnotationFetcher = cachedVariantRegionAnnotationFetcher;
-        this.notationConverter = notationConverter;
+        this.resourceFetcher = resourceFetcher;
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
         this.mutationAssessorService = mutationAssessorService;
         this.variantAnnotationSummaryService = variantAnnotationSummaryService;
         this.myVariantInfoService = myVariantInfoService;
-        this.isRegionAnnotationEnabled = cachedVariantRegionAnnotationFetcher.hasValidURI();
+    }
+
+    // Needs to be overridden to support normalizing variants
+    protected String normalizeVariant(String id)
+    {
+        return id;
     }
 
     @Override
-    public VariantAnnotation getAnnotation(String variant, VariantAnnotationInputFormat format)
+    public VariantAnnotation getAnnotation(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.getVariantAnnotation(notationConverter.hgvsNormalizer(variant), format, null);
+        return this.getVariantAnnotation(this.normalizeVariant(variant), null);
     }
 
     @Override
-    public List<VariantAnnotation> getAnnotations(List<String> variants, VariantAnnotationInputFormat format)
+    public List<VariantAnnotation> getAnnotations(List<String> variants)
     {
         return this.getVariantAnnotations(
             variants,
-            format,
             null
         );
     }
 
     @Override
-    public VariantAnnotation getAnnotation(String variant, VariantAnnotationInputFormat format, String isoformOverrideSource, List<String> fields)
+    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
 
-        return this.getVariantAnnotation(variant, format, postEnrichmentService);
+        return this.getVariantAnnotation(variant, postEnrichmentService);
     }
 
     @Override
-    public List<VariantAnnotation> getAnnotations(List<String> variants, VariantAnnotationInputFormat format, String isoformOverrideSource, List<String> fields)
+    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, List<String> fields)
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
 
         return this.getVariantAnnotations(
             variants,
-            format,
             postEnrichmentService
         );
     }
 
-    @Override
-    public VariantAnnotation getAnnotation(GenomicLocation genomicLocation)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
-    {
-        if (this.isRegionAnnotationEnabled) {
-            return this.getAnnotation(this.notationConverter.genomicToEnsemblRestRegion(genomicLocation), VariantAnnotationInputFormat.REGION);
-        } else {
-            return this.getAnnotation(this.notationConverter.genomicToHgvs(genomicLocation), VariantAnnotationInputFormat.HGVS);
-        }
-    }
-
-    @Override
-    public VariantAnnotation getAnnotationByGenomicLocation(String genomicLocation)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
-    {
-        return this.getAnnotation(this.notationConverter.parseGenomicLocation(genomicLocation));
-    }
-
-    @Override
-    public List<VariantAnnotation> getAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations)
-    {
-        if (this.isRegionAnnotationEnabled) {
-            return this.getAnnotations(this.notationConverter.genomicToEnsemblRestRegion(genomicLocations), VariantAnnotationInputFormat.REGION);
-        } else {
-            return this.getAnnotations(this.notationConverter.genomicToHgvs(genomicLocations), VariantAnnotationInputFormat.HGVS);
-        }
-    }
-
-    @Override
-    public VariantAnnotation getAnnotationByGenomicLocation(String genomicLocation,
-                                                            String isoformOverrideSource,
-                                                            List<String> fields)
-        throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
-    {
-        if (this.isRegionAnnotationEnabled) {
-            return this.getAnnotation(
-                this.notationConverter.genomicToEnsemblRestRegion(genomicLocation),
-                VariantAnnotationInputFormat.REGION,
-                isoformOverrideSource,
-                fields
-            );
-        } else {
-            return this.getAnnotation(
-                this.notationConverter.genomicToHgvs(genomicLocation),
-                VariantAnnotationInputFormat.HGVS,
-                isoformOverrideSource,
-                fields
-            );
-        }
-    }
-
-    @Override
-    public List<VariantAnnotation> getAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations,
-                                                                    String isoformOverrideSource,
-                                                                    List<String> fields)
-    {
-        if (this.isRegionAnnotationEnabled) {
-            return this.getAnnotations(
-                this.notationConverter.genomicToEnsemblRestRegion(genomicLocations),
-                VariantAnnotationInputFormat.REGION,
-                isoformOverrideSource,
-                fields
-            );
-        } else {
-            return this.getAnnotations(
-                this.notationConverter.genomicToHgvs(genomicLocations),
-                VariantAnnotationInputFormat.HGVS,
-                isoformOverrideSource,
-                fields
-            );
-        }
-    }
-
-    private BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> getExternalResourceFetcher(VariantAnnotationInputFormat format) {
-        BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher;
-
-        switch (format) {
-            case HGVS:
-                resourceFetcher = this.cachedExternalResourceFetcher;
-                break;
-            case DBSNP:
-                resourceFetcher = this.cachedVariantIdAnnotationFetcher;
-                break;
-            case REGION:
-                resourceFetcher = this.cachedVariantRegionAnnotationFetcher;
-                break;
-            default:
-                // this should never happen
-                resourceFetcher = null;
-                break;
-        }
-
-        return resourceFetcher;
-    }
-
-    private String normalizeVariant(String variant, VariantAnnotationInputFormat format) {
-        String normalizedVariant;
-
-        switch (format) {
-            case HGVS:
-                normalizedVariant = notationConverter.hgvsNormalizer(variant);
-                break;
-            default:
-                normalizedVariant = variant;
-                break;
-        }
-
-        return normalizedVariant;
-    }
-
-    private VariantAnnotation getVariantAnnotationExternally(String variant, VariantAnnotationInputFormat format)
+    private VariantAnnotation getVariantAnnotationExternally(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         Optional<VariantAnnotation> variantAnnotation = null;
 
-        BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher = getExternalResourceFetcher(format);
-        String normalizedVariant = normalizeVariant(variant, format);
+        String normalizedVariant = normalizeVariant(variant);
 
         try {
             // get the annotation from the web service and save it to the DB
-            variantAnnotation = Optional.ofNullable(resourceFetcher.fetchAndCache(normalizedVariant));
+            variantAnnotation = Optional.ofNullable(this.resourceFetcher.fetchAndCache(normalizedVariant));
 
             // include original variant value too
             variantAnnotation.ifPresent(x -> x.setVariant(normalizedVariant));
@@ -291,16 +160,15 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         }
     }
 
-    private List<VariantAnnotation> getVariantAnnotationsExternally(List<String> variants, VariantAnnotationInputFormat format)
+    private List<VariantAnnotation> getVariantAnnotationsExternally(List<String> variants)
             throws VariantAnnotationWebServiceException {
         List<VariantAnnotation> variantAnnotations = null;
 
-        BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher = getExternalResourceFetcher(format);
-        List<String> normalizedVariants = variants.stream().map(v -> notationConverter.hgvsNormalizer(v)).collect(Collectors.toList());
+        List<String> normalizedVariants = variants.stream().map(v -> this.normalizeVariant(v)).collect(Collectors.toList());
 
         try {
             // get the annotations from the web service and save it to the DB
-            variantAnnotations = resourceFetcher.fetchAndCache(normalizedVariants);
+            variantAnnotations = this.resourceFetcher.fetchAndCache(normalizedVariants);
         } catch (HttpClientErrorException e) {
             // in case of web service error, throw an exception to indicate that there is a
             // problem with the service.
@@ -315,21 +183,21 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
         return variantAnnotations;
     }
 
-    private VariantAnnotation getVariantAnnotation(String variant, VariantAnnotationInputFormat format)
+    private VariantAnnotation getVariantAnnotation(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return getVariantAnnotationExternally(variant, format);
+        return getVariantAnnotationExternally(variant);
     }
 
-    private List<VariantAnnotation> getVariantAnnotations(List<String> variants, VariantAnnotationInputFormat format)
+    private List<VariantAnnotation> getVariantAnnotations(List<String> variants)
             throws VariantAnnotationWebServiceException {
-        return getVariantAnnotationsExternally(variants, format);
+        return getVariantAnnotationsExternally(variants);
     }
 
-    private VariantAnnotation getVariantAnnotation(String variant, VariantAnnotationInputFormat format, EnrichmentService postEnrichmentService)
+    private VariantAnnotation getVariantAnnotation(String variant, EnrichmentService postEnrichmentService)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        VariantAnnotation annotation = this.getVariantAnnotation(variant, format);
+        VariantAnnotation annotation = this.getVariantAnnotation(variant);
 
         if (annotation != null &&
             postEnrichmentService != null)
@@ -341,14 +209,13 @@ public class VariantAnnotationServiceImpl implements VariantAnnotationService
     }
 
     private List<VariantAnnotation> getVariantAnnotations(List<String> variants,
-                                                          VariantAnnotationInputFormat format,
                                                           EnrichmentService postEnrichmentService)
     {
         List<VariantAnnotation> variantAnnotations = Collections.emptyList();
 
         try {
             // fetch all annotations at once
-            variantAnnotations = this.getVariantAnnotations(variants, format);
+            variantAnnotations = this.getVariantAnnotations(variants);
 
             if (postEnrichmentService != null) {
                 for (VariantAnnotation annotation: variantAnnotations) {

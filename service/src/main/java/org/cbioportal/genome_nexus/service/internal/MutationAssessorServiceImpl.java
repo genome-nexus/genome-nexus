@@ -6,10 +6,10 @@ import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
-import org.cbioportal.genome_nexus.service.annotation.VariantAnnotationInputFormat;
 import org.cbioportal.genome_nexus.service.cached.CachedMutationAssessorFetcher;
 import org.cbioportal.genome_nexus.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -29,7 +29,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
 
     @Autowired
     public MutationAssessorServiceImpl(CachedMutationAssessorFetcher cachedExternalResourceFetcher,
-                                       VariantAnnotationService variantAnnotationService)
+                                       @Qualifier("VariantAnnotationServiceImplHgvs") VariantAnnotationService variantAnnotationService)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
         this.variantAnnotationService = variantAnnotationService;
@@ -42,7 +42,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MutationAssessorWebServiceException, MutationAssessorNotFoundException
     {
-        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant, VariantAnnotationInputFormat.HGVS);
+        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant);
 
         return this.getMutationAssessorByVariantAnnotation(variantAnnotation);
     }
@@ -53,7 +53,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
     public List<MutationAssessor> getMutationAssessor(List<String> variants)
     {
         List<MutationAssessor> mutationAssessors = new ArrayList<>();
-        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants, VariantAnnotationInputFormat.HGVS);
+        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants);
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)
         {
