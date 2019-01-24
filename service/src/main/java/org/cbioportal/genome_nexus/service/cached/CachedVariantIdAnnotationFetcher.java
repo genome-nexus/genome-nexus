@@ -64,15 +64,4 @@ public class CachedVariantIdAnnotationFetcher extends BaseCachedExternalResource
 
         return requestBody;
     }
-
-    protected void saveToDb(DBObject value)
-    {
-        List<DBObject> dbObjects = this.transformer.transform(value);
-
-        for (DBObject dbObject: dbObjects) {
-            dbObject.put("_id", this.extractId(dbObject));
-        }
-
-        this.repository.saveDBObjects(this.collection, dbObjects);
-    }
 }

@@ -20,9 +20,9 @@ public class CachedVariantRegionAnnotationFetcher extends BaseCachedExternalReso
 {
     @Autowired
     public CachedVariantRegionAnnotationFetcher(ExternalResourceTransformer<VariantAnnotation> transformer,
-                                            VariantAnnotationRepository repository,
-                                            VEPRegionDataFetcher fetcher,
-                                            @Value("${vep.max_page_size:200}") Integer maxPageSize)
+                                                VariantAnnotationRepository repository,
+                                                VEPRegionDataFetcher fetcher,
+                                                @Value("${vep.max_page_size:200}") Integer maxPageSize)
     {
         super(VariantAnnotationRepositoryImpl.COLLECTION,
             repository,
@@ -70,16 +70,5 @@ public class CachedVariantRegionAnnotationFetcher extends BaseCachedExternalReso
     {
         List<VariantAnnotation> annotations = super.fetchAndCache(ids);
         return annotations;
-    }
-
-    protected void saveToDb(DBObject value)
-    {
-        List<DBObject> dbObjects = this.transformer.transform(value);
-
-        for (DBObject dbObject: dbObjects) {
-            dbObject.put("_id", this.extractId(dbObject));
-        }
-
-        this.repository.saveDBObjects(this.collection, dbObjects);
     }
 }

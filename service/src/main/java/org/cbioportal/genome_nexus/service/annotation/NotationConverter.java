@@ -70,21 +70,31 @@ public class NotationConverter
         return this.genomicToEnsemblRestRegion(this.parseGenomicLocation(genomicLocation));
     }
 
-    @Nullable
-    public String genomicToHgvs(GenomicLocation genomicLocation)
-    {
-        if (genomicLocation == null) {
-            return null;
-        }
+    /*
+     * Normalize genomic location:
+     *
+     * 1. Convert VCF style start,end,ref,alt to MAF by looking for common
+     * prefix. (TODO: not sure if this is always a good idea)
+     * 2. Normalize chromsome names.
+     */
+    public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation) {
+        GenomicLocation normalizedGenomicLocation = new GenomicLocation();
 
-        // trim string values
+        // normalize chromosome name
         String chr = this.chromosomeNormalizer(genomicLocation.getChromosome().trim());
+        normalizedGenomicLocation.setChromosome(chr);
+
+        // convert vcf style start,end,ref,alt to MAF style
         Integer start = genomicLocation.getStart();
         Integer end = genomicLocation.getEnd();
         String ref = genomicLocation.getReferenceAllele().trim();
         String var = genomicLocation.getVariantAllele().trim();
 
         String prefix = "";
+
+        if(!ref.equals(var)) {
+            prefix = longestCommonPrefix(ref, var);
+        }
 
         if(!ref.equals(var)) {
             prefix = longestCommonPrefix(ref, var);
@@ -100,7 +110,6 @@ public class NotationConverter
             var = var.substring(prefix.length());
 
             int nStart = start;
-            int nEnd = end;
 
             nStart += prefix.length();
 
@@ -110,6 +119,28 @@ public class NotationConverter
 
             start = nStart;
         }
+
+        normalizedGenomicLocation.setStart(start);
+        normalizedGenomicLocation.setEnd(end);
+        normalizedGenomicLocation.setReferenceAllele(ref);
+        normalizedGenomicLocation.setVariantAllele(var);
+
+        return normalizedGenomicLocation;
+    }
+
+    @Nullable
+    public String genomicToHgvs(GenomicLocation genomicLocation)
+    {
+        if (genomicLocation == null) {
+            return null;
+        }
+
+        GenomicLocation normalizedGenomicLocation = normalizeGenomicLocation(genomicLocation);
+        String chr = normalizedGenomicLocation.getChromosome();
+        Integer start = normalizedGenomicLocation.getStart();
+        Integer end = normalizedGenomicLocation.getEnd();
+        String ref = normalizedGenomicLocation.getReferenceAllele().trim();
+        String var = normalizedGenomicLocation.getVariantAllele().trim();
 
         String hgvs;
 
@@ -167,36 +198,12 @@ public class NotationConverter
             return null;
         }
 
-        // trim string values
-        String chr = this.chromosomeNormalizer(genomicLocation.getChromosome().trim());
-        Integer start = genomicLocation.getStart();
-        Integer end = genomicLocation.getEnd();
-        String ref = genomicLocation.getReferenceAllele().trim();
-        String var = genomicLocation.getVariantAllele().trim();
-
-        String prefix = "";
-
-        if(!ref.equals(var)) {
-            prefix = longestCommonPrefix(ref, var);
-        }
-
-        // Remove common prefix and adjust variant position accordingly
-        if (prefix.length() > 0)
-        {
-            ref = ref.substring(prefix.length());
-            var = var.substring(prefix.length());
-
-            int nStart = start;
-            int nEnd = end;
-
-            nStart += prefix.length();
-
-            if (ref.length() == 0) {
-                nStart -= 1;
-            }
-
-            start = nStart;
-        }
+        GenomicLocation normalizedGenomicLocation = normalizeGenomicLocation(genomicLocation);
+        String chr = normalizedGenomicLocation.getChromosome();
+        Integer start = normalizedGenomicLocation.getStart();
+        Integer end = normalizedGenomicLocation.getEnd();
+        String ref = normalizedGenomicLocation.getReferenceAllele().trim();
+        String var = normalizedGenomicLocation.getVariantAllele().trim();
 
         String region;
 
