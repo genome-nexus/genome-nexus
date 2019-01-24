@@ -42,7 +42,6 @@ import org.cbioportal.genome_nexus.web.validation.*;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
@@ -63,12 +62,12 @@ public class AnnotationController
     private final GenomicLocationAnnotationService genomicLocationAnnotationService;
 
     @Autowired
-    public AnnotationController(@Qualifier("VariantAnnotationServiceImplHgvs") VariantAnnotationService hgvsAnnotationService,
-                                @Qualifier("VariantAnnotationServiceImplDbsnp") VariantAnnotationService dbsnpAnnotationService,
+    public AnnotationController(VariantAnnotationService hgvsVariantAnnotationService,
+                                VariantAnnotationService dbsnpVariantAnnotationService,
                                 GenomicLocationAnnotationService genomicLocationAnnotationService)
     {
-        this.hgvsAnnotationService = hgvsAnnotationService;
-        this.dbsnpAnnotationService = dbsnpAnnotationService;
+        this.hgvsAnnotationService = hgvsVariantAnnotationService;
+        this.dbsnpAnnotationService = dbsnpVariantAnnotationService;
         this.genomicLocationAnnotationService = genomicLocationAnnotationService;
     }
 

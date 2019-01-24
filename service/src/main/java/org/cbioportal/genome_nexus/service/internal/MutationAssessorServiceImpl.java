@@ -9,7 +9,6 @@ import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.cached.CachedMutationAssessorFetcher;
 import org.cbioportal.genome_nexus.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -29,10 +28,10 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
 
     @Autowired
     public MutationAssessorServiceImpl(CachedMutationAssessorFetcher cachedExternalResourceFetcher,
-                                       @Qualifier("VariantAnnotationServiceImplHgvs") VariantAnnotationService variantAnnotationService)
+                                       VariantAnnotationService hgvsVariantAnnotationService)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
-        this.variantAnnotationService = variantAnnotationService;
+        this.variantAnnotationService = hgvsVariantAnnotationService;
     }
 
     /**

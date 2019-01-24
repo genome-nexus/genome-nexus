@@ -46,7 +46,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class VariantAnnotationServiceTest
 {
     @InjectMocks
-    private VariantAnnotationServiceImplHgvs variantAnnotationService;
+    private HgvsVariantAnnotationService variantAnnotationService;
 
     @Mock
     private CachedVariantAnnotationFetcher fetcher;

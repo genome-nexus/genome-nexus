@@ -12,7 +12,6 @@ import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundEx
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final VariantTypeResolver variantTypeResolver;
 
     @Autowired
-    public VariantAnnotationSummaryServiceImpl(@Qualifier("VariantAnnotationServiceImplHgvs") VariantAnnotationService variantAnnotationService,
+    public VariantAnnotationSummaryServiceImpl(VariantAnnotationService hgvsVariantAnnotationService,
                                                CanonicalTranscriptResolver canonicalTranscriptResolver,
                                                CodonChangeResolver codonChangeResolver,
                                                ConsequenceTermsResolver consequenceTermsResolver,
@@ -52,7 +51,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                                                VariantClassificationResolver variantClassificationResolver,
                                                VariantTypeResolver variantTypeResolver)
     {
-        this.variantAnnotationService = variantAnnotationService;
+        this.variantAnnotationService = hgvsVariantAnnotationService;
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
         this.codonChangeResolver = codonChangeResolver;
         this.consequenceTermsResolver = consequenceTermsResolver;
