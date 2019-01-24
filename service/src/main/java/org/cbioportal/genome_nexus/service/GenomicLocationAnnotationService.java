@@ -39,9 +39,6 @@ import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebService
 
 import java.util.List;
 
-/**
- * @author Benjamin Gross
- */
 public interface GenomicLocationAnnotationService
 {
     VariantAnnotation getAnnotation(GenomicLocation genomicLocation)

@@ -47,9 +47,6 @@ import org.springframework.beans.factory.annotation.*;
 
 import java.util.List;
 
-/**
- * @author Benjamin Gross
- */
 @Service
 public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnnotationService
 {
