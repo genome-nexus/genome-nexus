@@ -185,14 +185,20 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     }
 
     @Override
-    public List<List<Hotspot>> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations)
+    public List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations)
         throws CancerHotspotsWebServiceException
     {
-
-        List<List<Hotspot>> hotspots = new ArrayList<>();
+        List<AggregatedHotspots> hotspots = new ArrayList<>();
         for (ProteinLocation proteinLocation : proteinLocations)
         {
-            hotspots.add(proteinLocation.filterHotspot(this.getHotspots(proteinLocation.getTranscriptId()), proteinLocation));
+            AggregatedHotspots aggregatedHotspots = new AggregatedHotspots();
+
+            // add protein location information
+            aggregatedHotspots.setProteinLocation(proteinLocation);
+            
+            // query hotspots service by protein location
+            aggregatedHotspots.setHotspots(proteinLocation.filterHotspot(this.getHotspots(proteinLocation.getTranscriptId()), proteinLocation));
+            hotspots.add(aggregatedHotspots);
         }
         
         return hotspots;

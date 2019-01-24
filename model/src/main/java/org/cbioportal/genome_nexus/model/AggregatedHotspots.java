@@ -6,6 +6,7 @@ public class AggregatedHotspots
 {
     private GenomicLocation genomicLocation;
     private String variant;
+    private ProteinLocation proteinLocation;
     private List<Hotspot> hotspots;
 
     public String getVariant() {
@@ -30,5 +31,13 @@ public class AggregatedHotspots
 
     public void setHotspots(List<Hotspot> hotspots) {
         this.hotspots = hotspots;
+    }
+
+    public void setProteinLocation(ProteinLocation proteinLocation) {
+        this.proteinLocation = proteinLocation;
+    }
+
+    public ProteinLocation getProteinLocation() {
+        return proteinLocation;
     }
 }

@@ -34,10 +34,10 @@ public class HotspotFilter
             proteinPos != null &&
             // filter by protein position:
             // only include the hotspot if the protein change position overlaps with the current transcript
-            Numerical.overlaps(hotspot.getResidue(), proteinPos.getStart(), proteinPos.getEnd())
+            Numerical.overlaps(hotspot.getResidue(), proteinPos.getStart(), proteinPos.getEnd()) &&
             // filter by mutation type:
             // only include the hotspot if the variant classification matches the hotspot type
-            //this.typeMatches(hotspot.getType(), this.variantClassificationResolver.resolveAll(annotation, transcript))
+            this.typeMatches(hotspot.getType(), this.variantClassificationResolver.resolveAll(annotation, transcript))
         );
     }
 

@@ -3,6 +3,7 @@ package org.cbioportal.genome_nexus.web;
 import org.cbioportal.genome_nexus.model.AggregatedHotspots;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.Hotspot;
+import org.cbioportal.genome_nexus.model.ProteinLocation;
 import org.cbioportal.genome_nexus.persistence.HotspotRepository;
 import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.web.mock.JsonToObjectMapper;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -72,6 +74,11 @@ public class CancerHotspotsIntegrationTest
     private Hotspot[] fetchHotspotsByTranscriptGET(String transcriptId)
     {
         return this.restTemplate.getForObject("http://localhost:38888/cancer_hotspots/transcript/" + transcriptId, Hotspot[].class);
+    }
+
+    private AggregatedHotspots[] fetchHotspotsByProteinLocationPOST(List<ProteinLocation> locations)
+    {
+        return this.restTemplate.postForObject("http://localhost:38888/cancer_hotspots/proteinLocations", locations, AggregatedHotspots[].class);
     }
 
     private AggregatedHotspots[] fetchHotspotsPOST(List<GenomicLocation> genomicLocationsInstances)
@@ -273,25 +280,39 @@ public class CancerHotspotsIntegrationTest
 
     @Test
     public void testTranscriptIdHotspots()
-  {
-    String[] transcriptIds = {"ENST00000288602", "Not an id"};
+    {
+        String[] transcriptIds = {"ENST00000288602"};
 
-    //////////////////
-    // GET requests //
-    //////////////////
+        //////////////////
+        // GET requests //
+        //////////////////
 
-    Hotspot[] hotspots0 = this.fetchHotspotsByTranscriptGET(transcriptIds[0]);
+        Hotspot[] hotspots0 = this.fetchHotspotsByTranscriptGET(transcriptIds[0]);
 
-    assertEquals(2, hotspots0.length);
-    assertEquals("BRAF", hotspots0[0].getHugoSymbol());
-    assertEquals("N581", hotspots0[0].getResidue());
-    assertEquals("single residue", hotspots0[0].getType());
+        assertEquals(2, hotspots0.length);
+        assertEquals("BRAF", hotspots0[0].getHugoSymbol());
+        assertEquals("N581", hotspots0[0].getResidue());
+        assertEquals("single residue", hotspots0[0].getType());
 
-    for (int i = 0; i < hotspots0.length; i++) {
-        assertEquals(transcriptIds[0], hotspots0[i].getTranscriptId());
+        for (int i = 0; i < hotspots0.length; i++) {
+            assertEquals(transcriptIds[0], hotspots0[i].getTranscriptId());
+        }
     }
 
-    Hotspot[] hotspots1 = this.fetchHotspotsByTranscriptGET(transcriptIds[1]);
-    assertEquals(0, hotspots1.length);
-  }
+    @Test
+    public void testProteinLocation()
+    {
+        List<ProteinLocation> locations = new ArrayList<ProteinLocation>();
+        locations.add(new ProteinLocation("ENST00000288602", 581, 581, "Missense_Mutation"));   
+
+        //////////////////
+        // POST requests //
+        //////////////////
+    
+        AggregatedHotspots[] hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        
+        assertEquals(1, hotspots.length);
+        assertEquals(581, hotspots[0].getProteinLocation().getStart().intValue());
+        assertEquals(581, hotspots[0].getProteinLocation().getEnd().intValue());
+    }
 }

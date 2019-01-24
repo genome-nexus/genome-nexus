@@ -9,6 +9,15 @@ public class ProteinLocation
     private Integer end;
     private String mutationType;
 
+    public ProteinLocation() {}
+
+    public ProteinLocation(String transcriptId, Integer start, Integer end, String mutationType) {
+        this.transcriptId = transcriptId;
+        this.start = start;
+        this.end = end;
+        this.mutationType = mutationType;
+    }
+
     public String getTranscriptId() {
         return transcriptId;
     }
@@ -33,7 +42,7 @@ public class ProteinLocation
         for (Hotspot hotspot: hotspots) {
             boolean valid = true;
             
-            //Position
+            // Protein location
             int hotspotStart, hotspotStop;
             String hotspotPosition = hotspot.getResidue();
             hotspotPosition = hotspotPosition.replaceAll("[^0-9.]", "");
@@ -47,7 +56,7 @@ public class ProteinLocation
             }
             valid &= (start <= hotspotStart && end >= hotspotStop) ? true : false;
             
-            //Type
+            // Mutation type
             if (type.equals("Missense_Mutation")) {
                 if (hotspot.getType().contains("3d") || hotspot.getType().contains("single residue")) {
                     valid &= true;
@@ -73,7 +82,7 @@ public class ProteinLocation
                 }
             }
 
-            //Add hotspot
+            // Add hotspot
             if (valid) result.add(hotspot);
         }
         

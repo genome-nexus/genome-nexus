@@ -113,8 +113,8 @@ public class CancerHotspotsController
     @RequestMapping(value = "/cancer_hotspots/proteinLocations",
         method = RequestMethod.POST,
         produces = "application/json")
-    public List<List<Hotspot>> fetchHotspotAnnotationByProteinLocationsPOST(
-        @ApiParam(value="List of transcript id, protein start location, protein end location, mutation type. For example: ",
+    public List<AggregatedHotspots> fetchHotspotAnnotationByProteinLocationsPOST(
+        @ApiParam(value="List of transcript id, protein start location, protein end location, mutation type. The mutation types are limited to Missense_Mutation, 'In_Frame_Ins', 'In_Frame_Del', 'Splice_Site', and 'Splice_Region'",
             required = true,
             allowMultiple = true)
         @RequestBody List<ProteinLocation> proteinLocations) throws CancerHotspotsWebServiceException
