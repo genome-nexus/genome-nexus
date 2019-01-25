@@ -58,12 +58,12 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
     @Autowired
     public CancerHotspotServiceImpl(HotspotRepository hotspotRepository,
-                                    VariantAnnotationService variantAnnotationService,
+                                    VariantAnnotationService hgvsVariantAnnotationService,
                                     HotspotFilter hotspotFilter,
                                     NotationConverter notationConverter)
     {
         this.hotspotRepository = hotspotRepository;
-        this.variantAnnotationService = variantAnnotationService;
+        this.variantAnnotationService = hgvsVariantAnnotationService;
         this.hotspotFilter = hotspotFilter;
         this.notationConverter = notationConverter;
     }

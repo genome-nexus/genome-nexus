@@ -32,10 +32,10 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
 
     @Autowired
     public MyVariantInfoServiceImpl(CachedMyVariantInfoFetcher cachedExternalResourceFetcher,
-                                       VariantAnnotationService variantAnnotationService)
+                                    VariantAnnotationService hgvsVariantAnnotationService)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
-        this.variantAnnotationService = variantAnnotationService;
+        this.variantAnnotationService = hgvsVariantAnnotationService;
     }
 
     /**

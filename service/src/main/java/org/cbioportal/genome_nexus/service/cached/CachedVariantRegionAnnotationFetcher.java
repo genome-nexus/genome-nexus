@@ -1,3 +1,4 @@
+
 package org.cbioportal.genome_nexus.service.cached;
 
 import com.mongodb.DBObject;
@@ -7,6 +8,7 @@ import org.cbioportal.genome_nexus.persistence.internal.VariantAnnotationReposit
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
 import org.cbioportal.genome_nexus.service.remote.VEPIdDataFetcher;
+import org.cbioportal.genome_nexus.service.remote.VEPRegionDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,13 +16,13 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class CachedVariantIdAnnotationFetcher extends BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository>
+public class CachedVariantRegionAnnotationFetcher extends BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository>
 {
     @Autowired
-    public CachedVariantIdAnnotationFetcher(ExternalResourceTransformer<VariantAnnotation> transformer,
-                                            VariantAnnotationRepository repository,
-                                            VEPIdDataFetcher fetcher,
-                                            @Value("${vep.max_page_size:200}") Integer maxPageSize)
+    public CachedVariantRegionAnnotationFetcher(ExternalResourceTransformer<VariantAnnotation> transformer,
+                                                VariantAnnotationRepository repository,
+                                                VEPRegionDataFetcher fetcher,
+                                                @Value("${vep.max_page_size:200}") Integer maxPageSize)
     {
         super(VariantAnnotationRepositoryImpl.COLLECTION,
             repository,
@@ -33,7 +35,22 @@ public class CachedVariantIdAnnotationFetcher extends BaseCachedExternalResource
     @Override
     protected Boolean isValidId(String id) 
     {
-        return id.matches("rs\\d+") || id.matches("COSM\\d+");
+        // e.g.
+        // 17:36002278-36002277:1/A
+        //  1:206811015-206811016:1/-
+        return (
+            !id.contains("N") && !id.contains("undefined") && !id.contains("g.") &&
+            id.contains("-") &&
+            // should have two :
+            (id.length() - id.replace(":","").length() == 2) &&
+            // should have one /
+            (id.length() - id.replace("/","").length() == 1) &&
+            // should be digit:digit-digit:1/character(s)
+            id.split(":")[0].matches("\\d+") &&
+            id.split(":")[1].split("-")[0].matches("\\d+") &&
+            id.split(":")[1].split("-")[1].matches("\\d+") &&
+            id.split(":")[2].startsWith("1/")
+        );
     }
 
     @Override
@@ -53,15 +70,5 @@ public class CachedVariantIdAnnotationFetcher extends BaseCachedExternalResource
     {
         List<VariantAnnotation> annotations = super.fetchAndCache(ids);
         return annotations;
-    }
-
-    @Override
-    protected Object buildRequestBody(Set<String> ids)
-    {
-        HashMap<String, Object> requestBody = new HashMap<>();
-
-        requestBody.put("ids", ids);
-
-        return requestBody;
     }
 }

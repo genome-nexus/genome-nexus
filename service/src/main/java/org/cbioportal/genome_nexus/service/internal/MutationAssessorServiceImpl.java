@@ -28,10 +28,10 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
 
     @Autowired
     public MutationAssessorServiceImpl(CachedMutationAssessorFetcher cachedExternalResourceFetcher,
-                                       VariantAnnotationService variantAnnotationService)
+                                       VariantAnnotationService hgvsVariantAnnotationService)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
-        this.variantAnnotationService = variantAnnotationService;
+        this.variantAnnotationService = hgvsVariantAnnotationService;
     }
 
     /**

@@ -65,20 +65,36 @@ public class NotationConverter
     }
 
     @Nullable
-    public String genomicToHgvs(GenomicLocation genomicLocation)
+    public String genomicToEnsemblRestRegion(String genomicLocation)
     {
-        if (genomicLocation == null) {
-            return null;
-        }
+        return this.genomicToEnsemblRestRegion(this.parseGenomicLocation(genomicLocation));
+    }
 
-        // trim string values
+    /*
+     * Normalize genomic location:
+     *
+     * 1. Convert VCF style start,end,ref,alt to MAF by looking for common
+     * prefix. (TODO: not sure if this is always a good idea)
+     * 2. Normalize chromsome names.
+     */
+    public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation) {
+        GenomicLocation normalizedGenomicLocation = new GenomicLocation();
+
+        // normalize chromosome name
         String chr = this.chromosomeNormalizer(genomicLocation.getChromosome().trim());
+        normalizedGenomicLocation.setChromosome(chr);
+
+        // convert vcf style start,end,ref,alt to MAF style
         Integer start = genomicLocation.getStart();
         Integer end = genomicLocation.getEnd();
         String ref = genomicLocation.getReferenceAllele().trim();
         String var = genomicLocation.getVariantAllele().trim();
 
         String prefix = "";
+
+        if(!ref.equals(var)) {
+            prefix = longestCommonPrefix(ref, var);
+        }
 
         if(!ref.equals(var)) {
             prefix = longestCommonPrefix(ref, var);
@@ -94,7 +110,6 @@ public class NotationConverter
             var = var.substring(prefix.length());
 
             int nStart = start;
-            int nEnd = end;
 
             nStart += prefix.length();
 
@@ -104,6 +119,28 @@ public class NotationConverter
 
             start = nStart;
         }
+
+        normalizedGenomicLocation.setStart(start);
+        normalizedGenomicLocation.setEnd(end);
+        normalizedGenomicLocation.setReferenceAllele(ref);
+        normalizedGenomicLocation.setVariantAllele(var);
+
+        return normalizedGenomicLocation;
+    }
+
+    @Nullable
+    public String genomicToHgvs(GenomicLocation genomicLocation)
+    {
+        if (genomicLocation == null) {
+            return null;
+        }
+
+        GenomicLocation normalizedGenomicLocation = normalizeGenomicLocation(genomicLocation);
+        String chr = normalizedGenomicLocation.getChromosome();
+        Integer start = normalizedGenomicLocation.getStart();
+        Integer end = normalizedGenomicLocation.getEnd();
+        String ref = normalizedGenomicLocation.getReferenceAllele().trim();
+        String var = normalizedGenomicLocation.getVariantAllele().trim();
 
         String hgvs;
 
@@ -154,6 +191,69 @@ public class NotationConverter
         return hgvs;
     }
 
+    @Nullable
+    public String genomicToEnsemblRestRegion(GenomicLocation genomicLocation)
+    {
+        if (genomicLocation == null) {
+            return null;
+        }
+
+        GenomicLocation normalizedGenomicLocation = normalizeGenomicLocation(genomicLocation);
+        String chr = normalizedGenomicLocation.getChromosome();
+        Integer start = normalizedGenomicLocation.getStart();
+        Integer end = normalizedGenomicLocation.getEnd();
+        String ref = normalizedGenomicLocation.getReferenceAllele().trim();
+        String var = normalizedGenomicLocation.getVariantAllele().trim();
+
+        String region;
+
+        // cannot convert invalid locations
+        // Ensembl uses a one-based coordinate system
+        if (start < 1) {
+            region = null;
+        }
+        /*
+         Process Insertion
+         Example insertion: 17 36002277 36002278 - A
+         Example output: 17:36002278-36002277:1/A
+         */
+        else if(ref.equals("-") || ref.length() == 0)
+        {
+            try {
+                region = chr + ":" + String.valueOf(start + 1) + "-" + start  + ":1/" + var;
+            }
+            catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        /*
+         Process Deletion
+         Example deletion: 1 206811015 206811016  AC -
+         Example output:   1:206811015-206811016:1/-
+         */
+        else if(var.equals("-") || var.length() == 0) {
+            region = chr + ":" + start + "-" + end + ":1/-";
+        }
+        /*
+         Process ONP
+         Example SNP   : 2 216809708 216809709 CA T
+         Example output: 2:216809708-216809709:1/T
+         */
+        else if (ref.length() > 1 || var.length() > 1) {
+            region = chr + ":" + start + "-" + end + ":1/" + var;
+        }
+        /*
+         Process SNV
+         Example SNP   : 2 216809708 216809708 C T
+         Example output: 2:216809708-216809708:1/T
+         */
+        else {
+            region = chr + ":" + start + "-" + start + ":1/" + var;
+        }
+
+        return region;
+    }
+
     @NotNull
     public Map<String, GenomicLocation> genomicToHgvsMap(List<GenomicLocation> genomicLocations)
     {
@@ -177,6 +277,31 @@ public class NotationConverter
         hgvsList.addAll(this.genomicToHgvsMap(genomicLocations).keySet());
 
         return hgvsList;
+    }
+
+    @NotNull
+    public Map<String, GenomicLocation> genomicToEnsemblRestRegionMap(List<GenomicLocation> genomicLocations)
+    {
+        Map<String, GenomicLocation> variantToGenomicLocation = new LinkedHashMap<>();
+
+        // convert genomic location to ensembl rest region notation (there is always 1-1 mapping)
+        for (GenomicLocation location : genomicLocations) {
+            String ensemblRestRegion = this.genomicToEnsemblRestRegion(location);
+
+            if (ensemblRestRegion != null) {
+                variantToGenomicLocation.put(ensemblRestRegion, location);
+            }
+        }
+
+        return variantToGenomicLocation;
+    }
+
+    public List<String> genomicToEnsemblRestRegion(List<GenomicLocation> genomicLocations)
+    {
+        List<String> ensemblRestRegionsList = new ArrayList<>();
+        ensemblRestRegionsList.addAll(this.genomicToEnsemblRestRegionMap(genomicLocations).keySet());
+
+        return ensemblRestRegionsList;
     }
 
     // TODO factor out to a utility class as a static method if needed

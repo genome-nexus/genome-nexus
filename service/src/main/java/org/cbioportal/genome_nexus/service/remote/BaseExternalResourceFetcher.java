@@ -31,6 +31,11 @@ public abstract class BaseExternalResourceFetcher<T> implements ExternalResource
         this.placeholder = placeholder;
     }
 
+    @Override
+    public Boolean hasValidURI() {
+        return this.URI.length() > 0;
+    }
+
     /**
      * Base implementation for a single parameter query.
      * This method should be overridden if the query has more than one parameter.
