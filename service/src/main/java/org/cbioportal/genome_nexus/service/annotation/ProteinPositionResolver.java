@@ -53,7 +53,7 @@ public class ProteinPositionResolver
     }
 
     @Nullable
-    private IntegerRange extractProteinPos(String proteinChange)
+    public IntegerRange extractProteinPos(String proteinChange)
     {
         IntegerRange proteinPos = null;
         Integer start = -1;

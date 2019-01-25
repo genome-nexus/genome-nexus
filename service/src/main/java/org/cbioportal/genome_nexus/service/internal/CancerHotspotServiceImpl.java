@@ -195,9 +195,9 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
             // add protein location information
             aggregatedHotspots.setProteinLocation(proteinLocation);
-            
+
             // query hotspots service by protein location
-            aggregatedHotspots.setHotspots(proteinLocation.filterHotspot(this.getHotspots(proteinLocation.getTranscriptId()), proteinLocation));
+            aggregatedHotspots.setHotspots(hotspotFilter.proteinLocationHotspotsFilter(this.getHotspots(proteinLocation.getTranscriptId()), proteinLocation));
             hotspots.add(aggregatedHotspots);
         }
         
