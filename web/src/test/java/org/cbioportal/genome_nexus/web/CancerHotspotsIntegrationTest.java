@@ -76,6 +76,11 @@ public class CancerHotspotsIntegrationTest
         return this.restTemplate.getForObject("http://localhost:38888/cancer_hotspots/transcript/" + transcriptId, Hotspot[].class);
     }
 
+    private AggregatedHotspots[] fetchHotspotsByTranscriptPOST(List<String> transcriptIds)
+    {
+        return this.restTemplate.postForObject("http://localhost:38888/cancer_hotspots/transcript", transcriptIds, AggregatedHotspots[].class);
+    }
+
     private AggregatedHotspots[] fetchHotspotsByProteinLocationPOST(List<ProteinLocation> locations)
     {
         return this.restTemplate.postForObject("http://localhost:38888/cancer_hotspots/proteinLocations", locations, AggregatedHotspots[].class);
@@ -297,6 +302,17 @@ public class CancerHotspotsIntegrationTest
         for (int i = 0; i < hotspots0.length; i++) {
             assertEquals(transcriptIds[0], hotspots0[i].getTranscriptId());
         }
+
+        //////////////////
+        // POST request //
+        //////////////////
+
+        AggregatedHotspots[] hotspots1 = this.fetchHotspotsByTranscriptPOST(Arrays.asList(transcriptIds));
+        
+        assertEquals(1, hotspots1.length);
+        assertEquals("ENST00000288602", hotspots1[0].getTranscriptId());
+        assertEquals(2, hotspots1[0].getHotspots().size());        
+
     }
 
     @Test

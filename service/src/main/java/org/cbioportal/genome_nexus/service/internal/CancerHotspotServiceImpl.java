@@ -96,6 +96,23 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     {
         return this.hotspotRepository.findAll();
     }
+   
+    public List<AggregatedHotspots> getHotspotsByTranscriptIds(List<String> transcriptIds) throws CancerHotspotsWebServiceException
+    {
+        List<AggregatedHotspots> hotspots = new ArrayList<>();
+        for (String transcriptId : transcriptIds) {
+            AggregatedHotspots aggregatedHotspots = new AggregatedHotspots();
+            
+            // add protein location information
+            aggregatedHotspots.setTranscriptId(transcriptId);
+            
+            // query hotspots service by protein location
+            aggregatedHotspots.setHotspots(this.getHotspots(transcriptId));
+            hotspots.add(aggregatedHotspots);
+        }
+
+        return hotspots;
+    }
 
     @Override
     public List<Hotspot> getHotspotAnnotationsByVariant(String variant)

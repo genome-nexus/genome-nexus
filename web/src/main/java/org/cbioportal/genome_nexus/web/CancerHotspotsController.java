@@ -108,13 +108,28 @@ public class CancerHotspotsController
         return this.hotspotService.getHotspots(transcriptId);
     }
 
-    @ApiOperation(value = "Retrieves hotspot annotations for the provided transcript id, protein location and mutaion type",
+    @ApiOperation(value = "Retrieves hotspot annotations for the provided list of transcript ID",
+        nickname = "fetchHotspotAnnotationByTranscriptIdPOST")
+    @RequestMapping(value = "/cancer_hotspots/transcript",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<AggregatedHotspots> fetchHotspotAnnotationByTranscriptIdPOST(
+        @ApiParam(value="List of transcript Id. For example [\"ENST00000288602\",\"ENST00000256078\"]",
+            required = true,
+            allowMultiple = true)
+        @RequestBody List<String> transcriptIds)
+        throws CancerHotspotsWebServiceException
+    {
+        return this.hotspotService.getHotspotsByTranscriptIds(transcriptIds);
+    }
+
+    @ApiOperation(value = "Retrieves hotspot annotations for the provided list of transcript id, protein location and mutation type",
         nickname = "fetchHotspotAnnotationByProteinLocationsPOST")
     @RequestMapping(value = "/cancer_hotspots/proteinLocations",
         method = RequestMethod.POST,
         produces = "application/json")
     public List<AggregatedHotspots> fetchHotspotAnnotationByProteinLocationsPOST(
-        @ApiParam(value="List of transcript id, protein start location, protein end location, mutation type. The mutation types are limited to Missense_Mutation, 'In_Frame_Ins', 'In_Frame_Del', 'Splice_Site', and 'Splice_Region'",
+        @ApiParam(value="List of transcript id, protein start location, protein end location, mutation type. The mutation types are limited to 'Missense_Mutation', 'In_Frame_Ins', 'In_Frame_Del', 'Splice_Site', and 'Splice_Region'",
             required = true,
             allowMultiple = true)
         @RequestBody List<ProteinLocation> proteinLocations) throws CancerHotspotsWebServiceException
