@@ -34,6 +34,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final TranscriptIdResolver transcriptIdResolver;
     private final VariantClassificationResolver variantClassificationResolver;
     private final VariantTypeResolver variantTypeResolver;
+    private final ExonResolver exonResolver;
 
     @Autowired
     public VariantAnnotationSummaryServiceImpl(VariantAnnotationService hgvsVariantAnnotationService,
@@ -49,7 +50,8 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                                                StrandSignResolver strandSignResolver,
                                                TranscriptIdResolver transcriptIdResolver,
                                                VariantClassificationResolver variantClassificationResolver,
-                                               VariantTypeResolver variantTypeResolver)
+                                               VariantTypeResolver variantTypeResolver,
+                                               ExonResolver exonResolver)
     {
         this.variantAnnotationService = hgvsVariantAnnotationService;
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
@@ -65,6 +67,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         this.transcriptIdResolver = transcriptIdResolver;
         this.variantClassificationResolver = variantClassificationResolver;
         this.variantTypeResolver = variantTypeResolver;
+        this.exonResolver = exonResolver;
     }
 
     @Override
@@ -206,6 +209,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setProteinPosition(this.proteinPositionResolver.resolve(annotation, transcriptConsequence));
             summary.setRefSeq(this.refSeqResolver.resolve(transcriptConsequence));
             summary.setVariantClassification(this.variantClassificationResolver.resolve(annotation, transcriptConsequence));
+            summary.setExon(this.exonResolver.resolve(transcriptConsequence));
         }
 
         return summary;
