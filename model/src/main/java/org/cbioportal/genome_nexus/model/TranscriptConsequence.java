@@ -61,6 +61,7 @@ public class TranscriptConsequence
     private String polyphenPrediction;
     private Double siftScore;
     private String siftPrediction;
+    private String exon;
 
     private List<String> refseqTranscriptIds;
     private List<String> consequenceTerms;
@@ -251,6 +252,17 @@ public class TranscriptConsequence
     public void setCanonical(String canonical)
     {
         this.canonical = canonical;
+    }
+
+    @Field(value="exon")
+    public String getExon()
+    {
+        return exon;
+    }
+
+    public void setExon(String exon)
+    {
+        this.exon = exon;
     }
 
     @Field(value="refseq_transcript_ids")
