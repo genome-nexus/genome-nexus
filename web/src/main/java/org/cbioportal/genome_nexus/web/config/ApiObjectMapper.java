@@ -34,6 +34,7 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(UntranslatedRegion.class, UntranslatedRegionMixin.class);
         mixinMap.put(GenomicLocation.class, GenomicLocationMixin.class);
         mixinMap.put(AggregatedHotspots.class, AggregatedHotspotsMixin.class);
+        mixinMap.put(ProteinLocation.class, ProteinLocationMixin.class);
         mixinMap.put(MyVariantInfo.class, MyVariantInfoMixin.class);
         mixinMap.put(Snpeff.class, SnpeffMixin.class);
         mixinMap.put(Ann.class, AnnMixin.class);

@@ -47,10 +47,12 @@ public interface CancerHotspotService
     List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspots(TranscriptConsequence transcript, VariantAnnotation annotation) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspots() throws CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotsByTranscriptIds(List<String> transcriptIds) throws CancerHotspotsWebServiceException;
     List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants) throws CancerHotspotsWebServiceException;
     List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspotAnnotationsByVariant(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
     List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations) throws CancerHotspotsWebServiceException;
 }

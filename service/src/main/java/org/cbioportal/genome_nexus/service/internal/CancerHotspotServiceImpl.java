@@ -96,6 +96,23 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     {
         return this.hotspotRepository.findAll();
     }
+   
+    public List<AggregatedHotspots> getHotspotsByTranscriptIds(List<String> transcriptIds) throws CancerHotspotsWebServiceException
+    {
+        List<AggregatedHotspots> hotspots = new ArrayList<>();
+        for (String transcriptId : transcriptIds) {
+            AggregatedHotspots aggregatedHotspots = new AggregatedHotspots();
+            
+            // add protein location information
+            aggregatedHotspots.setTranscriptId(transcriptId);
+            
+            // query hotspots service by protein location
+            aggregatedHotspots.setHotspots(this.getHotspots(transcriptId));
+            hotspots.add(aggregatedHotspots);
+        }
+
+        return hotspots;
+    }
 
     @Override
     public List<Hotspot> getHotspotAnnotationsByVariant(String variant)
@@ -182,5 +199,25 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         }
 
         return new ArrayList<>(hotspots);
+    }
+
+    @Override
+    public List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations)
+        throws CancerHotspotsWebServiceException
+    {
+        List<AggregatedHotspots> hotspots = new ArrayList<>();
+        for (ProteinLocation proteinLocation : proteinLocations)
+        {
+            AggregatedHotspots aggregatedHotspots = new AggregatedHotspots();
+
+            // add protein location information
+            aggregatedHotspots.setProteinLocation(proteinLocation);
+
+            // query hotspots service by protein location
+            aggregatedHotspots.setHotspots(hotspotFilter.proteinLocationHotspotsFilter(this.getHotspots(proteinLocation.getTranscriptId()), proteinLocation));
+            hotspots.add(aggregatedHotspots);
+        }
+        
+        return hotspots;
     }
 }
