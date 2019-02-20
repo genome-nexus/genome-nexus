@@ -30,6 +30,12 @@ public class VariantAnnotationSummaryMixin
     @ApiModelProperty(value = "Canonical transcript id")
     private String canonicalTranscriptId;
 
-    @ApiModelProperty(value = "List of transcript consequence summaries", required = true)
+    @ApiModelProperty(value = "Most impactful transcript consequence of canonical transcript or if non-existent any transcript", required = true)
+    private TranscriptConsequenceSummary transcriptConsequenceSummary;
+
+    @ApiModelProperty(value = "All transcript consequence summaries", required = true)
+    private List<TranscriptConsequenceSummary> transcriptConsequenceSummaries;
+
+    @ApiModelProperty(value = "(Deprecated) Transcript consequence summaries (list of one when using annotation/, multiple when using annotation/summary/", required = true)
     private List<TranscriptConsequenceSummary> transcriptConsequences;
 }

@@ -65,6 +65,9 @@ public class AnnotationSummaryController
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         if (projection == TranscriptSummaryProjection.CANONICAL) {
+            // Default projection returns both the canonical and all transcript
+            // consequence summaries. This returns just the summary for the
+            // canonical transcript
             return this.variantAnnotationSummaryService.getAnnotationSummaryForCanonical(variant, isoformOverrideSource);
         }
         else {

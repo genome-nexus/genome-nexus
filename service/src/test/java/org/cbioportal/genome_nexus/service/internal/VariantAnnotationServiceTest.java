@@ -19,6 +19,8 @@ import org.cbioportal.genome_nexus.service.MyVariantInfoService;
 import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
 
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
+import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
+import org.cbioportal.genome_nexus.service.cached.CachedVariantRegionAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.IsoformOverrideNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
@@ -45,10 +47,16 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class VariantAnnotationServiceTest
 {
     @InjectMocks
-    private VariantAnnotationServiceImpl variantAnnotationService;
+    private HgvsVariantAnnotationService variantAnnotationService;
 
     @Mock
     private CachedVariantAnnotationFetcher fetcher;
+
+    @Mock
+    private CachedVariantIdAnnotationFetcher idFetcher;
+
+    @Mock
+    private CachedVariantRegionAnnotationFetcher regionFetcher;
 
     @Mock
     private MutationAssessorService mutationAssessorService;
@@ -58,7 +66,6 @@ public class VariantAnnotationServiceTest
 
     @Mock
     private CancerHotspotServiceImpl cancerHotspotService;
-
 
     @Mock
     private MyVariantInfoService myVariantInfoService;

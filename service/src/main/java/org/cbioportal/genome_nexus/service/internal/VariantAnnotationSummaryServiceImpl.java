@@ -34,9 +34,10 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final TranscriptIdResolver transcriptIdResolver;
     private final VariantClassificationResolver variantClassificationResolver;
     private final VariantTypeResolver variantTypeResolver;
+    private final ExonResolver exonResolver;
 
     @Autowired
-    public VariantAnnotationSummaryServiceImpl(VariantAnnotationService variantAnnotationService,
+    public VariantAnnotationSummaryServiceImpl(VariantAnnotationService hgvsVariantAnnotationService,
                                                CanonicalTranscriptResolver canonicalTranscriptResolver,
                                                CodonChangeResolver codonChangeResolver,
                                                ConsequenceTermsResolver consequenceTermsResolver,
@@ -49,9 +50,10 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                                                StrandSignResolver strandSignResolver,
                                                TranscriptIdResolver transcriptIdResolver,
                                                VariantClassificationResolver variantClassificationResolver,
-                                               VariantTypeResolver variantTypeResolver)
+                                               VariantTypeResolver variantTypeResolver,
+                                               ExonResolver exonResolver)
     {
-        this.variantAnnotationService = variantAnnotationService;
+        this.variantAnnotationService = hgvsVariantAnnotationService;
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
         this.codonChangeResolver = codonChangeResolver;
         this.consequenceTermsResolver = consequenceTermsResolver;
@@ -65,6 +67,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         this.transcriptIdResolver = transcriptIdResolver;
         this.variantClassificationResolver = variantClassificationResolver;
         this.variantTypeResolver = variantTypeResolver;
+        this.exonResolver = exonResolver;
     }
 
     @Override
@@ -83,10 +86,14 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
 
         if (annotationSummary != null && canonicalTranscript != null)
         {
-            List<TranscriptConsequenceSummary> summaries = new ArrayList<>(1);
-            summaries.add(this.getTranscriptSummary(annotation, canonicalTranscript));
-            annotationSummary.setTranscriptConsequences(summaries);
+
+            annotationSummary.setTranscriptConsequenceSummary(this.getTranscriptSummary(annotation, canonicalTranscript));
             annotationSummary.setCanonicalTranscriptId(canonicalTranscript.getTranscriptId());
+
+            // for backwards compatibility set transcriptConsequences
+            List<TranscriptConsequenceSummary> transcriptConsequences = new ArrayList<>(1);
+            transcriptConsequences.add(annotationSummary.getTranscriptConsequenceSummary());
+            annotationSummary.setTranscriptConsequences(transcriptConsequences);
         }
 
         return annotationSummary;
@@ -141,6 +148,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                 summaries.add(this.getTranscriptSummary(annotation, transcriptConsequence));
             }
 
+            annotationSummary.setTranscriptConsequenceSummaries(summaries);
             annotationSummary.setTranscriptConsequences(summaries);
         }
 
@@ -201,6 +209,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setProteinPosition(this.proteinPositionResolver.resolve(annotation, transcriptConsequence));
             summary.setRefSeq(this.refSeqResolver.resolve(transcriptConsequence));
             summary.setVariantClassification(this.variantClassificationResolver.resolve(annotation, transcriptConsequence));
+            summary.setExon(this.exonResolver.resolve(transcriptConsequence));
         }
 
         return summary;

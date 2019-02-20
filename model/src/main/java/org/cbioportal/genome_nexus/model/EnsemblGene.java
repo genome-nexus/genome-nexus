@@ -11,6 +11,8 @@ public class EnsemblGene
     private String[] previousSymbols;
     private String entrezGeneId;
 
+    public EnsemblGene() {}
+
     public EnsemblGene(EnsemblCanonical cn)
     {
         this.geneId = cn.getEnsemblCanonicalGeneId();
@@ -38,6 +40,10 @@ public class EnsemblGene
 
     public String getEntrezGeneId() {
         return this.entrezGeneId;
+    }
+
+    public void setEntrezGeneId(String entrezGeneId) {
+        this.entrezGeneId =  entrezGeneId;
     }
 }
 

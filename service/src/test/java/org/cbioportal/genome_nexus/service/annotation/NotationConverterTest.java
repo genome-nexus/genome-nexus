@@ -132,7 +132,96 @@ public class NotationConverterTest
             this.notationConverter.genomicToHgvs("12,25398285,25398285,C,A"));
 
         assertEquals("Whitespace should be omitted",
-            "17:g.7577122_7577121delGGinsA",
-            this.notationConverter.genomicToHgvs(" 17 , 7577122 , 7577121 , GG , A "));
+            "17:g.7577121_7577122delGGinsA",
+            this.notationConverter.genomicToHgvs(" 17 , 7577121 , 7577122 , GG , A "));
+    }
+
+    @Test
+    public void genomicToEnsemblRestRegion()
+    {
+        assertNull("Null genomic location input string -> Null output",
+            this.notationConverter.genomicToEnsemblRestRegion((String)null));
+
+        assertNull("Invalid genomic location input string -> Null output",
+            this.notationConverter.genomicToEnsemblRestRegion("6,6,6"));
+
+        assertEquals("4:9784948-9784947:1/AGA",
+            this.notationConverter.genomicToEnsemblRestRegion("4,9784947,9784948,-,AGA"));
+
+        assertEquals("3:14940280-14940279:1/CAT",
+            this.notationConverter.genomicToEnsemblRestRegion("3,14940279,14940280,-,CAT"));
+
+        assertEquals("16:9057114-9057113:1/CTG",
+            this.notationConverter.genomicToEnsemblRestRegion("16,9057113,9057114,-,CTG"));
+
+        assertEquals("13:28608258-28608275:1/GGGGTGGGGGGG",
+            this.notationConverter.genomicToEnsemblRestRegion("13,28608258,28608275,CATATTCATATTCTCTGA,GGGGTGGGGGGG"));
+
+        assertEquals("22:36689419-36689421:1/-",
+            this.notationConverter.genomicToEnsemblRestRegion("22,36689419,36689421,CCT,-"));
+            
+        assertEquals("X:41242963-41242962:1/GA",
+            this.notationConverter.genomicToEnsemblRestRegion("X,41242962,41242963,-,GA"));
+
+        assertEquals("X:41242963-41242962:1/GA",
+            this.notationConverter.genomicToEnsemblRestRegion("chrX,41242962,41242963,-,GA"));
+
+        assertEquals("X:41242963-41242962:1/GA",
+            this.notationConverter.genomicToEnsemblRestRegion("chr23,41242962,41242963,-,GA"));
+
+        assertEquals("Y:41242963-41242962:1/GA",
+            this.notationConverter.genomicToEnsemblRestRegion("Y,41242962,41242963,-,GA"));
+
+        assertEquals("Y:41242963-41242962:1/GA",
+            this.notationConverter.genomicToEnsemblRestRegion("chrY,41242962,41242963,-,GA"));
+
+        assertEquals("Y:41242963-41242962:1/GA",
+            this.notationConverter.genomicToEnsemblRestRegion("chr24,41242962,41242963,-,GA"));
+
+        assertEquals("3:14106026-14106037:1/-",
+            this.notationConverter.genomicToEnsemblRestRegion("3,14106026,14106037,CCAGCAGTAGCT,-"));
+
+        assertEquals("22:29091840-29091841:1/CA",
+            this.notationConverter.genomicToEnsemblRestRegion("22,29091840,29091841,TG,CA"));
+
+        assertEquals("19:46141892-46141893:1/AA",
+            this.notationConverter.genomicToEnsemblRestRegion("19,46141892,46141893,TC,AA"));
+
+        assertEquals("11:62393546-62393547:1/AA",
+            this.notationConverter.genomicToEnsemblRestRegion("11,62393546,62393547,GG,AA"));
+
+        assertEquals("1:65325833-65325832:1/G",
+            this.notationConverter.genomicToEnsemblRestRegion("1,65325832,65325833,-,G"));
+
+        assertEquals("4:77675979-77675978:1/C",
+            this.notationConverter.genomicToEnsemblRestRegion("4,77675978,77675979,-,C"));
+
+        assertEquals("8:37696500-37696499:1/G",
+            this.notationConverter.genomicToEnsemblRestRegion("8,37696499,37696500,-,G"));
+
+        assertEquals("10:101953779-101953779:1/-",
+            this.notationConverter.genomicToEnsemblRestRegion("10,101953779,101953779,T,-"));
+
+        assertEquals("6:137519505-137519506:1/-",
+            this.notationConverter.genomicToEnsemblRestRegion("6,137519505,137519506,CT,-"));
+
+        assertEquals("3:114058003-114058003:1/-",
+            this.notationConverter.genomicToEnsemblRestRegion("3,114058003,114058003,G,-"));
+
+        assertEquals("9:135797242-135797242:1/AT",
+            this.notationConverter.genomicToEnsemblRestRegion("9,135797242,135797242,C,AT"));
+
+        assertEquals("6:137519505-137519506:1/A",
+            this.notationConverter.genomicToEnsemblRestRegion("6,137519505,137519506,CT,A"));
+
+        assertEquals("7:140453136-140453136:1/T",
+            this.notationConverter.genomicToEnsemblRestRegion("7,140453136,140453136,A,T"));
+
+        assertEquals("12:25398285-25398285:1/A",
+            this.notationConverter.genomicToEnsemblRestRegion("12,25398285,25398285,C,A"));
+
+        assertEquals("Whitespace should be omitted",
+            "17:7577121-7577122:1/A",
+            this.notationConverter.genomicToEnsemblRestRegion(" 17 , 7577121 , 7577122 , GG , A "));
     }
 }
