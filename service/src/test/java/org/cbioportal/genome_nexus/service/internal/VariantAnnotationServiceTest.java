@@ -16,7 +16,7 @@ import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.IsoformOverrideService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
-import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantRegionAnnotationFetcher;

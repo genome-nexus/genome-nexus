@@ -2,7 +2,7 @@ package org.cbioportal.genome_nexus.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cbioportal.genome_nexus.model.GeneXref;
-import org.cbioportal.genome_nexus.service.annotation.EntrezGeneXrefResolver;
+import org.cbioportal.genome_nexus.component.annotation.EntrezGeneXrefResolver;
 import org.cbioportal.genome_nexus.web.mixin.GeneXrefMixin;
 import org.junit.Before;
 import org.junit.Test;

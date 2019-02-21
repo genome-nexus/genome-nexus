@@ -35,7 +35,7 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.service.*;
-import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
