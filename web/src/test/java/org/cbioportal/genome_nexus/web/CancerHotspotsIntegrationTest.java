@@ -330,5 +330,56 @@ public class CancerHotspotsIntegrationTest
         assertEquals(1, hotspots.length);
         assertEquals(581, hotspots[0].getProteinLocation().getStart().intValue());
         assertEquals(581, hotspots[0].getProteinLocation().getEnd().intValue());
+
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 17, 17, "Missense_Mutation"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("This missense mutation should be hotspot", 1, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 17, 17, "stop_gained"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("This stop gain variant should not be hotspot", 0, hotspots[0].getHotspots().size());
+
+
+        // AKT1 in-frame indel hotspot is 65-77
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 76, 77, "In_Frame_Ins"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("In-frame insertion should be supported", 1, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 60, 64, "In_Frame_Ins"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("This in-frame insertion should not be hotspot, it is not in the range", 0, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 76, 80, "In_Frame_Del"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("In-frame deletion should be supported", 1, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 78, 80, "In_Frame_Del"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("This in-frame deletion should not be hotspot, it is not in the range", 0, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000397752", 1010, 1010, "Splice_Region"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("Splice region should be supported", 1, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000397752", 1009, 1009, "Splice_Region"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("This splice region is not a hotspot", 0, hotspots[0].getHotspots().size());
     }
 }
