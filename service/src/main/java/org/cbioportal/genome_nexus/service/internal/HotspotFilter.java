@@ -90,14 +90,12 @@ public class HotspotFilter
         List<Hotspot> result = new ArrayList<>();
         
         for (Hotspot hotspot: hotspots) {
-            boolean validPosition = true;
-            
             // Protein location
             int hotspotStart = proteinPositionResolver.extractProteinPos(hotspot.getResidue()).getStart();
             int hotspotStop = proteinPositionResolver.extractProteinPos(hotspot.getResidue()).getEnd();
 
             // as long as there is overlap, it should be valid position
-            validPosition &= (start <= hotspotStop && end >= hotspotStart);
+            boolean validPosition = start <= hotspotStop && end >= hotspotStart;
             
             // Mutation type
             boolean validMissense = type.equals("Missense_Mutation") && (hotspot.getType().contains("3d") || hotspot.getType().contains("single residue"));
