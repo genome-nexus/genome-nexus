@@ -36,89 +36,80 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 public class ColocatedVariant
 {
-    private String gnomad_nfe_maf;
-
-    @Field(value="gnomad_nfe_maf")
-    public String getgnomad_nfe_maf()
-    {
-        return gnomad_nfe_maf;
-    }
-
-    public void setgnomad_nfe_maf(String gnomad_nfe_maf)
-    {
-        this.gnomad_nfe_maf = gnomad_nfe_maf;
-    }
-
-    private String gnomad_nfe_allele;
-
-    @Field(value="gnomad_nfe_allele")
-    public String getgnomad_nfe_allele()
-    {
-        return gnomad_nfe_allele;
-    }
-
-    public void setgnomad_nfe_allele(String gnomad_nfe_allele)
-    {
-        this.gnomad_nfe_allele = gnomad_nfe_allele;
-    }
-
-    private String gnomad_afr_maf;
-
-    @Field(value="gnomad_afr_maf")
-    public String getgnomad_afr_maf()
-    {
-        return gnomad_afr_maf;
-    }
-
-    public void setgnomad_afr_maf(String gnomad_afr_maf)
-    {
-        this.gnomad_afr_maf = gnomad_afr_maf;
-    }
-
-    private String gnomad_afr_allele;
-
-    @Field(value="gnomad_afr_allele")
-    public String getgnomad_afr_allele()
-    {
-        return gnomad_afr_allele;
-    }
-
-    public void setgnomad_afr_allele(String gnomad_afr_allele)
-    {
-        this.gnomad_afr_allele = gnomad_afr_allele;
-    }
-
-    private String gnomad_eas_maf;
-
-    @Field(value="gnomad_eas_maf")
-    public String getgnomad_eas_maf()
-    {
-        return gnomad_eas_maf;
-    }
-
-    public void setgnomad_eas_maf(String gnomad_eas_maf)
-    {
-        this.gnomad_eas_maf = gnomad_eas_maf;
-    }
-
-    private String gnomad_eas_allele;
-
-    @Field(value="gnomad_eas_allele")
-    public String getgnomad_eas_allele()
-    {
-        return gnomad_eas_allele;
-    }
-
-    public void setgnomad_eas_allele(String gnomad_eas_allele)
-    {
-        this.gnomad_eas_allele = gnomad_eas_allele;
-    }
-
+    @Field(value="id")
     private String dbSnpId;
 
-    @Field(value="id")
-    public String getdbSnpId()
-    {
+    @Field(value="gnomad_nfe_maf")
+    private String gnomadNfeMaf;
+
+    @Field(value="gnomad_nfe_allele")
+    private String gnomadNfeAllele;
+
+    @Field(value="gnomad_afr_maf")
+    private String gnomadAfrMaf;
+
+    @Field(value="gnomad_afr_allele")
+    private String gnomadAfrAllele;
+
+    @Field(value="gnomad_eas_maf")
+    private String gnomadEasMaf;
+
+    @Field(value="gnomad_eas_allele")
+    private String gnomadEasAllele;
+
+    public String getDbSnpId() {
         return dbSnpId;
+    }
+
+    public void setDbSnpId(String dbSnpId) {
+        this.dbSnpId = dbSnpId;
+    }
+
+    public String getGnomadNfeMaf() {
+        return gnomadNfeMaf;
+    }
+
+    public void setGnomadNfeMaf(String gnomadNfeMaf) {
+        this.gnomadNfeMaf = gnomadNfeMaf;
+    }
+
+    public String getGnomadNfeAllele() {
+        return gnomadNfeAllele;
+    }
+
+    public void setGnomadNfeAllele(String gnomadNfeAllele) {
+        this.gnomadNfeAllele = gnomadNfeAllele;
+    }
+
+    public String getGnomadAfrMaf() {
+        return gnomadAfrMaf;
+    }
+
+    public void setGnomadAfrMaf(String gnomadAfrMaf) {
+        this.gnomadAfrMaf = gnomadAfrMaf;
+    }
+
+    public String getGnomadAfrAllele() {
+        return gnomadAfrAllele;
+    }
+
+    public void setGnomadAfrAllele(String gnomadAfrAllele) {
+        this.gnomadAfrAllele = gnomadAfrAllele;
+    }
+
+    public String getGnomadEasMaf() {
+        return gnomadEasMaf;
+    }
+
+    public void setGnomadEasMaf(String gnomadEasMaf) {
+        this.gnomadEasMaf = gnomadEasMaf;
+    }
+
+    public String getGnomadEasAllele() {
+        return gnomadEasAllele;
+    }
+
+    public void setGnomadEasAllele(String gnomadEasAllele) {
+        this.gnomadEasAllele = gnomadEasAllele;
     }
 }
