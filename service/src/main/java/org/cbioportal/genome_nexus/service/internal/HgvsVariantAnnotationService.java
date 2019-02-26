@@ -49,16 +49,24 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
 
     @Autowired
     public HgvsVariantAnnotationService(CachedVariantAnnotationFetcher cachedVariantAnnotationFetcher,
-                                            // Lazy autowire services used for enrichment,
-                                            // otherwise we are getting circular dependency issues
-                                            NotationConverter notationConverter,
-                                            @Lazy IsoformOverrideService isoformOverrideService,
-                                            @Lazy CancerHotspotService hotspotService,
-                                            @Lazy MutationAssessorService mutationAssessorService,
-                                            @Lazy MyVariantInfoService myVariantInfoService,
-                                            @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService)
+                                        // Lazy autowire services used for enrichment,
+                                        // otherwise we are getting circular dependency issues
+                                        NotationConverter notationConverter,
+                                        @Lazy IsoformOverrideService isoformOverrideService,
+                                        @Lazy CancerHotspotService hotspotService,
+                                        @Lazy MutationAssessorService mutationAssessorService,
+                                        @Lazy MyVariantInfoService myVariantInfoService,
+                                        @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
+                                        @Lazy PostTranslationalModificationService postTranslationalModificationService)
     {
-        super(cachedVariantAnnotationFetcher, isoformOverrideService, hotspotService, mutationAssessorService, myVariantInfoService, variantAnnotationSummaryService);
+        super(cachedVariantAnnotationFetcher,
+            isoformOverrideService,
+            hotspotService,
+            mutationAssessorService,
+            myVariantInfoService,
+            variantAnnotationSummaryService,
+            postTranslationalModificationService);
+
         this.notationConverter = notationConverter;
     }
 

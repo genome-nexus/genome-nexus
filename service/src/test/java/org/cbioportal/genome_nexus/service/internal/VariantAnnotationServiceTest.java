@@ -7,12 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.cbioportal.genome_nexus.model.Hotspot;
-import org.cbioportal.genome_nexus.model.IsoformOverride;
-import org.cbioportal.genome_nexus.model.MutationAssessor;
+import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
-import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.IsoformOverrideService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
@@ -29,11 +25,7 @@ import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceExce
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
-import org.cbioportal.genome_nexus.service.mock.CancerHotspotMockData;
-import org.cbioportal.genome_nexus.service.mock.IsoformOverrideMockData;
-import org.cbioportal.genome_nexus.service.mock.MutationAssessorMockData;
-import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
-import org.cbioportal.genome_nexus.service.mock.MyVariantInfoMockData;
+import org.cbioportal.genome_nexus.service.mock.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -67,6 +59,9 @@ public class VariantAnnotationServiceTest
     private CancerHotspotServiceImpl cancerHotspotService;
 
     @Mock
+    private PostTranslationalModificationServiceImpl postTranslationalModificationService;
+
+    @Mock
     private MyVariantInfoService myVariantInfoService;
 
     @Spy
@@ -78,6 +73,7 @@ public class VariantAnnotationServiceTest
     private CancerHotspotMockData cancerHotspotMockData = new CancerHotspotMockData();
     private IsoformOverrideMockData isoformOverrideMockData = new IsoformOverrideMockData();
     private MyVariantInfoMockData myVariantInfoMockData = new MyVariantInfoMockData();
+    private PtmMockData ptmMockData = new PtmMockData();
 
     @Test
     public void getAnnotationByVariantString()
@@ -195,6 +191,34 @@ public class VariantAnnotationServiceTest
     }
 
     @Test
+    public void getPtmEnrichedAnnotationByVariantString() throws IOException, VariantAnnotationWebServiceException,
+        VariantAnnotationNotFoundException, ResourceMappingException, IsoformOverrideNotFoundException
+    {
+        Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
+        Map<String, List<PostTranslationalModification>> ptmMockData = this.ptmMockData.generateData();
+        Map<String, IsoformOverride> isoformOverrideMockData = this.isoformOverrideMockData.generateData();
+
+        this.mockVariantFetcherMethods(variantMockData);
+        this.mockPtmServiceMethods(ptmMockData);
+        this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
+
+        List<String> fields = new ArrayList<>(1);
+        fields.add("ptms");
+
+        VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
+            "7:g.140453136A>T", null, fields);
+
+        assertEquals(ptmMockData.get("ENST00000288602"),
+            annotation1.getPtmAnnotation().getAnnotation().get(0));
+
+        VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
+            "12:g.25398285C>A", null, fields);
+
+        assertEquals(ptmMockData.get("ENST00000256078"),
+            annotation2.getPtmAnnotation().getAnnotation().get(0));
+    }
+
+    @Test
     public void getHotspotEnrichedAnnotationByVariantString()
         throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
         CancerHotspotsWebServiceException, IsoformOverrideNotFoundException, IOException
@@ -308,6 +332,19 @@ public class VariantAnnotationServiceTest
             "ENST00000288602")).thenReturn(hotspotMockData.get("ENST00000288602"));
         Mockito.when(this.cancerHotspotService.getHotspots(
             "ENST00000256078")).thenReturn(hotspotMockData.get("ENST00000256078"));
+    }
+
+    private void mockPtmServiceMethods(Map<String, List<PostTranslationalModification>> ptmMockData)
+    {
+        // call the real getPostTranslationalModifications(TranscriptConsequence transcript) method when called with
+        // a transcript, it is the one calling the getPostTranslationalModifications(String transcriptId)
+        Mockito.when(this.postTranslationalModificationService.getPostTranslationalModifications(
+            Mockito.any(TranscriptConsequence.class), Mockito.any(VariantAnnotation.class))).thenCallRealMethod();
+
+        Mockito.when(this.postTranslationalModificationService.getPostTranslationalModifications(
+            "ENST00000288602")).thenReturn(ptmMockData.get("ENST00000288602"));
+        Mockito.when(this.postTranslationalModificationService.getPostTranslationalModifications(
+            "ENST00000256078")).thenReturn(ptmMockData.get("ENST00000256078"));
     }
 
     private void mockIsoformOverrideServiceMethods(Map<String, IsoformOverride> isoformOverrideMockData)

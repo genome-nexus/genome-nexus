@@ -39,11 +39,7 @@ import org.cbioportal.genome_nexus.persistence.VariantAnnotationRepository;
 import org.cbioportal.genome_nexus.service.*;
 
 import org.cbioportal.genome_nexus.service.cached.BaseCachedExternalResourceFetcher;
-import org.cbioportal.genome_nexus.service.enricher.CanonicalTranscriptAnnotationEnricher;
-import org.cbioportal.genome_nexus.service.enricher.HotspotAnnotationEnricher;
-import org.cbioportal.genome_nexus.service.enricher.IsoformAnnotationEnricher;
-import org.cbioportal.genome_nexus.service.enricher.MutationAssessorAnnotationEnricher;
-import org.cbioportal.genome_nexus.service.enricher.MyVariantInfoAnnotationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.*;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -66,15 +62,15 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     private final MutationAssessorService mutationAssessorService;
     private final VariantAnnotationSummaryService variantAnnotationSummaryService;
     private final MyVariantInfoService myVariantInfoService;
+    private final PostTranslationalModificationService postTranslationalModificationService;
 
     public BaseVariantAnnotationServiceImpl(BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher,
-                                        // Lazy autowire services used for enrichment,
-                                        // otherwise we are getting circular dependency issues
-                                        IsoformOverrideService isoformOverrideService,
-                                        CancerHotspotService hotspotService,
-                                        MutationAssessorService mutationAssessorService,
-                                        MyVariantInfoService myVariantInfoService,
-                                        VariantAnnotationSummaryService variantAnnotationSummaryService)
+                                            IsoformOverrideService isoformOverrideService,
+                                            CancerHotspotService hotspotService,
+                                            MutationAssessorService mutationAssessorService,
+                                            MyVariantInfoService myVariantInfoService,
+                                            VariantAnnotationSummaryService variantAnnotationSummaryService,
+                                            PostTranslationalModificationService postTranslationalModificationService)
     {
         this.resourceFetcher = resourceFetcher;
         this.isoformOverrideService = isoformOverrideService;
@@ -82,6 +78,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         this.mutationAssessorService = mutationAssessorService;
         this.variantAnnotationSummaryService = variantAnnotationSummaryService;
         this.myVariantInfoService = myVariantInfoService;
+        this.postTranslationalModificationService = postTranslationalModificationService;
     }
 
     // Needs to be overridden to support normalizing variants
@@ -263,6 +260,12 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         {
             AnnotationEnricher enricher = new MyVariantInfoAnnotationEnricher(myVariantInfoService);
             postEnrichmentService.registerEnricher("my_variant_info", enricher);
+        }
+
+        if (fields != null && fields.contains("ptms"))
+        {
+            AnnotationEnricher enricher = new PostTranslationalModificationEnricher(postTranslationalModificationService);
+            postEnrichmentService.registerEnricher("ptm", enricher);
         }
 
         if (fields != null && fields.contains("annotation_summary"))
