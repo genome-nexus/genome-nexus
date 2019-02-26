@@ -55,7 +55,7 @@ public class TranscriptConsequence
     private String geneSymbol;
     private String geneId;
     private String aminoAcids;
-    private Integer hgncId;
+    private String hgncId;
     private String canonical;
     private Double polyphenScore;
     private String polyphenPrediction;
@@ -233,12 +233,12 @@ public class TranscriptConsequence
     }
 
     @Field(value="hgnc_id")
-    public Integer getHgncId()
+    public String getHgncId()
     {
         return hgncId;
     }
 
-    public void setHgncId(Integer hgncId)
+    public void setHgncId(String hgncId)
     {
         this.hgncId = hgncId;
     }
