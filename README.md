@@ -26,9 +26,8 @@ for interpreting variants and patients.
 ## Run
 
 ### Alternative 1 - run genome-nexus and mongoDB in docker containers
-Run with docker (assumes mvn installed locally):
+Run with docker:
 ```
-mvn  -DskipTests clean install
 docker-compose up --build
 ```
 The mongo image `genomenexus/gn-mongo` comes with all the required tables
