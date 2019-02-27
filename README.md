@@ -34,7 +34,7 @@ For example `grch37_ensembl92`, `grch38_ensembl92` or `grch38_ensembl95`:
 export REF_ENSEMBL_VERSION=grch38_ensembl92
 ```
 
-If you would like to do local VEP annotations instead of using the public Ensembl API, please uncomment `# gn_vep.region.url=http://localhost:6060/vep/human/region/VARIANT` in your `application.properties`. This will require you to download the VEP cache files for the preferred Ensembl Release and Reference genome, see our documentation on [downloading the Genome Nexus VEP Cache](https://github.com/thehyve/genome-nexus-vep/tree/vep_grch38#create-vep-cache). This will take several hours.
+If you would like to do local VEP annotations instead of using the public Ensembl API, please uncomment `# gn_vep.region.url=http://localhost:6060/vep/human/region/VARIANT` in your `application.properties`. This will require you to download the VEP cache files for the preferred Ensembl Release and Reference genome, see our documentation on [downloading the Genome Nexus VEP Cache](https://github.com/genome-nexus/genome-nexus-vep/blob/master/README.md#create-vep-cache). This will take several hours.
 ```
 # Set local cache dir
 export VEP_CACHE=<local_vep_cache>
