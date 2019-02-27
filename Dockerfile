@@ -1,4 +1,4 @@
-FROM maven:latest
+FROM maven:3.5.4
 RUN mkdir /genome-nexus
 ADD . /genome-nexus
 WORKDIR /genome-nexus

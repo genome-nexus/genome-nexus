@@ -13,13 +13,13 @@ services:
       - db
 
   db:
-    build: https://github.com/genome-nexus/genome-nexus-importer.git#rc
+    build: https://github.com/genome-nexus/genome-nexus-importer.git
     environment:
       - REF_ENSEMBL_VERSION=${REF_ENSEMBL_VERSION}
     restart: always
 
   vep:
-    build: https://github.com/thehyve/genome-nexus-vep.git#vep_grch38
+    build: https://github.com/genome-nexus/genome-nexus-vep.git
     environment:
       - VEP_ASSEMBLY=${VEP_ASSEMBLY}
     restart: always

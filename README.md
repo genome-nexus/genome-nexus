@@ -53,6 +53,12 @@ Run without recreating images:
 docker-compose up -d
 ```
 
+Run without Genome Nexus VEP:
+```
+# Start both the Web and DB (dependency of Web) containers
+docker-compose up -d web
+```
+
 Stop and remove containers:
 ```
 docker-compose down
