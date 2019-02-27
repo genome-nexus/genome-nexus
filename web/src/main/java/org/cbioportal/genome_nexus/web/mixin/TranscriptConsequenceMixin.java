@@ -55,7 +55,7 @@ public class TranscriptConsequenceMixin
 
     @JsonProperty(value="hgnc_id", required = true)
     @ApiModelProperty(value = "HGNC id", required = false)
-    private Integer hgncId;
+    private String hgncId;
 
     @JsonProperty(value="canonical", required = true)
     @ApiModelProperty(value = "Canonical transcript indicator", required = false)
