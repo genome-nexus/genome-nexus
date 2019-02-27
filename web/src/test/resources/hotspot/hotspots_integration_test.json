@@ -130,5 +130,38 @@
         "truncatingCount": 0,
         "inframeCount": 0,
         "spliceCount": 0
+    },
+    {
+        "hugo_symbol": "MET",
+        "transcript_id": "ENST00000397752",
+        "residue": "X1010",
+        "tumor_count": 19,
+        "type": "splice site",
+        "missense_count": 0,
+        "truncating_count": 0,
+        "inframe_count": 0,
+        "splice_count": 19
+    },
+    {
+        "hugo_symbol": "AKT1",
+        "transcript_id": "ENST00000349310",
+        "residue": "65-77",
+        "tumor_count": 2,
+        "type": "in-frame indel",
+        "missense_count": 0,
+        "truncating_count": 0,
+        "inframe_count": 2,
+        "splice_count": 0
+    },
+    {
+        "hugo_symbol": "AKT1",
+        "transcript_id": "ENST00000349310",
+        "residue": "E17",
+        "tumor_count": 149,
+        "type": "single residue",
+        "missense_count": 148,
+        "truncating_count": 1,
+        "inframe_count": 0,
+        "splice_count": 0
     }
 ]
