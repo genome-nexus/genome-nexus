@@ -25,14 +25,44 @@ for interpreting variants and patients.
 
 ## Run
 
-### Alternative 1 - run genome-nexus and mongoDB in docker containers
-Run with docker (assumes mvn installed locally):
+### Alternative 1 - run genome-nexus, mongoDB and genome-nexus-vep in docker containers
+First, set environment variables for Ensembl Release, VEP Assembly and location of VEP Cache. If these are not, the default values from `.env` will be set.
+
+The reference genome and Ensembl release must be consistent with a version in [genome-nexus-importer/data/](https://github.com/genome-nexus/genome-nexus-importer/tree/rc/data).
+For example `grch37_ensembl92`, `grch38_ensembl92` or `grch38_ensembl95`:
 ```
-mvn  -DskipTests clean install
-docker-compose up --build
+export REF_ENSEMBL_VERSION=grch38_ensembl92
 ```
-The mongo image `genomenexus/gn-mongo` comes with all the required tables
-initialized.
+
+If you would like to do local VEP annotations instead of using the public Ensembl API, please uncomment `# gn_vep.region.url=http://localhost:6060/vep/human/region/VARIANT` in your `application.properties`. This will require you to download the VEP cache files for the preferred Ensembl Release and Reference genome, see our documentation on [downloading the Genome Nexus VEP Cache](https://github.com/genome-nexus/genome-nexus-vep/blob/master/README.md#create-vep-cache). This will take several hours.
+```
+# Set local cache dir
+export VEP_CACHE=<local_vep_cache>
+
+# GRCh38 or GRCh37
+export VEP_ASSEMBLY=GRCh38
+```
+
+Run docker-compose to create images and containers:
+```
+docker-compose up --build -d
+```
+
+Run without recreating images:
+```
+docker-compose up -d
+```
+
+Run without Genome Nexus VEP:
+```
+# Start both the Web and DB (dependency of Web) containers
+docker-compose up -d web
+```
+
+Stop and remove containers:
+```
+docker-compose down
+```
 
 ### Alternative 2 - run genome-nexus locally, but mongoDB in docker container
 ```

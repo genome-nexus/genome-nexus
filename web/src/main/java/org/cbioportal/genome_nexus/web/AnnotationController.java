@@ -81,7 +81,8 @@ public class AnnotationController
     @Deprecated
     public List<VariantAnnotation> getVariantAnnotation(
         @PathVariable
-        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962_41242963insGA",
+        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962_41242963insGA " +
+            "(GRCh37) or 1:g.182712A>C,2:g.265023C>T,3:g.319781del,19:g.110753dup,1:g.1385015_1387562del (GRCh38)",
             required = true,
             allowMultiple = true)
         List<String> variants,
@@ -107,7 +108,8 @@ public class AnnotationController
     @Deprecated
     public List<VariantAnnotation> postVariantAnnotation(
         @RequestParam
-        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962_41242963insGA",
+        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962_41242963insGA " +
+            "(GRCh37) or 1:g.182712A>C,2:g.265023C>T,3:g.319781del,19:g.110753dup,1:g.1385015_1387562del (GRCh38)",
             required = true,
             allowMultiple = true)
             List<String> variants,
@@ -129,7 +131,9 @@ public class AnnotationController
         method = RequestMethod.POST,
         produces = "application/json")
     public List<VariantAnnotation> fetchVariantAnnotationPOST(
-        @ApiParam(value="List of variants. For example [\"X:g.66937331T>A\",\"17:g.41242962_41242963insGA\"]",
+        @ApiParam(value="List of variants. For example [\"X:g.66937331T>A\",\"17:g.41242962_41242963insGA\"] (GRCh37) " +
+            "or [\"1:g.182712A>C\", \"2:g.265023C>T\", \"3:g.319781del\", \"19:g.110753dup\", " +
+            "\"1:g.1385015_1387562del\"] (GRCh38)",
             required = true)
         @RequestBody List<String> variants,
         @ApiParam(value="Isoform override source. For example uniprot",
