@@ -1,11 +1,10 @@
 package org.cbioportal.genome_nexus.service.annotation;
 
+import org.cbioportal.genome_nexus.component.annotation.CanonicalTranscriptResolver;
 import org.cbioportal.genome_nexus.model.EnsemblGene;
-import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.EnsemblService;
-import org.cbioportal.genome_nexus.service.GeneXrefService;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
 import org.jetbrains.annotations.Nullable;

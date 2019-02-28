@@ -1,6 +1,6 @@
 package org.cbioportal.genome_nexus.service.annotation;
 
-import org.cbioportal.genome_nexus.model.EnsemblCanonical;
+import org.cbioportal.genome_nexus.component.annotation.CanonicalTranscriptResolver;
 import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;

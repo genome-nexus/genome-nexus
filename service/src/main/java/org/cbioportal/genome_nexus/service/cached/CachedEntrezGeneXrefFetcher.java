@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.persistence.GeneXrefRepository;
-import org.cbioportal.genome_nexus.service.annotation.EntrezGeneXrefResolver;
+import org.cbioportal.genome_nexus.component.annotation.EntrezGeneXrefResolver;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.remote.GeneXrefDataFetcher;
 import org.jetbrains.annotations.Nullable;
