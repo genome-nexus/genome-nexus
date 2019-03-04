@@ -33,16 +33,19 @@
 package org.cbioportal.genome_nexus.web;
 
 import io.swagger.annotations.*;
+
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.service.*;
-
+import org.cbioportal.genome_nexus.web.validation.*;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
+
 
 /**
  * @author Benjamin Gross
@@ -51,14 +54,21 @@ import java.util.*;
 @RestController // shorthand for @Controller, @ResponseBody
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")
+@Validated
 public class AnnotationController
 {
-    private final VariantAnnotationService variantAnnotationService;
+    private final VariantAnnotationService hgvsAnnotationService;
+    private final VariantAnnotationService dbsnpAnnotationService;
+    private final GenomicLocationAnnotationService genomicLocationAnnotationService;
 
     @Autowired
-    public AnnotationController(VariantAnnotationService variantAnnotationService)
+    public AnnotationController(VariantAnnotationService hgvsVariantAnnotationService,
+                                VariantAnnotationService dbsnpVariantAnnotationService,
+                                GenomicLocationAnnotationService genomicLocationAnnotationService)
     {
-        this.variantAnnotationService = variantAnnotationService;
+        this.hgvsAnnotationService = hgvsVariantAnnotationService;
+        this.dbsnpAnnotationService = dbsnpVariantAnnotationService;
+        this.genomicLocationAnnotationService = genomicLocationAnnotationService;
     }
 
     // TODO remove this endpoint after all internal dependencies are resolved
@@ -71,7 +81,8 @@ public class AnnotationController
     @Deprecated
     public List<VariantAnnotation> getVariantAnnotation(
         @PathVariable
-        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962_41242963insGA",
+        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962_41242963insGA " +
+            "(GRCh37) or 1:g.182712A>C,2:g.265023C>T,3:g.319781del,19:g.110753dup,1:g.1385015_1387562del (GRCh38)",
             required = true,
             allowMultiple = true)
         List<String> variants,
@@ -97,7 +108,8 @@ public class AnnotationController
     @Deprecated
     public List<VariantAnnotation> postVariantAnnotation(
         @RequestParam
-        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962_41242963insGA",
+        @ApiParam(value="Comma separated list of variants. For example X:g.66937331T>A,17:g.41242962_41242963insGA " +
+            "(GRCh37) or 1:g.182712A>C,2:g.265023C>T,3:g.319781del,19:g.110753dup,1:g.1385015_1387562del (GRCh38)",
             required = true,
             allowMultiple = true)
             List<String> variants,
@@ -119,7 +131,9 @@ public class AnnotationController
         method = RequestMethod.POST,
         produces = "application/json")
     public List<VariantAnnotation> fetchVariantAnnotationPOST(
-        @ApiParam(value="List of variants. For example [\"X:g.66937331T>A\",\"17:g.41242962_41242963insGA\"]",
+        @ApiParam(value="List of variants. For example [\"X:g.66937331T>A\",\"17:g.41242962_41242963insGA\"] (GRCh37) " +
+            "or [\"1:g.182712A>C\", \"2:g.265023C>T\", \"3:g.319781del\", \"19:g.110753dup\", " +
+            "\"1:g.1385015_1387562del\"] (GRCh38)",
             required = true)
         @RequestBody List<String> variants,
         @ApiParam(value="Isoform override source. For example uniprot",
@@ -129,7 +143,7 @@ public class AnnotationController
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         @RequestParam(required = false) List<String> fields)
     {
-        return this.variantAnnotationService.getAnnotations(variants, isoformOverrideSource, fields);
+        return this.hgvsAnnotationService.getAnnotations(variants, isoformOverrideSource, fields);
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided variant",
@@ -149,7 +163,7 @@ public class AnnotationController
         @RequestParam(required = false) List<String> fields)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, fields);
+        return this.hgvsAnnotationService.getAnnotation(variant, isoformOverrideSource, fields);
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of genomic locations",
@@ -168,7 +182,7 @@ public class AnnotationController
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         @RequestParam(required = false) List<String> fields)
     {
-        return this.variantAnnotationService.getAnnotationsByGenomicLocations(
+        return this.genomicLocationAnnotationService.getAnnotations(
             genomicLocations, isoformOverrideSource, fields);
     }
 
@@ -180,7 +194,7 @@ public class AnnotationController
     public VariantAnnotation fetchVariantAnnotationByGenomicLocationGET(
         @ApiParam(value="A genomic location. For example 7,140453136,140453136,A,T",
             required = true)
-        @PathVariable String genomicLocation,
+        @PathVariable @ValidGenomicLocation String genomicLocation,
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
         @RequestParam(required = false) String isoformOverrideSource,
@@ -189,7 +203,7 @@ public class AnnotationController
         @RequestParam(required = false) List<String> fields)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.variantAnnotationService.getAnnotationByGenomicLocation(genomicLocation, isoformOverrideSource, fields);
+        return this.genomicLocationAnnotationService.getAnnotation(genomicLocation, isoformOverrideSource, fields);
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of dbSNP ids",
@@ -208,7 +222,7 @@ public class AnnotationController
             "For example: annotation_summary", required = false, defaultValue = "annotation_summary")
         @RequestParam(required = false) List<String> fields)
     {
-        return this.variantAnnotationService.getAnnotationsByIds(variantIds, isoformOverrideSource, fields);
+        return this.dbsnpAnnotationService.getAnnotations(variantIds, isoformOverrideSource, fields);
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the give dbSNP id",
@@ -228,7 +242,8 @@ public class AnnotationController
         @RequestParam(required = false) List<String> fields)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.variantAnnotationService.getAnnotationById(variantId, isoformOverrideSource, fields);
+        return this.dbsnpAnnotationService.getAnnotation(variantId, isoformOverrideSource, fields);
     }
 
 }
+

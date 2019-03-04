@@ -19,15 +19,21 @@ public class EnsemblTranscriptMixin {
     @ApiModelProperty(value = "Length of protein", position=4)
     private Integer proteinLength;
 
-    @ApiModelProperty(value = "Hugo symbols", position=6, dataType="List")
-    private List<String> hugoSymbols;
-
     @ApiModelProperty(value = "Pfam domains", position=5, dataType="List")
     private List<PfamDomainRangeMixin> pfamDomains;
 
-    @ApiModelProperty(value = "Exon information", position=7, dataType="List")
+    @ApiModelProperty(value = "Hugo symbols", position=6, dataType="List")
+    private List<String> hugoSymbols;
+
+    @ApiModelProperty(value = "RefSeq mRNA ID", position=7)
+    private String refseqMrnaId;
+
+    @ApiModelProperty(value = "Consensus CDS (CCDS) ID", position=8)
+    private String ccdsId;
+
+    @ApiModelProperty(value = "Exon information", position=9, dataType="List")
     private List<ExonMixin> exons;
 
-    @ApiModelProperty(value = "UTR information", position=8, dataType="List")
+    @ApiModelProperty(value = "UTR information", position=10, dataType="List")
     private List<UntranslatedRegionMixin> utrs;
 }

@@ -32,11 +32,12 @@
 
 package org.cbioportal.genome_nexus.service.internal;
 
+import org.cbioportal.genome_nexus.component.annotation.HotspotFilter;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.persistence.HotspotRepository;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
-import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -58,12 +59,12 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
     @Autowired
     public CancerHotspotServiceImpl(HotspotRepository hotspotRepository,
-                                    VariantAnnotationService variantAnnotationService,
+                                    VariantAnnotationService hgvsVariantAnnotationService,
                                     HotspotFilter hotspotFilter,
                                     NotationConverter notationConverter)
     {
         this.hotspotRepository = hotspotRepository;
-        this.variantAnnotationService = variantAnnotationService;
+        this.variantAnnotationService = hgvsVariantAnnotationService;
         this.hotspotFilter = hotspotFilter;
         this.notationConverter = notationConverter;
     }
@@ -95,6 +96,23 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     public List<Hotspot> getHotspots()
     {
         return this.hotspotRepository.findAll();
+    }
+   
+    public List<AggregatedHotspots> getHotspotsByTranscriptIds(List<String> transcriptIds) throws CancerHotspotsWebServiceException
+    {
+        List<AggregatedHotspots> hotspots = new ArrayList<>();
+        for (String transcriptId : transcriptIds) {
+            AggregatedHotspots aggregatedHotspots = new AggregatedHotspots();
+            
+            // add protein location information
+            aggregatedHotspots.setTranscriptId(transcriptId);
+            
+            // query hotspots service by protein location
+            aggregatedHotspots.setHotspots(this.getHotspots(transcriptId));
+            hotspots.add(aggregatedHotspots);
+        }
+
+        return hotspots;
     }
 
     @Override
@@ -182,5 +200,25 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         }
 
         return new ArrayList<>(hotspots);
+    }
+
+    @Override
+    public List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations)
+        throws CancerHotspotsWebServiceException
+    {
+        List<AggregatedHotspots> hotspots = new ArrayList<>();
+        for (ProteinLocation proteinLocation : proteinLocations)
+        {
+            AggregatedHotspots aggregatedHotspots = new AggregatedHotspots();
+
+            // add protein location information
+            aggregatedHotspots.setProteinLocation(proteinLocation);
+
+            // query hotspots service by protein location
+            aggregatedHotspots.setHotspots(hotspotFilter.proteinLocationHotspotsFilter(this.getHotspots(proteinLocation.getTranscriptId()), proteinLocation));
+            hotspots.add(aggregatedHotspots);
+        }
+        
+        return hotspots;
     }
 }

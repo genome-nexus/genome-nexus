@@ -18,6 +18,11 @@
     <dependencies>
         <dependency>
             <groupId>org.cbioportal.genome_nexus</groupId>
+            <artifactId>component</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cbioportal.genome_nexus</groupId>
             <artifactId>persistence</artifactId>
             <version>${project.version}</version>
         </dependency>

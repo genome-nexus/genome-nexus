@@ -1,14 +1,19 @@
 package org.cbioportal.genome_nexus.service.annotation;
 
+import org.cbioportal.genome_nexus.component.annotation.CanonicalTranscriptResolver;
+import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.GeneXrefService;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
 import org.cbioportal.genome_nexus.service.mock.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -30,10 +35,44 @@ public class EntrezGeneIdResolverTest
     @Mock
     private GeneXrefService geneXrefService;
 
+    @Mock
+    private EnsemblService ensemblService;
+
     private final VariantAnnotationMockData variantAnnotationMockData = new VariantAnnotationMockData();
     private final GeneXrefMockData geneXrefMockData = new GeneXrefMockData();
     private final CanonicalTranscriptResolverMocker canonicalTranscriptResolverMocker = new CanonicalTranscriptResolverMocker();
     private final GeneXrefServiceMocker geneXrefServiceMocker = new GeneXrefServiceMocker();
+
+    private void mockGetCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol, String entrezGeneId) {
+        EnsemblGene eg;
+        try {
+            eg = new EnsemblGene();
+            eg.setEntrezGeneId(entrezGeneId);
+            Mockito.when(ensemblService.getCanonicalEnsemblGeneIdByHugoSymbol(hugoSymbol)).thenReturn(eg);
+        } catch (NoEnsemblGeneIdForHugoSymbolException e) {
+            // silently ignore error
+        }
+    }
+
+    private void mockEnsemblService() {
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("JAK1", "3716");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("FGD5", "152273");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("ZBTB20", "26137");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("DRD5", "1816");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("SHROOM3", "57619");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("IFNGR1", "3459");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("BRAF", "673");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("GPR124", "25960");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("TSC1", "7248");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("CHUK", "1147");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("GANAB", "23193");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("KRAS", "3845");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("FLT3", "2322");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("USP7", "7874");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("EML2", "24139");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("CHEK2", "11200");
+        mockGetCanonicalEnsemblGeneIdByHugoSymbol("MYH9", "4627");
+    }
 
     @Test
     public void resolveEntrezGeneIdForCanonical() throws IOException, EnsemblWebServiceException
@@ -43,6 +82,7 @@ public class EntrezGeneIdResolverTest
 
         this.canonicalTranscriptResolverMocker.mockMethods(variantMockData, this.canonicalTranscriptResolver);
         this.geneXrefServiceMocker.mockMethods(geneXrefMockData, this.geneXrefService);
+        this.mockEnsemblService();
 
         assertEquals(
             "3716",

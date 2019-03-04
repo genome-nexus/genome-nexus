@@ -42,7 +42,7 @@ public class TranscriptConsequenceMixin
     private String aminoAcids;
 
     @JsonProperty(value="hgnc_id", required = true)
-    private Integer hgncId;
+    private String hgncId;
 
     @JsonProperty(value="canonical", required = true)
     private String canonical;
@@ -58,6 +58,9 @@ public class TranscriptConsequenceMixin
 
     @JsonProperty(value="sift_prediction", required = true)
     private String siftPrediction;
+
+    @JsonProperty(value="exon", required = true)
+    private String exon;
 
     @JsonProperty(value="refseq_transcript_ids", required = true)
     private List<String> refseqTranscriptIds;

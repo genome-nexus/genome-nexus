@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.Hotspot;
+import org.cbioportal.genome_nexus.model.ProteinLocation;
 import org.cbioportal.genome_nexus.model.AggregatedHotspots;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
@@ -89,5 +90,50 @@ public class CancerHotspotsController
         @RequestBody List<GenomicLocation> genomicLocations) throws CancerHotspotsWebServiceException
     {
         return this.hotspotService.getHotspotAnnotationsByGenomicLocations(genomicLocations);
+    }
+
+    @ApiOperation(value = "Retrieves hotspot annotations for the provided transcript ID",
+        nickname = "fetchHotspotAnnotationByTranscriptIdGET")
+    @RequestMapping(value = "/cancer_hotspots/transcript/{transcriptId}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<Hotspot> fetchHotspotAnnotationByTranscriptIdGET(
+        @ApiParam(value="A Transcript Id. For example ENST00000288602",
+            required = true,
+            allowMultiple = true)
+        @PathVariable String transcriptId)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        CancerHotspotsWebServiceException
+    {
+        return this.hotspotService.getHotspots(transcriptId);
+    }
+
+    @ApiOperation(value = "Retrieves hotspot annotations for the provided list of transcript ID",
+        nickname = "fetchHotspotAnnotationByTranscriptIdPOST")
+    @RequestMapping(value = "/cancer_hotspots/transcript",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<AggregatedHotspots> fetchHotspotAnnotationByTranscriptIdPOST(
+        @ApiParam(value="List of transcript Id. For example [\"ENST00000288602\",\"ENST00000256078\"]",
+            required = true,
+            allowMultiple = true)
+        @RequestBody List<String> transcriptIds)
+        throws CancerHotspotsWebServiceException
+    {
+        return this.hotspotService.getHotspotsByTranscriptIds(transcriptIds);
+    }
+
+    @ApiOperation(value = "Retrieves hotspot annotations for the provided list of transcript id, protein location and mutation type",
+        nickname = "fetchHotspotAnnotationByProteinLocationsPOST")
+    @RequestMapping(value = "/cancer_hotspots/proteinLocations",
+        method = RequestMethod.POST,
+        produces = "application/json")
+    public List<AggregatedHotspots> fetchHotspotAnnotationByProteinLocationsPOST(
+        @ApiParam(value="List of transcript id, protein start location, protein end location, mutation type. The mutation types are limited to 'Missense_Mutation', 'In_Frame_Ins', 'In_Frame_Del', 'Splice_Site', and 'Splice_Region'",
+            required = true,
+            allowMultiple = true)
+        @RequestBody List<ProteinLocation> proteinLocations) throws CancerHotspotsWebServiceException
+    {
+        return this.hotspotService.getHotspotAnnotationsByProteinLocations(proteinLocations);
     }
 }

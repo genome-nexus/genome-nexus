@@ -5,6 +5,15 @@ vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=appli
 # 200 is the max page size allowed by the public VEP service, it might be possible to increase this for a private instance
 vep.max_page_size=200
 
+# it is possible to use your own VEP instance by running https://github.com/genome-nexus/genome-nexus-vep
+# This is only the VEP part of the Ensembl REST API.
+# e.g. when running on port 6060:
+# gn_vep.region.url=http://localhost:6060/vep/human/region/VARIANT
+# Note that this overrides vep.url
+# To get the full advantage of running your own VEP, several optimizations are
+# required, please read documentation in
+# https://github.com/genome-nexus/genome-nexus-vep
+
 # the gene external references URL
 genexrefs.url=http://grch37.rest.ensembl.org/xrefs/id/ACCESSION?content-type=application/json
 

@@ -55,12 +55,13 @@ public class TranscriptConsequence
     private String geneSymbol;
     private String geneId;
     private String aminoAcids;
-    private Integer hgncId;
+    private String hgncId;
     private String canonical;
     private Double polyphenScore;
     private String polyphenPrediction;
     private Double siftScore;
     private String siftPrediction;
+    private String exon;
 
     private List<String> refseqTranscriptIds;
     private List<String> consequenceTerms;
@@ -232,12 +233,12 @@ public class TranscriptConsequence
     }
 
     @Field(value="hgnc_id")
-    public Integer getHgncId()
+    public String getHgncId()
     {
         return hgncId;
     }
 
-    public void setHgncId(Integer hgncId)
+    public void setHgncId(String hgncId)
     {
         this.hgncId = hgncId;
     }
@@ -251,6 +252,17 @@ public class TranscriptConsequence
     public void setCanonical(String canonical)
     {
         this.canonical = canonical;
+    }
+
+    @Field(value="exon")
+    public String getExon()
+    {
+        return exon;
+    }
+
+    public void setExon(String exon)
+    {
+        this.exon = exon;
     }
 
     @Field(value="refseq_transcript_ids")

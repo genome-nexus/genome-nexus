@@ -13,6 +13,7 @@ public class TranscriptConsequenceSummary
     private IntegerRange proteinPosition;
     private String refSeq;
     private String variantClassification;
+    private String exon;
 
     public String getTranscriptId() {
         return transcriptId;
@@ -100,5 +101,13 @@ public class TranscriptConsequenceSummary
 
     public void setVariantClassification(String variantClassification) {
         this.variantClassification = variantClassification;
+    }
+
+    public String getExon() {
+        return exon;
+    }
+
+    public void setExon(String exon) {
+        this.exon = exon;
     }
 }

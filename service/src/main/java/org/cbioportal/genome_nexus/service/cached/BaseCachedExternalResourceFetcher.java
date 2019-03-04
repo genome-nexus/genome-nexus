@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,6 +53,10 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         this.maxPageSize = maxPageSize;
     }
 
+    public Boolean hasValidURI() {
+        return this.fetcher.hasValidURI();
+    }
+
     // Needs to be overridden to support checking for valid ids
     protected Boolean isValidId(String id)
     {
@@ -89,7 +94,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 List<T> list = this.transformer.transform(rawValue, this.type);
 
                 if (list.size() > 0) {
-                    instance = Optional.of(list.get(0));
+                    instance = Optional.ofNullable(list.get(0));
                 }
 
                 // save everything to the cache as a properly parsed JSON
@@ -102,6 +107,9 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 // this is thrown when the annotationJSON can't be stored by mongo
                 // due to the variant annotation key being too large to index
                 LOG.info(e.getLocalizedMessage());
+            } catch (HttpServerErrorException e) {
+                // failure fetching external resource
+                LOG.error("Failure fetching external resource: " + e.getLocalizedMessage());
             }
         }
 

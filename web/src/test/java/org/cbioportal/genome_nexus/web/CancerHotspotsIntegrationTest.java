@@ -3,8 +3,9 @@ package org.cbioportal.genome_nexus.web;
 import org.cbioportal.genome_nexus.model.AggregatedHotspots;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.Hotspot;
+import org.cbioportal.genome_nexus.model.ProteinLocation;
 import org.cbioportal.genome_nexus.persistence.HotspotRepository;
-import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.web.mock.JsonToObjectMapper;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -67,6 +69,21 @@ public class CancerHotspotsIntegrationTest
     private Hotspot[] fetchHotspotsGET(String genomicLocation)
     {
         return this.restTemplate.getForObject(BASE_URL + genomicLocation, Hotspot[].class);
+    }
+
+    private Hotspot[] fetchHotspotsByTranscriptGET(String transcriptId)
+    {
+        return this.restTemplate.getForObject("http://localhost:38888/cancer_hotspots/transcript/" + transcriptId, Hotspot[].class);
+    }
+
+    private AggregatedHotspots[] fetchHotspotsByTranscriptPOST(List<String> transcriptIds)
+    {
+        return this.restTemplate.postForObject("http://localhost:38888/cancer_hotspots/transcript", transcriptIds, AggregatedHotspots[].class);
+    }
+
+    private AggregatedHotspots[] fetchHotspotsByProteinLocationPOST(List<ProteinLocation> locations)
+    {
+        return this.restTemplate.postForObject("http://localhost:38888/cancer_hotspots/proteinLocations", locations, AggregatedHotspots[].class);
     }
 
     private AggregatedHotspots[] fetchHotspotsPOST(List<GenomicLocation> genomicLocationsInstances)
@@ -264,5 +281,105 @@ public class CancerHotspotsIntegrationTest
 
         // GET and POST requests should return exact same hotspots
         assertEquals(aggregatedHotspots[0].getHotspots().size(), hotspots0.length);
+    }
+
+    @Test
+    public void testTranscriptIdHotspots()
+    {
+        String[] transcriptIds = {"ENST00000288602"};
+
+        //////////////////
+        // GET requests //
+        //////////////////
+
+        Hotspot[] hotspots0 = this.fetchHotspotsByTranscriptGET(transcriptIds[0]);
+
+        assertEquals(2, hotspots0.length);
+        assertEquals("BRAF", hotspots0[0].getHugoSymbol());
+        assertEquals("N581", hotspots0[0].getResidue());
+        assertEquals("single residue", hotspots0[0].getType());
+
+        for (int i = 0; i < hotspots0.length; i++) {
+            assertEquals(transcriptIds[0], hotspots0[i].getTranscriptId());
+        }
+
+        //////////////////
+        // POST request //
+        //////////////////
+
+        AggregatedHotspots[] hotspots1 = this.fetchHotspotsByTranscriptPOST(Arrays.asList(transcriptIds));
+        
+        assertEquals(1, hotspots1.length);
+        assertEquals("ENST00000288602", hotspots1[0].getTranscriptId());
+        assertEquals(2, hotspots1[0].getHotspots().size());        
+
+    }
+
+    @Test
+    public void testProteinLocation()
+    {
+        List<ProteinLocation> locations = new ArrayList<ProteinLocation>();
+        locations.add(new ProteinLocation("ENST00000288602", 581, 581, "Missense_Mutation"));   
+
+        //////////////////
+        // POST requests //
+        //////////////////
+    
+        AggregatedHotspots[] hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        
+        assertEquals(1, hotspots.length);
+        assertEquals(581, hotspots[0].getProteinLocation().getStart().intValue());
+        assertEquals(581, hotspots[0].getProteinLocation().getEnd().intValue());
+
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 17, 17, "Missense_Mutation"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("This missense mutation should be hotspot", 1, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 17, 17, "stop_gained"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("This stop gain variant should not be hotspot", 0, hotspots[0].getHotspots().size());
+
+
+        // AKT1 in-frame indel hotspot is 65-77
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 76, 77, "In_Frame_Ins"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("In-frame insertion should be supported", 1, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 60, 64, "In_Frame_Ins"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("This in-frame insertion should not be hotspot, it is not in the range", 0, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 76, 80, "In_Frame_Del"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("In-frame deletion should be supported", 1, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000349310", 78, 80, "In_Frame_Del"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("This in-frame deletion should not be hotspot, it is not in the range", 0, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000397752", 1010, 1010, "Splice_Region"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("Splice region should be supported", 1, hotspots[0].getHotspots().size());
+
+        locations = new ArrayList<>();
+        locations.add(new ProteinLocation("ENST00000397752", 1009, 1009, "Splice_Region"));
+        hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
+        assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
+        assertEquals("This splice region is not a hotspot", 0, hotspots[0].getHotspots().size());
     }
 }

@@ -1,10 +1,12 @@
 package org.cbioportal.genome_nexus.service.annotation;
 
-import org.cbioportal.genome_nexus.model.GeneXref;
+import org.cbioportal.genome_nexus.component.annotation.CanonicalTranscriptResolver;
+import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.cbioportal.genome_nexus.service.GeneXrefService;
+import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -12,13 +14,13 @@ import org.springframework.stereotype.Component;
 public class EntrezGeneIdResolver
 {
     private final CanonicalTranscriptResolver canonicalTranscriptResolver;
-    private final GeneXrefService geneXrefService;
+    private final EnsemblService ensemblService;
 
     public EntrezGeneIdResolver(CanonicalTranscriptResolver canonicalTranscriptResolver,
-                                GeneXrefService geneXrefService)
+                                EnsemblService ensemblService)
     {
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
-        this.geneXrefService = geneXrefService;
+        this.ensemblService = ensemblService;
     }
 
     @Nullable
@@ -27,14 +29,20 @@ public class EntrezGeneIdResolver
         String entrezGeneId = null;
 
         if (transcriptConsequence != null &&
-            transcriptConsequence.getGeneId() != null &&
-            !transcriptConsequence.getGeneId().trim().isEmpty())
+            transcriptConsequence.getGeneSymbol() != null &&
+            !transcriptConsequence.getGeneSymbol().trim().isEmpty())
         {
-            GeneXref geneXref = this.geneXrefService.getEntrezGeneXref(transcriptConsequence.getGeneId(),
-                transcriptConsequence.getGeneSymbol());
+            EnsemblGene ensemblGene = null;
 
-            if (geneXref != null) {
-                entrezGeneId = geneXref.getPrimaryId();
+            try {
+                ensemblGene = this.ensemblService
+                        .getCanonicalEnsemblGeneIdByHugoSymbol(transcriptConsequence.getGeneSymbol());
+            } catch (NoEnsemblGeneIdForHugoSymbolException e) {
+                // ignore silently
+            }
+
+            if (ensemblGene != null) {
+                entrezGeneId = ensemblGene.getEntrezGeneId();
             }
         }
 
