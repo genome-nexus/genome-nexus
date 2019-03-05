@@ -11,6 +11,7 @@
 
     <modules>
       <module>model</module>
+      <module>component</module>
       <module>persistence</module>
       <module>service</module>
       <module>web</module>

@@ -1,7 +1,7 @@
 package org.cbioportal.genome_nexus.service.mock;
 
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.cbioportal.genome_nexus.service.annotation.CanonicalTranscriptResolver;
+import org.cbioportal.genome_nexus.component.annotation.CanonicalTranscriptResolver;
 import org.mockito.Mockito;
 
 import java.util.Map;

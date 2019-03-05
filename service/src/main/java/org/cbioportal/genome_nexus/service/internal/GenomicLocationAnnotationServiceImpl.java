@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.*;
 
-import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantRegionAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;

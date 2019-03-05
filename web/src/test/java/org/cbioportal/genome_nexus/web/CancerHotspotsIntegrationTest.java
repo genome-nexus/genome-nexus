@@ -5,7 +5,7 @@ import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.ProteinLocation;
 import org.cbioportal.genome_nexus.persistence.HotspotRepository;
-import org.cbioportal.genome_nexus.service.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.web.mock.JsonToObjectMapper;
 import org.junit.Before;
 import org.junit.BeforeClass;

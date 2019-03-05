@@ -1,21 +1,12 @@
 package org.cbioportal.genome_nexus.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cbioportal.genome_nexus.model.GeneXref;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
-import org.cbioportal.genome_nexus.service.annotation.EntrezGeneXrefResolver;
-import org.cbioportal.genome_nexus.web.mixin.GeneXrefMixin;
-import org.junit.Before;
+import org.cbioportal.genome_nexus.component.annotation.EntrezGeneXrefResolver;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
