@@ -1,43 +1,28 @@
 package org.cbioportal.genome_nexus.util;
 public class GenomicVariant {
-
-    private static String chromosome;
-    private static Integer start;
-    private static Integer end;
-    private static String ref;
-    private static String alt;
+    private static GenomicVariantUtil util;
 
     public GenomicVariant(String chromosome, Integer start, Integer end, String ref, String alt) {
-        GenomicVariant.chromosome = chromosome;
-        GenomicVariant.start = start;
-        GenomicVariant.end = end;
-        GenomicVariant.ref = ref;
-        GenomicVariant.alt = alt;
+        util.setChromosome(chromosome);
+        util.setStart(start);
+        util.setEnd(end);
+        util.setRef(ref);
+        util.setAlt(alt);
     }
 
     public static GenomicVariant fromHgvs(String hgvs) {
         int chrToStart = hgvs.indexOf(":");
         int startToEnd = hgvs.indexOf("_");
-        String ref = getRef(hgvs);
+        String ref = util.getRef(hgvs);
         int refIndex = hgvs.indexOf(ref);
 
-        GenomicVariant.chromosome = hgvs.substring(0, chrToStart);
-        GenomicVariant.start = Integer.valueOf(hgvs.substring(chrToStart + 1, startToEnd));
-        GenomicVariant.end = Integer.valueOf(hgvs.substring(startToEnd + 1, refIndex));
-        GenomicVariant.ref = hgvs.substring(refIndex, refIndex + ref.length());
-        GenomicVariant.alt = hgvs.substring(refIndex + ref.length());
+        util.setChromosome(hgvs.substring(0, chrToStart));
+        util.setStart(Integer.valueOf(hgvs.substring(chrToStart + 1, startToEnd)));
+        util.setEnd(Integer.valueOf(hgvs.substring(startToEnd + 1, refIndex)));
+        util.setRef(hgvs.substring(refIndex, refIndex + ref.length()));
+        util.setAlt(hgvs.substring(refIndex + ref.length()));
 
-        return new GenomicVariant(chromosome, Integer.valueOf(start), Integer.valueOf(end), GenomicVariant.ref, alt);
-    }
-
-    private static String getRef(String hgvs){
-        String[] refs = {">", "del", "dup", "inv", "ins", "con", "delins"};
-        //
-        String ans = "";
-        for (String ref: refs){ 
-            if (hgvs.contains(ref))
-                ans = ref;
-        }
-        return ans;
+        return new GenomicVariant(util.getChromosome(), util.getStart(), 
+                                  util.getEnd(), util.getRef(), util.getAlt());
     }
 }
