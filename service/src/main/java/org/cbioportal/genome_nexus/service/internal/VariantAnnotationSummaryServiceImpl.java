@@ -144,8 +144,9 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         if (annotationSummary != null)
         {
             List<TranscriptConsequenceSummary> summaries = new ArrayList<>();
-            if (annotation.getTranscriptConsequences() != null) {
-                for (TranscriptConsequence transcriptConsequence: annotation.getTranscriptConsequences()) {
+            List<TranscriptConsequence> transcriptConsequences = annotation.getTranscriptConsequences();
+            if (transcriptConsequences != null) {
+                for (TranscriptConsequence transcriptConsequence: transcriptConsequences) {
                     summaries.add(this.getTranscriptSummary(annotation, transcriptConsequence));
                 }
             }

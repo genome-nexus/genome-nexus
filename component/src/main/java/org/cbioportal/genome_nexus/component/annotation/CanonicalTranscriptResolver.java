@@ -24,9 +24,9 @@ public class CanonicalTranscriptResolver
     public TranscriptConsequence resolve(VariantAnnotation variantAnnotation)
     {
         List<TranscriptConsequence> transcripts = new ArrayList<>();
-
-        if (variantAnnotation.getTranscriptConsequences() != null) {
-            for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
+        List<TranscriptConsequence> transcriptConsequences = variantAnnotation.getTranscriptConsequences();
+        if (transcriptConsequences != null) {
+            for (TranscriptConsequence transcript : transcriptConsequences)
             {
                 if (transcript.getTranscriptId() != null &&
                     transcript.getCanonical() != null &&
