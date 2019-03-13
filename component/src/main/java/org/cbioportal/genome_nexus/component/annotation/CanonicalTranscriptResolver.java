@@ -24,14 +24,16 @@ public class CanonicalTranscriptResolver
     public TranscriptConsequence resolve(VariantAnnotation variantAnnotation)
     {
         List<TranscriptConsequence> transcripts = new ArrayList<>();
-
-        for (TranscriptConsequence transcript : variantAnnotation.getTranscriptConsequences())
-        {
-            if (transcript.getTranscriptId() != null &&
-                transcript.getCanonical() != null &&
-                transcript.getCanonical().equals("1"))
+        List<TranscriptConsequence> transcriptConsequences = variantAnnotation.getTranscriptConsequences();
+        if (transcriptConsequences != null) {
+            for (TranscriptConsequence transcript : transcriptConsequences)
             {
-                transcripts.add(transcript);
+                if (transcript.getTranscriptId() != null &&
+                    transcript.getCanonical() != null &&
+                    transcript.getCanonical().equals("1"))
+                {
+                    transcripts.add(transcript);
+                }
             }
         }
 

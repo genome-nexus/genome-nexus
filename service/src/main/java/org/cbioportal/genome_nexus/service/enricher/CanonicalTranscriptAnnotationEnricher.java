@@ -27,7 +27,10 @@ public class CanonicalTranscriptAnnotationEnricher implements AnnotationEnricher
         // For backwards compatibility transcriptConsequences should be a list
         // of one when used as enrichment
         List<TranscriptConsequenceSummary> transcriptConsequences = new ArrayList<>(1);
-        transcriptConsequences.add(annotationSummary.getTranscriptConsequenceSummary());
+        TranscriptConsequenceSummary transcriptConsequenceSummary = annotationSummary.getTranscriptConsequenceSummary();
+        if (transcriptConsequenceSummary != null) {
+            transcriptConsequences.add(transcriptConsequenceSummary);
+        }
         annotationSummary.setTranscriptConsequences(transcriptConsequences);
 
         annotation.setAnnotationSummary(annotationSummary);
