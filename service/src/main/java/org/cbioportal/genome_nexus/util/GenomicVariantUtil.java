@@ -1,6 +1,6 @@
 package org.cbioportal.genome_nexus.util;
 
-public class GenomicVariantUtil{
+public class GenomicVariantUtil {
     private String chromosome;
     private Integer start;
     private Integer end;
@@ -48,7 +48,7 @@ public class GenomicVariantUtil{
     }
 
     public String getRef(String hgvs) {
-        String[] refs = { ">", "del", "dup", "inv", "ins", "con", "delins" };
+        String[] refs = { ">", "del", "dup", "inv", "ins", "con", "delins"};
         //
         String ans = "";
         for (String ref : refs) {
