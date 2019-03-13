@@ -10,10 +10,10 @@ public class IntergenicConsequencesMixin
     @JsonProperty(value="impact", required = true)
     private String impact;
 
-    @JsonProperty(value="variant_allele", required = true)
-    private String variant_allele;
+    @JsonProperty(value="variantAllele", required = true)
+    private String variantAllele;
 
-    @JsonProperty(value="consequence_terms", required = true)
-    private List<String> consequence_terms;
+    @JsonProperty(value="consequenceTerms", required = true)
+    private List<String> consequenceTerms;
 
 }

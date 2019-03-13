@@ -51,30 +51,30 @@ public class IntergenicConsequences
         this.impact = impact;
     }
 
-    private String variant_allele;
+    private String variantAllele;
 
     @Field(value="variant_allele")
     public String getVariantAllele()
     {
-        return variant_allele;
+        return variantAllele;
     }
 
-    public void setVariantAllele(String variant_allele)
+    public void setVariantAllele(String variantAllele)
     {
-        this.variant_allele = variant_allele;
+        this.variantAllele = variantAllele;
     }
 
-    private List<String> consequence_terms;
+    private List<String> consequenceTerms;
 
     @Field(value="consequence_terms")
     public List<String> getConsequenceTerms()
     {
-        return consequence_terms;
+        return consequenceTerms;
     }
 
-    public void setConsequenceTermse(List<String> consequence_terms)
+    public void setConsequenceTermse(List<String> consequenceTerms)
     {
-        this.consequence_terms = consequence_terms;
+        this.consequenceTerms = consequenceTerms;
     }
     
 }
