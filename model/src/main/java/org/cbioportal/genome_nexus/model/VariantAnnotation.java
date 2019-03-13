@@ -61,6 +61,7 @@ public class VariantAnnotation
     private Integer strand;
     private String mostSevereConsequence;
     private List<ColocatedVariant> colocatedVariants;
+    private List<IntergenicConsequences> intergenicConsequences;
     private List<TranscriptConsequence> transcriptConsequences;
 
     private MutationAssessorAnnotation mutationAssessorAnnotation;
@@ -204,6 +205,16 @@ public class VariantAnnotation
     public void set(List<ColocatedVariant> colocatedVariants)
     {
         this.colocatedVariants = colocatedVariants;
+    }
+
+    @Field(value="intergenic_consequences")
+    public List<IntergenicConsequences> getIntergenicConsequences()
+    {
+        return intergenicConsequences;
+    }
+    public void setIntergenicConsequences(List<IntergenicConsequences> intergenicConsequences)
+    {
+        this.intergenicConsequences = intergenicConsequences;
     }
 
     @Field(value="transcript_consequences")
