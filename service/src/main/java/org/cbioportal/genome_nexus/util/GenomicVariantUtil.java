@@ -49,7 +49,6 @@ public class GenomicVariantUtil {
 
     public String getRef(String hgvs) {
         String[] refs = { ">", "del", "dup", "inv", "ins", "con", "delins"};
-        //
         String ans = "";
         for (String ref : refs) {
             if (hgvs.contains(ref))
