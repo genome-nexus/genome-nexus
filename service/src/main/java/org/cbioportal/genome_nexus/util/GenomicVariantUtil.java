@@ -1,59 +1,42 @@
 package org.cbioportal.genome_nexus.util;
 
 public class GenomicVariantUtil {
-    private String chromosome;
-    private Integer start;
-    private Integer end;
-    private String ref;
-    private String alt;
+    public GenomicVariant variant = new GenomicVariant();
 
-    public String getChromosome() {
-        return this.chromosome;
+    public static GenomicVariant fromHgvs(String hgvs) {
+        int chrToType = hgvs.indexOf(":");
+        int typeToStart = hgvs.indexOf(".");
+        int startToEnd = hgvs.indexOf("_");
+        String ref = getRef(hgvs);
+        String type = getHgvsType(hgvs);
+        int typeIndex = hgvs.indexOf(type);
+        String alt = getAlt(hgvs);
+
+        return new GenomicVariant(hgvs.substring(0, chrToType),
+                Integer.valueOf(hgvs.substring(typeToStart + 1, startToEnd)),
+                Integer.valueOf(hgvs.substring(startToEnd + 1, typeIndex)),
+                type, ref, alt);
     }
 
-    public void setChromosome(String chromosome) {
-        this.chromosome = chromosome;
+    public GenomicVariant getVariant() {
+        return variant;
     }
 
-    public Integer getStart() {
-        return this.start;
-    }
-
-    public void setStart(Integer start) {
-        this.start = start;
-    }
-
-    public Integer getEnd() {
-        return this.end;
-    }
-
-    public void setEnd(Integer end) {
-        this.end = end;
-    }
-
-    public String getRef() {
-        return this.ref;
-    }
-
-    public void setRef(String ref) {
-        this.ref = ref;
-    }
-
-    public String getAlt() {
-        return this.alt;
-    }
-
-    public void setAlt(String alt) {
-        this.alt = alt;
-    }
-
-    public String getRef(String hgvs) {
-        String[] refs = { ">", "del", "dup", "inv", "ins", "con", "delins"};
+    private static String getHgvsType(String hgvs) {
+        String[] keys = { ">", "del", "dup", "inv", "ins", "con", "delins" };
         String ans = "";
-        for (String ref : refs) {
-            if (hgvs.contains(ref))
-                ans = ref;
+        for (String key : keys) {
+            if (hgvs.contains(key))
+                ans = key;
         }
         return ans;
+    }
+
+    private static String getRef(String hgvs) {
+        return "XXX";
+    }
+
+    private static String getAlt(String hgvs){
+        return "";
     }
 }

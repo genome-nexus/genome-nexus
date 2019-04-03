@@ -6,14 +6,14 @@ import org.junit.Test;
 public class GenomicVariantTest {
     @Test    
     public void testHgvsSubstitutionToGenomicVariant() {
-        GenomicVariant variant = GenomicVariant.fromHgvs("17:g.41242962_41242963insGA");
-        GenomicVariantUtil util = variant.getUtil();
+        GenomicVariant variant = GenomicVariantUtil.fromHgvs("17:g.41242962_41242963insGA");
 
-        assertEquals(util.getChromosome(), "17");
-        assertEquals(util.getStart(), (Integer) 41242962);
-        assertEquals(util.getEnd(), (Integer) 41242963);
-        assertEquals(util.getRef(), "ins");
-        assertEquals(util.getAlt(), "GA");
+        assertEquals(variant.getChromosome(), "17");
+        assertEquals(variant.getStart(), (Integer) 41242962);
+        assertEquals(variant.getEnd(), (Integer) 41242963);
+        assertEquals(variant.getRef(), "XXX");
+        assertEquals(variant.getType(), "ins");
+        assertEquals(variant.getAlt(), "GA");
     }
 
     @Test
@@ -47,7 +47,7 @@ public class GenomicVariantTest {
         GenomicVariant variant = GenomicVariant.fromHgvs("g.123_127delinsAG");
         GenomicVariantUtil util = variant.getUtil();
 
-        assertEquals(util.getChromosome(), "");
+        assertEquals(util.getChromosome(), null);
         assertEquals(util.getStart(), (Integer) 123);
         assertEquals(util.getEnd(), (Integer) 127);
         assertEquals(util.getRef(), "delins");
