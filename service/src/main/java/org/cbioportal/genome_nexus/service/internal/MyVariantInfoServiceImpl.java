@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
-import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.cached.CachedMyVariantInfoFetcher;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceException;
@@ -28,14 +27,11 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     private static final Log LOG = LogFactory.getLog(MyVariantInfoServiceImpl.class);
 
     private final CachedMyVariantInfoFetcher cachedExternalResourceFetcher;
-    private final VariantAnnotationService variantAnnotationService;
 
     @Autowired
-    public MyVariantInfoServiceImpl(CachedMyVariantInfoFetcher cachedExternalResourceFetcher,
-                                    VariantAnnotationService hgvsVariantAnnotationService)
+    public MyVariantInfoServiceImpl(CachedMyVariantInfoFetcher cachedExternalResourceFetcher)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
-        this.variantAnnotationService = hgvsVariantAnnotationService;
     }
 
     /**

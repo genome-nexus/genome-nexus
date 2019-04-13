@@ -29,6 +29,11 @@ public class MyVariantInfo
     @Field(value = "mutdb")
     private Mutdb mutdb;
 
+    @Field(value = "gnomad_exome")
+    private Gnomad gnomadExome;
+
+    @Field(value = "gnomad_genome")
+    private Gnomad gnomadGenome;
 
     public String getHgvs()
     {
@@ -101,6 +106,26 @@ public class MyVariantInfo
     public void setMutdb(Mutdb mutdb)
     {
         this.mutdb = mutdb;
+    }
+
+    public Gnomad getGnomadExome()
+    {
+        return gnomadExome;
+    }
+
+    public void setGnomadExome(Gnomad gnomadExome)
+    {
+        this.gnomadExome = gnomadExome;
+    }
+
+    public Gnomad getGnomadGenome()
+    {
+        return gnomadGenome;
+    }
+
+    public void setGnomadGenome(Gnomad gnomadGenome)
+    {
+        this.gnomadGenome = gnomadGenome;
     }
 
 }

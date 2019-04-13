@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.cbioportal.genome_nexus.model.my_variant_info_model.ClinVar;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Cosmic;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Gnomad;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Mutdb;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Snpeff;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Vcf;
@@ -36,4 +37,10 @@ public class MyVariantInfoMixin
 
     @JsonProperty(value = "mutdb", required = true)
     private Mutdb mutdb;
+
+    @JsonProperty(value = "gnomad_exome", required = true)
+    private Gnomad gnomadExome;
+
+    @JsonProperty(value = "gnomad_genome", required = true)
+    private Gnomad gnomadGenome;
 }
