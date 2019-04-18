@@ -8,30 +8,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AlleleFrequencyMixin
 {
     @JsonProperty(value = "af", required = true)
-    private Integer af;
+    private Float af;
 
     @JsonProperty(value = "af_afr", required = true)
-    private Integer afAfr;
+    private Float afAfr;
 
     @JsonProperty(value = "af_amr", required = true)
-    private Integer afAmr;
+    private Float afAmr;
 
     @JsonProperty(value = "af_asj", required = true)
-    private Integer afAsj;
+    private Float afAsj;
 
     @JsonProperty(value = "af_eas", required = true)
-    private Integer afEas;
+    private Float afEas;
 
     @JsonProperty(value = "af_fin", required = true)
-    private Integer afFin;
+    private Float afFin;
 
     @JsonProperty(value = "af_nfe", required = true)
-    private Integer afNfe;
+    private Float afNfe;
 
     @JsonProperty(value = "af_oth", required = true)
-    private Integer afOth;
+    private Float afOth;
 
     @JsonProperty(value = "af_sas", required = true)
-    private Integer afSas;
+    private Float afSas;
 
 }

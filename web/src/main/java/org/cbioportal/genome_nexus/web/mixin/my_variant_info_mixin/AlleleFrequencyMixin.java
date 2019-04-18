@@ -9,29 +9,29 @@ public class AlleleFrequencyMixin
 {
 
     @ApiModelProperty(value = "af", required = false)
-    private Integer af;
+    private Float af;
 
     @ApiModelProperty(value = "af_afr", required = false)
-    private Integer afAfr;
+    private Float afAfr;
 
     @ApiModelProperty(value = "af_amr", required = false)
-    private Integer afAmr;
+    private Float afAmr;
 
     @ApiModelProperty(value = "af_asj", required = false)
-    private Integer afAsj;
+    private Float afAsj;
 
     @ApiModelProperty(value = "af_eas", required = false)
-    private Integer afEas;
+    private Float afEas;
 
     @ApiModelProperty(value = "af_fin", required = false)
-    private Integer afFin;
+    private Float afFin;
 
     @ApiModelProperty(value = "af_nfe", required = false)
-    private Integer afNfe;
+    private Float afNfe;
 
     @ApiModelProperty(value = "af_oth", required = false)
-    private Integer afOth;
+    private Float afOth;
 
     @ApiModelProperty(value = "af_sas", required = false)
-    private Integer afSas;
+    private Float afSas;
 }
