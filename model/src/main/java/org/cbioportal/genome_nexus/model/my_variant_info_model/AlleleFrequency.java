@@ -7,126 +7,126 @@ public class AlleleFrequency
 
     // allele frequency in total
     @Field(value = "af")
-    private Integer af;
+    private Float af;
 
     // allele frequency African
     @Field(value = "af_afr")
-    private Integer afAfr;
+    private Float afAfr;
 
     // allele frequency Latino
     @Field(value = "af_amr")
-    private Integer afAmr;
+    private Float afAmr;
 
     // allele frequency Ashkenazi Jewish
     @Field(value = "af_asj")
-    private Integer afAsj;
+    private Float afAsj;
 
     // allele frequency East Asian
     @Field(value = "af_eas")
-    private Integer afEas;
+    private Float afEas;
 
     // allele frequency European(Finnish)
     @Field(value = "af_fin")
-    private Integer afFin;
+    private Float afFin;
 
     // allele frequency European(non-Finnish)
     @Field(value = "af_nfe")
-    private Integer afNfe;
+    private Float afNfe;
 
     // allele frequency Other
     @Field(value = "af_oth")
-    private Integer afOth;
+    private Float afOth;
 
     // allele frequency South Asian
     @Field(value = "af_sas")
-    private Integer afSas;
+    private Float afSas;
 
-    public Integer getAf()
+    public Float getAf()
     {
         return af;
     }
 
-    public void setAf(Integer af)
+    public void setAf(Float af)
     {
         this.af = af;
     }
 
-    public Integer getAfAfr()
+    public Float getAfAfr()
     {
         return afAfr;
     }
 
-    public void setAfAfr(Integer afAfr)
+    public void setAfAfr(Float afAfr)
     {
         this.afAfr = afAfr;
     }
 
-    public Integer getAfAmr()
+    public Float getAfAmr()
     {
         return afAmr;
     }
 
-    public void setAfAmr(Integer afAmr)
+    public void setAfAmr(Float afAmr)
     {
         this.afAmr = afAmr;
     }
 
-    public Integer getAfAsj()
+    public Float getAfAsj()
     {
         return afAsj;
     }
 
-    public void setAfAsj(Integer afAsj)
+    public void setAfAsj(Float afAsj)
     {
         this.afAsj = afAsj;
     }
 
-    public Integer getAfEas()
+    public Float getAfEas()
     {
         return afEas;
     }
 
-    public void setAfEas(Integer afEas)
+    public void setAfEas(Float afEas)
     {
         this.afEas = afEas;
     }
 
-    public Integer getAfFin()
+    public Float getAfFin()
     {
         return afFin;
     }
 
-    public void setAfFin(Integer afFin)
+    public void setAfFin(Float afFin)
     {
         this.afFin = afFin;
     }
 
-    public Integer getAfNfe()
+    public Float getAfNfe()
     {
         return afNfe;
     }
 
-    public void setAfNfe(Integer afNfe)
+    public void setAfNfe(Float afNfe)
     {
         this.afNfe = afNfe;
     }
 
-    public Integer getAfOth()
+    public Float getAfOth()
     {
         return afOth;
     }
 
-    public void setAfOth(Integer afOth)
+    public void setAfOth(Float afOth)
     {
         this.afOth = afOth;
     }
 
-    public Integer getafSas()
+    public Float getafSas()
     {
         return afSas;
     }
 
-    public void setafSas(Integer afSas)
+    public void setafSas(Float afSas)
     {
         this.afSas = afSas;
     }
