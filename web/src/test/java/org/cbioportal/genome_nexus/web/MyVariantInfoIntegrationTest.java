@@ -51,10 +51,14 @@ public class MyVariantInfoIntegrationTest
         MyVariantInfo ann0 = this.fetchMyVariantInfoAnnotationGET(variants[0]);
         // mutdb annotation should be 7
         assertEquals("7", ann0.getMutdb().getChrom());
+        // total frequency in GnomadExome should be 0.00000406458;
+        assertEquals("246028", ann0.getGnomadExome().getAlleleNumber().getAn().toString());
 
         MyVariantInfo ann1 = this.fetchMyVariantInfoAnnotationGET(variants[1]);
         // mutdb annotation should be 7
         assertEquals("rs12190874", ann1.getDbsnp().getRsid());
+        // total allele count in GnomadGenome should be 3239;
+        assertEquals("3239", ann1.getGnomadGenome().getAlleleCount().getAc().toString());
 
         //////////////////
         // POST request //
@@ -67,6 +71,9 @@ public class MyVariantInfoIntegrationTest
 
         // GET and POST requests should return the same
         assertEquals(anns[0].getMutdb().getChrom(), ann0.getMutdb().getChrom());
+        assertEquals(anns[0].getGnomadExome().getAlleleFrequency().getAf(), ann0.getGnomadExome().getAlleleFrequency().getAf());
         assertEquals(anns[1].getDbsnp().getRsid(), ann1.getDbsnp().getRsid());
+        assertEquals(anns[1].getGnomadGenome().getAlleleCount().getAc(), ann1.getGnomadGenome().getAlleleCount().getAc());
+
     }
 }
