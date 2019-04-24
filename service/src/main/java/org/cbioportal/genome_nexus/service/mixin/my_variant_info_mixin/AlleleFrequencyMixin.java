@@ -8,30 +8,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AlleleFrequencyMixin
 {
     @JsonProperty(value = "af", required = true)
-    private Float af;
+    private Double alleleFrequency;
 
     @JsonProperty(value = "af_afr", required = true)
-    private Float afAfr;
+    private Double alleleFrequencyAfrican;
 
     @JsonProperty(value = "af_amr", required = true)
-    private Float afAmr;
+    private Double alleleFrequencyLatino;
 
     @JsonProperty(value = "af_asj", required = true)
-    private Float afAsj;
+    private Double alleleFrequencyAshkenaziJewish;
 
     @JsonProperty(value = "af_eas", required = true)
-    private Float afEas;
+    private Double alleleFrequencyEastAsian;
 
     @JsonProperty(value = "af_fin", required = true)
-    private Float afFin;
+    private Double alleleFrequencyEuropeanFinnish;
 
     @JsonProperty(value = "af_nfe", required = true)
-    private Float afNfe;
+    private Double alleleFrequencyEuropeanNonFinnish;
 
     @JsonProperty(value = "af_oth", required = true)
-    private Float afOth;
+    private Double alleleFrequencyOther;
 
     @JsonProperty(value = "af_sas", required = true)
-    private Float afSas;
+    private Double alleleFrequencySouthAsian;
 
 }

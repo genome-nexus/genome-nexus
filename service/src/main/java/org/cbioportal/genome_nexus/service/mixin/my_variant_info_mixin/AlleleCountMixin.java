@@ -8,30 +8,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AlleleCountMixin
 {
     @JsonProperty(value = "ac", required = true)
-    private Integer ac;
+    private Integer alleleCount;
 
     @JsonProperty(value = "ac_afr", required = true)
-    private Integer acAfr;
+    private Integer alleleCountAfrican;
 
     @JsonProperty(value = "ac_amr", required = true)
-    private Integer acAmr;
+    private Integer alleleCountLatino;
 
     @JsonProperty(value = "ac_asj", required = true)
-    private Integer acAsj;
+    private Integer alleleCountAshkenaziJewish;
 
     @JsonProperty(value = "ac_eas", required = true)
-    private Integer acEas;
+    private Integer alleleCountEastAsian;
 
     @JsonProperty(value = "ac_fin", required = true)
-    private Integer acFin;
+    private Integer alleleCountEuropeanFinnish;
 
     @JsonProperty(value = "ac_nfe", required = true)
-    private Integer acNfe;
+    private Integer alleleCountEuropeanNonFinnish;
 
     @JsonProperty(value = "ac_oth", required = true)
-    private Integer acOth;
+    private Integer alleleCountOther;
 
     @JsonProperty(value = "ac_sas", required = true)
-    private Integer acSas;
+    private Integer alleleCountSouthAsian;
 
 }

@@ -5,130 +5,121 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Homozygotes
 {
 
-    // number of homozygotes in total
     @Field(value = "hom")
-    private Integer hom;
+    private Integer homozygotes;
 
-    // number of homozygotes African
     @Field(value = "hom_afr")
-    private Integer homAfr;
+    private Integer homozygotesAfrican;
 
-    // number of homozygotes Latino
     @Field(value = "hom_amr")
-    private Integer homAmr;
+    private Integer homozygotesLatino;
 
-    // number of homozygotes Ashkenazi Jewish
     @Field(value = "hom_asj")
-    private Integer homAsj;
+    private Integer homozygotesAshkenaziJewish;
 
-    // number of homozygotes East Asian
     @Field(value = "hom_eas")
-    private Integer homEas;
+    private Integer homozygotesEastAsian;
 
-    // number of homozygotes European(Finnish)
     @Field(value = "hom_fin")
-    private Integer homFin;
+    private Integer homozygotesEuropeanFinnish;
 
-    // number of homozygotes European(non-Finnish)
     @Field(value = "hom_nfe")
-    private Integer homNfe;
+    private Integer homozygotesEuropeanNonFinnish;
 
-    // number of homozygotes Other
     @Field(value = "hom_oth")
-    private Integer homOth;
+    private Integer homozygotesOther;
 
-    // number of homozygotes South Asian
     @Field(value = "hom_sas")
-    private Integer homSas;
+    private Integer homozygotesSouthAsian;
 
-    public Integer getHom()
+    public Integer getHomozygotes()
     {
-        return hom;
+        return homozygotes;
     }
 
-    public void setHom(Integer hom)
+    public void setHomozygotes(Integer homozygotes)
     {
-        this.hom = hom;
+        this.homozygotes = homozygotes;
     }
 
-    public Integer getHomAfr()
+    public Integer getHomozygotesAfrican()
     {
-        return homAfr;
+        return homozygotesAfrican;
     }
 
-    public void setHomAfr(Integer homAfr)
+    public void setHomozygotesAfrican(Integer homozygotesAfrican)
     {
-        this.homAfr = homAfr;
+        this.homozygotesAfrican = homozygotesAfrican;
     }
 
-    public Integer getHomAmr()
+    public Integer getHomozygotesLatino()
     {
-        return homAmr;
+        return homozygotesLatino;
     }
 
-    public void setHomAmr(Integer homAmr)
+    public void setHomozygotesLatino(Integer homozygotesLatino)
     {
-        this.homAmr = homAmr;
+        this.homozygotesLatino = homozygotesLatino;
     }
 
-    public Integer getHomAsj()
+    public Integer getHomozygotesAshkenaziJewish()
     {
-        return homAsj;
+        return homozygotesAshkenaziJewish;
     }
 
-    public void setHomAsj(Integer homAsj)
+    public void setHomozygotesAshkenaziJewish(Integer homozygotesAshkenaziJewish)
     {
-        this.homAsj = homAsj;
+        this.homozygotesAshkenaziJewish = homozygotesAshkenaziJewish;
     }
 
-    public Integer getHomEas()
+    public Integer getHomozygotesEastAsian()
     {
-        return homEas;
+        return homozygotesEastAsian;
     }
 
-    public void setHomEas(Integer homEas)
+    public void setHomozygotesEastAsian(Integer homozygotesEastAsian)
     {
-        this.homEas = homEas;
+        this.homozygotesEastAsian = homozygotesEastAsian;
     }
 
-    public Integer getHomFin()
+    public Integer getHomozygotesEuropeanFinnish()
     {
-        return homFin;
+        return homozygotesEuropeanFinnish;
     }
 
-    public void setHomFin(Integer homFin)
+    public void setHomozygotesEuropeanFinnish(Integer homozygotesEuropeanFinnish)
     {
-        this.homFin = homFin;
+        this.homozygotesEuropeanFinnish = homozygotesEuropeanFinnish;
     }
 
-    public Integer getHomNfe()
+    public Integer getHomozygotesEuropeanNonFinnish()
     {
-        return homNfe;
+        return homozygotesEuropeanNonFinnish;
     }
 
-    public void setHomNfe(Integer homNfe)
+    public void setHomozygotesEuropeanNonFinnish(Integer homozygotesEuropeanNonFinnish)
     {
-        this.homNfe = homNfe;
+        this.homozygotesEuropeanNonFinnish = homozygotesEuropeanNonFinnish;
     }
 
-    public Integer getHomOth()
+    public Integer getHomozygotesOther()
     {
-        return homOth;
+        return homozygotesOther;
     }
 
-    public void setHomOth(Integer homOth)
+    public void setHomozygotesOther(Integer homozygotesOther)
     {
-        this.homOth = homOth;
+        this.homozygotesOther = homozygotesOther;
     }
 
-    public Integer getHomSas()
+    public Integer getHomozygotesSouthAsian()
     {
-        return homSas;
+        return homozygotesSouthAsian;
     }
 
-    public void setHomSas(Integer homSas)
+    public void setHomozygotesSouthAsian(Integer homozygotesSouthAsian)
     {
-        this.homSas = homSas;
+        this.homozygotesSouthAsian = homozygotesSouthAsian;
     }
 
 }

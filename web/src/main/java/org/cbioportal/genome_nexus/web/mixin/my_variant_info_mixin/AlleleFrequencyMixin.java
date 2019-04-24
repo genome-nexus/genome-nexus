@@ -9,29 +9,29 @@ public class AlleleFrequencyMixin
 {
 
     @ApiModelProperty(value = "af", required = false)
-    private Float af;
+    private Double alleleFrequency;
 
     @ApiModelProperty(value = "af_afr", required = false)
-    private Float afAfr;
+    private Double alleleFrequencyAfrican;
 
     @ApiModelProperty(value = "af_amr", required = false)
-    private Float afAmr;
+    private Double alleleFrequencyLatino;
 
     @ApiModelProperty(value = "af_asj", required = false)
-    private Float afAsj;
+    private Double alleleFrequencyAshkenaziJewish;
 
     @ApiModelProperty(value = "af_eas", required = false)
-    private Float afEas;
+    private Double alleleFrequencyEastAsian;
 
     @ApiModelProperty(value = "af_fin", required = false)
-    private Float afFin;
+    private Double alleleFrequencyEuropeanFinnish;
 
     @ApiModelProperty(value = "af_nfe", required = false)
-    private Float afNfe;
+    private Double alleleFrequencyEuropeanNonFinnish;
 
     @ApiModelProperty(value = "af_oth", required = false)
-    private Float afOth;
+    private Double alleleFrequencyOther;
 
     @ApiModelProperty(value = "af_sas", required = false)
-    private Float afSas;
+    private Double alleleFrequencySouthAsian;
 }

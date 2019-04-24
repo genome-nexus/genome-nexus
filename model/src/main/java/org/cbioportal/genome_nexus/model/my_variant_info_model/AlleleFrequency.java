@@ -5,130 +5,121 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class AlleleFrequency
 {
 
-    // allele frequency in total
     @Field(value = "af")
-    private Float af;
+    private Double alleleFrequency;
 
-    // allele frequency African
     @Field(value = "af_afr")
-    private Float afAfr;
+    private Double alleleFrequencyAfrican;
 
-    // allele frequency Latino
     @Field(value = "af_amr")
-    private Float afAmr;
+    private Double alleleFrequencyLatino;
 
-    // allele frequency Ashkenazi Jewish
     @Field(value = "af_asj")
-    private Float afAsj;
+    private Double alleleFrequencyAshkenaziJewish;
 
-    // allele frequency East Asian
     @Field(value = "af_eas")
-    private Float afEas;
+    private Double alleleFrequencyEastAsian;
 
-    // allele frequency European(Finnish)
     @Field(value = "af_fin")
-    private Float afFin;
+    private Double alleleFrequencyEuropeanFinnish;
 
-    // allele frequency European(non-Finnish)
     @Field(value = "af_nfe")
-    private Float afNfe;
+    private Double alleleFrequencyEuropeanNonFinnish;
 
-    // allele frequency Other
     @Field(value = "af_oth")
-    private Float afOth;
+    private Double alleleFrequencyOther;
 
-    // allele frequency South Asian
     @Field(value = "af_sas")
-    private Float afSas;
+    private Double alleleFrequencySouthAsian;
 
-    public Float getAf()
+    public Double getAlleleFrequency()
     {
-        return af;
+        return alleleFrequency;
     }
 
-    public void setAf(Float af)
+    public void setAlleleFrequency(Double alleleFrequency)
     {
-        this.af = af;
+        this.alleleFrequency = alleleFrequency;
     }
 
-    public Float getAfAfr()
+    public Double getAlleleFrequencyAfrican()
     {
-        return afAfr;
+        return alleleFrequencyAfrican;
     }
 
-    public void setAfAfr(Float afAfr)
+    public void setAlleleFrequencyAfrican(Double alleleFrequencyAfrican)
     {
-        this.afAfr = afAfr;
+        this.alleleFrequencyAfrican = alleleFrequencyAfrican;
     }
 
-    public Float getAfAmr()
+    public Double getAlleleFrequencyLatino()
     {
-        return afAmr;
+        return alleleFrequencyLatino;
     }
 
-    public void setAfAmr(Float afAmr)
+    public void setAlleleFrequencyLatino(Double alleleFrequencyLatino)
     {
-        this.afAmr = afAmr;
+        this.alleleFrequencyLatino = alleleFrequencyLatino;
     }
 
-    public Float getAfAsj()
+    public Double getAlleleFrequencyAshkenaziJewish()
     {
-        return afAsj;
+        return alleleFrequencyAshkenaziJewish;
     }
 
-    public void setAfAsj(Float afAsj)
+    public void setAlleleFrequencyAshkenaziJewish(Double alleleFrequencyAshkenaziJewish)
     {
-        this.afAsj = afAsj;
+        this.alleleFrequencyAshkenaziJewish = alleleFrequencyAshkenaziJewish;
     }
 
-    public Float getAfEas()
+    public Double getAlleleFrequencyEastAsian()
     {
-        return afEas;
+        return alleleFrequencyEastAsian;
     }
 
-    public void setAfEas(Float afEas)
+    public void setAlleleFrequencyEastAsian(Double alleleFrequencyEastAsian)
     {
-        this.afEas = afEas;
+        this.alleleFrequencyEastAsian = alleleFrequencyEastAsian;
     }
 
-    public Float getAfFin()
+    public Double getAlleleFrequencyEuropeanFinnish()
     {
-        return afFin;
+        return alleleFrequencyEuropeanFinnish;
     }
 
-    public void setAfFin(Float afFin)
+    public void setAlleleFrequencyEuropeanFinnish(Double alleleFrequencyEuropeanFinnish)
     {
-        this.afFin = afFin;
+        this.alleleFrequencyEuropeanFinnish = alleleFrequencyEuropeanFinnish;
     }
 
-    public Float getAfNfe()
+    public Double getAlleleFrequencyEuropeanNonFinnish()
     {
-        return afNfe;
+        return alleleFrequencyEuropeanNonFinnish;
     }
 
-    public void setAfNfe(Float afNfe)
+    public void setAlleleFrequencyEuropeanNonFinnish(Double alleleFrequencyEuropeanNonFinnish)
     {
-        this.afNfe = afNfe;
+        this.alleleFrequencyEuropeanNonFinnish = alleleFrequencyEuropeanNonFinnish;
     }
 
-    public Float getAfOth()
+    public Double getAlleleFrequencyOther()
     {
-        return afOth;
+        return alleleFrequencyOther;
     }
 
-    public void setAfOth(Float afOth)
+    public void setAlleleFrequencyOther(Double alleleFrequencyOther)
     {
-        this.afOth = afOth;
+        this.alleleFrequencyOther = alleleFrequencyOther;
     }
 
-    public Float getafSas()
+    public Double getAlleleFrequencySouthAsian()
     {
-        return afSas;
+        return alleleFrequencySouthAsian;
     }
 
-    public void setafSas(Float afSas)
+    public void setAlleleFrequencySouthAsian(Double alleleFrequencySouthAsian)
     {
-        this.afSas = afSas;
+        this.alleleFrequencySouthAsian = alleleFrequencySouthAsian;
     }
 
 }

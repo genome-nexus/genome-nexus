@@ -5,130 +5,121 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class AlleleNumber
 {
 
-    // allele number in total
     @Field(value = "an")
-    private Integer an;
+    private Integer alleleNumber;
 
-    // allele number African
     @Field(value = "an_afr")
-    private Integer anAfr;
+    private Integer alleleNumberAfrican;
 
-    // allele number Latino
     @Field(value = "an_amr")
-    private Integer anAmr;
+    private Integer alleleNumberLatino;
 
-    // allele number Ashkenazi Jewish
     @Field(value = "an_asj")
-    private Integer anAsj;
+    private Integer alleleNumberAshkenaziJewish;
 
-    // allele number East Asian
     @Field(value = "an_eas")
-    private Integer anEas;
+    private Integer alleleNumberEastAsian;
 
-    // allele number European(Finnish)
     @Field(value = "an_fin")
-    private Integer anFin;
+    private Integer alleleNumberEuropeanFinnish;
 
-    // allele number European(non-Finnish)
     @Field(value = "an_nfe")
-    private Integer anNfe;
+    private Integer alleleNumberEuropeanNonFinnish;
 
-    // allele number Other
     @Field(value = "an_oth")
-    private Integer anOth;
+    private Integer alleleNumberOther;
 
-    // allele number South Asian
     @Field(value = "an_sas")
-    private Integer anSas;
+    private Integer alleleNumberSouthAsian;
 
-    public Integer getAn()
+    public Integer getAlleleNumber()
     {
-        return an;
+        return alleleNumber;
     }
 
-    public void setAn(Integer an)
+    public void setAlleleNumber(Integer alleleNumber)
     {
-        this.an = an;
+        this.alleleNumber = alleleNumber;
     }
 
-    public Integer getAnAfr()
+    public Integer getAlleleNumberAfrican()
     {
-        return anAfr;
+        return alleleNumberAfrican;
     }
 
-    public void setAnAfr(Integer anAfr)
+    public void setAlleleNumberAfrican(Integer alleleNumberAfrican)
     {
-        this.anAfr = anAfr;
+        this.alleleNumberAfrican = alleleNumberAfrican;
     }
 
-    public Integer getAnAmr()
+    public Integer getAlleleNumberLatino()
     {
-        return anAmr;
+        return alleleNumberLatino;
     }
 
-    public void setAnAmr(Integer anAmr)
+    public void setAlleleNumberLatino(Integer alleleNumberLatino)
     {
-        this.anAmr = anAmr;
+        this.alleleNumberLatino = alleleNumberLatino;
     }
 
-    public Integer getAnAsj()
+    public Integer getAlleleNumberAshkenaziJewish()
     {
-        return anAsj;
+        return alleleNumberAshkenaziJewish;
     }
 
-    public void setAnAsj(Integer anAsj)
+    public void setAlleleNumberAshkenaziJewish(Integer alleleNumberAshkenaziJewish)
     {
-        this.anAsj = anAsj;
+        this.alleleNumberAshkenaziJewish = alleleNumberAshkenaziJewish;
     }
 
-    public Integer getAnEas()
+    public Integer getAlleleNumberEastAsian()
     {
-        return anEas;
+        return alleleNumberEastAsian;
     }
 
-    public void setAnEas(Integer anEas)
+    public void setAlleleNumberEastAsian(Integer alleleNumberEastAsian)
     {
-        this.anEas = anEas;
+        this.alleleNumberEastAsian = alleleNumberEastAsian;
     }
 
-    public Integer getAnFin()
+    public Integer getAlleleNumberEuropeanFinnish()
     {
-        return anFin;
+        return alleleNumberEuropeanFinnish;
     }
 
-    public void setAnFin(Integer anFin)
+    public void setAlleleNumberEuropeanFinnish(Integer alleleNumberEuropeanFinnish)
     {
-        this.anFin = anFin;
+        this.alleleNumberEuropeanFinnish = alleleNumberEuropeanFinnish;
     }
 
-    public Integer getAnNfe()
+    public Integer getAlleleNumberEuropeanNonFinnish()
     {
-        return anNfe;
+        return alleleNumberEuropeanNonFinnish;
     }
 
-    public void setAnNfe(Integer anNfe)
+    public void setAlleleNumberEuropeanNonFinnish(Integer alleleNumberEuropeanNonFinnish)
     {
-        this.anNfe = anNfe;
+        this.alleleNumberEuropeanNonFinnish = alleleNumberEuropeanNonFinnish;
     }
 
-    public Integer getAnOth()
+    public Integer getAlleleNumberOther()
     {
-        return anOth;
+        return alleleNumberOther;
     }
 
-    public void setAnOth(Integer anOth)
+    public void setAlleleNumberOther(Integer alleleNumberOther)
     {
-        this.anOth = anOth;
+        this.alleleNumberOther = alleleNumberOther;
     }
 
-    public Integer getAnSas()
+    public Integer getAlleleNumberSouthAsian()
     {
-        return anSas;
+        return alleleNumberSouthAsian;
     }
 
-    public void setAnSas(Integer anSas)
+    public void setAlleleNumberSouthAsian(Integer alleleNumberSouthAsian)
     {
-        this.anSas = anSas;
+        this.alleleNumberSouthAsian = alleleNumberSouthAsian;
     }
 
 }

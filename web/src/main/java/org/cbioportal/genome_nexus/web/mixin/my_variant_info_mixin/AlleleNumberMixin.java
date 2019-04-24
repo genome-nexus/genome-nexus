@@ -9,29 +9,29 @@ public class AlleleNumberMixin
 {
 
     @ApiModelProperty(value = "an", required = false)
-    private Integer an;
+    private Integer alleleNumber;
 
     @ApiModelProperty(value = "an_afr", required = false)
-    private Integer anAfr;
+    private Integer alleleNumberAfrican;
 
     @ApiModelProperty(value = "an_amr", required = false)
-    private Integer anAmr;
+    private Integer alleleNumberLatino;
 
     @ApiModelProperty(value = "an_asj", required = false)
-    private Integer anAsj;
+    private Integer alleleNumberAshkenaziJewish;
 
     @ApiModelProperty(value = "an_eas", required = false)
-    private Integer anEas;
+    private Integer alleleNumberEastAsian;
 
     @ApiModelProperty(value = "an_fin", required = false)
-    private Integer anFin;
+    private Integer alleleNumberEuropeanFinnish;
 
     @ApiModelProperty(value = "an_nfe", required = false)
-    private Integer anNfe;
+    private Integer alleleNumberEuropeanNonFinnish;
 
     @ApiModelProperty(value = "an_oth", required = false)
-    private Integer anOth;
+    private Integer alleleNumberOther;
 
     @ApiModelProperty(value = "an_sas", required = false)
-    private Integer anSas;
+    private Integer alleleNumberSouthAsian;
 }

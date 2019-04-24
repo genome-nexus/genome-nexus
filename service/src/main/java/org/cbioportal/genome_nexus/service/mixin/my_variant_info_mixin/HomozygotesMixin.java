@@ -8,30 +8,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class HomozygotesMixin
 {
     @JsonProperty(value = "hom", required = true)
-    private Integer hom;
+    private Integer homozygotes;
 
     @JsonProperty(value = "hom_afr", required = true)
-    private Integer homAfr;
+    private Integer homozygotesAfrican;
 
     @JsonProperty(value = "hom_amr", required = true)
-    private Integer homAmr;
+    private Integer homozygotesLatino;
 
     @JsonProperty(value = "hom_asj", required = true)
-    private Integer homAsj;
+    private Integer homozygotesAshkenaziJewish;
 
     @JsonProperty(value = "hom_eas", required = true)
-    private Integer homEas;
+    private Integer homozygotesEastAsian;
 
     @JsonProperty(value = "hom_fin", required = true)
-    private Integer homFin;
+    private Integer homozygotesEuropeanFinnish;
 
     @JsonProperty(value = "hom_nfe", required = true)
-    private Integer homNfe;
+    private Integer homozygotesEuropeanNonFinnish;
 
     @JsonProperty(value = "hom_oth", required = true)
-    private Integer homOth;
+    private Integer homozygotesOther;
 
     @JsonProperty(value = "hom_sas", required = true)
-    private Integer homSas;
+    private Integer homozygotesSouthAsian;
 
 }

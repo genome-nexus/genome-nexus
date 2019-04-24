@@ -9,29 +9,29 @@ public class HomozygotesMixin
 {
 
     @ApiModelProperty(value = "hom", required = false)
-    private Integer hom;
+    private Integer homozygotes;
 
     @ApiModelProperty(value = "hom_afr", required = false)
-    private Integer homAfr;
+    private Integer homozygotesAfrican;
 
     @ApiModelProperty(value = "hom_amr", required = false)
-    private Integer homAmr;
+    private Integer homozygotesLatino;
 
     @ApiModelProperty(value = "hom_asj", required = false)
-    private Integer homAsj;
+    private Integer homozygotesAshkenaziJewish;
 
     @ApiModelProperty(value = "hom_eas", required = false)
-    private Integer homEas;
+    private Integer homozygotesEastAsian;
 
     @ApiModelProperty(value = "hom_fin", required = false)
-    private Integer homFin;
+    private Integer homozygotesEuropeanFinnish;
 
     @ApiModelProperty(value = "hom_nfe", required = false)
-    private Integer homNfe;
+    private Integer homozygotesEuropeanNonFinnish;
 
     @ApiModelProperty(value = "hom_oth", required = false)
-    private Integer homOth;
+    private Integer homozygotesOther;
 
     @ApiModelProperty(value = "hom_sas", required = false)
-    private Integer homSas;
+    private Integer homozygotesSouthAsian;
 }

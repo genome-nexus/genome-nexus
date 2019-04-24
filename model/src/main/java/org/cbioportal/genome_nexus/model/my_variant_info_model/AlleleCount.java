@@ -5,130 +5,121 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class AlleleCount
 {
 
-    // allele count in total
     @Field(value = "ac")
-    private Integer ac;
+    private Integer alleleCount;
 
-    // allele count African
     @Field(value = "ac_afr")
-    private Integer acAfr;
+    private Integer alleleCountAfrican;
 
-    // allele count Latino
     @Field(value = "ac_amr")
-    private Integer acAmr;
+    private Integer alleleCountLatino;
 
-    // allele count Ashkenazi Jewish
     @Field(value = "ac_asj")
-    private Integer acAsj;
+    private Integer alleleCountAshkenaziJewish;
 
-    // allele count East Asian
     @Field(value = "ac_eas")
-    private Integer acEas;
+    private Integer alleleCountEastAsian;
 
-    // allele count European(Finnish)
     @Field(value = "ac_fin")
-    private Integer acFin;
+    private Integer alleleCountEuropeanFinnish;
 
-    // allele count European(non-Finnish)
     @Field(value = "ac_nfe")
-    private Integer acNfe;
+    private Integer alleleCountEuropeanNonFinnish;
 
-    // allele count Other
     @Field(value = "ac_oth")
-    private Integer acOth;
+    private Integer alleleCountOther;
 
-    // allele count South Asian
     @Field(value = "ac_sas")
-    private Integer acSas;
+    private Integer alleleCountSouthAsian;
 
-    public Integer getAc()
+    public Integer getAlleleCount()
     {
-        return ac;
+        return alleleCount;
     }
 
-    public void setAc(Integer ac)
+    public void setAlleleCount(Integer alleleCount)
     {
-        this.ac = ac;
+        this.alleleCount = alleleCount;
     }
 
-    public Integer getAcAfr()
+    public Integer getAlleleCountAfrican()
     {
-        return acAfr;
+        return alleleCountAfrican;
     }
 
-    public void setAcAfr(Integer acAfr)
+    public void setAlleleCountAfrican(Integer alleleCountAfrican)
     {
-        this.acAfr = acAfr;
+        this.alleleCountAfrican = alleleCountAfrican;
     }
 
-    public Integer getAcAmr()
+    public Integer getAlleleCountLatino()
     {
-        return acAmr;
+        return alleleCountLatino;
     }
 
-    public void setAcAmr(Integer acAmr)
+    public void setAlleleCountLatino(Integer alleleCountLatino)
     {
-        this.acAmr = acAmr;
+        this.alleleCountLatino = alleleCountLatino;
     }
 
-    public Integer getAcAsj()
+    public Integer getAlleleCountAshkenaziJewish()
     {
-        return acAsj;
+        return alleleCountAshkenaziJewish;
     }
 
-    public void setAcAsj(Integer acAsj)
+    public void setAlleleCountAshkenaziJewish(Integer alleleCountAshkenaziJewish)
     {
-        this.acAsj = acAsj;
+        this.alleleCountAshkenaziJewish = alleleCountAshkenaziJewish;
     }
 
-    public Integer getAcEas()
+    public Integer getAlleleCountEastAsian()
     {
-        return acEas;
+        return alleleCountEastAsian;
     }
 
-    public void setAcEas(Integer acEas)
+    public void setAlleleCountEastAsian(Integer alleleCountEastAsian)
     {
-        this.acEas = acEas;
+        this.alleleCountEastAsian = alleleCountEastAsian;
     }
 
-    public Integer getAcFin()
+    public Integer getAlleleCountEuropeanFinnish()
     {
-        return acFin;
+        return alleleCountEuropeanFinnish;
     }
 
-    public void setAcFin(Integer acFin)
+    public void setAlleleCountEuropeanFinnishn(Integer alleleCountEuropeanFinnish)
     {
-        this.acFin = acFin;
+        this.alleleCountEuropeanFinnish = alleleCountEuropeanFinnish;
     }
 
-    public Integer getAcNfe()
+    public Integer getAlleleCountEuropeanNonFinnish()
     {
-        return acNfe;
+        return alleleCountEuropeanNonFinnish;
     }
 
-    public void setAcNfe(Integer acNfe)
+    public void setAlleleCountEuropeanNonFinnish(Integer alleleCountEuropeanNonFinnish)
     {
-        this.acNfe = acNfe;
+        this.alleleCountEuropeanNonFinnish = alleleCountEuropeanNonFinnish;
     }
 
-    public Integer getAcOth()
+    public Integer getAlleleCountOther()
     {
-        return acOth;
+        return alleleCountOther;
     }
 
-    public void setAcOth(Integer acOth)
+    public void setAlleleCountOther(Integer alleleCountOther)
     {
-        this.acOth = acOth;
+        this.alleleCountOther = alleleCountOther;
     }
 
-    public Integer getAcSas()
+    public Integer getAlleleCountSouthAsian()
     {
-        return acSas;
+        return alleleCountSouthAsian;
     }
 
-    public void setAcSas(Integer acSas)
+    public void setAlleleCountSouthAsian(Integer alleleCountSouthAsian)
     {
-        this.acSas = acSas;
+        this.alleleCountSouthAsian = alleleCountSouthAsian;
     }
 
 }
