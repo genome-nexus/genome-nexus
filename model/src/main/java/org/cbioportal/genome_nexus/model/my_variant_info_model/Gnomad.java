@@ -5,19 +5,15 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Gnomad
 {
 
-    // Allele count
     @Field(value = "ac")
     private AlleleCount alleleCount;
 
-    // Allele number
     @Field(value = "an")
     private AlleleNumber alleleNumber;
 
-    // Allele frequency
     @Field(value = "af")
     private AlleleFrequency alleleFrequency;
 
-    // number of homozygote
     @Field(value = "hom")
     private Homozygotes homozygotes;
 
