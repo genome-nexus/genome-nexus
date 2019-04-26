@@ -47,6 +47,7 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(ClinVar.class, ClinVarMixin.class);
         mixinMap.put(Hg38.class, Hg38Mixin.class);
         mixinMap.put(Mutdb.class, MutdbMixin.class);
+        mixinMap.put(IntergenicConsequences.class, IntergenicConsequencesMixin.class);
         super.setMixIns(mixinMap);
     }
 }
