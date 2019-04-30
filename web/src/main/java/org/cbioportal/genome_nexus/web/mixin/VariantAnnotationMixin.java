@@ -25,7 +25,7 @@ public class VariantAnnotationMixin {
 
     @JsonProperty(value="intergenic_consequences", required = true)
     @ApiModelProperty(value = "intergenic_consequences", required = true)
-    private List<IntergenicConsequences> intergenicConsequences;
+    private List<IntergenicConsequences> intergenic_consequences;
 
     @JsonProperty(value="assembly_name", required = true)
     @ApiModelProperty(value = "NCBI build number", required = false)
