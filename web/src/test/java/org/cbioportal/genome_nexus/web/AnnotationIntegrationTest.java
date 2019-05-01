@@ -37,7 +37,7 @@ public class AnnotationIntegrationTest
 
 
     @Test
-    public void testAnnotationIntergenicConsequences()
+    public void testAnnotation()
     {
 
         String[] variant = {
@@ -51,8 +51,8 @@ public class AnnotationIntegrationTest
 
         VariantAnnotation ann0 = this.fetchVariantAnnotationGET(variant[0]);
 
-        // The variant allele should be G
-        assertEquals("G", ann0.getIntergenicConsequences().get(0).getVariantAllele());
+        // The start location should be 43130875
+        assertEquals(43130875, ann0.getStart().intValue());
 
 
         //////////////////
@@ -62,6 +62,6 @@ public class AnnotationIntegrationTest
         VariantAnnotation[] anns = this.fetchVariantAnnotationPOST(Arrays.asList(variant));
 
         // GET and POST requests should return the same
-        assertEquals(anns[0].getIntergenicConsequences().get(0).getVariantAllele(), ann0.getIntergenicConsequences().get(0).getVariantAllele());
+        assertEquals(anns[0].getStart().intValue(), ann0.getStart().intValue());
     }
 }

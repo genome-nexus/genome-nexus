@@ -21,7 +21,7 @@ public class VariantAnnotationMixin
     private String variantId;
 
     @JsonProperty(value="intergenic_consequences", required = true)
-    private List<IntergenicConsequences> intergenic_consequences;
+    private List<IntergenicConsequences> intergenicConsequences;
 
     @JsonProperty(value="assembly_name", required = true)
     private String assemblyName;
