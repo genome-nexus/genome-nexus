@@ -68,7 +68,7 @@ public class VariantAnnotationMixin {
     private HotspotAnnotation hotspotAnnotation;
 
     @JsonProperty(value="ptms", required = true)
-    @ApiModelProperty(value = "Post Transactional Modifications", required = false)
+    @ApiModelProperty(value = "Post Translational Modifications", required = false)
     private PtmAnnotation ptmAnnotation;
 
     @JsonProperty(value="annotation_summary", required = true)
