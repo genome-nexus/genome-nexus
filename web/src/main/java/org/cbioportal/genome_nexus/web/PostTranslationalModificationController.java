@@ -28,11 +28,11 @@ public class PostTranslationalModificationController
     }
 
     @ApiOperation(value = "Retrieves PTM entries by Ensembl Transcript IDs",
-        nickname = "fetchPostTransactionalModificationsByPtmFilterPOST")
+        nickname = "fetchPostTranslationalModificationsByPtmFilterPOST")
     @RequestMapping(value = "/ptm/experimental",
         method = RequestMethod.POST,
         produces = "application/json")
-    public List<PostTranslationalModification> fetchPostTransactionalModificationsByPtmFilterPOST(
+    public List<PostTranslationalModification> fetchPostTranslationalModificationsByPtmFilterPOST(
         @ApiParam(
             value = "List of Ensembl transcript IDs. For example [\"ENST00000420316\", \"ENST00000646891\", \"ENST00000371953\"]",
             required = true)
