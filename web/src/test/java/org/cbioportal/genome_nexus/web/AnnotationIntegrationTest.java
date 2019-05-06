@@ -2,13 +2,19 @@ package org.cbioportal.genome_nexus.web;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(
@@ -25,14 +31,14 @@ public class AnnotationIntegrationTest
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    private VariantAnnotation fetchVariantAnnotationGET(String variant)
+    private String fetchVariantAnnotationGET(String variant)
     {
-        return this.restTemplate.getForObject(BASE_URL + variant, VariantAnnotation.class);
+        return this.restTemplate.getForObject(BASE_URL + variant, String.class);
     }
 
-    private VariantAnnotation[] fetchVariantAnnotationPOST(List<String> variants)
+    private String fetchVariantAnnotationPOST(String[] variants)
     {
-        return this.restTemplate.postForObject(BASE_URL, variants, VariantAnnotation[].class);
+        return this.restTemplate.postForObject(BASE_URL, variants, String.class);
     }
 
 
@@ -40,7 +46,7 @@ public class AnnotationIntegrationTest
     public void testAnnotation()
     {
 
-        String[] variant = {
+        String[] variants = {
             "12:g.43130875C>G",
             "12:g.43130996C>G"
         };
@@ -49,19 +55,27 @@ public class AnnotationIntegrationTest
         // GET requests //
         //////////////////
 
-        VariantAnnotation ann0 = this.fetchVariantAnnotationGET(variant[0]);
+        String resp = this.fetchVariantAnnotationGET(variants[0]);
+        JsonParser springParser = JsonParserFactory.getJsonParser();
+        Map<String, Object> map = springParser.parseMap(resp);
+        ArrayList<HashMap<String, Object>> intergenicConsequences = (ArrayList) map.get("intergenic_consequences");
+        HashMap<String, Object> ann0 = (HashMap)intergenicConsequences.get(0);
 
-        // The start location should be 43130875
-        assertEquals(43130875, ann0.getStart().intValue());
-
+        // the variant allele should be "G"
+        assertEquals("G", ann0.get("variantAllele"));
 
         //////////////////
         // POST request //
         //////////////////
 
-        VariantAnnotation[] anns = this.fetchVariantAnnotationPOST(Arrays.asList(variant));
+        String resp2 = this.fetchVariantAnnotationPOST(variants);
+        List<Object> maps = springParser.parseList(resp2);
+        ArrayList<HashMap<String, Object>> intergenicConsequencesPost = (ArrayList) ((Map<String, Object>) maps.get(0)).get("intergenic_consequences");
+        HashMap<String, Object> annPost0 = (HashMap)intergenicConsequencesPost.get(0);
+        // the length of vatiants and map size should be same
+        assertEquals(variants.length, maps.size());
 
         // GET and POST requests should return the same
-        assertEquals(anns[0].getStart().intValue(), ann0.getStart().intValue());
+        assertEquals(ann0.get("variantAllele"), annPost0.get("variantAllele"));
     }
 }
