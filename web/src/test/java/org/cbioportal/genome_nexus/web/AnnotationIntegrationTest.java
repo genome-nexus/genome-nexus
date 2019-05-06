@@ -48,34 +48,35 @@ public class AnnotationIntegrationTest
 
         String[] variants = {
             "12:g.43130875C>G",
-            "12:g.43130996C>G"
+            "12:g.43130996C>G",
+            "INVALID"
         };
 
         //////////////////
         // GET requests //
         //////////////////
 
-        String resp = this.fetchVariantAnnotationGET(variants[0]);
+        String response = this.fetchVariantAnnotationGET(variants[0]);
         JsonParser springParser = JsonParserFactory.getJsonParser();
-        Map<String, Object> map = springParser.parseMap(resp);
-        ArrayList<HashMap<String, Object>> intergenicConsequences = (ArrayList) map.get("intergenic_consequences");
-        HashMap<String, Object> ann0 = (HashMap)intergenicConsequences.get(0);
+        Map<String, Object> map = springParser.parseMap(response);
+        ArrayList<HashMap<String, Object>> intergenicConsequencesGet = (ArrayList) map.get("intergenic_consequences");
+        HashMap<String, Object> annGet = (HashMap) intergenicConsequencesGet.get(0);
 
         // the variant allele should be "G"
-        assertEquals("G", ann0.get("variantAllele"));
+        assertEquals("G", annGet.get("variantAllele"));
 
         //////////////////
         // POST request //
         //////////////////
 
-        String resp2 = this.fetchVariantAnnotationPOST(variants);
-        List<Object> maps = springParser.parseList(resp2);
-        ArrayList<HashMap<String, Object>> intergenicConsequencesPost = (ArrayList) ((Map<String, Object>) maps.get(0)).get("intergenic_consequences");
-        HashMap<String, Object> annPost0 = (HashMap)intergenicConsequencesPost.get(0);
-        // the length of vatiants and map size should be same
-        assertEquals(variants.length, maps.size());
+        String responses = this.fetchVariantAnnotationPOST(variants);
+        List<Object> maps = springParser.parseList(responses);
+        ArrayList<HashMap<String, Object>> intergenicConsequencesPost0 = (ArrayList) ((Map<String, Object>) maps.get(0)).get("intergenic_consequences");
+        HashMap<String, Object> annPost0 = (HashMap) intergenicConsequencesPost0.get(0);
+        // each variant should have one return instance, except the INVALID one
+        assertEquals(variants.length - 1, maps.size());
 
         // GET and POST requests should return the same
-        assertEquals(ann0.get("variantAllele"), annPost0.get("variantAllele"));
+        assertEquals(annGet.get("variantAllele"), annPost0.get("variantAllele"));
     }
 }
