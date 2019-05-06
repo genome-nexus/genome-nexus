@@ -85,7 +85,7 @@ public class MyVariantInfoIntegrationTest
         HashMap<String, HashMap<String, Object>> gnomadGenomePost1 = (HashMap) ((Map<String, Object>) maps.get(1)).get("gnomadGenome");
         HashMap<String, HashMap<String, Object>> alleleNumberPost1 = (HashMap) gnomadGenomePost1.get("alleleNumber");
 
-        // for each pbdId we should have one matching PdbHeader instance, except the invalid one
+        // for each pdbId we should have one matching PdbHeader instance, except the invalid one
         assertEquals(maps.size(), variants.length - 1);
 
         // GET and POST requests should return the same
