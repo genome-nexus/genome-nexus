@@ -53,21 +53,21 @@ public class MyVariantInfoIntegrationTest
         String response0 = this.fetchMyVariantInfoAnnotationGET(variants[0]);
         JsonParser springParser = JsonParserFactory.getJsonParser();
         Map<String, Object> map0 = springParser.parseMap(response0);
-        HashMap<String,HashMap<String, Object>> mutdbGet0 = (HashMap) map0.get("mutdb");
+        HashMap<String, HashMap<String, Object>> mutdbGet0 = (HashMap) map0.get("mutdb");
         // mutdb annotation should be 7
         assertEquals("7", mutdbGet0.get("chrom"));
-        HashMap<String,HashMap<String, Object>> gnomadExomeGet0 = (HashMap) map0.get("gnomadExome");
-        HashMap<String,HashMap<String, Object>> alleleNumberGet0 = (HashMap) gnomadExomeGet0.get("alleleNumber");
+        HashMap<String, HashMap<String, Object>> gnomadExomeGet0 = (HashMap) map0.get("gnomadExome");
+        HashMap<String, HashMap<String, Object>> alleleNumberGet0 = (HashMap) gnomadExomeGet0.get("alleleNumber");
         // total allele number should be 246028
         assertEquals(246028, alleleNumberGet0.get("an"));
 
         String response1 = this.fetchMyVariantInfoAnnotationGET(variants[1]);
         Map<String, Object> map1 = springParser.parseMap(response1);
-        HashMap<String,HashMap<String, Object>> vcfGet1 = (HashMap) map1.get("vcf");
+        HashMap<String, HashMap<String, Object>> vcfGet1 = (HashMap) map1.get("vcf");
         // alt should be "A"
         assertEquals("A", vcfGet1.get("alt"));
-        HashMap<String,HashMap<String, Object>> gnomadGenomeGet1 = (HashMap) map1.get("gnomadGenome");
-        HashMap<String,HashMap<String, Object>> alleleNumberGet1 = (HashMap) gnomadGenomeGet1.get("alleleNumber");
+        HashMap<String, HashMap<String, Object>> gnomadGenomeGet1 = (HashMap) map1.get("gnomadGenome");
+        HashMap<String, HashMap<String, Object>> alleleNumberGet1 = (HashMap) gnomadGenomeGet1.get("alleleNumber");
         // total allele number should be 30914
         assertEquals(30914, alleleNumberGet1.get("an"));
 
@@ -77,13 +77,13 @@ public class MyVariantInfoIntegrationTest
 
         String responses = this.fetchMyVariantInfoAnnotationPOST(variants);
         List<Object> maps = springParser.parseList(responses);
-        HashMap<String,HashMap<String, Object>> mutdbPost0 = (HashMap) ((Map<String, Object>) maps.get(0)).get("mutdb");
-        HashMap<String,HashMap<String, Object>> gnomadExomePost0 = (HashMap) ((Map<String, Object>) maps.get(0)).get("gnomadExome");
-        HashMap<String,HashMap<String, Object>> alleleNumberPost0 = (HashMap) gnomadExomePost0.get("alleleNumber");
+        HashMap<String, HashMap<String, Object>> mutdbPost0 = (HashMap) ((Map<String, Object>) maps.get(0)).get("mutdb");
+        HashMap<String, HashMap<String, Object>> gnomadExomePost0 = (HashMap) ((Map<String, Object>) maps.get(0)).get("gnomadExome");
+        HashMap<String, HashMap<String, Object>> alleleNumberPost0 = (HashMap) gnomadExomePost0.get("alleleNumber");
 
-        HashMap<String,HashMap<String, Object>> vcfPost1 = (HashMap) ((Map<String, Object>) maps.get(1)).get("vcf");
-        HashMap<String,HashMap<String, Object>> gnomadGenomePost1 = (HashMap) ((Map<String, Object>) maps.get(1)).get("gnomadGenome");
-        HashMap<String,HashMap<String, Object>> alleleNumberPost1 = (HashMap) gnomadGenomePost1.get("alleleNumber");
+        HashMap<String, HashMap<String, Object>> vcfPost1 = (HashMap) ((Map<String, Object>) maps.get(1)).get("vcf");
+        HashMap<String, HashMap<String, Object>> gnomadGenomePost1 = (HashMap) ((Map<String, Object>) maps.get(1)).get("gnomadGenome");
+        HashMap<String, HashMap<String, Object>> alleleNumberPost1 = (HashMap) gnomadGenomePost1.get("alleleNumber");
 
         // for each variant we should have one matching instance, except the invalid one
         assertEquals(maps.size(), variants.length - 1);
