@@ -48,14 +48,21 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
 
     @Autowired
     public DbsnpVariantAnnotationService(CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher,
-                                             // Lazy autowire services used for enrichment,
-                                             // otherwise we are getting circular dependency issues
-                                             @Lazy IsoformOverrideService isoformOverrideService,
-                                             @Lazy CancerHotspotService hotspotService,
-                                             @Lazy MutationAssessorService mutationAssessorService,
-                                             @Lazy MyVariantInfoService myVariantInfoService,
-                                             @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService)
+                                         // Lazy autowire services used for enrichment,
+                                         // otherwise we are getting circular dependency issues
+                                         @Lazy IsoformOverrideService isoformOverrideService,
+                                         @Lazy CancerHotspotService hotspotService,
+                                         @Lazy MutationAssessorService mutationAssessorService,
+                                         @Lazy MyVariantInfoService myVariantInfoService,
+                                         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
+                                         @Lazy PostTranslationalModificationService postTranslationalModificationService)
     {
-        super(cachedVariantIdAnnotationFetcher, isoformOverrideService, hotspotService, mutationAssessorService, myVariantInfoService, variantAnnotationSummaryService);
+        super(cachedVariantIdAnnotationFetcher,
+            isoformOverrideService,
+            hotspotService,
+            mutationAssessorService,
+            myVariantInfoService,
+            variantAnnotationSummaryService,
+            postTranslationalModificationService);
     }
 }

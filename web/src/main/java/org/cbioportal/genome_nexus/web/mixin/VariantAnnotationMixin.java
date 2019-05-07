@@ -2,10 +2,7 @@ package org.cbioportal.genome_nexus.web.mixin;
 
 import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
-import org.cbioportal.genome_nexus.model.HotspotAnnotation;
-import org.cbioportal.genome_nexus.model.MutationAssessorAnnotation;
-import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
+import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfoAnnotation;
 
 import java.util.List;
@@ -69,6 +66,10 @@ public class VariantAnnotationMixin {
     @JsonProperty(value="hotspots", required = true)
     @ApiModelProperty(value = "Hotspot Annotation", required = false)
     private HotspotAnnotation hotspotAnnotation;
+
+    @JsonProperty(value="ptms", required = true)
+    @ApiModelProperty(value = "Post Translational Modifications", required = false)
+    private PtmAnnotation ptmAnnotation;
 
     @JsonProperty(value="annotation_summary", required = true)
     @ApiModelProperty(value = "Variant Annotation Summary", required = false)

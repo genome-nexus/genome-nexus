@@ -48,14 +48,21 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
 
     @Autowired
     public RegionVariantAnnotationService(CachedVariantRegionAnnotationFetcher cachedVariantRegionAnnotationFetcher,
-                                              // Lazy autowire services used for enrichment,
-                                              // otherwise we are getting circular dependency issues
-                                              @Lazy IsoformOverrideService isoformOverrideService,
-                                              @Lazy CancerHotspotService hotspotService,
-                                              @Lazy MutationAssessorService mutationAssessorService,
-                                              @Lazy MyVariantInfoService myVariantInfoService,
-                                              @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService)
+                                          // Lazy autowire services used for enrichment,
+                                          // otherwise we are getting circular dependency issues
+                                          @Lazy IsoformOverrideService isoformOverrideService,
+                                          @Lazy CancerHotspotService hotspotService,
+                                          @Lazy MutationAssessorService mutationAssessorService,
+                                          @Lazy MyVariantInfoService myVariantInfoService,
+                                          @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
+                                          @Lazy PostTranslationalModificationService postTranslationalModificationService)
     {
-        super(cachedVariantRegionAnnotationFetcher, isoformOverrideService, hotspotService, mutationAssessorService, myVariantInfoService, variantAnnotationSummaryService);
+        super(cachedVariantRegionAnnotationFetcher,
+            isoformOverrideService,
+            hotspotService,
+            mutationAssessorService,
+            myVariantInfoService,
+            variantAnnotationSummaryService,
+            postTranslationalModificationService);
     }
 }

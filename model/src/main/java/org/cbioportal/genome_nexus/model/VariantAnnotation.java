@@ -66,6 +66,7 @@ public class VariantAnnotation
     private MutationAssessorAnnotation mutationAssessorAnnotation;
     private MyVariantInfoAnnotation myVariantInfoAnnotation;
     private HotspotAnnotation hotspotAnnotation;
+    private PtmAnnotation ptmAnnotation;
     private VariantAnnotationSummary annotationSummary;
 
     private Map<String, Object> dynamicProps;
@@ -252,6 +253,14 @@ public class VariantAnnotation
 
     public void setHotspotAnnotation(HotspotAnnotation hotspotAnnotation) {
         this.hotspotAnnotation = hotspotAnnotation;
+    }
+
+    public PtmAnnotation getPtmAnnotation() {
+        return ptmAnnotation;
+    }
+
+    public void setPtmAnnotation(PtmAnnotation ptmAnnotation) {
+        this.ptmAnnotation = ptmAnnotation;
     }
 
     public void setDynamicProp(String key, Object value)
