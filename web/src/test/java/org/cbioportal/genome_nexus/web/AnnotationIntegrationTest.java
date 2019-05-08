@@ -1,5 +1,4 @@
 package org.cbioportal.genome_nexus.web;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.json.JsonParser;
@@ -11,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,16 +29,19 @@ public class AnnotationIntegrationTest
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    private String fetchVariantAnnotationGET(String variant)
+    private Map<String, Object> fetchVariantAnnotationGET(String variant)
     {
-        return this.restTemplate.getForObject(BASE_URL + variant, String.class);
+        String response = this.restTemplate.getForObject(BASE_URL + variant, String.class);
+        JsonParser springParser = JsonParserFactory.getJsonParser();
+        return springParser.parseMap(response);
     }
 
-    private String fetchVariantAnnotationPOST(String[] variants)
+    private List<Map<String, Object>> fetchVariantAnnotationPOST(String[] variants)
     {
-        return this.restTemplate.postForObject(BASE_URL, variants, String.class);
+        String responses = this.restTemplate.postForObject(BASE_URL, variants, String.class);
+        JsonParser springParser = JsonParserFactory.getJsonParser();
+        return (List<Map<String, Object>>)(List<?>) springParser.parseList(responses);
     }
-
 
     @Test
     public void testAnnotation()
@@ -56,27 +57,21 @@ public class AnnotationIntegrationTest
         // GET requests //
         //////////////////
 
-        String response = this.fetchVariantAnnotationGET(variants[0]);
-        JsonParser springParser = JsonParserFactory.getJsonParser();
-        Map<String, Object> map = springParser.parseMap(response);
-        ArrayList<HashMap<String, Object>> intergenicConsequencesGet = (ArrayList) map.get("intergenic_consequences");
-        HashMap<String, Object> annGet = (HashMap) intergenicConsequencesGet.get(0);
-
-        // the variant allele should be "G"
-        assertEquals("G", annGet.get("variantAllele"));
+        // test intergenic_consequences
+        String variantAllele = ((HashMap)((ArrayList) this.fetchVariantAnnotationGET(variants[0]).get("intergenic_consequences")).get(0)).get("variantAllele").toString();
+        // variantAllele should be G
+        assertEquals("G", variantAllele);
 
         //////////////////
         // POST request //
         //////////////////
 
-        String responses = this.fetchVariantAnnotationPOST(variants);
-        List<Object> maps = springParser.parseList(responses);
-        ArrayList<HashMap<String, Object>> intergenicConsequencesPost0 = (ArrayList) ((Map<String, Object>) maps.get(0)).get("intergenic_consequences");
-        HashMap<String, Object> annPost0 = (HashMap) intergenicConsequencesPost0.get(0);
-        // each variant should have one return instance, except the INVALID one
-        assertEquals(variants.length - 1, maps.size());
+        // for each variant we should have one matching instance, except the invalid one 
+        assertEquals(variants.length - 1, this.fetchVariantAnnotationPOST(variants).size());
 
-        // GET and POST requests should return the same
-        assertEquals(annGet.get("variantAllele"), annPost0.get("variantAllele"));
+        String variantAllele0 = ((HashMap)((ArrayList) this.fetchVariantAnnotationPOST(variants).get(0).get("intergenic_consequences")).get(0)).get("variantAllele").toString();
+        // the Get and Post should have same result
+        assertEquals(variantAllele, variantAllele0);
+
     }
 }
