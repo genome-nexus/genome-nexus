@@ -123,6 +123,17 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
         {
             sb.insert(0,"chr");
         }
+        // Check if the variant id contains "del", if so we will remove the deleted nucleotides
+        if (sb.toString().contains("del"))
+        {
+            int start = sb.lastIndexOf("del") + 3;
+            int end = sb.length();
+            // If the variant id contains "del" and "ins", remove characters between "del" to "ins"
+            if (sb.toString().contains("ins")) {
+                end = sb.lastIndexOf("ins");
+            }
+            sb.delete(start, end);
+        }
         return sb.toString();
     }
 
