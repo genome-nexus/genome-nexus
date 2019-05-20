@@ -3,7 +3,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Alleles;
-import org.cbioportal.genome_nexus.model.my_variant_info_model.Gene;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Hg19;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -32,9 +31,6 @@ public class DbsnpMixin
 
     @JsonProperty(value = "flags", required = true)
     private String flags;
-
-    @JsonProperty(value = "gene", required = true)
-    private Gene gene;
 
     @JsonProperty(value = "hg19", required = true)
     private Hg19 hg19;
