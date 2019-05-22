@@ -106,7 +106,6 @@ public class MyVariantInfoIntegrationTest
         assertEquals(alleleCount, alleleCount1);
 
         String vartype2 = postResponses.get(2).get("dbsnp").get("vartype").toString();
-        // the Get and Post should have same result
         assertEquals(vartype, vartype2);
 
     }

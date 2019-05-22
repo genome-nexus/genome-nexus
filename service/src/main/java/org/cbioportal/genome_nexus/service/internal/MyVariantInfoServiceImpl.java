@@ -16,6 +16,7 @@ import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceExce
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.util.VariantId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -117,24 +118,8 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     }
 
     private String buildRequest(String variant)
-    {
-        StringBuilder sb = new StringBuilder(variant);
-        if(sb.toString().contains("g.") && !sb.toString().startsWith("chr"))
-        {
-            sb.insert(0,"chr");
-        }
-        // Check if the variant id contains "del", if so we will remove the deleted nucleotides
-        if (sb.toString().contains("del"))
-        {
-            int start = sb.lastIndexOf("del") + 3;
-            int end = sb.length();
-            // If the variant id contains "del" and "ins", remove characters between "del" to "ins"
-            if (sb.toString().contains("ins")) {
-                end = sb.lastIndexOf("ins");
-            }
-            sb.delete(start, end);
-        }
-        return sb.toString();
+    {     
+        return VariantId.buildVariantId(variant);
     }
 
 }
