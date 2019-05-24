@@ -4,11 +4,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * Unit tests for Numerical utils.
- *
- * @author Selcuk Onur Sumer
- */
 public class HgvsTest
 {
     @Test
