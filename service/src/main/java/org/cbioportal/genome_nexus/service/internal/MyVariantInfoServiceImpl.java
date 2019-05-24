@@ -16,7 +16,7 @@ import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceExce
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
-import org.cbioportal.genome_nexus.util.VariantId;
+import org.cbioportal.genome_nexus.util.Hgvs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -118,8 +118,8 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     }
 
     private String buildRequest(String variant)
-    {     
-        return VariantId.buildVariantId(variant);
+    {   
+        return Hgvs.addChrPrefix(Hgvs.removeDeletedBases(variant));
     }
 
 }
