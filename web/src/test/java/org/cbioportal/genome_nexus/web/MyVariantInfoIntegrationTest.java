@@ -54,6 +54,7 @@ public class MyVariantInfoIntegrationTest
         String[] variants = {
             "7:g.140453136A>T",
             "rs12190874",
+            "17:g.41276045_41276046delCT",
             "INVALID"
         };
 
@@ -77,6 +78,10 @@ public class MyVariantInfoIntegrationTest
         // the allele count should be 3239
         assertEquals(3239, alleleCount);
 
+        String vartype = this.fetchMyVariantInfoAnnotationGET(variants[2]).get("dbsnp").get("vartype").toString();
+        // the vartype shout be indel
+        assertEquals("indel", vartype);
+
 
         //////////////////
         // POST request //
@@ -99,6 +104,9 @@ public class MyVariantInfoIntegrationTest
 
         Object alleleCount1 = ((HashMap) postResponses.get(1).get("gnomadGenome").get("alleleCount")).get("ac");
         assertEquals(alleleCount, alleleCount1);
+
+        String vartype2 = postResponses.get(2).get("dbsnp").get("vartype").toString();
+        assertEquals(vartype, vartype2);
 
     }
 }

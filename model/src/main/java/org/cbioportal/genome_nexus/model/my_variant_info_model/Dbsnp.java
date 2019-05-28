@@ -31,9 +31,6 @@ public class Dbsnp
     @Field(value = "flags")
     private List<String> flags;
 
-    @Field(value = "gene")
-    private Gene gene;
-
     @Field(value = "hg19")
     private Hg19 hg19;
 
@@ -125,15 +122,7 @@ public class Dbsnp
     {
         this.flags = flags;
     }
-    public Gene getGene()
-    {
-        return gene;
-    }
 
-    public void setGene(Gene gene)
-    {
-        this.gene = gene;
-    }
     public Hg19 getHg19()
     {
         return hg19;

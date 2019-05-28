@@ -2,7 +2,6 @@ package org.cbioportal.genome_nexus.web.mixin.my_variant_info_mixin;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Alleles;
-import org.cbioportal.genome_nexus.model.my_variant_info_model.Gene;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Hg19;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -33,9 +32,6 @@ public class DbsnpMixin
 
     @ApiModelProperty(value = "flags", required = false)
     private String flags;
-
-    @ApiModelProperty(value = "gene", required = false)
-    private Gene gene;
 
     @ApiModelProperty(value = "hg19", required = false)
     private Hg19 hg19;
