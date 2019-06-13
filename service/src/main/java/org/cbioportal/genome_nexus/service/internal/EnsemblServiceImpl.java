@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -32,8 +33,7 @@ public class EnsemblServiceImpl implements EnsemblService
 
     @Override
     public EnsemblGene getCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol)
-        throws NoEnsemblGeneIdForHugoSymbolException
-    {
+            throws NoEnsemblGeneIdForHugoSymbolException {
         EnsemblGene ensemblGene = this.ensemblRepository.getCanonicalEnsemblGeneIdByHugoSymbol(hugoSymbol);
 
         if (ensemblGene == null) {
@@ -167,5 +167,10 @@ public class EnsemblServiceImpl implements EnsemblService
         else {
             return new ArrayList<EnsemblTranscript>();
         }
+    }
+
+    @Override
+    public HashMap<String, String> getHugoSymbolToEntrezGeneIdMap() {
+        return this.ensemblRepository.getHugoSymbolToEntrezGeneIdMap();
     }
 }

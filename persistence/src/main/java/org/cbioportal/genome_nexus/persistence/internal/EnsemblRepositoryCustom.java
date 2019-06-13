@@ -31,6 +31,8 @@
 
 package org.cbioportal.genome_nexus.persistence.internal;
 
+import java.util.HashMap;
+
 import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 
@@ -39,4 +41,5 @@ public interface EnsemblRepositoryCustom
     EnsemblTranscript findOneByHugoSymbolIgnoreCase(String hugoSymbol, String isoformOverrideSource);
     EnsemblGene getCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol);
     EnsemblGene getCanonicalEnsemblGeneIdByEntrezGeneId(String ensemblGeneId);
+    HashMap<String, String> getHugoSymbolToEntrezGeneIdMap();
 }

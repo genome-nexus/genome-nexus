@@ -161,7 +161,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private String resolveEntrezGeneId(TranscriptConsequence canonicalTranscript)
     {
         String entrezGeneId;
-
+        // some problems here
         try {
             entrezGeneId = this.entrezGeneIdResolver.resolve(canonicalTranscript);
         } catch (EnsemblWebServiceException e) {
@@ -203,6 +203,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setTranscriptId(this.transcriptIdResolver.resolve(transcriptConsequence));
             summary.setCodonChange(this.codonChangeResolver.resolve(transcriptConsequence));
             summary.setEntrezGeneId(this.resolveEntrezGeneId(transcriptConsequence));
+            //mark
             summary.setConsequenceTerms(this.consequenceTermsResolver.resolve(transcriptConsequence));
             summary.setHugoGeneSymbol(this.hugoGeneSymbolResolver.resolve(transcriptConsequence));
             summary.setHgvspShort(this.proteinChangeResolver.resolveHgvspShort(annotation, transcriptConsequence));
