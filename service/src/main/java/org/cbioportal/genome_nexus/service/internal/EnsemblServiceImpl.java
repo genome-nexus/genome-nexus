@@ -33,7 +33,8 @@ public class EnsemblServiceImpl implements EnsemblService
 
     @Override
     public EnsemblGene getCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol)
-            throws NoEnsemblGeneIdForHugoSymbolException {
+        throws NoEnsemblGeneIdForHugoSymbolException
+    {
         EnsemblGene ensemblGene = this.ensemblRepository.getCanonicalEnsemblGeneIdByHugoSymbol(hugoSymbol);
 
         if (ensemblGene == null) {

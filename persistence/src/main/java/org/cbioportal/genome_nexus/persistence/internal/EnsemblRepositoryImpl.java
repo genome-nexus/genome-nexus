@@ -33,7 +33,6 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
 
     private EnsemblCanonical findOneCanonicalByHugoSymbol(String hugoSymbol) {
         EnsemblCanonical ensemblCanonical;
-        // mark
         Query query;
 
         // check approved symbols
@@ -103,8 +102,7 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
         EnsemblCanonical ensemblCanonical = this.findOneCanonicalByHugoSymbol(hugoSymbol);
         if (ensemblCanonical != null) {
             Query query = new Query();
-            query.addCriteria(Criteria.where(EnsemblTranscript.TRANSCRIPT_ID_FIELD_NAME)
-                .is(ensemblCanonical.getCanonicalTranscriptId(isoformOverrideSource)));
+            query.addCriteria(Criteria.where(EnsemblTranscript.TRANSCRIPT_ID_FIELD_NAME).is(ensemblCanonical.getCanonicalTranscriptId(isoformOverrideSource)));
 
             EnsemblTranscript transcript = mongoTemplate.findOne(query, EnsemblTranscript.class, TRANSCRIPTS_COLLECTION);
             if (transcript != null) {
