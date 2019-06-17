@@ -121,18 +121,26 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
         for (EnsemblCanonical transcript : transcripts) {
             String[] previousSymbols = transcript.getPreviousSymbols();
             String[] synonyms = transcript.getSynonyms();
-            map.put(transcript.getHugoSymbol(), transcript.getEntrezGeneId());
+
+            if (!map.containsKey(transcript.getHugoSymbol())) {
+                map.put(transcript.getHugoSymbol(), transcript.getEntrezGeneId());
+            }
             if (previousSymbols != null) {
                 for (String previousSymbol : previousSymbols) {
-                    map.put(previousSymbol, transcript.getEntrezGeneId());
+                    if (!map.containsKey(previousSymbol)) {
+                        map.put(previousSymbol, transcript.getEntrezGeneId());
+                    }
                 }
             }
             if (synonyms != null) {
                 for (String synonym : synonyms) {
-                    map.put(synonym, transcript.getEntrezGeneId());
-                }                
+                    if (!map.containsKey(synonym)) {
+                        map.put(synonym, transcript.getEntrezGeneId());
+                    }
+                }
             }
         }
+        
         return map;
     }
 }

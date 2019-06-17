@@ -34,6 +34,5 @@ public class CanonicalTranscriptAnnotationEnricher implements AnnotationEnricher
         annotationSummary.setTranscriptConsequences(transcriptConsequences);
 
         annotation.setAnnotationSummary(annotationSummary);
-        //mark
     }
 }

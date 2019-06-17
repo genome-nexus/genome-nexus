@@ -36,6 +36,7 @@ public class EntrezGeneIdResolver
             transcriptConsequence.getGeneSymbol() != null &&
             !transcriptConsequence.getGeneSymbol().trim().isEmpty())
         {
+            // TODO may add it back after having a map in database
             // EnsemblGene ensemblGene = null;
 
             // try {

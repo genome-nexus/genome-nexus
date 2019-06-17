@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +55,28 @@ public class EntrezGeneIdResolverTest
         }
     }
 
+    private void mockGetHugoSymbolToEntrezGeneIdMap() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("JAK1", "3716");
+        map.put("FGD5", "152273");
+        map.put("ZBTB20", "26137");
+        map.put("DRD5", "1816");
+        map.put("SHROOM3", "57619");
+        map.put("IFNGR1", "3459");
+        map.put("BRAF", "673");
+        map.put("GPR124", "25960");
+        map.put("TSC1", "7248");
+        map.put("CHUK", "1147");
+        map.put("GANAB", "23193");
+        map.put("KRAS", "3845");
+        map.put("FLT3", "2322");
+        map.put("USP7", "7874");
+        map.put("EML2", "24139");
+        map.put("CHEK2", "11200");
+        map.put("MYH9", "4627");
+        Mockito.when(ensemblService.getHugoSymbolToEntrezGeneIdMap()).thenReturn(map);
+    }
+
     private void mockEnsemblService() {
         mockGetCanonicalEnsemblGeneIdByHugoSymbol("JAK1", "3716");
         mockGetCanonicalEnsemblGeneIdByHugoSymbol("FGD5", "152273");
@@ -72,6 +95,7 @@ public class EntrezGeneIdResolverTest
         mockGetCanonicalEnsemblGeneIdByHugoSymbol("EML2", "24139");
         mockGetCanonicalEnsemblGeneIdByHugoSymbol("CHEK2", "11200");
         mockGetCanonicalEnsemblGeneIdByHugoSymbol("MYH9", "4627");
+        mockGetHugoSymbolToEntrezGeneIdMap();
     }
 
     @Test
@@ -83,6 +107,7 @@ public class EntrezGeneIdResolverTest
         this.canonicalTranscriptResolverMocker.mockMethods(variantMockData, this.canonicalTranscriptResolver);
         this.geneXrefServiceMocker.mockMethods(geneXrefMockData, this.geneXrefService);
         this.mockEnsemblService();
+        entrezGeneIdResolver = new EntrezGeneIdResolver(canonicalTranscriptResolver, ensemblService);
 
         assertEquals(
             "3716",
