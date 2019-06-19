@@ -77,7 +77,6 @@ public class EntrezGeneIdResolverTest
         this.canonicalTranscriptResolverMocker.mockMethods(variantMockData, this.canonicalTranscriptResolver);
         this.geneXrefServiceMocker.mockMethods(geneXrefMockData, this.geneXrefService);
         this.mockEnsemblService();
-        //entrezGeneIdResolver = new EntrezGeneIdResolver(canonicalTranscriptResolver, ensemblService);
 
         assertEquals(
             "3716",
