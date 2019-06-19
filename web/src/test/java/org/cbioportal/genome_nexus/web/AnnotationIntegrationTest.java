@@ -74,4 +74,32 @@ public class AnnotationIntegrationTest
         assertEquals(variantAllele, variantAllele0);
 
     }
+
+    @Test
+    public void testAnnotationMT()
+    {
+
+        String[] variants = {
+            "MT:g.10360G>A",
+        };
+
+        //////////////////
+        // GET requests //
+        //////////////////
+
+        String mostSevereConsequence = this.fetchVariantAnnotationGET(variants[0]).get("most_severe_consequence").toString();
+        // most severe consequence for this MT variant hould be missense_variant
+        assertEquals("missense_variant", mostSevereConsequence);
+
+        //////////////////
+        // POST request //
+        //////////////////
+
+        // for each variant we should have one matching instance
+        assertEquals(variants.length, this.fetchVariantAnnotationPOST(variants).size());
+
+        String mostSevereConsequence0 = this.fetchVariantAnnotationPOST(variants).get(0).get("most_severe_consequence").toString();
+        assertEquals("missense_variant", mostSevereConsequence0);
+
+    }
 }
