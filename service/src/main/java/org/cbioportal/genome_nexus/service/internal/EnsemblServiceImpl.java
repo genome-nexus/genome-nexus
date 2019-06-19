@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -171,7 +170,7 @@ public class EnsemblServiceImpl implements EnsemblService
     }
 
     @Override
-    public HashMap<String, String> getHugoSymbolToEntrezGeneIdMap() {
-        return this.ensemblRepository.getHugoSymbolToEntrezGeneIdMap();
+    public String getEntrezGeneIdByHugoSymbol(String hugoSymbol) {
+        return this.ensemblRepository.findEntrezGeneIdByHugoSymbol(hugoSymbol);
     }
 }

@@ -161,7 +161,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private String resolveEntrezGeneId(TranscriptConsequence canonicalTranscript)
     {
         String entrezGeneId;
-        
+
         try {
             entrezGeneId = this.entrezGeneIdResolver.resolve(canonicalTranscript);
         } catch (EnsemblWebServiceException e) {

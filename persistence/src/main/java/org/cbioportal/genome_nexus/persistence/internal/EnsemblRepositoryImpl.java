@@ -21,11 +21,13 @@ import org.springframework.stereotype.Repository;
 public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
 {
     private final MongoTemplate mongoTemplate;
+    private final HashMap<String, String> hugoSymbolToEntrezGeneIdMap;
 
     @Autowired
     public EnsemblRepositoryImpl(MongoTemplate mongoTemplate)
     {
         this.mongoTemplate = mongoTemplate;
+        this.hugoSymbolToEntrezGeneIdMap = initHugoSymbolToEntrezGeneIdMap();
     }
 
     public static final String CANONICAL_TRANSCRIPTS_COLLECTION = "ensembl.canonical_transcript_per_hgnc";
@@ -112,33 +114,31 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
         return null;
     }
 
-    @Override
-    public HashMap<String, String> getHugoSymbolToEntrezGeneIdMap() {
+    private HashMap<String, String> initHugoSymbolToEntrezGeneIdMap() {
         HashMap<String, String> map = new HashMap<>();
         List<EnsemblCanonical> transcripts = mongoTemplate.findAll(EnsemblCanonical.class, CANONICAL_TRANSCRIPTS_COLLECTION);
         for (EnsemblCanonical transcript : transcripts) {
             String[] previousSymbols = transcript.getPreviousSymbols();
             String[] synonyms = transcript.getSynonyms();
 
-            if (!map.containsKey(transcript.getHugoSymbol())) {
-                map.put(transcript.getHugoSymbol(), transcript.getEntrezGeneId());
-            }
+            map.put(transcript.getHugoSymbol(), transcript.getEntrezGeneId());
             if (previousSymbols != null) {
                 for (String previousSymbol : previousSymbols) {
-                    if (!map.containsKey(previousSymbol)) {
-                        map.put(previousSymbol, transcript.getEntrezGeneId());
-                    }
+                    map.put(previousSymbol, transcript.getEntrezGeneId());
                 }
             }
             if (synonyms != null) {
                 for (String synonym : synonyms) {
-                    if (!map.containsKey(synonym)) {
-                        map.put(synonym, transcript.getEntrezGeneId());
-                    }
+                    map.put(synonym, transcript.getEntrezGeneId());
                 }
             }
         }
         
         return map;
+    }
+
+    @Override
+    public String findEntrezGeneIdByHugoSymbol(String hugoSymbol) {
+        return hugoSymbolToEntrezGeneIdMap.get(hugoSymbol);
     }
 }
