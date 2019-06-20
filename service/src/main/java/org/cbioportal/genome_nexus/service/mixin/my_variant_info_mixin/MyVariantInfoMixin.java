@@ -33,7 +33,7 @@ public class MyVariantInfoMixin
     private Cosmic cosmic;
 
     @JsonProperty(value = "clinvar", required = true)
-    private ClinVar clinvar;
+    private ClinVar clinVar;
 
     @JsonProperty(value = "mutdb", required = true)
     private Mutdb mutdb;
