@@ -154,7 +154,7 @@ public class NotationConverter
          Example insertion: 17 36002277 36002278 - A
          Example output: 17:g.36002277_36002278insA
          */
-        else if(ref.equals("-") || ref.length() == 0)
+        else if (ref.equals("-") || ref.length() == 0 || ref.equals("NA") || ref.contains("--"))
         {
             try {
                 hgvs = chr + ":g." + start + "_" + String.valueOf(start + 1) + "ins" + var;
@@ -217,7 +217,7 @@ public class NotationConverter
          Example insertion: 17 36002277 36002278 - A
          Example output: 17:36002278-36002277:1/A
          */
-        else if(ref.equals("-") || ref.length() == 0)
+        else if (ref.equals("-") || ref.length() == 0 || ref.equals("NA") || ref.contains("--"))
         {
             try {
                 region = chr + ":" + String.valueOf(start + 1) + "-" + start  + ":1/" + var;
