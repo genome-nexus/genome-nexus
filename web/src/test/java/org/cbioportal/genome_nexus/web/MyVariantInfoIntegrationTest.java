@@ -105,7 +105,7 @@ public class MyVariantInfoIntegrationTest
         assertEquals(alleleNumber, alleleNumber0);
 
         Integer variantId0 = (Integer)postResponses.get(0).get("clinVar").get("variantId");
-        assertEquals((Integer)alleleNumber, alleleNumber0);
+        assertEquals((Integer)variantId, variantId0);
 
         String alt1 = postResponses.get(1).get("vcf").get("alt").toString();
         assertEquals(alt, alt1);
