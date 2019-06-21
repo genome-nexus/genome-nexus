@@ -173,11 +173,10 @@ public class ProteinChangeResolver
                 }
                 else
                 {
-                    hgvspShort = aaParts[1].substring(0,1) +
-                        transcriptConsequence.getProteinStart() + "_" +
-                        aaParts[1].substring(1, 2) + "ins" +
-                        transcriptConsequence.getProteinEnd() +
-                        aaParts[1].substring(2);
+                    hgvspShort = "X" +
+                        transcriptConsequence.getProteinStart() + "_X" +
+                        transcriptConsequence.getProteinEnd() + "ins" +
+                        aaParts[1];
                 }
             }
             else if (transcriptConsequence.getConsequenceTerms() != null &&
