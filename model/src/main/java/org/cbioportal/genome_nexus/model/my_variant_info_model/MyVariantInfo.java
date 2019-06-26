@@ -23,7 +23,7 @@ public class MyVariantInfo
     @Field(value = "cosmic")
     private Cosmic cosmic;
 
-    @Field(value = "clin_var")
+    @Field(value = "clinvar")
     private ClinVar clinVar;
 
     @Field(value = "mutdb")

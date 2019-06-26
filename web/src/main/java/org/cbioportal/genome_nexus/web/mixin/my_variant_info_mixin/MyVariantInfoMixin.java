@@ -33,7 +33,7 @@ public class MyVariantInfoMixin
     private Cosmic cosmic;
 
     @ApiModelProperty(value = "clinvar", required = false)
-    private ClinVar clinvar;
+    private ClinVar clinVar;
 
     @ApiModelProperty(value = "gnomad_exome", required = false)
     private Gnomad gnomadExome;

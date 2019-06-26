@@ -1,10 +1,12 @@
 package org.cbioportal.genome_nexus.web.mixin.my_variant_info_mixin;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Gene;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Hg19;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Hg38;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Hgvs;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.Rcv;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -37,4 +39,10 @@ public class ClinVarMixin
 
     @ApiModelProperty(value = "hgvs", required = false)
     private Hgvs hgvs;
+
+    @ApiModelProperty(value = "rcv", required = false)
+    private List<Rcv> tcv;
+
+    @ApiModelProperty(value = "variant_id", required = false)
+    private Integer variantId;
 }

@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -70,6 +71,10 @@ public class MyVariantInfoIntegrationTest
         // the allele number should be 246028
         assertEquals(246028, alleleNumber);
 
+        Integer variantId = (Integer)this.fetchMyVariantInfoAnnotationGET(variants[0]).get("clinVar").get("variantId");
+        // test clinVar, the variantId should be 13961
+        assertEquals((Integer)13961, variantId);
+
         String alt = this.fetchMyVariantInfoAnnotationGET(variants[1]).get("vcf").get("alt").toString();
         // the alt should be A
         assertEquals("A", alt);
@@ -98,6 +103,9 @@ public class MyVariantInfoIntegrationTest
 
         Object alleleNumber0 = ((HashMap) postResponses.get(0).get("gnomadExome").get("alleleNumber")).get("an");
         assertEquals(alleleNumber, alleleNumber0);
+
+        Integer variantId0 = (Integer)postResponses.get(0).get("clinVar").get("variantId");
+        assertEquals((Integer)variantId, variantId0);
 
         String alt1 = postResponses.get(1).get("vcf").get("alt").toString();
         assertEquals(alt, alt1);
