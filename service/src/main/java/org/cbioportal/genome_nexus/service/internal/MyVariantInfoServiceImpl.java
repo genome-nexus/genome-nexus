@@ -10,13 +10,13 @@ import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
-import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.cached.CachedMyVariantInfoFetcher;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.util.Hgvs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -28,14 +28,11 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     private static final Log LOG = LogFactory.getLog(MyVariantInfoServiceImpl.class);
 
     private final CachedMyVariantInfoFetcher cachedExternalResourceFetcher;
-    private final VariantAnnotationService variantAnnotationService;
 
     @Autowired
-    public MyVariantInfoServiceImpl(CachedMyVariantInfoFetcher cachedExternalResourceFetcher,
-                                    VariantAnnotationService hgvsVariantAnnotationService)
+    public MyVariantInfoServiceImpl(CachedMyVariantInfoFetcher cachedExternalResourceFetcher)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
-        this.variantAnnotationService = hgvsVariantAnnotationService;
     }
 
     /**
@@ -121,13 +118,8 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     }
 
     private String buildRequest(String variant)
-    {
-        StringBuilder sb = new StringBuilder(variant);
-        if(sb.toString().contains("g.") && !sb.toString().startsWith("chr"))
-        {
-            sb.insert(0,"chr");
-        }
-        return sb.toString();
+    {   
+        return Hgvs.addChrPrefix(Hgvs.removeDeletedBases(variant));
     }
 
 }

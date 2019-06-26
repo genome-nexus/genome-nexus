@@ -32,18 +32,20 @@ public class EntrezGeneIdResolver
             transcriptConsequence.getGeneSymbol() != null &&
             !transcriptConsequence.getGeneSymbol().trim().isEmpty())
         {
-            EnsemblGene ensemblGene = null;
+            // TODO may add it back after having a map in database
+            // EnsemblGene ensemblGene = null;
 
-            try {
-                ensemblGene = this.ensemblService
-                        .getCanonicalEnsemblGeneIdByHugoSymbol(transcriptConsequence.getGeneSymbol());
-            } catch (NoEnsemblGeneIdForHugoSymbolException e) {
-                // ignore silently
-            }
+            // try {
+            //     ensemblGene = this.ensemblService
+            //             .getCanonicalEnsemblGeneIdByHugoSymbol(transcriptConsequence.getGeneSymbol());
+            // } catch (NoEnsemblGeneIdForHugoSymbolException e) {
+            //     // ignore silently
+            // }
 
-            if (ensemblGene != null) {
-                entrezGeneId = ensemblGene.getEntrezGeneId();
-            }
+            // if (ensemblGene != null) {
+            //     entrezGeneId = ensemblGene.getEntrezGeneId();
+            // } 
+            entrezGeneId = this.ensemblService.getEntrezGeneIdByHugoSymbol(transcriptConsequence.getGeneSymbol());
         }
 
         return entrezGeneId;

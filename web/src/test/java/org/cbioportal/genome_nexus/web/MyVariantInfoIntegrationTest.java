@@ -1,15 +1,17 @@
 package org.cbioportal.genome_nexus.web;
 
-import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
-import org.cbioportal.genome_nexus.component.annotation.EntrezGeneXrefResolver;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(
@@ -25,13 +27,24 @@ public class MyVariantInfoIntegrationTest
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    private MyVariantInfo fetchMyVariantInfoAnnotationGET(String variant)
+    private Map<String, HashMap> fetchMyVariantInfoAnnotationGET(String variant)
     {
-        return this.restTemplate.getForObject(BASE_URL + variant, MyVariantInfo.class);
+        String response = this.restTemplate.getForObject(BASE_URL + variant, String.class);
+        // parse response string
+        JsonParser springParser = JsonParserFactory.getJsonParser();
+        // cast to Map<String, HashMap>
+        Map<String, HashMap> map = (Map<String, HashMap>)(Map) springParser.parseMap(response);
+        return map;
+
     }
-    private MyVariantInfo[] fetchMyVariantInfoAnnotationPOST(String[] variants)
+    private List<Map<String, HashMap>> fetchMyVariantInfoAnnotationPOST(String[] variants)
     {
-        return this.restTemplate.postForObject(BASE_URL, variants, MyVariantInfo[].class);
+        String responses = this.restTemplate.postForObject(BASE_URL, variants, String.class);
+        // parse response string
+        JsonParser springParser = JsonParserFactory.getJsonParser();
+        // cast to List<Map<String, HashMap>>
+        List<Map<String, HashMap>> lists = (List<Map<String, HashMap>>)(List<?>) springParser.parseList(responses);
+        return lists;
     }
 
 
@@ -41,6 +54,7 @@ public class MyVariantInfoIntegrationTest
         String[] variants = {
             "7:g.140453136A>T",
             "rs12190874",
+            "17:g.41276045_41276046delCT",
             "INVALID"
         };
 
@@ -48,25 +62,51 @@ public class MyVariantInfoIntegrationTest
         // GET requests //
         //////////////////
 
-        MyVariantInfo ann0 = this.fetchMyVariantInfoAnnotationGET(variants[0]);
-        // mutdb annotation should be 7
-        assertEquals("7", ann0.getMutdb().getChrom());
+        String chrom = this.fetchMyVariantInfoAnnotationGET(variants[0]).get("mutdb").get("chrom").toString();
+        // the chrom shout be 7
+        assertEquals("7", chrom);
 
-        MyVariantInfo ann1 = this.fetchMyVariantInfoAnnotationGET(variants[1]);
-        // mutdb annotation should be 7
-        assertEquals("rs12190874", ann1.getDbsnp().getRsid());
+        Object alleleNumber = ((HashMap) this.fetchMyVariantInfoAnnotationGET(variants[0]).get("gnomadExome").get("alleleNumber")).get("an");
+        // the allele number should be 246028
+        assertEquals(246028, alleleNumber);
+
+        String alt = this.fetchMyVariantInfoAnnotationGET(variants[1]).get("vcf").get("alt").toString();
+        // the alt should be A
+        assertEquals("A", alt);
+
+        Object alleleCount = ((HashMap) this.fetchMyVariantInfoAnnotationGET(variants[1]).get("gnomadGenome").get("alleleCount")).get("ac");
+        // the allele count should be 3239
+        assertEquals(3239, alleleCount);
+
+        String vartype = this.fetchMyVariantInfoAnnotationGET(variants[2]).get("dbsnp").get("vartype").toString();
+        // the vartype shout be indel
+        assertEquals("indel", vartype);
+
 
         //////////////////
         // POST request //
         //////////////////
 
-        MyVariantInfo[] anns = this.fetchMyVariantInfoAnnotationPOST(variants);
+        List<Map<String, HashMap>> postResponses = this.fetchMyVariantInfoAnnotationPOST(variants);
 
         // for each pdbId we should have one matching PdbHeader instance, except the invalid one
-        assertEquals(anns.length, variants.length - 1);
+        assertEquals(postResponses.size(), variants.length - 1);
 
-        // GET and POST requests should return the same
-        assertEquals(anns[0].getMutdb().getChrom(), ann0.getMutdb().getChrom());
-        assertEquals(anns[1].getDbsnp().getRsid(), ann1.getDbsnp().getRsid());
+        String chrom0 = postResponses.get(0).get("mutdb").get("chrom").toString();
+        // the Get and Post should have same result
+        assertEquals(chrom, chrom0);
+
+        Object alleleNumber0 = ((HashMap) postResponses.get(0).get("gnomadExome").get("alleleNumber")).get("an");
+        assertEquals(alleleNumber, alleleNumber0);
+
+        String alt1 = postResponses.get(1).get("vcf").get("alt").toString();
+        assertEquals(alt, alt1);
+
+        Object alleleCount1 = ((HashMap) postResponses.get(1).get("gnomadGenome").get("alleleCount")).get("ac");
+        assertEquals(alleleCount, alleleCount1);
+
+        String vartype2 = postResponses.get(2).get("dbsnp").get("vartype").toString();
+        assertEquals(vartype, vartype2);
+
     }
 }

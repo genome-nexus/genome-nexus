@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import com.mongodb.BasicDBList;
@@ -19,11 +21,13 @@ import org.springframework.stereotype.Repository;
 public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
 {
     private final MongoTemplate mongoTemplate;
+    private final HashMap<String, String> hugoSymbolToEntrezGeneIdMap;
 
     @Autowired
     public EnsemblRepositoryImpl(MongoTemplate mongoTemplate)
     {
         this.mongoTemplate = mongoTemplate;
+        this.hugoSymbolToEntrezGeneIdMap = initHugoSymbolToEntrezGeneIdMap();
     }
 
     public static final String CANONICAL_TRANSCRIPTS_COLLECTION = "ensembl.canonical_transcript_per_hgnc";
@@ -108,5 +112,33 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
             }
         }
         return null;
+    }
+
+    private HashMap<String, String> initHugoSymbolToEntrezGeneIdMap() {
+        HashMap<String, String> map = new HashMap<>();
+        List<EnsemblCanonical> transcripts = mongoTemplate.findAll(EnsemblCanonical.class, CANONICAL_TRANSCRIPTS_COLLECTION);
+        for (EnsemblCanonical transcript : transcripts) {
+            String[] previousSymbols = transcript.getPreviousSymbols();
+            String[] synonyms = transcript.getSynonyms();
+
+            map.put(transcript.getHugoSymbol(), transcript.getEntrezGeneId());
+            if (previousSymbols != null) {
+                for (String previousSymbol : previousSymbols) {
+                    map.put(previousSymbol, transcript.getEntrezGeneId());
+                }
+            }
+            if (synonyms != null) {
+                for (String synonym : synonyms) {
+                    map.put(synonym, transcript.getEntrezGeneId());
+                }
+            }
+        }
+        
+        return map;
+    }
+
+    @Override
+    public String findEntrezGeneIdByHugoSymbol(String hugoSymbol) {
+        return hugoSymbolToEntrezGeneIdMap.get(hugoSymbol);
     }
 }

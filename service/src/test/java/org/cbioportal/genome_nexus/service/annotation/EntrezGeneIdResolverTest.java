@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,35 +44,28 @@ public class EntrezGeneIdResolverTest
     private final CanonicalTranscriptResolverMocker canonicalTranscriptResolverMocker = new CanonicalTranscriptResolverMocker();
     private final GeneXrefServiceMocker geneXrefServiceMocker = new GeneXrefServiceMocker();
 
-    private void mockGetCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol, String entrezGeneId) {
-        EnsemblGene eg;
-        try {
-            eg = new EnsemblGene();
-            eg.setEntrezGeneId(entrezGeneId);
-            Mockito.when(ensemblService.getCanonicalEnsemblGeneIdByHugoSymbol(hugoSymbol)).thenReturn(eg);
-        } catch (NoEnsemblGeneIdForHugoSymbolException e) {
-            // silently ignore error
-        }
+    private void mockGetEntrezGeneIdByHugoSymbol(String hugoSymbol, String entrezGeneId) {
+        Mockito.when(ensemblService.getEntrezGeneIdByHugoSymbol(hugoSymbol)).thenReturn(entrezGeneId);
     }
 
     private void mockEnsemblService() {
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("JAK1", "3716");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("FGD5", "152273");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("ZBTB20", "26137");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("DRD5", "1816");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("SHROOM3", "57619");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("IFNGR1", "3459");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("BRAF", "673");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("GPR124", "25960");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("TSC1", "7248");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("CHUK", "1147");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("GANAB", "23193");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("KRAS", "3845");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("FLT3", "2322");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("USP7", "7874");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("EML2", "24139");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("CHEK2", "11200");
-        mockGetCanonicalEnsemblGeneIdByHugoSymbol("MYH9", "4627");
+        mockGetEntrezGeneIdByHugoSymbol("JAK1", "3716");
+        mockGetEntrezGeneIdByHugoSymbol("FGD5", "152273");
+        mockGetEntrezGeneIdByHugoSymbol("ZBTB20", "26137");
+        mockGetEntrezGeneIdByHugoSymbol("DRD5", "1816");
+        mockGetEntrezGeneIdByHugoSymbol("SHROOM3", "57619");
+        mockGetEntrezGeneIdByHugoSymbol("IFNGR1", "3459");
+        mockGetEntrezGeneIdByHugoSymbol("BRAF", "673");
+        mockGetEntrezGeneIdByHugoSymbol("GPR124", "25960");
+        mockGetEntrezGeneIdByHugoSymbol("TSC1", "7248");
+        mockGetEntrezGeneIdByHugoSymbol("CHUK", "1147");
+        mockGetEntrezGeneIdByHugoSymbol("GANAB", "23193");
+        mockGetEntrezGeneIdByHugoSymbol("KRAS", "3845");
+        mockGetEntrezGeneIdByHugoSymbol("FLT3", "2322");
+        mockGetEntrezGeneIdByHugoSymbol("USP7", "7874");
+        mockGetEntrezGeneIdByHugoSymbol("EML2", "24139");
+        mockGetEntrezGeneIdByHugoSymbol("CHEK2", "11200");
+        mockGetEntrezGeneIdByHugoSymbol("MYH9", "4627");
     }
 
     @Test

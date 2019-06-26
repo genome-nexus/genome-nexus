@@ -5,7 +5,6 @@ import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 import org.cbioportal.genome_nexus.service.exception.EnsemblTranscriptNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
 import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForEntrezGeneIdException;
-
 import java.util.List;
 
 public interface EnsemblService
@@ -27,4 +26,5 @@ public interface EnsemblService
 
     List<EnsemblTranscript> getEnsemblTranscripts(String geneId, String proteinId, String hugoSymbol);
     List<EnsemblTranscript> getEnsemblTranscripts(List<String> transcriptIds, List<String> geneIds, List<String> proteinIds, List<String> hugoSymbols);
+    String getEntrezGeneIdByHugoSymbol(String hugoSymbol);
 }

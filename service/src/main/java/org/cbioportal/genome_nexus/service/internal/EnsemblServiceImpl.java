@@ -168,4 +168,9 @@ public class EnsemblServiceImpl implements EnsemblService
             return new ArrayList<EnsemblTranscript>();
         }
     }
+
+    @Override
+    public String getEntrezGeneIdByHugoSymbol(String hugoSymbol) {
+        return this.ensemblRepository.findEntrezGeneIdByHugoSymbol(hugoSymbol);
+    }
 }

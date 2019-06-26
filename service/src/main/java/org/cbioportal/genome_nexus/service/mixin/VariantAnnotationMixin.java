@@ -1,6 +1,8 @@
 package org.cbioportal.genome_nexus.service.mixin;
 
 import com.fasterxml.jackson.annotation.*;
+
+import org.cbioportal.genome_nexus.model.IntergenicConsequences;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 
 import java.util.List;
@@ -17,6 +19,9 @@ public class VariantAnnotationMixin
 
     @JsonProperty(value="id", required = true)
     private String variantId;
+
+    @JsonProperty(value="intergenic_consequences", required = true)
+    private List<IntergenicConsequences> intergenicConsequences;
 
     @JsonProperty(value="assembly_name", required = true)
     private String assemblyName;

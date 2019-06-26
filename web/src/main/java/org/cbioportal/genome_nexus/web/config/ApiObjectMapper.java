@@ -5,6 +5,10 @@ import org.cbioportal.genome_nexus.web.mixin.*;
 import org.cbioportal.genome_nexus.web.mixin.my_variant_info_mixin.*;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.*;
+import org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin.AlleleCountMixin;
+import org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin.AlleleFrequencyMixin;
+import org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin.AlleleNumberMixin;
+import org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin.HomozygotesMixin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +51,12 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(ClinVar.class, ClinVarMixin.class);
         mixinMap.put(Hg38.class, Hg38Mixin.class);
         mixinMap.put(Mutdb.class, MutdbMixin.class);
+        mixinMap.put(Gnomad.class, GnomadMixin.class);
+        mixinMap.put(AlleleCount.class, AlleleCountMixin.class);
+        mixinMap.put(AlleleNumber.class, AlleleNumberMixin.class);
+        mixinMap.put(Homozygotes.class, HomozygotesMixin.class);
+        mixinMap.put(AlleleFrequency.class, AlleleFrequencyMixin.class);
+        mixinMap.put(IntergenicConsequences.class, IntergenicConsequencesMixin.class);
         super.setMixIns(mixinMap);
     }
 }

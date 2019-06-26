@@ -89,21 +89,25 @@ public class HotspotFilter
         
         for (Hotspot hotspot: hotspots) {
             // Protein location
-            int hotspotStart = proteinPositionResolver.extractProteinPos(hotspot.getResidue()).getStart();
-            int hotspotStop = proteinPositionResolver.extractProteinPos(hotspot.getResidue()).getEnd();
+            IntegerRange hotspotProteinPosition = proteinPositionResolver.extractProteinPos(hotspot.getResidue());
 
-            // as long as there is overlap, it should be valid position
-            boolean validPosition = start <= hotspotStop && end >= hotspotStart;
-            
-            // Mutation type
-            boolean validMissense = type.equals("Missense_Mutation") && (hotspot.getType().contains("3d") || hotspot.getType().contains("single residue"));
-            boolean validInFrameInsertion = type.equals("In_Frame_Ins") || type.equals("In_Frame_Ins") && (hotspot.getType().contains("in-frame"));
-            boolean validInFrameDeletion = type.equals("In_Frame_Del") || type.equals("In_Frame_Del") && (hotspot.getType().contains("in-frame"));
-            boolean validSplice = type.equals("Splice_Site") || type.equals("Splice_Region") && (hotspot.getType().contains("splice"));
-            
-            // Add hotspot
-            if (validPosition && (validMissense || validInFrameInsertion || validInFrameDeletion || validSplice)) {
-                result.add(hotspot);
+            if (hotspotProteinPosition != null) {
+                int hotspotStart = hotspotProteinPosition.getStart();
+                int hotspotStop = hotspotProteinPosition.getEnd();
+
+                // as long as there is overlap, it should be valid position
+                boolean validPosition = start <= hotspotStop && end >= hotspotStart;
+
+                // Mutation type
+                boolean validMissense = type.equals("Missense_Mutation") && (hotspot.getType().contains("3d") || hotspot.getType().contains("single residue"));
+                boolean validInFrameInsertion = type.equals("In_Frame_Ins") && hotspot.getType().contains("in-frame");
+                boolean validInFrameDeletion = type.equals("In_Frame_Del") && hotspot.getType().contains("in-frame");
+                boolean validSplice = (type.equals("Splice_Site") || type.equals("Splice_Region")) && hotspot.getType().contains("splice");
+
+                // Add hotspot
+                if (validPosition && (validMissense || validInFrameInsertion || validInFrameDeletion || validSplice)) {
+                    result.add(hotspot);
+                }
             }
         }
         
