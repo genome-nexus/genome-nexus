@@ -78,20 +78,40 @@ public class EnsemblCanonical
         return this.hugoSymbol;
     }
 
+    public void setHugoSymbol(String hugoSymbol) {
+        this.hugoSymbol = hugoSymbol;
+    }
+
     public String[] getSynonyms() {
         return EnsemblCanonical.splitByComma(this.synonyms);
+    }
+
+    public void setSynonyms(String synonyms) {
+        this.synonyms = synonyms;
     }
 
     public String[] getPreviousSymbols() {
         return EnsemblCanonical.splitByComma(this.previousSymbols);
     }
 
+    public void setPreviousSymbols(String previousSymbols) {
+        this.previousSymbols = previousSymbols;
+    }
+
     public String getEnsemblCanonicalGeneId() {
         return this.ensemblCanonicalGeneId;
     }
 
+    public void setEnsemblCanonicalGeneId(String ensemblCanonicalGeneId) {
+        this.ensemblCanonicalGeneId = ensemblCanonicalGeneId;
+    }
+
     public String getEnsemblCanonicalTranscriptId() {
         return this.ensemblCanonicalTranscriptId;
+    }
+
+    public void setEnsemblCanonicalTranscriptId(String ensemblCanonicalTranscriptId) {
+        this.ensemblCanonicalTranscriptId = ensemblCanonicalTranscriptId;
     }
 
     public String getEntrezGeneId() {
@@ -102,5 +122,9 @@ public class EnsemblCanonical
         } else {
             return this.entrezGeneId;
         }
+    }
+
+    public void setEntrezGeneId(String entrezGeneId) {
+        this.entrezGeneId = entrezGeneId;
     }
 }
