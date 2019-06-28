@@ -1,42 +1,45 @@
 package org.cbioportal.genome_nexus.util;
+import java.util.regex.*;
+import java.util.Arrays;
 
 public class GenomicVariantUtil {
     public GenomicVariant variant = new GenomicVariant();
 
     public static GenomicVariant fromHgvs(String hgvs) {
-        int chrToType = hgvs.indexOf(":");
-        int typeToStart = hgvs.indexOf(".");
-        int startToEnd = hgvs.indexOf("_");
-        String ref = getRef(hgvs);
-        String type = getHgvsType(hgvs);
-        int typeIndex = hgvs.indexOf(type);
-        String alt = getAlt(hgvs);
+        if (Pattern.matches("^d{1,2}:[cg]\\.\\d+_?\\d+?[ATCGa-z>]+?[ATCG]+$", hgvs))
+            throw new IllegalArgumentException("hgvs is invalid");
+        String chr = getPattern("^\\d+(?=:)", hgvs);
+        Integer start = Integer.parseInt(getPattern("(?<=\\.)\\d+(?=[_ATGC])", hgvs));
+        Integer end;
 
-        return new GenomicVariant(hgvs.substring(0, chrToType),
-                Integer.valueOf(hgvs.substring(typeToStart + 1, startToEnd)),
-                Integer.valueOf(hgvs.substring(startToEnd + 1, typeIndex)),
-                type, ref, alt);
+        try {
+            end = Integer.parseInt(getPattern("(?<=_)\\d+(?=[a-z]+)", hgvs)); 
+        } catch (NumberFormatException e) {
+            end = start;
+        }
+
+        String type = getPattern("(?<=\\d+[ATGC]?)[a-z>]+(?=[ATCG]+)", hgvs);
+        String ref = getPattern("(?<=\\d+)[ATCG]+(?=>)", hgvs);
+        String alt = getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
+
+        if (ref.equals("")) ref = "XXX";
+        String[] types = { ">", "ins", "del", "delins" }; //{ ">", "del", "dup", "inv", "ins", "con", "delins" };
+        if (!Arrays.asList(types).contains(type))
+            throw new RuntimeException("only substitutions, insertions, deletions, and indels are supported");
+
+        return new GenomicVariant(chr, start, end, type, ref, alt);
     }
 
     public GenomicVariant getVariant() {
         return variant;
     }
 
-    private static String getHgvsType(String hgvs) {
-        String[] keys = { ">", "del", "dup", "inv", "ins", "con", "delins" };
-        String ans = "";
-        for (String key : keys) {
-            if (hgvs.contains(key))
-                ans = key;
-        }
-        return ans;
-    }
-
-    private static String getRef(String hgvs) {
-        return "XXX";
-    }
-
-    private static String getAlt(String hgvs){
+    // postcondition: returns a substring of hgvs that matched to the regex, or null if not matched
+    private static String getPattern (String regex, String hgvs) {
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(hgvs);
+        if (m.find()) 
+            return hgvs.substring(m.start(), m.end());
         return "";
     }
 }
