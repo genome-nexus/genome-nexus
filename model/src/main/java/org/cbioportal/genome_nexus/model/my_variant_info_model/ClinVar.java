@@ -1,5 +1,7 @@
 package org.cbioportal.genome_nexus.model.my_variant_info_model;
 
+import java.util.List;
+
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class ClinVar
@@ -32,7 +34,12 @@ public class ClinVar
     @Field(value = "hgvs")
     private Hgvs hgvs;
 
+    @Field(value = "rcv")
+    private List<Rcv> rcv;
 
+    @Field(value = "variant_id")
+    private Integer variantId;
+    
     public String get_license()
     {
         return license;
@@ -113,6 +120,26 @@ public class ClinVar
     public void setHgvs(Hgvs hgvs)
     {
         this.hgvs = hgvs;
+    }
+
+    public List<Rcv> getRcv()
+    {
+        return rcv;
+    }
+
+    public void set(List<Rcv> rcv)
+    {
+        this.rcv = rcv;
+    }
+
+    public void setVariantId(Integer variantId)
+    {
+        this.variantId = variantId;
+    }
+
+    public Integer getVariantId()
+    {
+        return variantId;
     }
 
 }
