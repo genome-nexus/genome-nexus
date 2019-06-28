@@ -23,7 +23,7 @@ public class GenomicVariantTest {
         assertEquals(variant.getChromosome(), "10");
         assertEquals(variant.getStart(), (Integer) 32867861);
         assertEquals(variant.getEnd(), (Integer) 32867862);
-        assertEquals(variant.getRef(), "XXX");
+        assertEquals(variant.getRef(), "X");
         assertEquals(variant.getType(), "ins");
         assertEquals(variant.getAlt(), "T");
     }
@@ -36,9 +36,9 @@ public class GenomicVariantTest {
         assertEquals(variant.getChromosome(), "5");
         assertEquals(variant.getStart(), (Integer) 189);
         assertEquals(variant.getEnd(), (Integer) 197);
-        assertEquals(variant.getRef(), "XXX");
+        assertEquals(variant.getRef(), "AAATGGAGC");
         assertEquals(variant.getType(), "del");
-        assertEquals(variant.getAlt(), "AAATGGAGC");
+        assertEquals(variant.getAlt(), "XXXXXXXXX");
     }
 
     @Test
@@ -48,7 +48,7 @@ public class GenomicVariantTest {
         assertEquals(variant.getChromosome(), "23");
         assertEquals(variant.getStart(), (Integer) 88778);
         assertEquals(variant.getEnd(), (Integer) 88784);
-        assertEquals(variant.getRef(), "XXX");
+        assertEquals(variant.getRef(), "XXXXXXX");
         assertEquals(variant.getType(), "delins");
         assertEquals(variant.getAlt(), "TAGATAG");
     }
