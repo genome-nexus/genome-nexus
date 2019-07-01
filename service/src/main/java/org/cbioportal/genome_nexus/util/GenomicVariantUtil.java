@@ -14,7 +14,11 @@ public class GenomicVariantUtil {
         String type = getPattern("(?<=\\d+[ATGC]?)[a-z>]+(?=[ATCG]+)", hgvs);
         String ref =getRefFromHgvs(hgvs, type);
         String alt = getAltFromHgvs(hgvs, type);
-        String[] types = { ">", "ins", "del", "delins" }; 
+        String[] types = { ">", "ins", "del", "delins" }; // supported variant types
+        String[] ref_types = {"g", "c", "m"}; // supported reference genome types 
+
+        if (!Arrays.asList(ref_types).contains(ref_type))
+            throw new RuntimeException("protein and rna hgvs forms are not supported");
         
         if (!Arrays.asList(types).contains(type))
             throw new RuntimeException("only substitutions, insertions, deletions, and indels are supported");
@@ -24,7 +28,7 @@ public class GenomicVariantUtil {
 
     public static GenomicVariant fromRegion(String region) {
         if (!isRegion(region))
-            throw new IllegalArgumentException("invalid region");
+            throw new IllegalArgumentException("region is invalid");
         String chr = getPattern("^\\d{1,2}(?=:)", region);
         String ref_type = null;
         Integer start = Integer.parseInt(getPattern("(?<=:)\\d+(?=-)", region));
