@@ -2,14 +2,16 @@ package org.cbioportal.genome_nexus.util;
 
 public class GenomicVariant {
     private String chromosome;
+    private String ref_type;
     private Integer start;
     private Integer end;
     private String type;
     private String ref;
     private String alt;
 
-    public GenomicVariant (String chromosome, Integer start, Integer end, String type, String ref, String alt) {
+    public GenomicVariant (String chromosome, String ref_type, Integer start, Integer end, String type, String ref, String alt) {
         this.chromosome = chromosome;
+        this.ref_type = ref_type;
         this.start = start;
         this.end = end;
         this.type = type;
@@ -17,7 +19,7 @@ public class GenomicVariant {
         this.alt = alt;
     }
 
-    public GenomicVariant (){
+    public GenomicVariant() {
         this.chromosome = this.ref = this.alt = null;
         this.start = this.end = null;
     }
@@ -28,6 +30,14 @@ public class GenomicVariant {
 
     public void setChromosome(String chromosome) {
         this.chromosome = chromosome;
+    }
+
+    public String getRefType() {
+        return this.ref_type;
+    }
+
+    public void setRefType(String ref_type) {
+        this.ref_type = ref_type;
     }
 
     public Integer getStart() {

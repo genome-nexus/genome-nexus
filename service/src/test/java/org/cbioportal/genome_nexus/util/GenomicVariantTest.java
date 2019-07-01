@@ -100,4 +100,16 @@ public class GenomicVariantTest {
         assertEquals(variant.getType(), null);
         assertEquals(variant.getAlt(), "-");
     }
+
+    @Test
+    public void testGenomicVariantToHgvs() {
+        GenomicVariant variant = new GenomicVariant("17", "g", 41242962, 41242963, "ins", null, "GA");
+
+        assertEquals(GenomicVariantUtil.toHgvs(variant), "17:g.41242962_41242963insGA");
+    }
+
+    @Test
+    public void testGenomicVariantToRegion() {
+        GenomicVariant variant = new GenomicVariant("5", null, 140532, 140532, null, null, "C");
+    }
 } 

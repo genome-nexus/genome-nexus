@@ -8,6 +8,7 @@ public class GenomicVariantUtil {
         if (!isHgvs(hgvs))
             throw new IllegalArgumentException("hgvs is invalid");
         String chr = getPattern("^\\d+(?=:)", hgvs);
+        String ref_type = getPattern("(?<=:)[cgmrp](?=.)", hgvs);
         Integer start = Integer.parseInt(getPattern("(?<=\\.)\\d+(?=[_ATGC])", hgvs));
         Integer end = getEndFromHgvs(hgvs, start);
         String type = getPattern("(?<=\\d+[ATGC]?)[a-z>]+(?=[ATCG]+)", hgvs);
@@ -18,27 +19,39 @@ public class GenomicVariantUtil {
         if (!Arrays.asList(types).contains(type))
             throw new RuntimeException("only substitutions, insertions, deletions, and indels are supported");
 
-        return new GenomicVariant(chr, start, end, type, ref, alt);
+        return new GenomicVariant(chr, ref_type, start, end, type, ref, alt);
     }
 
     public static GenomicVariant fromRegion(String region) {
         if (!isRegion(region))
             throw new IllegalArgumentException("invalid region");
         String chr = getPattern("^\\d{1,2}(?=:)", region);
+        String ref_type = null;
         Integer start = Integer.parseInt(getPattern("(?<=:)\\d+(?=-)", region));
         Integer end = Integer.parseInt(getPattern("(?<=-)\\d+(?=:)", region));
         String type = null;
         String ref = null;
         String alt = getPattern("(?<=:-?1/)[ATCG]+|-$", region);
-        return new GenomicVariant(chr, start, end, type, ref, alt);
+        return new GenomicVariant(chr, ref_type, start, end, type, ref, alt);
     }
 
     public static String toRegion(GenomicVariant variant){
         return variant.getChromosome() + ":" + variant.getStart() + "-" + variant.getEnd() + ":1/" + variant.getAlt();
     }
 
+    public static String toHgvs(GenomicVariant variant) {
+        if (variant.getType().equals(">"))
+            return variant.getChromosome() + ":" + variant.getRefType() + "." + variant.getStart() + variant.getRef()
+                + ">" + variant.getAlt();
+        if (variant.getType().equals("del"))
+            return variant.getChromosome() + ":" + variant.getRefType() + "." + variant.getStart() + "_" + variant.getEnd()
+                + variant.getType() + variant.getRef();
+        return variant.getChromosome() + ":" + variant.getRefType() + "." + variant.getStart() + "_" + variant.getEnd()
+                + variant.getType() + variant.getAlt();
+    }
+
     public static boolean isHgvs(String variant) {
-        return Pattern.matches("^\\d{1,2}:[gmcn]\\.\\d+[ATCG_]\\d*[a-z>]+?[ATCG]+$", variant);
+        return Pattern.matches("^\\d{1,2}:[cgmrp]\\.\\d+[ATCG_]\\d*[a-z>]+?[ATCG]+$", variant);
     }
 
     public static boolean isRegion (String variant) {
