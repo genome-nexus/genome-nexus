@@ -42,7 +42,7 @@ public class GenomicVariantTest {
     }
 
     @Test
-    public void testHgvsDelinsToGenomicVariant() {
+    public void testHgvsIndelToGenomicVariant() {
         GenomicVariant variant = GenomicVariantUtil.fromHgvs("23:g.88778_88784delinsTAGATAG");
 
         assertEquals(variant.getChromosome(), "23");
@@ -52,5 +52,52 @@ public class GenomicVariantTest {
         assertEquals(variant.getType(), "delins");
         assertEquals(variant.getAlt(), "TAGATAG");
     }
-    
+
+    @Test
+    public void testRegionSnpToGenomicVariant() {
+        GenomicVariant variant = GenomicVariantUtil.fromRegion("5:140532-140532:1/C");
+
+        assertEquals(variant.getChromosome(), "5");
+        assertEquals(variant.getStart(), (Integer) 140532);
+        assertEquals(variant.getEnd(), (Integer) 140532);
+        assertEquals(variant.getRef(), null);
+        assertEquals(variant.getType(), null);
+        assertEquals(variant.getAlt(), "C");
+    }
+
+    @Test
+    public void testRegionReverseSnpToGenomicVariant() {
+        GenomicVariant variant = GenomicVariantUtil.fromRegion("14:19584687-19584687:-1/T");
+
+        assertEquals(variant.getChromosome(), "14");
+        assertEquals(variant.getStart(), (Integer) 19584687);
+        assertEquals(variant.getEnd(),(Integer) 19584687);
+        assertEquals(variant.getRef(), null);
+        assertEquals(variant.getType(), null);
+        assertEquals(variant.getAlt(), "T");
+    }
+
+    @Test
+    public void testRegionInsertionToGenomicVariant() {
+        GenomicVariant variant = GenomicVariantUtil.fromRegion("1:881907-881906:1/C");
+
+        assertEquals(variant.getChromosome(), "1");
+        assertEquals(variant.getStart(), (Integer) 881907);
+        assertEquals(variant.getEnd(), (Integer) 881906);
+        assertEquals(variant.getRef(), null);
+        assertEquals(variant.getType(), null);
+        assertEquals(variant.getAlt(), "C");
+    }
+
+    @Test
+    public void testRegionDeletionToGenomicVariant() {
+        GenomicVariant variant = GenomicVariantUtil.fromRegion("2:946507-946511:1/-");
+
+        assertEquals(variant.getChromosome(), "2");
+        assertEquals(variant.getStart(), (Integer) 946507);
+        assertEquals(variant.getEnd(), (Integer) 946511);
+        assertEquals(variant.getRef(), null);
+        assertEquals(variant.getType(), null);
+        assertEquals(variant.getAlt(), "-");
+    }
 } 

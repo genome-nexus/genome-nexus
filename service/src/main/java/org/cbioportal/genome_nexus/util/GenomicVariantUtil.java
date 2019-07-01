@@ -3,26 +3,46 @@ import java.util.regex.*;
 import java.util.Arrays;
 
 public class GenomicVariantUtil {
-    public GenomicVariant variant = new GenomicVariant();
 
     public static GenomicVariant fromHgvs(String hgvs) {
-        if (Pattern.matches("^d{1,2}:[gmcn]\\.\\d+_?\\d+?[ATCGa-z>]+?[ATCG]+$", hgvs))
+        if (!isHgvs(hgvs))
             throw new IllegalArgumentException("hgvs is invalid");
         String chr = getPattern("^\\d+(?=:)", hgvs);
         Integer start = Integer.parseInt(getPattern("(?<=\\.)\\d+(?=[_ATGC])", hgvs));
-        Integer end = getEnd(hgvs, start);
+        Integer end = getEndFromHgvs(hgvs, start);
         String type = getPattern("(?<=\\d+[ATGC]?)[a-z>]+(?=[ATCG]+)", hgvs);
-        String ref =getRef(hgvs, type);
-        String alt = getAlt(hgvs, type);
+        String ref =getRefFromHgvs(hgvs, type);
+        String alt = getAltFromHgvs(hgvs, type);
         String[] types = { ">", "ins", "del", "delins" }; 
+        
         if (!Arrays.asList(types).contains(type))
             throw new RuntimeException("only substitutions, insertions, deletions, and indels are supported");
 
         return new GenomicVariant(chr, start, end, type, ref, alt);
     }
 
-    public GenomicVariant getVariant() {
-        return variant;
+    public static GenomicVariant fromRegion(String region) {
+        if (!isRegion(region))
+            throw new IllegalArgumentException("invalid region");
+        String chr = getPattern("^\\d{1,2}(?=:)", region);
+        Integer start = Integer.parseInt(getPattern("(?<=:)\\d+(?=-)", region));
+        Integer end = Integer.parseInt(getPattern("(?<=-)\\d+(?=:)", region));
+        String type = null;
+        String ref = null;
+        String alt = getPattern("(?<=:-?1/)[ATCG]+|-$", region);
+        return new GenomicVariant(chr, start, end, type, ref, alt);
+    }
+
+    public static String toRegion(GenomicVariant variant){
+        return variant.getChromosome() + ":" + variant.getStart() + "-" + variant.getEnd() + ":1/" + variant.getAlt();
+    }
+
+    public static boolean isHgvs(String variant) {
+        return Pattern.matches("^\\d{1,2}:[gmcn]\\.\\d+[ATCG_]\\d*[a-z>]+?[ATCG]+$", variant);
+    }
+
+    public static boolean isRegion (String variant) {
+        return Pattern.matches("^\\d{1,2}:\\d+-\\d+:-?1/([ATCG]+|-)$", variant);
     }
 
     // postcondition: returns a substring of hgvs that matched to the regex, or null if not matched
@@ -34,7 +54,7 @@ public class GenomicVariantUtil {
         return null;
     }
 
-    private static Integer getEnd(String hgvs, Integer start) {
+    private static Integer getEndFromHgvs(String hgvs, Integer start) {
         try {
             return Integer.parseInt(getPattern("(?<=_)\\d+(?=[a-z]+)", hgvs));
         } catch (NumberFormatException e) {
@@ -42,7 +62,7 @@ public class GenomicVariantUtil {
         }
     }
 
-    private static String getRef(String hgvs, String type) {
+    private static String getRefFromHgvs(String hgvs, String type) {
         if (type.equals("del"))
             return getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
         if (type.equals(">"))
@@ -53,7 +73,7 @@ public class GenomicVariantUtil {
         return ans;
     }
 
-    private static String getAlt(String hgvs, String type) {
+    private static String getAltFromHgvs(String hgvs, String type) {
         if (!type.equals("del"))
             return getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
         String ans = "";
@@ -61,4 +81,6 @@ public class GenomicVariantUtil {
             ans += "X";
         return ans;
     }
+
+
 }
