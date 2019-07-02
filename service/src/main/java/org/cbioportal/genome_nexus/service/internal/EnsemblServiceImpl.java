@@ -173,4 +173,14 @@ public class EnsemblServiceImpl implements EnsemblService
     public String getEntrezGeneIdByHugoSymbol(String hugoSymbol) {
         return this.ensemblRepository.findEntrezGeneIdByHugoSymbol(hugoSymbol);
     }
+
+    @Override
+    public List<String> getEntrezGeneIdByHugoSymbol(String hugoSymbol, Boolean searchInAliases) {
+        return this.ensemblRepository.findEntrezGeneIdByHugoSymbol(hugoSymbol, searchInAliases);
+    }
+
+    @Override
+    public String getHugoSymbolByEntrezGeneId(String entrezGeneId) {
+        return this.ensemblRepository.findHugoSymbolByEntrezGeneId(entrezGeneId);
+    }
 }

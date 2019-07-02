@@ -31,6 +31,7 @@
 
 package org.cbioportal.genome_nexus.persistence.internal;
 
+import java.util.*;
 import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 
@@ -40,4 +41,6 @@ public interface EnsemblRepositoryCustom
     EnsemblGene getCanonicalEnsemblGeneIdByHugoSymbol(String hugoSymbol);
     EnsemblGene getCanonicalEnsemblGeneIdByEntrezGeneId(String ensemblGeneId);
     String findEntrezGeneIdByHugoSymbol(String hugoSymbol);
+    List<String> findEntrezGeneIdByHugoSymbol(String hugoSymbol, Boolean searchInAliases);
+    String findHugoSymbolByEntrezGeneId(String entrezGeneId);
 }

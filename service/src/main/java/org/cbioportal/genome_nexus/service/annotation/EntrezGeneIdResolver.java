@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.service.annotation;
 
+import java.util.*;
 import org.cbioportal.genome_nexus.component.annotation.CanonicalTranscriptResolver;
 import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
@@ -45,6 +46,9 @@ public class EntrezGeneIdResolver
             // if (ensemblGene != null) {
             //     entrezGeneId = ensemblGene.getEntrezGeneId();
             // } 
+            // NOTE: Transcript consequence does not have an entrez gene id field, therefore can
+            // only search for the entrez gene id by the hugo symbol.
+            // TODO: allow searching in gene aliases and/or by entrez gene id to get the hugo symbol
             entrezGeneId = this.ensemblService.getEntrezGeneIdByHugoSymbol(transcriptConsequence.getGeneSymbol());
         }
 
