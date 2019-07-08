@@ -1,6 +1,9 @@
 package org.cbioportal.genome_nexus.util;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 public class GenomicVariantTest {
@@ -121,5 +124,36 @@ public class GenomicVariantTest {
 
         assertEquals("17:41242962-41242963:1/GA", region);
 
+    }
+
+    @Test
+    public void testMafToGenomicVariant() {
+        ArrayList<GenomicVariant> list = new ArrayList<GenomicVariant>();
+        ArrayList<String> mafs = GenomicVariantUtil.getMafs("minimal_example.in.maf");
+        // String[] key = mafs.remove(0).split("\\t");
+        // for (String maf : mafs) {
+        //     list.add(GenomicVariantUtil.fromMaf(maf, key));
+        // }
+        // //3	178916927	178916939	TAGGCAACCGTGA	G
+        // //7	55220240	55220240	G	T
+
+        // GenomicVariant one = list.get(0);
+        // GenomicVariant two = list.get(1);
+
+        // assertEquals("3", one.getChromosome());
+        // assertEquals(null, one.getRefType());
+        // assertEquals((Integer) 178916927, one.getStart());
+        // assertEquals((Integer) 178916939, one.getEnd());
+        // assertEquals(null, one.getType());
+        // assertEquals("TAGGCAACCGTGA", one.getRef());
+        // assertEquals("G", one.getAlt());
+
+        // assertEquals("7", two.getChromosome());
+        // assertEquals(null, two.getRefType());
+        // assertEquals((Integer) 55220240, two.getStart());
+        // assertEquals((Integer) 55220240, two.getEnd());
+        // assertEquals(null, two.getType());
+        // assertEquals("G", two.getRef());
+        // assertEquals("T", two.getAlt());
     }
 } 

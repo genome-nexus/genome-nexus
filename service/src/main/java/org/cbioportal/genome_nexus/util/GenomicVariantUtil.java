@@ -1,6 +1,12 @@
 package org.cbioportal.genome_nexus.util;
-import java.util.regex.*;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class GenomicVariantUtil {
 
@@ -54,12 +60,70 @@ public class GenomicVariantUtil {
                 + variant.getType() + variant.getAlt();
     }
 
+    public static ArrayList<String> getMafs(String maf_file) {
+        if (!isMafFile(maf_file))
+            throw new IllegalArgumentException("maf file not found");
+        File file = new File(maf_file);
+        Scanner sc;
+        try {
+            sc = new Scanner(file);
+            ArrayList<String> list = new ArrayList<String>();
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                if (!line.startsWith("#"))
+                    list.add(line);
+            }
+            sc.close();
+            return list;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static GenomicVariant fromMaf(String maf, String[] key) {
+        String[] arr = maf.split("\\t");
+        // [Chromosome, Start_Position, End_Position, Reference_Allele,
+        // Tumor_Seq_Allele]
+        int chr_index = 0;
+        int start_index = 0;
+        int end_index = 0;
+        int ref_index = 0;
+        int alt_index = 0;
+        for (int i = 0; i < key.length; i++) {
+            switch (key[i]) {
+            case "Chromosome":
+                chr_index = i;
+                break;
+            case "Start_Position":
+                start_index = i;
+                break;
+            case "End_Position":
+                end_index = i;
+                break;
+            case "Reference_Allele":
+                ref_index = i;
+                break;
+            case "Tumor_Seq_Allele":
+                alt_index = i;
+                break;
+            }
+        }
+
+        return new GenomicVariant(arr[chr_index], null, Integer.parseInt(arr[start_index]),
+                Integer.parseInt(arr[end_index]), null, arr[ref_index], arr[alt_index]);
+    }
+
     public static boolean isHgvs(String variant) {
         return Pattern.matches("^\\d{1,2}:[cgmrp]\\.\\d+[ATCG_]\\d*[a-z>]+?[ATCG]+$", variant);
     }
 
-    public static boolean isRegion (String variant) {
+    public static boolean isRegion(String variant) {
         return Pattern.matches("^\\d{1,2}:\\d+-\\d+:-?1/([ATCG]+|-)$", variant);
+    }
+
+    public static boolean isMafFile(String file) {
+        return Pattern.matches("^[\\w\\-\\.]+.maf$", file);
     }
 
     // postcondition: returns a substring of hgvs that matched to the regex, or null if not matched
@@ -98,6 +162,4 @@ public class GenomicVariantUtil {
             ans += "X";
         return ans;
     }
-
-
 }
