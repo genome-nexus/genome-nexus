@@ -9,18 +9,19 @@ import org.junit.Test;
 public class GenomicVariantTest {
     @Test    
     public void testHgvsSubstitutionToGenomicVariant() {
-        GenomicVariant variant = GenomicVariantUtil.fromHgvs("1:c.123C>T");
+        GenomicVariant variant = GenomicVariantUtil.fromHgvs("7:g.140453136A>T");
 
-        assertEquals("1", variant.getChromosome());
-        assertEquals((Integer) 123, variant.getStart());
-        assertEquals((Integer) 123,variant.getEnd());
-        assertEquals("C", variant.getRef());
+        assertEquals("7", variant.getChromosome());
+        assertEquals("g", variant.getRefType());
+        assertEquals((Integer) 140453136, variant.getStart());
+        assertEquals((Integer) 140453136,variant.getEnd());
+        assertEquals("A", variant.getRef());
         assertEquals(">", variant.getType());
         assertEquals("T", variant.getAlt());
     }
 
     @Test
-    public void testHgvsAdditionToGenomicVariant() {
+    public void testHgvsInsertionToGenomicVariant() {
         GenomicVariant variant = GenomicVariantUtil.fromHgvs("10:g.32867861_32867862insT");
 
         assertEquals("10", variant.getChromosome());
@@ -34,14 +35,15 @@ public class GenomicVariantTest {
     @Test
 
     public void testHgvsDeletionToGenomicVariant() {
-        GenomicVariant variant = GenomicVariantUtil.fromHgvs("5:c.189_197delAAATGGAGC");
+        GenomicVariant variant = GenomicVariantUtil.fromHgvs("1:g.4849848_4849857del");
 
-        assertEquals("5", variant.getChromosome());
-        assertEquals((Integer) 189, variant.getStart());
-        assertEquals((Integer) 197, variant.getEnd());
-        assertEquals("AAATGGAGC", variant.getRef());
+        assertEquals("1", variant.getChromosome());
+        assertEquals("g", variant.getRefType());
+        assertEquals((Integer) 4849848, variant.getStart());
+        assertEquals((Integer) 4849857, variant.getEnd());
+        assertEquals("", variant.getRef());
         assertEquals("del", variant.getType());
-        assertEquals("XXXXXXXXX", variant.getAlt());
+        assertEquals("", variant.getAlt());
     }
 
     @Test
@@ -120,40 +122,41 @@ public class GenomicVariantTest {
 
     @Test
     public void testHgvsToGenomicVariantToRegion() {
-        String region = GenomicVariantUtil.toRegion(GenomicVariantUtil.fromHgvs("17:g.41242962_41242963insGA"));
+        String region = GenomicVariantUtil.toRegion(GenomicVariantUtil.fromHgvs("12:g.25398285C>A"));
 
-        assertEquals("17:41242962-41242963:1/GA", region);
+        assertEquals("12:25398285-25398285:1/A", region);
 
     }
 
     @Test
     public void testMafToGenomicVariant() {
         ArrayList<GenomicVariant> list = new ArrayList<GenomicVariant>();
-        ArrayList<String> mafs = GenomicVariantUtil.getMafs("minimal_example.in.maf");
-        // String[] key = mafs.remove(0).split("\\t");
-        // for (String maf : mafs) {
-        //     list.add(GenomicVariantUtil.fromMaf(maf, key));
-        // }
-        // //3	178916927	178916939	TAGGCAACCGTGA	G
-        // //7	55220240	55220240	G	T
+        ArrayList<String> mafs = GenomicVariantUtil.getMafs("service/src/test/java/org/cbioportal/genome_nexus/util/minimal_example.in.maf");
+        String str = mafs.remove(0);
+        String[] key = str.split("\\s");
+        for (String maf : mafs) {
+            list.add(GenomicVariantUtil.fromMaf(maf, key));
+        }
+        //3	178916927	178916939	TAGGCAACCGTGA	G
+        //7	55220240	55220240	G	T
 
-        // GenomicVariant one = list.get(0);
-        // GenomicVariant two = list.get(1);
+        GenomicVariant one = list.get(0);
+        GenomicVariant two = list.get(1);
 
-        // assertEquals("3", one.getChromosome());
-        // assertEquals(null, one.getRefType());
-        // assertEquals((Integer) 178916927, one.getStart());
-        // assertEquals((Integer) 178916939, one.getEnd());
-        // assertEquals(null, one.getType());
-        // assertEquals("TAGGCAACCGTGA", one.getRef());
-        // assertEquals("G", one.getAlt());
+        assertEquals("3", one.getChromosome());
+        assertEquals(null, one.getRefType());
+        assertEquals((Integer) 178916927, one.getStart());
+        assertEquals((Integer) 178916939, one.getEnd());
+        assertEquals(null, one.getType());
+        assertEquals("TAGGCAACCGTGA", one.getRef());
+        assertEquals("G", one.getAlt());
 
-        // assertEquals("7", two.getChromosome());
-        // assertEquals(null, two.getRefType());
-        // assertEquals((Integer) 55220240, two.getStart());
-        // assertEquals((Integer) 55220240, two.getEnd());
-        // assertEquals(null, two.getType());
-        // assertEquals("G", two.getRef());
-        // assertEquals("T", two.getAlt());
+        assertEquals("7", two.getChromosome());
+        assertEquals(null, two.getRefType());
+        assertEquals((Integer) 55220240, two.getStart());
+        assertEquals((Integer) 55220240, two.getEnd());
+        assertEquals(null, two.getType());
+        assertEquals("G", two.getRef());
+        assertEquals("T", two.getAlt());
     }
 } 
