@@ -129,7 +129,7 @@ public class GenomicVariantTest {
     @Test
     public void testMafToGenomicVariant() {
         ArrayList<GenomicVariant> list = new ArrayList<GenomicVariant>();
-        ArrayList<String> mafs = GenomicVariantUtil.getMafs("service/src/test/java/org/cbioportal/genome_nexus/util/minimal_example.in.maf");
+        ArrayList<String> mafs = GenomicVariantUtil.getMafs("src/test/java/org/cbioportal/genome_nexus/util/minimal_example.in.maf");
         String[] key = mafs.remove(0).split("\\s");
         for (String maf : mafs) {
             list.add(GenomicVariantUtil.fromMaf(maf, key));
