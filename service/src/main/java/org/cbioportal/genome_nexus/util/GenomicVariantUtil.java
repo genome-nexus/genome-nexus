@@ -7,11 +7,15 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.cbioportal.genome_nexus.util.exception.InvalidHgvsException;
+import org.cbioportal.genome_nexus.util.exception.RefTypeNotSupportedException;
+import org.cbioportal.genome_nexus.util.exception.TypeNotSupportedException;
+
 public class GenomicVariantUtil {
 
     public static GenomicVariant fromHgvs(String hgvs) {
         if (!isHgvs(hgvs))
-            throw new IllegalArgumentException("hgvs is invalid");
+            throw new InvalidHgvsException();
         String chr = getPattern("^\\d+(?=:)", hgvs);
         RefType ref_type = getRefTypeFromHgvs(hgvs);
         Integer start = Integer.parseInt(getPattern("(?<=\\.)\\d+(?=[_ATGC])", hgvs));
@@ -155,7 +159,7 @@ public class GenomicVariantUtil {
             case "m":
                 return RefType.MITOCHONDRIAL;
         }
-        throw new RuntimeException("coding dna, protein, and rna hgvs sequences are not supported");
+        throw new RefTypeNotSupportedException();
     }
 
     private static Type getTypeFromHgvs(String hgvs) {
@@ -170,6 +174,6 @@ public class GenomicVariantUtil {
             case "delins":
                 return Type.INDEL;
         }
-        throw new RuntimeException("only substitutions, insertions, deletions, and indels are supported");
+        throw new TypeNotSupportedException();
     }
 }
