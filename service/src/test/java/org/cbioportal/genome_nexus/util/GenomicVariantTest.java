@@ -12,11 +12,11 @@ public class GenomicVariantTest {
         GenomicVariant variant = GenomicVariantUtil.fromHgvs("7:g.140453136A>T");
 
         assertEquals("7", variant.getChromosome());
-        assertEquals("g", variant.getRefType());
+        assertEquals(RefType.GENOMIC, variant.getRefType());
         assertEquals((Integer) 140453136, variant.getStart());
         assertEquals((Integer) 140453136,variant.getEnd());
         assertEquals("A", variant.getRef());
-        assertEquals(">", variant.getType());
+        assertEquals(Type.SUBSTITUTION, variant.getType());
         assertEquals("T", variant.getAlt());
     }
 
@@ -25,10 +25,11 @@ public class GenomicVariantTest {
         GenomicVariant variant = GenomicVariantUtil.fromHgvs("10:g.32867861_32867862insT");
 
         assertEquals("10", variant.getChromosome());
+        assertEquals(RefType.GENOMIC, variant.getRefType());
         assertEquals((Integer) 32867861, variant.getStart());
         assertEquals((Integer) 32867862, variant.getEnd());
         assertEquals("X", variant.getRef());
-        assertEquals("ins", variant.getType());
+        assertEquals(Type.INSERTION, variant.getType());
         assertEquals("T", variant.getAlt());
     }
 
@@ -38,11 +39,11 @@ public class GenomicVariantTest {
         GenomicVariant variant = GenomicVariantUtil.fromHgvs("1:g.4849848_4849857del");
 
         assertEquals("1", variant.getChromosome());
-        assertEquals("g", variant.getRefType());
+        assertEquals(RefType.GENOMIC, variant.getRefType());
         assertEquals((Integer) 4849848, variant.getStart());
         assertEquals((Integer) 4849857, variant.getEnd());
         assertEquals("", variant.getRef());
-        assertEquals("del", variant.getType());
+        assertEquals(Type.DELETION, variant.getType());
         assertEquals("", variant.getAlt());
     }
 
@@ -51,10 +52,11 @@ public class GenomicVariantTest {
         GenomicVariant variant = GenomicVariantUtil.fromHgvs("23:g.88778_88784delinsTAGATAG");
 
         assertEquals("23", variant.getChromosome());
+        assertEquals(RefType.GENOMIC, variant.getRefType());
         assertEquals((Integer) 88778, variant.getStart());
         assertEquals((Integer) 88784,variant.getEnd());
         assertEquals("XXXXXXX", variant.getRef());
-        assertEquals("delins", variant.getType());
+        assertEquals(Type.INDEL, variant.getType());
         assertEquals("TAGATAG", variant.getAlt());
     }
 
@@ -63,6 +65,7 @@ public class GenomicVariantTest {
         GenomicVariant variant = GenomicVariantUtil.fromRegion("5:140532-140532:1/C");
 
         assertEquals("5", variant.getChromosome());
+        assertEquals(null, variant.getRefType());
         assertEquals((Integer) 140532, variant.getStart());
         assertEquals((Integer) 140532, variant.getEnd());
         assertEquals(null, variant.getRef());
@@ -75,6 +78,7 @@ public class GenomicVariantTest {
         GenomicVariant variant = GenomicVariantUtil.fromRegion("14:19584687-19584687:-1/T");
 
         assertEquals("14", variant.getChromosome());
+        assertEquals(null, variant.getRefType());
         assertEquals((Integer) 19584687, variant.getStart());
         assertEquals((Integer) 19584687, variant.getEnd());
         assertEquals(null, variant.getRef());
@@ -87,6 +91,7 @@ public class GenomicVariantTest {
         GenomicVariant variant = GenomicVariantUtil.fromRegion("1:881907-881906:1/C");
 
         assertEquals("1", variant.getChromosome());
+        assertEquals(null, variant.getRefType());
         assertEquals((Integer) 881907, variant.getStart());
         assertEquals((Integer) 881906, variant.getEnd());
         assertEquals(null, variant.getRef());
@@ -104,13 +109,6 @@ public class GenomicVariantTest {
         assertEquals(null, variant.getRef());
         assertEquals(null, variant.getType());
         assertEquals("-", variant.getAlt());
-    }
-
-    @Test
-    public void testGenomicVariantToHgvs() {
-        GenomicVariant variant = new GenomicVariant("17", "g", 41242962, 41242963, "ins", null, "GA");
-
-        assertEquals("17:g.41242962_41242963insGA", GenomicVariantUtil.toHgvs(variant));
     }
 
     @Test
@@ -132,8 +130,7 @@ public class GenomicVariantTest {
     public void testMafToGenomicVariant() {
         ArrayList<GenomicVariant> list = new ArrayList<GenomicVariant>();
         ArrayList<String> mafs = GenomicVariantUtil.getMafs("service/src/test/java/org/cbioportal/genome_nexus/util/minimal_example.in.maf");
-        String str = mafs.remove(0);
-        String[] key = str.split("\\s");
+        String[] key = mafs.remove(0).split("\\s");
         for (String maf : mafs) {
             list.add(GenomicVariantUtil.fromMaf(maf, key));
         }

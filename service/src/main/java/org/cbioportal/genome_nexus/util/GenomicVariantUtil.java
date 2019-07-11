@@ -14,21 +14,12 @@ public class GenomicVariantUtil {
         if (!isHgvs(hgvs))
             throw new IllegalArgumentException("hgvs is invalid");
         String chr = getPattern("^\\d+(?=:)", hgvs);
-        String ref_type = getPattern("(?<=:)[cgmrp](?=.)", hgvs);
+        RefType ref_type = getRefTypeFromHgvs(hgvs);
         Integer start = Integer.parseInt(getPattern("(?<=\\.)\\d+(?=[_ATGC])", hgvs));
         Integer end = getEndFromHgvs(hgvs, start);
-        String type = getPattern("(?<=\\d+[ATGC]?)[a-z>]+(?=[ATCG]*)", hgvs);
+        Type type = getTypeFromHgvs(hgvs);
         String ref = getRefFromHgvs(hgvs, type);
         String alt = getAltFromHgvs(hgvs, type);
-        String[] types = { ">", "ins", "del", "delins" }; // supported variant types
-        String[] ref_types = {"g", "m"}; // supported reference genome types 
-
-        if (!Arrays.asList(ref_types).contains(ref_type))
-            throw new RuntimeException("coding dna, protein, and rna hgvs sequences are not supported");
-        
-        if (!Arrays.asList(types).contains(type))
-            throw new RuntimeException("only substitutions, insertions, deletions, and indels are supported");
-
         return new GenomicVariant(chr, ref_type, start, end, type, ref, alt);
     }
 
@@ -36,10 +27,10 @@ public class GenomicVariantUtil {
         if (!isRegion(region))
             throw new IllegalArgumentException("region is invalid");
         String chr = getPattern("^\\d{1,2}(?=:)", region);
-        String ref_type = null;
+        RefType ref_type = null;
         Integer start = Integer.parseInt(getPattern("(?<=:)\\d+(?=-)", region));
         Integer end = Integer.parseInt(getPattern("(?<=-)\\d+(?=:)", region));
-        String type = null;
+        Type type = null;
         String ref = null;
         String alt = getPattern("(?<=:-?1/)[ATCG]+|-$", region);
         return new GenomicVariant(chr, ref_type, start, end, type, ref, alt);
@@ -47,17 +38,6 @@ public class GenomicVariantUtil {
 
     public static String toRegion(GenomicVariant variant){
         return variant.getChromosome() + ":" + variant.getStart() + "-" + variant.getEnd() + ":1/" + variant.getAlt();
-    }
-
-    public static String toHgvs(GenomicVariant variant) {
-        if (variant.getType().equals(">"))
-            return variant.getChromosome() + ":" + variant.getRefType() + "." + variant.getStart() + variant.getRef()
-                + ">" + variant.getAlt();
-        if (variant.getType().equals("del"))
-            return variant.getChromosome() + ":" + variant.getRefType() + "." + variant.getStart() + "_" + variant.getEnd()
-                + variant.getType() + variant.getRef();
-        return variant.getChromosome() + ":" + variant.getRefType() + "." + variant.getStart() + "_" + variant.getEnd()
-                + variant.getType() + variant.getAlt();
     }
 
     public static ArrayList<String> getMafs(String maf_file) {
@@ -142,13 +122,13 @@ public class GenomicVariantUtil {
         }
     }
 
-    private static String getRefFromHgvs(String hgvs, String type) {
-        if (type.equals("del")){
+    private static String getRefFromHgvs(String hgvs, Type type) {
+        if (type.equals(Type.DELETION)){
             String ref = getPattern("(?<=[a-z+>])[ATCG]*$", hgvs);
             if (ref.equals(null)) return "";
             return ref;
         }
-        if (type.equals(">"))
+        if (type.equals(Type.SUBSTITUTION))
             return getPattern("(?<=\\d+)[ATCG]+(?=>)", hgvs);
         String ans = "";
         while (ans.length() < getPattern("(?<=[a-z+>])[ATCG]+$", hgvs).length())
@@ -156,8 +136,8 @@ public class GenomicVariantUtil {
         return ans;
     }
 
-    private static String getAltFromHgvs(String hgvs, String type) {
-        if (!type.equals("del"))
+    private static String getAltFromHgvs(String hgvs, Type type) {
+        if (!type.equals(Type.DELETION))
             return getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
         String alt = getPattern("(?<=[a-z+>])[ATCG]*$", hgvs);
         if (alt.equals(null))
@@ -166,5 +146,31 @@ public class GenomicVariantUtil {
         while (ans.length() < alt.length())
             ans += "X";
         return ans;
+    }
+
+    private static RefType getRefTypeFromHgvs (String hgvs) {
+        String ref_type = getPattern("(?<=:)[cgmrp](?=.)", hgvs);
+        switch(ref_type) {
+            case "g":
+                return RefType.GENOMIC;
+            case "m":
+                return RefType.MITOCHONDRIAL;
+        }
+        throw new RuntimeException("coding dna, protein, and rna hgvs sequences are not supported");
+    }
+
+    private static Type getTypeFromHgvs(String hgvs) {
+        String type = getPattern("(?<=\\d+[ATGC]?)[a-z>]+(?=[ATCG]*)", hgvs);
+        switch(type) {
+            case ">":
+                return Type.SUBSTITUTION;
+            case "ins":
+                return Type.INSERTION;
+            case "del":
+                return Type.DELETION;
+            case "delins":
+                return Type.INDEL;
+        }
+        throw new RuntimeException("only substitutions, insertions, deletions, and indels are supported");
     }
 }

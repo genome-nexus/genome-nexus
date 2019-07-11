@@ -1,15 +1,22 @@
 package org.cbioportal.genome_nexus.util;
 
+enum Type {
+    SUBSTITUTION, INSERTION, DELETION, INDEL
+}
+
+enum RefType {
+    GENOMIC, MITOCHONDRIAL
+}
 public class GenomicVariant {
     private String chromosome;
-    private String ref_type;
+    private RefType ref_type;
     private Integer start;
     private Integer end;
-    private String type;
+    private Type type;
     private String ref;
     private String alt;
 
-    public GenomicVariant (String chromosome, String ref_type, Integer start, Integer end, String type, String ref, String alt) {
+    public GenomicVariant (String chromosome, RefType ref_type, Integer start, Integer end, Type type, String ref, String alt) {
         this.chromosome = chromosome;
         this.ref_type = ref_type;
         this.start = start;
@@ -32,11 +39,11 @@ public class GenomicVariant {
         this.chromosome = chromosome;
     }
 
-    public String getRefType() {
+    public RefType getRefType() {
         return this.ref_type;
     }
 
-    public void setRefType(String ref_type) {
+    public void setRefType(RefType ref_type) {
         this.ref_type = ref_type;
     }
 
@@ -48,11 +55,11 @@ public class GenomicVariant {
         this.start = start;
     }
 
-    public String getType() {
+    public Type getType() {
         return this.type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
