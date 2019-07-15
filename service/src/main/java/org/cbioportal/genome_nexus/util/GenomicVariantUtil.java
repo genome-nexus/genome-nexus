@@ -109,7 +109,7 @@ public class GenomicVariantUtil {
     }
 
     public static boolean isMafFile(String file) {
-        return Pattern.matches("^[\\w\\-\\./]+.maf$", file);
+        return Pattern.matches("^[\\w\\-\\./]+(\\.maf)|^[\\w\\-\\./]+(\\.tsv)|^[\\w\\-\\./]+(\\.txt)$$", file);
     }
 
     // postcondition: returns a substring of hgvs that matched to the regex, or null if not matched
