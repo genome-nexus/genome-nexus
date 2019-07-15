@@ -14,8 +14,9 @@ import org.cbioportal.genome_nexus.util.exception.TypeNotSupportedException;
 public class GenomicVariantUtil {
 
     public static GenomicVariant fromHgvs(String hgvs) {
-        if (!isHgvs(hgvs))
+        if (!isHgvs(hgvs)) {
             throw new InvalidHgvsException();
+        }
         String chr = getPattern("^\\d+(?=:)", hgvs);
         RefType ref_type = getRefTypeFromHgvs(hgvs);
         Integer start = Integer.parseInt(getPattern("(?<=\\.)\\d+(?=[_ATGC])", hgvs));
@@ -27,8 +28,9 @@ public class GenomicVariantUtil {
     }
 
     public static GenomicVariant fromRegion(String region) {
-        if (!isRegion(region))
+        if (!isRegion(region)) {
             throw new IllegalArgumentException("region is invalid");
+        }
         String chr = getPattern("^\\d{1,2}(?=:)", region);
         RefType ref_type = null;
         Integer start = Integer.parseInt(getPattern("(?<=:)\\d+(?=-)", region));
@@ -44,8 +46,9 @@ public class GenomicVariantUtil {
     }
 
     public static ArrayList<String> getMafs(String maf_file) {
-        if (!isMafFile(maf_file))
+        if (!isMafFile(maf_file)){
             throw new RuntimeException("maf file not found");
+        }
         ArrayList<String> list = null;
         try {
             list = new ArrayList<String>();
@@ -53,8 +56,9 @@ public class GenomicVariantUtil {
             Scanner sc = new Scanner(file);
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
-                if (!line.startsWith("#"))
+                if (!line.startsWith("#")) {
                     list.add(line);
+                }
             }
             sc.close();
         } catch (FileNotFoundException e) {
@@ -74,21 +78,21 @@ public class GenomicVariantUtil {
         int alt_index = 0;
         for (int i = 0; i < key.length; i++) {
             switch (key[i]) {
-            case "Chromosome":
-                chr_index = i;
-                break;
-            case "Start_Position":
-                start_index = i;
-                break;
-            case "End_Position":
-                end_index = i;
-                break;
-            case "Reference_Allele":
-                ref_index = i;
-                break;
-            case "Tumor_Seq_Allele":
-                alt_index = i;
-                break;
+                case "Chromosome":
+                    chr_index = i;
+                    break;
+                case "Start_Position":
+                    start_index = i;
+                    break;
+                case "End_Position":
+                    end_index = i;
+                    break;
+                case "Reference_Allele":
+                    ref_index = i;
+                    break;
+                case "Tumor_Seq_Allele":
+                    alt_index = i;
+                    break;
             }
         }
 
@@ -112,8 +116,9 @@ public class GenomicVariantUtil {
     private static String getPattern (String regex, String hgvs) {
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(hgvs);
-        if (m.find()) 
+        if (m.find()) { 
             return hgvs.substring(m.start(), m.end());
+        }
         return null;
     }
 
@@ -126,28 +131,34 @@ public class GenomicVariantUtil {
     }
 
     private static String getRefFromHgvs(String hgvs, Type type) {
-        if (type.equals(Type.DELETION)){
+        if (type.equals(Type.DELETION)) {
             String ref = getPattern("(?<=[a-z+>])[ATCG]*$", hgvs);
-            if (ref.equals(null)) return "";
+            if (ref.equals(null)) {
+                return "";
+            }
             return ref;
-        }
-        if (type.equals(Type.SUBSTITUTION))
+        } else if (type.equals(Type.SUBSTITUTION)) {
             return getPattern("(?<=\\d+)[ATCG]+(?=>)", hgvs);
+        }
         String ans = "";
-        while (ans.length() < getPattern("(?<=[a-z+>])[ATCG]+$", hgvs).length())
+        while (ans.length() < getPattern("(?<=[a-z+>])[ATCG]+$", hgvs).length()) {
             ans += "X";
+        }
         return ans;
     }
 
     private static String getAltFromHgvs(String hgvs, Type type) {
-        if (!type.equals(Type.DELETION))
-            return getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
+    if (!type.equals(Type.DELETION)) {
+        return getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
+    }
         String alt = getPattern("(?<=[a-z+>])[ATCG]*$", hgvs);
-        if (alt.equals(null))
+        if (alt.equals(null)){
             return "";
+        }
         String ans = "";
-        while (ans.length() < alt.length())
+        while (ans.length() < alt.length()) {
             ans += "X";
+        }
         return ans;
     }
 
