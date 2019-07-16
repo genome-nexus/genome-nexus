@@ -41,12 +41,12 @@ public class GenomicVariantUtil {
         return new GenomicVariant(chr, ref_type, start, end, type, ref, alt);
     }
 
-    public static String toRegion(GenomicVariant variant){
+    public static String toRegion(GenomicVariant variant) {
         return variant.getChromosome() + ":" + variant.getStart() + "-" + variant.getEnd() + ":1/" + variant.getAlt();
     }
 
     public static ArrayList<String> getMafs(String maf_file) {
-        if (!isMafFile(maf_file)){
+        if (!isMafFile(maf_file)) {
             throw new RuntimeException("maf file not found");
         }
         ArrayList<String> list = null;
@@ -76,6 +76,7 @@ public class GenomicVariantUtil {
         int end_index = 0;
         int ref_index = 0;
         int alt_index = 0;
+
         for (int i = 0; i < key.length; i++) {
             switch (key[i]) {
                 case "Chromosome":
@@ -113,7 +114,7 @@ public class GenomicVariantUtil {
     }
 
     // postcondition: returns a substring of hgvs that matched to the regex, or null if not matched
-    private static String getPattern (String regex, String hgvs) {
+    private static String getPattern(String regex, String hgvs) {
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(hgvs);
         if (m.find()) { 
@@ -148,11 +149,11 @@ public class GenomicVariantUtil {
     }
 
     private static String getAltFromHgvs(String hgvs, Type type) {
-    if (!type.equals(Type.DELETION)) {
-        return getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
-    }
+        if (!type.equals(Type.DELETION)) {
+            return getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
+        }
         String alt = getPattern("(?<=[a-z+>])[ATCG]*$", hgvs);
-        if (alt.equals(null)){
+        if (alt.equals(null)) {
             return "";
         }
         String ans = "";

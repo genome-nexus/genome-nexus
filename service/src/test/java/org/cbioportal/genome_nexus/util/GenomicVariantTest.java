@@ -34,7 +34,6 @@ public class GenomicVariantTest {
     }
 
     @Test
-
     public void testHgvsDeletionToGenomicVariant() {
         GenomicVariant variant = GenomicVariantUtil.fromHgvs("1:g.4849848_4849857del");
 
