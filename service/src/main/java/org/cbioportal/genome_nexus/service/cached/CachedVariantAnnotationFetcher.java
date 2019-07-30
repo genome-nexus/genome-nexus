@@ -6,6 +6,7 @@ import org.cbioportal.genome_nexus.persistence.VariantAnnotationRepository;
 import org.cbioportal.genome_nexus.persistence.internal.VariantAnnotationRepositoryImpl;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
+import org.cbioportal.genome_nexus.util.NaturalOrderComparator;
 import org.cbioportal.genome_nexus.service.remote.VEPDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -95,7 +96,11 @@ public class CachedVariantAnnotationFetcher extends BaseCachedExternalResourceFe
             chunk.add(FIXED_ENTRY);
 
             // append the next slice
-            chunk.addAll(list.subList(i, Math.min(list.size(), i + chunkSize)));
+            // VEP requires ids to be sorted
+            List<String> sortedChunk = list.subList(i, Math.min(list.size(), i + chunkSize));
+            Collections.sort(sortedChunk, new NaturalOrderComparator());
+
+            chunk.addAll(sortedChunk);
 
             chunks.add(chunk);
         }
