@@ -198,7 +198,7 @@ public class ProteinChangeResolver
                     hgvspShort += aaParts[1];
                 }
             }
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             // LOG.debug("Failed to salvage HGVSp_Short from protein start, amino acids, and consequence terms");
         }
 
