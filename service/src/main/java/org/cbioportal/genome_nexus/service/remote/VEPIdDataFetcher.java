@@ -22,7 +22,7 @@ public class VEPIdDataFetcher extends BaseExternalResourceFetcher<VariantAnnotat
 
     @Autowired
     public VEPIdDataFetcher(ExternalResourceTransformer<VariantAnnotation> externalResourceTransformer,
-                          @Value("${vep.url}") String vepUrl)
+                          @Value("${gn_vep.region.url}") String vepUrl)
     {
         super(vepUrl.replace("human/hgvs/", "/human/id/"), MAIN_QUERY_PARAM, PLACEHOLDER);
         this.transformer = externalResourceTransformer;

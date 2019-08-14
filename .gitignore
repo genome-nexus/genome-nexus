@@ -12,3 +12,7 @@ application.properties
 *.ipr
 *.iws
 *.DS_Store
+*.classpath
+*.project
+*.settings
+

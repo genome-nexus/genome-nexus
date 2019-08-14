@@ -102,7 +102,7 @@ public class GenomicVariantUtil {
     }
 
     public static boolean isHgvs(String variant) {
-        return Pattern.matches("^[1-9][0-3]?:[cgmrp]\\.\\d+[ATCG_]\\d*[a-z>]*[ATCG]*$", variant);
+        return Pattern.matches("^\\d\\d?:[cgmrp]\\.\\d+[ATCG_]\\d*[a-z>]*[ATCG]*$", variant);
     }
 
     public static boolean isRegion(String variant) {

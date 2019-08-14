@@ -1,0 +1,383 @@
+@media (max-width: 767px) {
+    .mskcc-logo {
+        display: none;
+    }
+
+    .mskcc-icon {
+        display: none;
+    }
+}
+
+@media (min-width: 920px) {
+    .mskcc-logo {
+        display: block;
+    }
+
+    .mskcc-icon {
+        display: none;
+    }
+}
+
+@media (max-width: 919px) and (min-width: 768px) {
+    .mskcc-logo {
+        display: none;
+    }
+
+    .mskcc-icon {
+        display: block;
+    }
+}
+
+@media (max-width: 992px) {
+    .wrapper {
+        margin: 0 auto -200px;
+        padding: 0 0 200px
+    }
+
+    .footer {
+        height: 220px
+    }
+}
+
+@media (min-width: 993px) {
+
+    .wrapper {
+        margin: 0 auto -120px;
+        padding: 0 0 120px
+    }
+
+    .footer {
+        height: 120px
+    }
+}
+
+/*@media (max-width: 1100px) {*/
+/*.navbar-nav > li > a {*/
+/*padding: 15px 6px*/
+/*}*/
+/*}*/
+
+@media (min-width: 768px) {
+    .menu-toggle {
+        display: none
+    }
+
+    .navbar-nav > li > a {
+        padding-bottom: 10px;
+        line-height: 30px;
+    }
+
+    header .container {
+        padding-top: 60px;
+        padding-bottom: 50px;
+    }
+}
+
+@media (max-width: 767px) {
+    .subNav.navbar-fixed-top {
+        top: 0
+    }
+
+    .menu-toggle {
+        display: block
+    }
+}
+
+html, body, div#app_content, div#page_content {
+    height: 100%;
+}
+
+body {
+    padding-top: 110px
+}
+
+.navbar-fixed-top {
+    padding: 0;
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+}
+
+.subNavWrapper {
+    background-color: #064785
+}
+
+.subNav {
+    height: 50px;
+    line-height: 30px;
+    padding: 10px 0
+}
+
+.subNav span {
+    font-size: 22px;
+    color: #fff;
+    border-right: 1px solid #1c75cd;
+    padding: 0 10px
+}
+
+.subNav span:first-child {
+    padding-left: 0
+}
+
+.subNav span:last-child {
+    border: 0
+}
+
+.subNav input[type=text] {
+    height: 29px;
+    width: 100%;
+    margin: 0;
+    border-color: #1c75cd;
+    color: #fff
+}
+
+.subNav input[type=text]:focus {
+    border-bottom-color: #c84e23;
+    box-shadow: 0 1px 0 0 #c84e23
+}
+
+.navbar-inverse, .projects > a:nth-child(1) {
+    webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12)
+}
+
+.subNav .subNav-sxn-1 {
+    color: #fff;
+}
+
+.subNav .subNav-sxn-1, .subNav .subNav-sxn-2 {
+    padding-left: 0;
+    padding-right: 0
+}
+
+.subNav .subNav-sxn-1 a {
+    color: #fff
+}
+
+.subNav .subNav-sxn-1 a:hover {
+    color: #fff;
+    cursor: pointer
+}
+
+.subNav .subNav-sxn-1 a:active {
+    color: #fff;
+    cursor: default
+}
+
+.menu-toggle {
+    width: 50px;
+    height: 40px;
+    position: relative;
+    float: right;
+    margin-top: 15px;
+    margin-right: 15px;
+    transform: rotate(0);
+    transition: .5s ease-in-out;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 30%;
+    background: #fff;
+    opacity: 1;
+    transform: rotate(0);
+    transition: .25s ease-in-out
+}
+
+.footer, .menu-toggle b {
+    width: 100%;
+    color: #fff;
+    text-align: center
+}
+
+.menu-toggle b {
+    display: block;
+    position: absolute;
+    top: 18px
+}
+
+.menu-toggle span:nth-child(even) {
+    left: 50%;
+    border-radius: 0 9px 9px 0
+}
+
+.menu-toggle span:nth-child(odd) {
+    left: 10px;
+    border-radius: 9px 0 0 9px
+}
+
+.menu-toggle span:nth-child(1), .menu-toggle span:nth-child(2) {
+    top: 0
+}
+
+.menu-toggle span:nth-child(3), .menu-toggle span:nth-child(4) {
+    top: 7px
+}
+
+.menu-toggle span:nth-child(5), .menu-toggle span:nth-child(6) {
+    top: 14px
+}
+
+.menu-toggle.open span:nth-child(1), .menu-toggle.open span:nth-child(6) {
+    transform: rotate(45deg)
+}
+
+.menu-toggle.open span:nth-child(2), .menu-toggle.open span:nth-child(5) {
+    transform: rotate(-45deg)
+}
+
+.menu-toggle.open span:nth-child(1) {
+    left: 10px;
+    top: 3px
+}
+
+.menu-toggle.open span:nth-child(2) {
+    left: calc(50% - 5px);
+    top: 3px
+}
+
+.menu-toggle.open span:nth-child(3) {
+    left: -50%;
+    opacity: 0
+}
+
+.menu-toggle.open span:nth-child(4) {
+    left: 100%;
+    opacity: 0
+}
+
+.menu-toggle.open span:nth-child(5) {
+    left: 10px;
+    top: 13px
+}
+
+.menu-toggle.open span:nth-child(6) {
+    left: calc(50% - 5px);
+    top: 13px
+}
+
+.content {
+    margin-top: 20px;
+    margin-bottom: 20px
+}
+
+.footer {
+    padding: 10px 0;
+    background-color: #737373;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 300
+}
+
+.footer a {
+    color: #fff;
+    border-right: .5px solid #fff;
+    padding: 0 5px
+}
+
+.footer a:last-child {
+    border: 0
+}
+
+.footer .footer-row-2 {
+    line-height: 70px;
+    margin-bottom: 0
+}
+
+.footer .mskcc-footer-logo, .footer .mskcc-footer-logo0-wrapper {
+    height: 50px
+}
+
+.mskcc-logo, .mskcc-icon {
+    height: 60px;
+    padding: 5px 0;
+}
+
+.navbar-collapse {
+    border: 0;
+    padding-left: 0
+}
+
+.navbar-collapse.collapse.in, .navbar-collapse.collapsing {
+    background-color: #fff;
+    font-weight: 700
+}
+
+.navbar-collapse.collapse.in a, .navbar-collapse.collapsing a {
+    color: #000;
+    border-bottom: 1px solid #b3b3a6;
+    padding: 11px 15px
+}
+
+.navbar-collapse.collapse.in a:hover, .navbar-collapse.collapsing a:hover {
+    background-color: #c84e23;
+    color: #fff
+}
+
+.navbar-header, .navbar-inverse {
+    background-color: #1c75cd
+}
+
+.navbar-nav {
+    margin: 0 -15px 0 0
+}
+
+.navbar-brand {
+    font-weight: 700;
+    height: 60px;
+    line-height: 40px;
+    padding: 10px 15px;
+}
+
+.navbar-inverse {
+    border: 0
+}
+
+.navbar-inverse .navbar-brand:focus, .navbar-inverse .navbar-brand:hover {
+    color: #fff;
+    background-color: transparent;
+    cursor: pointer
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #fff;
+}
+
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover {
+    color: #1c75cd;
+    background-color: #fff;
+    opacity: 1
+}
+
+.navbar-inverse .navbar-nav > li > a:focus, .navbar-inverse .navbar-nav > li > a:hover {
+    color: #1c75cd;
+    background-color: #fff;
+    opacity: .8
+}
+
+.navbar-toggle {
+    width: 60px
+}
+
+.navbar-toggle .icon-bar {
+    height: 3px;
+    width: 25px;
+    background: #fff
+}
+
+.navbar-inverse .navbar-toggle {
+    border-color: #fff
+}
+
+.navbar-inverse .navbar-toggle .icon-bar {
+    background-color: #fff
+}
+
+.navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover {
+    background-color: #777
+}

@@ -9,6 +9,7 @@ services:
       - MONGODB_URI=mongodb://db:27017/annotator
     links:
       - db
+      - vep
     depends_on:
       - db
 
@@ -19,11 +20,12 @@ services:
     restart: always
 
   vep:
-    build: https://github.com/genome-nexus/genome-nexus-vep.git
+    image: genomenexus/gn-vep:27223ebc69be55f8d6b31b9111c697ff7b2c0850
     environment:
+      - SERVER_PORT=6060
       - VEP_ASSEMBLY=${VEP_ASSEMBLY}
     restart: always
     ports:
-      - "6060:8080"
+      - "6060:6060"
     volumes:
       - ${VEP_CACHE}:/opt/vep/.vep/:ro
