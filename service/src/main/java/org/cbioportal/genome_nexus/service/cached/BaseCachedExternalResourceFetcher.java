@@ -169,14 +169,13 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         // send up to maxPageSize entities per request
         for (Set<String> subSet: this.generateChunks(needToFetch))
         {
-            DBObject rawValue;
+            DBObject rawValue = null;
 
             try {
                 // get the raw annotation string from the web service
                 rawValue = this.fetcher.fetchRawValue(this.buildRequestBody(subSet));
             } catch (HttpClientErrorException e) {
                 LOG.error("HTTP ERROR " + e.getStatusCode() + " for " + subSet.toString() + ": " + e.getResponseBodyAsString());
-                throw e;
             }
 
             if (rawValue != null) {

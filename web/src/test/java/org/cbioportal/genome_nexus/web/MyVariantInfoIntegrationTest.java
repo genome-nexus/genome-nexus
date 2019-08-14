@@ -68,8 +68,8 @@ public class MyVariantInfoIntegrationTest
         assertEquals("7", chrom);
 
         Object alleleNumber = ((HashMap) this.fetchMyVariantInfoAnnotationGET(variants[0]).get("gnomadExome").get("alleleNumber")).get("an");
-        // the allele number should be 246028
-        assertEquals(246028, alleleNumber);
+        // the allele number should be 251260
+        assertEquals(251260, alleleNumber);
 
         Integer variantId = (Integer)this.fetchMyVariantInfoAnnotationGET(variants[0]).get("clinVar").get("variantId");
         // test clinVar, the variantId should be 13961
@@ -80,12 +80,12 @@ public class MyVariantInfoIntegrationTest
         assertEquals("A", alt);
 
         Object alleleCount = ((HashMap) this.fetchMyVariantInfoAnnotationGET(variants[1]).get("gnomadGenome").get("alleleCount")).get("ac");
-        // the allele count should be 3239
-        assertEquals(3239, alleleCount);
+        // the allele count should be 3282
+        assertEquals(3282, alleleCount);
 
-        String vartype = this.fetchMyVariantInfoAnnotationGET(variants[2]).get("dbsnp").get("vartype").toString();
-        // the vartype shout be indel
-        assertEquals("indel", vartype);
+        String ref = this.fetchMyVariantInfoAnnotationGET(variants[2]).get("vcf").get("ref").toString();
+        // the ref shout be ACF
+        assertEquals("ACT", ref);
 
 
         //////////////////
@@ -113,8 +113,8 @@ public class MyVariantInfoIntegrationTest
         Object alleleCount1 = ((HashMap) postResponses.get(1).get("gnomadGenome").get("alleleCount")).get("ac");
         assertEquals(alleleCount, alleleCount1);
 
-        String vartype2 = postResponses.get(2).get("dbsnp").get("vartype").toString();
-        assertEquals(vartype, vartype2);
+        String ref2 = postResponses.get(2).get("vcf").get("ref").toString();
+        assertEquals(ref, ref2);
 
     }
 }
