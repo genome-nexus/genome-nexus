@@ -7,18 +7,6 @@ including databases that convert DNA changes to protein changes, predict the
 functional effects of protein mutations, and contain information about mutation
 frequencies, gene function, variant effects, and clinical actionability.
 
-
-![gn_figure](https://user-images.githubusercontent.com/1334004/63126062-0491ec00-bf7d-11e9-81ef-2b5682f71fae.png)
-
-
-Three goals:
-
-1. Data collection from various annotation sources
-2. Integration of heterogeneous information into a harmonized structure and
-programmatic interface
-3. Dissemination of the diverse information in a hierarchical digestible way
-for interpreting variants and patients.
-
 ## Architecture 🔧
 
 ![Screen Shot 2019-08-15 at 4 21 41 PM](https://user-images.githubusercontent.com/1334004/63124264-ddd1b680-bf78-11e9-9122-514330e8fcd8.png)
