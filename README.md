@@ -1,19 +1,15 @@
-[![codecov](https://codecov.io/gh/genome-nexus/genome-nexus/branch/master/graph/badge.svg)](https://codecov.io/gh/genome-nexus/genome-nexus)
-[![codebeat badge](https://codebeat.co/badges/d599b538-43e3-4828-8f27-820031393196)](https://codebeat.co/projects/github-com-genome-nexus-genome-nexus-master)
+# Genome Nexus 🧬
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-| branch | master | rc |
-| --- | --- | --- |
-| status | [![Build Status](https://travis-ci.org/genome-nexus/genome-nexus.svg?branch=master)](https://travis-ci.org/genome-nexus/genome-nexus/branches) | [![Build Status](https://travis-ci.org/genome-nexus/genome-nexus.svg?branch=rc)](https://travis-ci.org/genome-nexus/genome-nexus/branches) |
-
-# Genome Nexus
 Genome Nexus, a comprehensive one-stop resource for fast, automated and
 high-throughput annotation and interpretation of genetic variants in cancer.
 Genome Nexus integrates information from a variety of existing resources,
 including databases that convert DNA changes to protein changes, predict the
 functional effects of protein mutations, and contain information about mutation
 frequencies, gene function, variant effects, and clinical actionability.
+
+
+![gn_figure](https://user-images.githubusercontent.com/1334004/63126062-0491ec00-bf7d-11e9-81ef-2b5682f71fae.png)
+
 
 Three goals:
 
@@ -23,13 +19,42 @@ programmatic interface
 3. Dissemination of the diverse information in a hierarchical digestible way
 for interpreting variants and patients.
 
-## Supported Annotation Sources
+## Architecture 🔧
 
-See this Google Sheet:
+![Screen Shot 2019-08-15 at 4 21 41 PM](https://user-images.githubusercontent.com/1334004/63124264-ddd1b680-bf78-11e9-9122-514330e8fcd8.png)
+
+### Backend
+
+Genome Nexus aggregates variant annotation from various sources. There are two types:
+
+1. Small sized annotations are stored as static data in the mongo database directly, see the [genome-nexus-importer repo](https://github.com/genome-nexus/genome-nexus-importer) if you want to update/change this data.
+2. Larger annotation sources are pulled on the fly from other APIs and cached in the mongo database.
+
+For a list of all supported variant annotation sources see this Google Sheet:
 
 https://docs.google.com/spreadsheets/d/1xML949NWzJGcvltjlquwSRIv79o13C_sfrVPAU5ci9Q/edit#gid=258442188
 
-## Run
+### REST API
+
+Genome Nexus provides a [REST API](https://www.genomenexus.org/swagger-ui.html) for variant annotation.
+
+### API Clients
+
+Clients in various languages can be generated to access it. For programmatic access with R/Python see the [notebooks directory](notebooks/).
+
+### Genome Nexus Website
+
+The new frontend currently under construction is being developed here: https://github.com/genome-nexus/genome-nexus-frontend.
+
+### Other Websites
+
+The main consumer of the Genome Nexus REST API is [cBioPortal](https://cbioportal.org). cBioPortal provides visualization, analysis, and download of large-scale cancer genomics data sets. Variants in cBioPortal are annotated using Genome Nexus. The other examples in the figure are potential other consumers.
+
+### Command Line Interface
+
+There is a command line tool to annotate a MAF file (VCF not available yet): https://github.com/genome-nexus/genome-nexus-annotation-pipeline
+
+## Run :computer:
 
 ### Alternative 1 - run genome-nexus, mongoDB and genome-nexus-vep in docker containers
 First, set environment variables for Ensembl Release, VEP Assembly and location of VEP Cache. If these are not, the default values from `.env` will be set.
@@ -90,8 +115,16 @@ mvn clean install
 java -jar web/target/web-*.war
 ```
 
-## Update data
-If you need to update the data files see [genome-nexus-importer](https://github.com/genome-nexus/genome-nexus-importer)
+## Test Status
+
+| branch | master | rc |
+| --- | --- | --- |
+| status | [![Build Status](https://travis-ci.org/genome-nexus/genome-nexus.svg?branch=master)](https://travis-ci.org/genome-nexus/genome-nexus/branches) | [![Build Status](https://travis-ci.org/genome-nexus/genome-nexus.svg?branch=rc)](https://travis-ci.org/genome-nexus/genome-nexus/branches) |
+
+## Deploy
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 
 ## Programmatic access through R/Python
 See [notebooks/](notebooks/)
