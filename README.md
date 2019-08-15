@@ -10,7 +10,7 @@
 # Genome Nexus
 Genome Nexus, a comprehensive one-stop resource for fast, automated and
 high-throughput annotation and interpretation of genetic variants in cancer.
-Genome Nexus will integrate information from a variety of existing resources,
+Genome Nexus integrates information from a variety of existing resources,
 including databases that convert DNA changes to protein changes, predict the
 functional effects of protein mutations, and contain information about mutation
 frequencies, gene function, variant effects, and clinical actionability.
@@ -22,6 +22,12 @@ Three goals:
 programmatic interface
 3. Dissemination of the diverse information in a hierarchical digestible way
 for interpreting variants and patients.
+
+## Supported Annotation Sources
+
+See this Google Sheet:
+
+https://docs.google.com/spreadsheets/d/1xML949NWzJGcvltjlquwSRIv79o13C_sfrVPAU5ci9Q/edit#gid=258442188
 
 ## Run
 
