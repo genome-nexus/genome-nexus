@@ -1,6 +1,6 @@
 # Architecture 📐
 
-![Screen Shot 2019-08-15 at 4 21 41 PM](https://user-images.githubusercontent.com/1334004/63124264-ddd1b680-bf78-11e9-9122-514330e8fcd8.png)
+![Architecture Overview](https://user-images.githubusercontent.com/1334004/63124264-ddd1b680-bf78-11e9-9122-514330e8fcd8.png)
 
 ## Backend
 

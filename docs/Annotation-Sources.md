@@ -24,16 +24,17 @@ links to documentation of those APIs to find the currently live version.
 
 ### Static annotation sources
 
-Algorithm | URL | Version | Note
+Algorithm | URL | Version
 --- | --- | ---
-VEP | https://grch37.ensembl.org/info/docs/tools/vep/index.html | grch37 | Using our own deployment of the REST API here https://grch37.rest.ensembl.org
-Cancer Hotspots | https://www.cancerhotspots.org | From paper |
-3D Hotspots | https://www.3dhotspots.org/#/home | From paper |
+VEP | https://grch37.ensembl.org/info/docs/tools/vep/index.html | grch37
+Cancer Hotspots | https://www.cancerhotspots.org | From paper
+3D Hotspots | https://www.3dhotspots.org/#/home | From paper
 
 
 VEP includes various other annotations:
 
 Source | Version (GRCh38) | Version (GRCh37)
+--- | --- | ---
 Ensembl database version | 97 | 97
 Genome assembly | GRCh38.p12 | GRCh37.p13
 GENCODE | 31 | 19
@@ -54,5 +55,6 @@ These annotation sources are pulled on the fly. The version number is not
 guaranteed given that the data is cached in the mongo database.
 
 API | URL | Note
-My Variant Info | https://myvariant.info | https://docs.myvariant.info/en/latest/doc/data.html | My Variant Info includes many annotation sources. See their website for a full listing.
-Mutation Assessor | http://mutationassessor.org/r3/ | 
+--- | --- | ---
+My Variant Info | https://myvariant.info | Includes many annotation sources, see https://docs.myvariant.info/en/latest/doc/data.html
+Mutation Assessor | http://mutationassessor.org/r3/
