@@ -2,8 +2,7 @@
 Genome Nexus aggregates variant annotation from various sources. There are two types:
 
 1. Small sized annotations are stored as static data in the mongo database
-directly, see the [genome-nexus-importer
-repo](https://github.com/genome-nexus/genome-nexus-importer) if you want to
+directly. See the [genome-nexus-importer repo](https://github.com/genome-nexus/genome-nexus-importer) if you want to
 update/change this data.
 2. For larger annotation services/databases we either run the full annotation
 service ourselves or the program pulls on the fly from other APIs and caches
