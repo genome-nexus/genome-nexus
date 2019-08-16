@@ -7,8 +7,6 @@ including databases that convert DNA changes to protein changes, predict the
 functional effects of protein mutations, and contain information about mutation
 frequencies, gene function, variant effects, and clinical actionability.
 
-![gn_figure](https://user-images.githubusercontent.com/1334004/63193491-a0822d00-c03b-11e9-8546-3293091264eb.png)
-
 ## Documentation 📖
 See the [docs](https://docs.genomenexus.org)
 
