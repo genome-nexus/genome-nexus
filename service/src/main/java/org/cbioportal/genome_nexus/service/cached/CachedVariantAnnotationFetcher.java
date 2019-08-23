@@ -6,6 +6,7 @@ import org.cbioportal.genome_nexus.persistence.VariantAnnotationRepository;
 import org.cbioportal.genome_nexus.persistence.internal.VariantAnnotationRepositoryImpl;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
+import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
 import org.cbioportal.genome_nexus.util.NaturalOrderComparator;
 import org.cbioportal.genome_nexus.service.remote.VEPDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,8 @@ public class CachedVariantAnnotationFetcher extends BaseCachedExternalResourceFe
 
     @Override
     protected Boolean isValidId(String id) {
-        return !id.contains("N") && !id.contains("-") && !id.contains("undefined") && !id.contains("g.0") && id.contains(":") && id.split(":")[1].matches(".*\\d+.*");
+        return GenomicVariantUtil.isRegion(id);
+        //return !id.contains("N") && !id.contains("-") && !id.contains("undefined") && !id.contains("g.0") && id.contains(":") && id.split(":")[1].matches(".*\\d+.*");
     }
 
     @Override

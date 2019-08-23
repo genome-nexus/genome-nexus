@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.service.*;
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
+import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
@@ -73,6 +74,10 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
     @Override
     protected String normalizeVariant(String id)
     {
+        id = this.notationConverter.hgvsNormalizer(id);
+        if (GenomicVariantUtil.isHgvs(id)) {
+            id = GenomicVariantUtil.toRegion(GenomicVariantUtil.fromHgvs(id));
+        }
         return this.notationConverter.hgvsNormalizer(id);
     }
 }
