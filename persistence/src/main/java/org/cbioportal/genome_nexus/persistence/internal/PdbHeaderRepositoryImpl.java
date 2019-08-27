@@ -5,9 +5,9 @@ import org.cbioportal.genome_nexus.model.SimpleCacheEntity;
 import org.cbioportal.genome_nexus.util.PdbHeaderParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public class PdbHeaderRepositoryImpl
@@ -25,20 +25,17 @@ public class PdbHeaderRepositoryImpl
         this.parser = parser;
     }
 
-    public PdbHeader findOne(String id)
+    @Override
+    public Optional<PdbHeader> findById(String id)
     {
-        // get the value stored in the simple cache
-        Query query = new Query();
-        query.addCriteria(Criteria.where("_id").is(id));
-
-        SimpleCacheEntity entity = this.mongoTemplate.findOne(query, SimpleCacheEntity.class, COLLECTION);
+        SimpleCacheEntity entity = this.mongoTemplate.findById(id, SimpleCacheEntity.class, COLLECTION);
+        PdbHeader instance = null;
 
         // and then map it to a PdbHeader instance to return
         if (entity != null) {
-            return this.parser.convertToInstance(entity.getValue());
+            instance = this.parser.convertToInstance(entity.getValue());
         }
-        else {
-            return null;
-        }
+
+        return Optional.ofNullable(instance);
     }
 }
