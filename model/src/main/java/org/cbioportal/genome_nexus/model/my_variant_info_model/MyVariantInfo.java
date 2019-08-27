@@ -1,10 +1,11 @@
 package org.cbioportal.genome_nexus.model.my_variant_info_model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+@Document(collection = "my_variant_info.annotation")
 public class MyVariantInfo
 {
-
     @Field(value = "hgvs")
     private String hgvs;
 
@@ -35,97 +36,83 @@ public class MyVariantInfo
     @Field(value = "gnomad_genome")
     private Gnomad gnomadGenome;
 
-    public String getHgvs()
-    {
+    public String getHgvs() {
         return hgvs;
     }
 
-    public void setHgvs(String hgvs)
-    {
+    public void setHgvs(String hgvs) {
         this.hgvs = hgvs;
     }
-    public Integer getVersion()
-    {
+
+    public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version)
-    {
+    public void setVersion(Integer version) {
         this.version = version;
     }
-    public Snpeff getSnpeff()
-    {
+
+    public Snpeff getSnpeff() {
         return snpeff;
     }
 
-    public void setSnpeff(Snpeff snpeff)
-    {
+    public void setSnpeff(Snpeff snpeff) {
         this.snpeff = snpeff;
     }
-    public Vcf getVcf()
-    {
+
+    public Vcf getVcf() {
         return vcf;
     }
 
-    public void setVcf(Vcf vcf)
-    {
+    public void setVcf(Vcf vcf) {
         this.vcf = vcf;
     }
-    public Dbsnp getDbsnp()
-    {
+
+    public Dbsnp getDbsnp() {
         return dbsnp;
     }
 
-    public void setDbsnp(Dbsnp dbsnp)
-    {
+    public void setDbsnp(Dbsnp dbsnp) {
         this.dbsnp = dbsnp;
     }
-    public Cosmic getCosmic()
-    {
+
+    public Cosmic getCosmic() {
         return cosmic;
     }
 
-    public void setCosmic(Cosmic cosmic)
-    {
+    public void setCosmic(Cosmic cosmic) {
         this.cosmic = cosmic;
     }
-    public ClinVar getClinVar()
-    {
+
+    public ClinVar getClinVar() {
         return clinVar;
     }
 
-    public void setClinVar(ClinVar clinVar)
-    {
+    public void setClinVar(ClinVar clinVar) {
         this.clinVar = clinVar;
     }
-    public Mutdb getMutdb()
-    {
+
+    public Mutdb getMutdb() {
         return mutdb;
     }
 
-    public void setMutdb(Mutdb mutdb)
-    {
+    public void setMutdb(Mutdb mutdb) {
         this.mutdb = mutdb;
     }
 
-    public Gnomad getGnomadExome()
-    {
+    public Gnomad getGnomadExome() {
         return gnomadExome;
     }
 
-    public void setGnomadExome(Gnomad gnomadExome)
-    {
+    public void setGnomadExome(Gnomad gnomadExome) {
         this.gnomadExome = gnomadExome;
     }
 
-    public Gnomad getGnomadGenome()
-    {
+    public Gnomad getGnomadGenome() {
         return gnomadGenome;
     }
 
-    public void setGnomadGenome(Gnomad gnomadGenome)
-    {
+    public void setGnomadGenome(Gnomad gnomadGenome) {
         this.gnomadGenome = gnomadGenome;
     }
-
 }
