@@ -108,9 +108,6 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
-        if (GenomicVariantUtil.isHgvs(variant)) {
-            variant = GenomicVariantUtil.toRegion(GenomicVariantUtil.fromHgvs(variant));
-        }
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
 
         return this.getVariantAnnotation(variant, postEnrichmentService);

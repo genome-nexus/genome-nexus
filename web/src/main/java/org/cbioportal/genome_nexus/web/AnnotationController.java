@@ -37,6 +37,7 @@ import io.swagger.annotations.*;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
 import org.cbioportal.genome_nexus.service.*;
 import org.cbioportal.genome_nexus.web.validation.*;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
@@ -163,7 +164,10 @@ public class AnnotationController
         @RequestParam(required = false) List<String> fields)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.hgvsAnnotationService.getAnnotation(variant, isoformOverrideSource, fields);
+        if (GenomicVariantUtil.isHgvs(variant)) {
+            variant = GenomicVariantUtil.toRegion(GenomicVariantUtil.fromHgvs(variant));
+        }
+        return this.genomicLocationAnnotationService.getAnnotation(variant, isoformOverrideSource, fields);
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of genomic locations",

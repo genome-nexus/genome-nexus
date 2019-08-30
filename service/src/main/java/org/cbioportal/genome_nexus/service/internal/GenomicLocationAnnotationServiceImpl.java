@@ -41,6 +41,7 @@ import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantRegionAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
@@ -107,8 +108,11 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
                                            List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
+        if(!GenomicVariantUtil.isRegion(genomicLocation)) {
+            genomicLocation = this.genomicLocationToVariantFormat.convert(genomicLocation);
+        }
         return this.variantAnnotationService.getAnnotation(
-            this.genomicLocationToVariantFormat.convert(genomicLocation),
+            genomicLocation,
             isoformOverrideSource,
             fields
         );
