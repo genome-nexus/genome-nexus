@@ -16,6 +16,7 @@ services:
     build: https://github.com/genome-nexus/genome-nexus-importer.git
     environment:
       - REF_ENSEMBL_VERSION=${REF_ENSEMBL_VERSION}
+      - SPECIES=${SPECIES}
     restart: always
 
   vep:
