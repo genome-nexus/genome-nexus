@@ -47,4 +47,8 @@ public class GenomicLocation
     public void setVariantAllele(String variantAllele) {
         this.variantAllele = variantAllele;
     }
+
+    public String toString() {
+        return this.getChromosome() + "," + this.getStart() + "," + this.getEnd() + "," + this.getReferenceAllele() + "," + this.getVariantAllele();
+    }
 }

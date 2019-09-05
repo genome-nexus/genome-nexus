@@ -1,6 +1,9 @@
 package org.cbioportal.genome_nexus.component.annotation;
 
 import org.cbioportal.genome_nexus.model.GenomicLocation;
+import org.cbioportal.genome_nexus.util.GenomicVariant;
+import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
@@ -9,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @Component
 public class NotationConverter
@@ -21,6 +25,25 @@ public class NotationConverter
 
     public String chromosomeNormalizer(String chromosome) {
         return chromosome.trim().replace("chr","").replace("23","X").replace("24","Y");
+    }
+
+    public GenomicLocation hgvsgToGenomicLocation(String hgvsg) {
+        GenomicLocation gl = new GenomicLocation();
+        GenomicVariant gv = GenomicVariantUtil.fromHgvs(hgvsg);
+        gl.setChromosome(gv.getChromosome());
+        gl.setStart(gv.getStart());
+        gl.setEnd(gv.getEnd());
+        gl.setReferenceAllele(gv.getRef());
+        gl.setVariantAllele(gv.getAlt());
+        return gl;
+    }
+
+    public List<GenomicLocation> hgvsgToGenomicLocations(List<String> hgvsgs) {
+        List<GenomicLocation> genomicLocations = new ArrayList();
+        for (String hgvsg : hgvsgs) {
+            genomicLocations.add(hgvsgToGenomicLocation(hgvsg));
+        }
+        return genomicLocations;
     }
 
     @Nullable

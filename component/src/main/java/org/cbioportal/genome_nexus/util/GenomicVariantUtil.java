@@ -17,7 +17,7 @@ public class GenomicVariantUtil {
         if (!isHgvs(hgvs)) {
             throw new InvalidHgvsException();
         }
-        String chr = getPattern("^\\d+(?=:)", hgvs);
+        String chr = getPattern("^.+(?=:)", hgvs);
         RefType ref_type = getRefTypeFromHgvs(hgvs);
         Integer start = Integer.parseInt(getPattern("(?<=\\.)\\d+(?=[_ATGC])", hgvs));
         Integer end = getEndFromHgvs(hgvs, start);
@@ -102,11 +102,15 @@ public class GenomicVariantUtil {
     }
 
     public static boolean isHgvs(String variant) {
-        return Pattern.matches("^[1-9][0-3]?:[cgmrp]\\.\\d+[ATCG_]\\d*[a-z>]*[ATCG]*$", variant);
+        // TODO this pattern does not include MT, just check whether g is included
+        // return Pattern.matches("^[1-9][0-9]?:[cgmrp]\\.\\d+[ATCG_]\\d*[a-z>]*[ATCG]*$", variant);
+        return variant.contains("g.");
     }
 
     public static boolean isRegion(String variant) {
-        return Pattern.matches("^\\d{1,2}:\\d+-\\d+:-?1/([ATCG]+|-)$", variant);
+        // TODO this pattern does not include MT, just check whether / is included
+        // return Pattern.matches("^\\d{1,2}:\\d+-\\d+:-?1/([ATCG]+|-)$", variant);
+        return variant.contains("/");
     }
 
     public static boolean isMafFile(String file) {
