@@ -13,7 +13,7 @@ See the [docs](https://docs.genomenexus.org)
 ## Run 💻
 
 ### Alternative 1 - run genome-nexus, mongoDB and genome-nexus-vep in docker containers
-First, set environment variables for Ensembl Release, VEP Assembly and location of VEP Cache. If these are not, the default values from `.env` will be set.
+First, set environment variables for Ensembl Release, VEP Assembly, location of VEP Cache, and species (since a mouse instalation is supported). If these are not, the default values from `.env` will be set.
 
 The reference genome and Ensembl release must be consistent with a version in [genome-nexus-importer/data/](https://github.com/genome-nexus/genome-nexus-importer/tree/master/data).
 For example `grch37_ensembl92`, `grch38_ensembl92` or `grch38_ensembl95`:
@@ -28,6 +28,10 @@ export VEP_CACHE=<local_vep_cache>
 
 # GRCh38 or GRCh37
 export VEP_ASSEMBLY=GRCh38
+```
+If you want to setup Genome Nexus for mouse, set the `SPECIES` variable to 'mus_musculus'. Also see the [docs](https://github.com/genome-nexus/genome-nexus-importer/blob/master/docs/setup-genome-nexus-mouse.md) to create a mouse database.
+```bash
+export SPECIES=mus_musculus
 ```
 
 Run docker-compose to create images and containers:
