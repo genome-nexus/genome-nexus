@@ -69,12 +69,20 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     public MyVariantInfo getMyVariantInfo(VariantAnnotation annotation)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException
     {
-        MyVariantInfo myVariantInfo = this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(annotation.getVariantId()));
+        // get hgvsg from VEP (ID might not be in hgvsg format)
+        String hgvsg = annotation.getHgvsg();
+        if (hgvsg != null)
+        {
+            MyVariantInfo myVariantInfo = this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(hgvsg));
 
-        // add original hgvs variant value too
-        myVariantInfo.setHgvs(annotation.getVariant());
+            // add original hgvsg variant value too
+            myVariantInfo.setHgvs(hgvsg);
 
-        return myVariantInfo;
+            return myVariantInfo;
+        }
+        else {
+            return null;
+        }
     }
 
     /**

@@ -17,6 +17,9 @@ public class TranscriptConsequenceMixin
     @JsonProperty(value="hgvsc", required = true)
     private String hgvsc;
 
+    @JsonProperty(value="hgvsg", required = true)
+    private String hgvsg;
+
     @JsonProperty(value="variant_allele", required = true)
     private String variantAllele;
 

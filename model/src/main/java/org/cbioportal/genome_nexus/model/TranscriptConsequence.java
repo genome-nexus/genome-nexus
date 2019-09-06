@@ -47,6 +47,7 @@ public class TranscriptConsequence
 
     private String hgvsp;
     private String hgvsc;
+    private String hgvsg;
     private String variantAllele;
     private String codons;
     private String proteinId;
@@ -110,6 +111,17 @@ public class TranscriptConsequence
     public void setHgvsc(String hgvsc)
     {
         this.hgvsc = hgvsc;
+    }
+
+    @Field(value="hgvsg")
+    public String getHgvsg()
+    {
+        return hgvsg;
+    }
+
+    public void setHgvsg(String hgvsg)
+    {
+        this.hgvsg = hgvsg;
     }
 
     @Field(value="variant_allele")

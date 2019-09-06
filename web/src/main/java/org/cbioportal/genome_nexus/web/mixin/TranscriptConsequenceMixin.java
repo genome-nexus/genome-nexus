@@ -21,6 +21,10 @@ public class TranscriptConsequenceMixin
     @ApiModelProperty(value = "HGVSc", required = false)
     private String hgvsc;
 
+    @JsonProperty(value="hgvsg", required = true)
+    @ApiModelProperty(value = "HGVSg", required = false)
+    private String hgvsg;
+
     @JsonProperty(value="variant_allele", required = true)
     @ApiModelProperty(value = "Variant allele", required = false)
     private String variantAllele;

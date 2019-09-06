@@ -270,6 +270,25 @@ public class VariantAnnotation
         return ptmAnnotation;
     }
 
+    public String getHgvsg() {
+        if (this.getVariantId().contains("g."))
+        {
+            return this.getVariantId();
+        }
+        // id is not of hgvsg format
+        else {
+            // determine hgvsg from VEP output
+            for (TranscriptConsequence ts : this.getTranscriptConsequences()) {
+                if (ts.getHgvsg() != null && !ts.getHgvsg().isEmpty()) {
+                    return ts.getHgvsg();
+                }
+
+            }
+            // TODO: check intergenic if still no hgvsg
+            return null;
+        }
+    }
+
     public void setPtmAnnotation(PtmAnnotation ptmAnnotation) {
         this.ptmAnnotation = ptmAnnotation;
     }
