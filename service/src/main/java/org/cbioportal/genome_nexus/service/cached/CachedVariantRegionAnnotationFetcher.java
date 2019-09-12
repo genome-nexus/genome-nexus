@@ -45,8 +45,8 @@ public class CachedVariantRegionAnnotationFetcher extends BaseCachedExternalReso
             (id.length() - id.replace(":","").length() == 2) &&
             // should have one /
             (id.length() - id.replace("/","").length() == 1) &&
-            // should be digit:digit-digit:1/character(s)
-            id.split(":")[0].matches("\\d+") &&
+            // should be (digit|X|Y|MT):digit-digit:1/character(s)
+            (id.split(":")[0].matches("\\d+") || id.split(":")[0].contains("X") || id.split(":")[0].contains("Y") || id.split(":")[0].contains("MT")) &&
             id.split(":")[1].split("-")[0].matches("\\d+") &&
             id.split(":")[1].split("-")[1].matches("\\d+") &&
             id.split(":")[2].startsWith("1/")

@@ -34,6 +34,7 @@ package org.cbioportal.genome_nexus.web;
 
 import io.swagger.annotations.*;
 
+import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -42,6 +43,7 @@ import org.cbioportal.genome_nexus.web.validation.*;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
@@ -60,15 +62,21 @@ public class AnnotationController
     private final VariantAnnotationService hgvsAnnotationService;
     private final VariantAnnotationService dbsnpAnnotationService;
     private final GenomicLocationAnnotationService genomicLocationAnnotationService;
+    private final NotationConverter notationConverter; 
+    private final Boolean isRegionAnnotationEnabled; 
 
     @Autowired
     public AnnotationController(VariantAnnotationService hgvsVariantAnnotationService,
                                 VariantAnnotationService dbsnpVariantAnnotationService,
-                                GenomicLocationAnnotationService genomicLocationAnnotationService)
+                                GenomicLocationAnnotationService genomicLocationAnnotationService,
+                                NotationConverter notationConverter,
+                                @Value("${gn_vep.region.url:}") String vepRegionUrl)
     {
         this.hgvsAnnotationService = hgvsVariantAnnotationService;
         this.dbsnpAnnotationService = dbsnpVariantAnnotationService;
         this.genomicLocationAnnotationService = genomicLocationAnnotationService;
+        this.notationConverter = notationConverter;
+        this.isRegionAnnotationEnabled = vepRegionUrl != null && vepRegionUrl.length() > 0;
     }
 
     // TODO remove this endpoint after all internal dependencies are resolved
@@ -143,7 +151,14 @@ public class AnnotationController
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         @RequestParam(required = false) List<String> fields)
     {
-        return this.hgvsAnnotationService.getAnnotations(variants, isoformOverrideSource, fields);
+        if (this.isRegionAnnotationEnabled && variants.size() > 0 && variants.stream().anyMatch(v -> v.contains("g.")))
+        {
+            // if any is of hgvsg format, assume all of hgvsg format
+            return this.genomicLocationAnnotationService.getAnnotations(notationConverter.hgvsgToGenomicLocations(variants), isoformOverrideSource, fields);
+        }
+        else {
+            return this.hgvsAnnotationService.getAnnotations(variants, isoformOverrideSource, fields);
+        }
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided variant",
@@ -163,7 +178,13 @@ public class AnnotationController
         @RequestParam(required = false) List<String> fields)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.hgvsAnnotationService.getAnnotation(variant, isoformOverrideSource, fields);
+        if (this.isRegionAnnotationEnabled && variant.contains("g."))
+        {
+            // convert to genomic location to be able to use VEP region 
+            return this.genomicLocationAnnotationService.getAnnotation(notationConverter.hgvsgToGenomicLocation(variant).toString(), isoformOverrideSource, fields);
+        } else {
+            return this.hgvsAnnotationService.getAnnotation(variant, isoformOverrideSource, fields);
+        }
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of genomic locations",
