@@ -13,6 +13,13 @@
     <version>1.1.1-SNAPSHOT</version>
   </parent>
 
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
   <profiles>
     <profile>
       <id>war</id>
@@ -82,6 +89,34 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <!-- unpack genome-nexus-frontend -->
+          <execution>
+            <id>unpack</id>
+            <!-- generate before copying over resources -->
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.github.genome-nexus</groupId>
+                  <artifactId>genome-nexus-frontend</artifactId>
+                  <version>87f6545d060dc89f7364503aa6ef9aaf55924934</version>
+                  <type>jar</type>
+                  <outputDirectory>src/main/resources/static</outputDirectory>
+                  <overWrite>true</overWrite>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!-- required to build an executable jar -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -128,7 +163,7 @@
                   <then>
                     <copy
                       file="src/main/resources/application.properties.EXAMPLE"
-					  tofile="src/main/resources/application.properties" />
+                      tofile="src/main/resources/application.properties" />
                   </then>
                 </if>
               </target>
@@ -154,6 +189,19 @@
           </dependency>
         </dependencies>
       </plugin>
+      <!-- don't alter static fonts -->
+      <!-- https://stackoverflow.com/questions/34037051/ -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+            <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+            <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
     </plugins>
     <resources>
       <resource>
@@ -170,9 +218,9 @@
         <directory>src/main/resources</directory>
         <filtering>false</filtering>
         <includes>
-            <!-- copy unaltered self signed ssl keys (used for dev) -->
-            <!-- https://stackoverflow.com/questions/17298126/ -->
-            <include>**/*.p12</include>
+          <!-- copy unaltered self signed ssl keys (used for dev) -->
+          <!-- https://stackoverflow.com/questions/17298126/ -->
+          <include>**/*.p12</include>
         </includes>
     </resource>
     </resources>
