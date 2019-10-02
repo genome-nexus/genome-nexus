@@ -162,7 +162,7 @@
                   <then>
                     <copy
                       file="src/main/resources/application.properties.EXAMPLE"
-					  tofile="src/main/resources/application.properties" />
+                      tofile="src/main/resources/application.properties" />
                   </then>
                 </if>
               </target>
@@ -188,6 +188,19 @@
           </dependency>
         </dependencies>
       </plugin>
+      <!-- don't alter static fonts -->
+      <!-- https://stackoverflow.com/questions/34037051/ -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+            <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+            <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
     </plugins>
     <resources>
       <resource>
@@ -204,9 +217,9 @@
         <directory>src/main/resources</directory>
         <filtering>false</filtering>
         <includes>
-            <!-- copy unaltered self signed ssl keys (used for dev) -->
-            <!-- https://stackoverflow.com/questions/17298126/ -->
-            <include>**/*.p12</include>
+          <!-- copy unaltered self signed ssl keys (used for dev) -->
+          <!-- https://stackoverflow.com/questions/17298126/ -->
+          <include>**/*.p12</include>
         </includes>
     </resource>
     </resources>
