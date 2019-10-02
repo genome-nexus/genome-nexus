@@ -97,7 +97,8 @@
           <!-- unpack genome-nexus-frontend -->
           <execution>
             <id>unpack</id>
-            <phase>prepare-package</phase>
+            <!-- generate before copying over resources -->
+            <phase>generate-resources</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
