@@ -38,16 +38,20 @@ import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -55,10 +59,11 @@ import java.util.HashSet;
 /**
  * @author Benjamin Gross
  */
+@Controller
 @SpringBootApplication(scanBasePackages = "org.cbioportal.genome_nexus") // shorthand for @Configuration, @EnableAutoConfiguration, @ComponentScan
 @EnableCaching
 @EnableSwagger2 // enable swagger2 documentation
-public class GenomeNexusAnnotation extends SpringBootServletInitializer
+public class GenomeNexusAnnotation extends SpringBootServletInitializer implements ErrorController
 {
     public static void main(String[] args)
     {
@@ -109,6 +114,18 @@ public class GenomeNexusAnnotation extends SpringBootServletInitializer
             .licenseUrl("https://github.com/cBioPortal/genome-nexus/blob/master/LICENSE")
             .version("2.0")
             .build();
+    }
+
+    private static final String PATH = "/error";
+
+    @RequestMapping(value = PATH)
+    public String error() {
+        return "forward:/";
+    }
+
+    @Override
+    public String getErrorPath() {
+        return PATH;
     }
 
 }
