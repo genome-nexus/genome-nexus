@@ -107,7 +107,7 @@
                 <artifactItem>
                   <groupId>com.github.inodb</groupId>
                   <artifactId>genome-nexus-frontend</artifactId>
-                  <version>fix-api-root-SNAPSHOT</version>
+                  <version>0a61d3b1ea1346e6260a500f80046b64a2d4f594</version>
                   <type>jar</type>
                   <outputDirectory>src/main/resources/static</outputDirectory>
                   <overWrite>true</overWrite>
