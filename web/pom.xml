@@ -105,9 +105,9 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>com.github.leexgh</groupId>
+                  <groupId>com.github.inodb</groupId>
                   <artifactId>genome-nexus-frontend</artifactId>
-                  <version>fb2384d0b94583dbe06b6d5c96f3e3b3ff2fe21a</version>
+                  <version>fix-api-root-SNAPSHOT</version>
                   <type>jar</type>
                   <outputDirectory>src/main/resources/static</outputDirectory>
                   <overWrite>true</overWrite>
