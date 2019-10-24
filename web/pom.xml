@@ -105,9 +105,9 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>com.github.genome-nexus</groupId>
+                  <groupId>com.github.leexgh</groupId>
                   <artifactId>genome-nexus-frontend</artifactId>
-                  <version>6f3a35e789e720cf5385e4324b40ebeebc03d471</version>
+                  <version>fb2384d0b94583dbe06b6d5c96f3e3b3ff2fe21a</version>
                   <type>jar</type>
                   <outputDirectory>src/main/resources/static</outputDirectory>
                   <overWrite>true</overWrite>
