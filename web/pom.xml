@@ -105,9 +105,9 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>com.github.inodb</groupId>
+                  <groupId>com.github.genome-nexus</groupId>
                   <artifactId>genome-nexus-frontend</artifactId>
-                  <version>0a61d3b1ea1346e6260a500f80046b64a2d4f594</version>
+                  <version>2473ab9675d9f927b1894f3c3e36741290967f54</version>
                   <type>jar</type>
                   <outputDirectory>src/main/resources/static</outputDirectory>
                   <overWrite>true</overWrite>
