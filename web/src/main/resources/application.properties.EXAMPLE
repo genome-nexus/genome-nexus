@@ -45,3 +45,6 @@ server.compression.mime-types=application/json,application/xml,text/html,text/xm
 
 # increase the header size limitation
 server.max-http-header-size=10000000
+
+# include full git info in /actuator/info endpoint
+management.info.git.mode=full

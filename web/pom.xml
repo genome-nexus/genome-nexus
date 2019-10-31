@@ -125,10 +125,15 @@
         <executions>
           <execution>
             <goals>
+              <goal>build-info</goal>
               <goal>repackage</goal>
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
       </plugin>
       <!-- copy maven project properties to system variables -->
       <plugin>
