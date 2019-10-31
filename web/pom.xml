@@ -134,6 +134,10 @@
       <plugin>
         <groupId>pl.project13.maven</groupId>
         <artifactId>git-commit-id-plugin</artifactId>
+        <!-- heroku unf does not have git directory available, so ignore -->
+        <configuration>
+          <failOnNoGitDirectory>false</failOnNoGitDirectory>
+        </configuration>
       </plugin>
       <!-- copy maven project properties to system variables -->
       <plugin>
