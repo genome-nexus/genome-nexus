@@ -32,32 +32,39 @@
 
 package org.cbioportal.genome_nexus.service.internal;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.service.EnrichmentService;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Benjamin Gross
  */
 @Service
-public class VEPEnrichmentService implements EnrichmentService
-{
+public class VEPEnrichmentService implements EnrichmentService {
+    private static final Log LOG = LogFactory.getLog(VEPEnrichmentService.class);
     private Map<String, AnnotationEnricher> enrichers;
 
     @Override
-    public void enrichAnnotation(VariantAnnotation variantAnnotation)
-    {
+    public void enrichAnnotation(VariantAnnotation variantAnnotation) {
         // modify JSON returned by VEP
-        if (enrichers != null)
-        {
-            for (AnnotationEnricher enricher: enrichers.values())
-            {
-                enricher.enrich(variantAnnotation);
+        if (enrichers != null) {
+            Iterator<Entry<String, AnnotationEnricher>> it = enrichers.entrySet().iterator();
+            while (it.hasNext()) {
+                Entry<String, AnnotationEnricher> enricher = it.next();
+                try {
+                    enricher.getValue().enrich(variantAnnotation);
+                } catch (Exception e) {
+                    LOG.warn("Failed to enrich with " + enricher.getKey() + ": " + variantAnnotation.getVariant() + " " + e.getLocalizedMessage());
+                }
             }
         }
     }
