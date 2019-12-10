@@ -211,6 +211,16 @@ public class VariantClassificationResolver
         variantMap.put("intergenic_region",             "IGR");
         variantMap.put("upstream_gene_variant",         "5'Flank");
         variantMap.put("downstream_gene_variant",       "3'Flank");
+        variantMap.put("splicing",                      "Splice_Region");
+        variantMap.put("nonframeshift_insertion",       "In_Frame_Ins");
+        variantMap.put("frameshift_insertion",          "Frame_Shift_Ins");
+        variantMap.put("stopgain_SNV",                  "Nonsense_Mutation");
+        variantMap.put("frameshift_deletion",           "Frame_Shift_Del");
+        variantMap.put("stoploss_SNV",                  "Nonstop_Mutation");
+        variantMap.put("upstream",                      "5'Flank");
+        variantMap.put("nonframeshift_deletion",        "In_Frame_Del");
+        variantMap.put("nonsynonymous_SNV",             "Missense_Mutation");
+
 
         return variantMap;
     }
