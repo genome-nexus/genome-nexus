@@ -107,11 +107,20 @@ public class GenomeNexusAnnotation extends SpringBootServletInitializer implemen
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             .title("Genome Nexus API")
-            .description("Genome Nexus Variant Annotation API")
+            .description("This page shows how to use HTTP requests to " +
+                    "access the Genome Nexus API. There are more high level " +
+                    "clients available in Python, R, JavaScript, TypeScript " +
+                    "and various other languages as well as a command line " +
+                    "client to annotate MAF and VCF. See " +
+                    "https://docs.genomenexus.org/api.\n\nAside from " +
+                    "programmatic clients there are web based tools to annotate " +
+                    "variants, see https://docs.genomenexus.org/tools.\n\n " +
+                    "We currently only provide long-term support for the " +
+                    "'/annotation' endpoint. The other endpoints might " +
+                    "change.")
             //.termsOfServiceUrl("http://terms-of-service-url")
-            .contact("CMO, MSKCC")
-            .license("GNU AFFERO GENERAL PUBLIC LICENSE Version 3")
-            .licenseUrl("https://github.com/cBioPortal/genome-nexus/blob/master/LICENSE")
+            .license("MIT License")
+            .licenseUrl("https://github.com/genome-nexus/genome-nexus/blob/master/LICENSE")
             .version("2.0")
             .build();
     }
