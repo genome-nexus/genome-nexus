@@ -7,3 +7,14 @@ https://www.genomenexus.org/swagger-ui.html.
 For access through Python/R see the notebooks here:
 
 https://github.com/genome-nexus/genome-nexus/tree/master/notebooks
+
+## Command Line Clients
+There are two Command Line Clients available. One written in NodeJS which provides a simple user-friendly interface:
+
+https://github.com/genome-nexus/genome-nexus-cli
+
+There is also a Java Command Line Client which has been developed with a focus on internal processes at Memorial Sloan Kettering Cancer Center but might work for your use case as well:
+
+https://github.com/genome-nexus/genome-nexus-annotation-pipeline
+
+They are similar in terms of feature completeness
