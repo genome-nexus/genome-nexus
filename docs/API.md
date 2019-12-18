@@ -24,4 +24,4 @@ They are similar in terms of feature completeness
 The API follows the Swagger/Open API specification, so clients can be generated in most languages: https://openapi-generator.tech/docs/generators
 
 ## Applications build on top of the API
-See the [tools section](/tools)
+See the [tools section](Tools.md)
