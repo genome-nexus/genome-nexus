@@ -18,3 +18,7 @@ There is also a Java Command Line Client which has been developed with a focus o
 https://github.com/genome-nexus/genome-nexus-annotation-pipeline
 
 They are similar in terms of feature completeness
+
+## Other Languages
+
+The API follows the Swagger/Open API specification, so clients can be generated in most languages: https://openapi-generator.tech/docs/generators
