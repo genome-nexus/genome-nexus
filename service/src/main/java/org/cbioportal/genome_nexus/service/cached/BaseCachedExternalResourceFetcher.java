@@ -8,6 +8,7 @@ import org.cbioportal.genome_nexus.service.CachedExternalResourceFetcher;
 import org.cbioportal.genome_nexus.service.ExternalResourceFetcher;
 import org.cbioportal.genome_nexus.service.ResourceTransformer;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
+import org.cbioportal.genome_nexus.util.NaturalOrderComparator;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -200,14 +201,15 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         }
     }
 
-    protected List<Set<String>> generateChunks(Set<String> needToFetch)
+    protected List<LinkedHashSet<String>> generateChunks(Set<String> needToFetch)
     {
-        List<Set<String>> chunks = new ArrayList<>();
-        List<String> list = new ArrayList<>(needToFetch);
+        List<LinkedHashSet<String>> chunks = new ArrayList<>();
+        List<String> sortedUncachedRegions = new ArrayList<>(needToFetch);
+        Collections.sort(sortedUncachedRegions, new NaturalOrderComparator());
 
         // chunk size should be at most maxPageSize
-        for (int i = 0; i < list.size(); i += this.maxPageSize) {
-            chunks.add(new LinkedHashSet<>(list.subList(i, Math.min(list.size(), i + this.maxPageSize))));
+        for (int i = 0; i < sortedUncachedRegions.size(); i += this.maxPageSize) {
+            chunks.add(new LinkedHashSet<>(sortedUncachedRegions.subList(i, Math.min(sortedUncachedRegions.size(), i + this.maxPageSize))));
         }
 
         return chunks;

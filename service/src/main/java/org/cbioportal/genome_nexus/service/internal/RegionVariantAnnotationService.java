@@ -44,7 +44,7 @@ import org.springframework.beans.factory.annotation.*;
 @Service
 public class RegionVariantAnnotationService extends BaseVariantAnnotationServiceImpl
 {
-    private static final Log LOG = LogFactory.getLog(DbsnpVariantAnnotationService.class);
+    private static final Log LOG = LogFactory.getLog(RegionVariantAnnotationService.class);
 
     @Autowired
     public RegionVariantAnnotationService(CachedVariantRegionAnnotationFetcher cachedVariantRegionAnnotationFetcher,
