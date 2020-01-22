@@ -7,7 +7,7 @@ import org.cbioportal.genome_nexus.model.CountByTumorType;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class InsightMutationMixin
+public class SignalMutationMixin
 {
     @ApiModelProperty("Hugo Gene Symbol")
     private String hugoGeneSymbol;

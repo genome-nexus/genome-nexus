@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
-public class InsightMutationFilter
+public class SignalMutationFilter
 {
     @ApiModelProperty(value = EnsemblFilter.HUGO_SYMBOL_DESC)
     private List<String> hugoSymbols;
