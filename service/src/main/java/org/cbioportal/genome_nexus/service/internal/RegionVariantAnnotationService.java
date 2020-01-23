@@ -55,7 +55,8 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
                                           @Lazy MutationAssessorService mutationAssessorService,
                                           @Lazy MyVariantInfoService myVariantInfoService,
                                           @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
-                                          @Lazy PostTranslationalModificationService postTranslationalModificationService)
+                                          @Lazy PostTranslationalModificationService postTranslationalModificationService,
+                                          @Lazy OncokbService oncokbService)
     {
         super(cachedVariantRegionAnnotationFetcher,
             isoformOverrideService,
@@ -63,6 +64,7 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
             mutationAssessorService,
             myVariantInfoService,
             variantAnnotationSummaryService,
-            postTranslationalModificationService);
+            postTranslationalModificationService,
+            oncokbService);
     }
 }

@@ -75,6 +75,10 @@ public class VariantAnnotationMixin {
     @ApiModelProperty(value = "Post Translational Modifications", required = false)
     private PtmAnnotation ptmAnnotation;
 
+    @JsonProperty(value="oncokb", required = true)
+    @ApiModelProperty(value = "Oncokb", required = false)
+    private OncokbAnnotation oncokbAnnotation;
+
     @JsonProperty(value="annotation_summary", required = true)
     @ApiModelProperty(value = "Variant Annotation Summary", required = false)
     private VariantAnnotationSummary annotationSummary;

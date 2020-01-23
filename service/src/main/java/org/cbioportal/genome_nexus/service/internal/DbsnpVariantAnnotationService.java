@@ -55,7 +55,8 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
                                          @Lazy MutationAssessorService mutationAssessorService,
                                          @Lazy MyVariantInfoService myVariantInfoService,
                                          @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
-                                         @Lazy PostTranslationalModificationService postTranslationalModificationService)
+                                         @Lazy PostTranslationalModificationService postTranslationalModificationService,
+                                         @Lazy OncokbService oncokbService)
     {
         super(cachedVariantIdAnnotationFetcher,
             isoformOverrideService,
@@ -63,6 +64,7 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
             mutationAssessorService,
             myVariantInfoService,
             variantAnnotationSummaryService,
-            postTranslationalModificationService);
+            postTranslationalModificationService,
+            oncokbService);
     }
 }

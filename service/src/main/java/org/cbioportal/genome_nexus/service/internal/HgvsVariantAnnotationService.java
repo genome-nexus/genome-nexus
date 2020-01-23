@@ -57,7 +57,8 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
                                         @Lazy MutationAssessorService mutationAssessorService,
                                         @Lazy MyVariantInfoService myVariantInfoService,
                                         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
-                                        @Lazy PostTranslationalModificationService postTranslationalModificationService)
+                                        @Lazy PostTranslationalModificationService postTranslationalModificationService,
+                                        @Lazy OncokbService oncokbService)
     {
         super(cachedVariantAnnotationFetcher,
             isoformOverrideService,
@@ -65,7 +66,8 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
             mutationAssessorService,
             myVariantInfoService,
             variantAnnotationSummaryService,
-            postTranslationalModificationService);
+            postTranslationalModificationService,
+            oncokbService);
 
         this.notationConverter = notationConverter;
     }

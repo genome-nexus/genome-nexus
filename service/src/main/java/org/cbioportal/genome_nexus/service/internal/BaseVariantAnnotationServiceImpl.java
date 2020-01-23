@@ -48,6 +48,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,6 +64,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     private final VariantAnnotationSummaryService variantAnnotationSummaryService;
     private final MyVariantInfoService myVariantInfoService;
     private final PostTranslationalModificationService postTranslationalModificationService;
+    private final OncokbService oncokbService;
 
     public BaseVariantAnnotationServiceImpl(BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher,
                                             IsoformOverrideService isoformOverrideService,
@@ -70,7 +72,8 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
                                             MutationAssessorService mutationAssessorService,
                                             MyVariantInfoService myVariantInfoService,
                                             VariantAnnotationSummaryService variantAnnotationSummaryService,
-                                            PostTranslationalModificationService postTranslationalModificationService)
+                                            PostTranslationalModificationService postTranslationalModificationService,
+                                            OncokbService oncokbService)
     {
         this.resourceFetcher = resourceFetcher;
         this.isoformOverrideService = isoformOverrideService;
@@ -79,6 +82,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         this.variantAnnotationSummaryService = variantAnnotationSummaryService;
         this.myVariantInfoService = myVariantInfoService;
         this.postTranslationalModificationService = postTranslationalModificationService;
+        this.oncokbService = oncokbService;
     }
 
     // Needs to be overridden to support normalizing variants
@@ -104,18 +108,18 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     }
 
     @Override
-    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, List<String> fields)
+    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
-        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
+        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields, token);
 
         return this.getVariantAnnotation(variant, postEnrichmentService);
     }
 
     @Override
-    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, List<String> fields)
+    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<String> fields)
     {
-        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields);
+        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields, token);
 
         return this.getVariantAnnotations(
             variants,
@@ -227,7 +231,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     }
 
 
-    private EnrichmentService initPostEnrichmentService(String isoformOverrideSource, List<String> fields)
+    private EnrichmentService initPostEnrichmentService(String isoformOverrideSource, List<String> fields, Map<String, String> token)
     {
         // The post enrichment service enriches the annotation after saving
         // the original annotation data to the repository. Any enrichment
@@ -266,6 +270,16 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         {
             AnnotationEnricher enricher = new PostTranslationalModificationEnricher(postTranslationalModificationService);
             postEnrichmentService.registerEnricher("ptm", enricher);
+        }
+
+        if (fields != null && fields.contains("oncokb"))
+        {
+            String oncokbToken = null;
+            if (token != null && token.containsKey("oncokb")) {
+                oncokbToken = token.get("oncokb");
+            }
+            AnnotationEnricher enricher = new OncokbAnnotationEnricher(oncokbService, variantAnnotationSummaryService, oncokbToken);
+            postEnrichmentService.registerEnricher("oncokb", enricher);
         }
 
         if (fields != null && fields.contains("annotation_summary"))

@@ -38,6 +38,7 @@ import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.util.TokenMapConverter;
 import org.cbioportal.genome_nexus.service.*;
 import org.cbioportal.genome_nexus.web.validation.*;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
+import org.cbioportal.genome_nexus.util.TokenMapConverter;
 
 import java.util.*;
 
@@ -64,7 +66,7 @@ public class AnnotationController
     private final GenomicLocationAnnotationService genomicLocationAnnotationService;
     private final NotationConverter notationConverter; 
     private final Boolean isRegionAnnotationEnabled; 
-
+    private final TokenMapConverter tokenMapConverter;
     @Autowired
     public AnnotationController(VariantAnnotationService hgvsVariantAnnotationService,
                                 VariantAnnotationService dbsnpVariantAnnotationService,
@@ -77,6 +79,7 @@ public class AnnotationController
         this.genomicLocationAnnotationService = genomicLocationAnnotationService;
         this.notationConverter = notationConverter;
         this.isRegionAnnotationEnabled = vepRegionUrl != null && vepRegionUrl.length() > 0;
+        this.tokenMapConverter = new TokenMapConverter();
     }
 
     // TODO remove this endpoint after all internal dependencies are resolved
@@ -99,11 +102,15 @@ public class AnnotationController
             required = false)
         String isoformOverrideSource,
         @RequestParam(required = false)
+        @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}",
+            required = false)
+            String token,
+        @RequestParam(required = false)
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         List<String> fields)
     {
-        return this.fetchVariantAnnotationPOST(variants, isoformOverrideSource, fields);
+        return this.fetchVariantAnnotationPOST(variants, isoformOverrideSource, token, fields);
     }
 
     // TODO remove this endpoint after all internal dependencies are resolved
@@ -125,12 +132,16 @@ public class AnnotationController
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
             String isoformOverrideSource,
+        @RequestParam(required = false) 
+        @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}",
+            required = false)
+            String token,
         @RequestParam(required = false)
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
             List<String> fields)
     {
-        return fetchVariantAnnotationPOST(variants, isoformOverrideSource, fields);
+        return fetchVariantAnnotationPOST(variants, isoformOverrideSource, token, fields);
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of variants",
@@ -147,6 +158,9 @@ public class AnnotationController
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
         @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}",
+            required = false)
+        @RequestParam(required = false) String token,
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         @RequestParam(required = false) List<String> fields)
@@ -154,10 +168,10 @@ public class AnnotationController
         if (this.isRegionAnnotationEnabled && variants.size() > 0 && variants.stream().anyMatch(v -> v.contains("g.")))
         {
             // if any is of hgvsg format, assume all of hgvsg format
-            return this.genomicLocationAnnotationService.getAnnotations(notationConverter.hgvsgToGenomicLocations(variants), isoformOverrideSource, fields);
+            return this.genomicLocationAnnotationService.getAnnotations(notationConverter.hgvsgToGenomicLocations(variants), isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
         }
         else {
-            return this.hgvsAnnotationService.getAnnotations(variants, isoformOverrideSource, fields);
+            return this.hgvsAnnotationService.getAnnotations(variants, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
         }
     }
 
@@ -173,6 +187,9 @@ public class AnnotationController
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
         @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}",
+            required = false)
+        @RequestParam(required = false) String token,
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         @RequestParam(required = false) List<String> fields)
@@ -181,9 +198,9 @@ public class AnnotationController
         if (this.isRegionAnnotationEnabled && variant.contains("g."))
         {
             // convert to genomic location to be able to use VEP region 
-            return this.genomicLocationAnnotationService.getAnnotation(notationConverter.hgvsgToGenomicLocation(variant).toString(), isoformOverrideSource, fields);
+            return this.genomicLocationAnnotationService.getAnnotation(notationConverter.hgvsgToGenomicLocation(variant).toString(), isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
         } else {
-            return this.hgvsAnnotationService.getAnnotation(variant, isoformOverrideSource, fields);
+            return this.hgvsAnnotationService.getAnnotation(variant, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
         }
     }
 
@@ -199,12 +216,15 @@ public class AnnotationController
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
         @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}",
+            required = false)
+        @RequestParam(required = false) String token,
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         @RequestParam(required = false) List<String> fields)
     {
         return this.genomicLocationAnnotationService.getAnnotations(
-            genomicLocations, isoformOverrideSource, fields);
+            genomicLocations, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided genomic location",
@@ -219,12 +239,15 @@ public class AnnotationController
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
         @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}",
+            required = false)
+        @RequestParam(required = false) String token,
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
             "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
         @RequestParam(required = false) List<String> fields)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.genomicLocationAnnotationService.getAnnotation(genomicLocation, isoformOverrideSource, fields);
+        return this.genomicLocationAnnotationService.getAnnotation(genomicLocation, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of dbSNP ids",
@@ -238,12 +261,15 @@ public class AnnotationController
         @RequestBody List<String> variantIds,
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
-            @RequestParam(required = false) String isoformOverrideSource,
+        @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}",
+            required = false)
+        @RequestParam(required = false) String token,
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
             "For example: annotation_summary", required = false, defaultValue = "annotation_summary")
         @RequestParam(required = false) List<String> fields)
     {
-        return this.dbsnpAnnotationService.getAnnotations(variantIds, isoformOverrideSource, fields);
+        return this.dbsnpAnnotationService.getAnnotations(variantIds, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the give dbSNP id",
@@ -258,12 +284,15 @@ public class AnnotationController
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
         @RequestParam(required = false) String isoformOverrideSource,
+        @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}",
+            required = false)
+        @RequestParam(required = false) String token,
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
             "For example: annotation_summary", required = false, defaultValue = "annotation_summary")
         @RequestParam(required = false) List<String> fields)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.dbsnpAnnotationService.getAnnotation(variantId, isoformOverrideSource, fields);
+        return this.dbsnpAnnotationService.getAnnotation(variantId, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
     }
 
 }

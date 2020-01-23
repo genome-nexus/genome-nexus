@@ -59,7 +59,7 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(AlleleFrequency.class, AlleleFrequencyMixin.class);
         mixinMap.put(IntergenicConsequences.class, IntergenicConsequencesMixin.class);
         mixinMap.put(SignalMutation.class, SignalMutationMixin.class);
-        mixinMap.put(CountByTumorType.class, CountByTumorType.class);
+        mixinMap.put(CountByTumorType.class, CountByTumorTypeMixin.class);
         super.setMixIns(mixinMap);
     }
 }

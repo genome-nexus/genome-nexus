@@ -148,13 +148,13 @@ public class VariantAnnotationServiceTest
         fields.add("mutation_assessor");
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", null, fields);
+            "7:g.140453136A>T", null, null, fields);
 
         assertEquals(maMockData.get("7,140453136,A,T"),
             annotation1.getMutationAssessorAnnotation().getAnnotation());
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
-            "12:g.25398285C>A", null, fields);
+            "12:g.25398285C>A", null, null, fields);
 
         assertEquals(maMockData.get("12,25398285,C,A"),
             annotation2.getMutationAssessorAnnotation().getAnnotation());
@@ -178,13 +178,13 @@ public class VariantAnnotationServiceTest
         fields.add("my_variant_info");
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", null, fields);
+            "7:g.140453136A>T", null, null, fields);
 
         assertEquals(mviMockData.get("7:g.140453136A>T"),
             annotation1.getMyVariantInfoAnnotation().getAnnotation());
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
-            "12:g.25398285C>A", null, fields);
+            "12:g.25398285C>A", null, null, fields);
 
         assertEquals(mviMockData.get("12:g.25398285C>A"),
             annotation2.getMyVariantInfoAnnotation().getAnnotation());
@@ -206,13 +206,13 @@ public class VariantAnnotationServiceTest
         fields.add("ptms");
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", null, fields);
+            "7:g.140453136A>T", null, null, fields);
 
         assertEquals(ptmMockData.get("ENST00000288602"),
             annotation1.getPtmAnnotation().getAnnotation().get(0));
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
-            "12:g.25398285C>A", null, fields);
+            "12:g.25398285C>A", null, null, fields);
 
         assertEquals(ptmMockData.get("ENST00000256078"),
             annotation2.getPtmAnnotation().getAnnotation().get(0));
@@ -235,13 +235,13 @@ public class VariantAnnotationServiceTest
         fields.add("hotspots");
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", null, fields);
+            "7:g.140453136A>T", null, null, fields);
 
         assertEquals(hotspotMockData.get("ENST00000288602"),
             annotation1.getHotspotAnnotation().getAnnotation().get(0));
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
-            "12:g.25398285C>A", null, fields);
+            "12:g.25398285C>A", null, null, fields);
 
         assertEquals(hotspotMockData.get("ENST00000256078"),
             annotation2.getHotspotAnnotation().getAnnotation().get(0));
@@ -259,14 +259,14 @@ public class VariantAnnotationServiceTest
         this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", "mskcc", null);
+            "7:g.140453136A>T", "mskcc", null, null);
 
         // first transcript of this annotation should be marked as canonical, the second one should NOT be marked
         assertEquals("1", annotation1.getTranscriptConsequences().get(0).getCanonical());
         assertEquals(null, annotation1.getTranscriptConsequences().get(1).getCanonical());
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
-            "7:g.140453136A>T", "uniprot", null);
+            "7:g.140453136A>T", "uniprot", null, null);
 
         // second transcript of this annotation should be marked as canonical, the first one should NOT be marked
         assertEquals(null, annotation2.getTranscriptConsequences().get(0).getCanonical());

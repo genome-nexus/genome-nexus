@@ -37,6 +37,7 @@ import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundEx
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Benjamin Gross
@@ -46,7 +47,7 @@ public interface VariantAnnotationService
     VariantAnnotation getAnnotation(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
     List<VariantAnnotation> getAnnotations(List<String> variants);
-    VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, List<String> fields)
+    VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
-    List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, List<String> fields);
+    List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<String> fields);
 }
