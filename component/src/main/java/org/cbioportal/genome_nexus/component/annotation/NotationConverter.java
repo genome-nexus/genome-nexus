@@ -297,8 +297,14 @@ public class NotationConverter
     public List<String> genomicToHgvs(List<GenomicLocation> genomicLocations)
     {
         List<String> hgvsList = new ArrayList<>();
-        hgvsList.addAll(this.genomicToHgvsMap(genomicLocations).keySet());
-
+        
+        for (GenomicLocation location : genomicLocations) { 
+            String hgvs = this.genomicToHgvs(location);
+            if (hgvs != null) {
+                hgvsList.add(hgvs);
+            }
+        }
+        
         return hgvsList;
     }
 
@@ -322,7 +328,12 @@ public class NotationConverter
     public List<String> genomicToEnsemblRestRegion(List<GenomicLocation> genomicLocations)
     {
         List<String> ensemblRestRegionsList = new ArrayList<>();
-        ensemblRestRegionsList.addAll(this.genomicToEnsemblRestRegionMap(genomicLocations).keySet());
+        for (GenomicLocation location : genomicLocations) { 
+            String ensemblRestRegion = this.genomicToEnsemblRestRegion(location);
+            if (ensemblRestRegion != null) {
+                ensemblRestRegionsList.add(ensemblRestRegion);
+            }
+        }
 
         return ensemblRestRegionsList;
     }

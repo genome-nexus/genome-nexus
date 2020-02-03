@@ -14,7 +14,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,14 +80,12 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 "Will not attempt to store variant in Mongo database.");
             saveRawValue = false;
         }
-
         if (!instance.isPresent())
         {
             // get the annotation from the web service and save it to the DB
             try {
                 // get the raw annotation string from the web service
                 DBObject rawValue = this.fetcher.fetchRawValue(id);
-
                 // construct an instance to return:
                 // this does not contain all the information obtained from the web service
                 // only the fields mapped to the VariantAnnotation model will be returned
@@ -121,7 +118,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         }
     }
 
-    public List<T> fetchAndCache(List<String> ids) throws ResourceMappingException
+    public Map<String, T> constructFetchedMap(List<String> ids) throws ResourceMappingException
     {
         boolean saveValues = true;
         Set<String> uniqueIds = new LinkedHashSet<>(ids);
@@ -150,13 +147,17 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
 
         // also remove invalid ids
         needToFetch = needToFetch.stream().filter(this::isValidId).collect(Collectors.toSet());
-
         // fetch missing instances
         if (needToFetch.size() > 0) {
             // get the annotation from the web service and save it to the DB
             this.fetchAndCache(needToFetch, idToInstance, saveValues);
         }
+        return idToInstance;
+    }
 
+    public List<T> fetchAndCache(List<String> ids) throws ResourceMappingException
+    {
+        Map<String, T> idToInstance = constructFetchedMap(ids);
         Collection<T> values = idToInstance.values();
         values.removeIf(Objects::isNull);
 

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class CachedVariantIdAnnotationFetcher extends BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository>
+public class CachedVariantIdAnnotationFetcher extends BaseCachedVariantAnnotationFetcher
 {
     @Autowired
     public CachedVariantIdAnnotationFetcher(ExternalResourceTransformer<VariantAnnotation> transformer,
@@ -34,25 +34,6 @@ public class CachedVariantIdAnnotationFetcher extends BaseCachedExternalResource
     protected Boolean isValidId(String id) 
     {
         return id.matches("rs\\d+") || id.matches("COSM\\d+");
-    }
-
-    @Override
-    protected String extractId(VariantAnnotation instance)
-    {
-        return instance.getVariantId();
-    }
-
-    @Override
-    protected String extractId(DBObject dbObject)
-    {
-        return (String)dbObject.get("input");
-    }
-
-    @Override
-    public List<VariantAnnotation> fetchAndCache(List<String> ids) throws ResourceMappingException
-    {
-        List<VariantAnnotation> annotations = super.fetchAndCache(ids);
-        return annotations;
     }
 
     @Override

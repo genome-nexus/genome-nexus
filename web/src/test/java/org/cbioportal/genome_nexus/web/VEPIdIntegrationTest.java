@@ -59,7 +59,7 @@ public class VEPIdIntegrationTest
 
         // for each dbsnpid we should have one matching variantannotation
         // instance, except the invalid one
-        assertEquals(dbSNPIds.length -1, anns.length);
+        assertEquals(dbSNPIds.length, anns.length);
 
         // GET and POST requests should return exact same dbsnp ids
         assertEquals(dbSNPIds[0], anns[0].getVariant());

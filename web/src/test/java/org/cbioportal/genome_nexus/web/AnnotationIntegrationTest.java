@@ -67,12 +67,17 @@ public class AnnotationIntegrationTest
         //////////////////
 
         // for each variant we should have one matching instance, except the invalid one 
-        assertEquals(variants.length - 1, this.fetchVariantAnnotationPOST(variants).size());
+        assertEquals(variants.length, this.fetchVariantAnnotationPOST(variants).size());
 
         String variantAllele0 = ((HashMap)((ArrayList) this.fetchVariantAnnotationPOST(variants).get(0).get("intergenic_consequences")).get(0)).get("variantAllele").toString();
         // the Get and Post should have same result
         assertEquals(variantAllele, variantAllele0);
-
+        
+        Boolean validAnnotatedFlag = ((Boolean) this.fetchVariantAnnotationPOST(variants).get(1).get("successfully_annotated"));
+        assertEquals(validAnnotatedFlag, true);
+        
+        Boolean invalidAnnotatedFlag = ((Boolean) this.fetchVariantAnnotationPOST(variants).get(2).get("successfully_annotated"));
+        assertEquals(invalidAnnotatedFlag, false);
     }
 
     @Test
