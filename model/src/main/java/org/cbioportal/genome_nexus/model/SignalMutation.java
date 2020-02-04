@@ -5,8 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
-@Document(collection="insight.mutation")
-public class InsightMutation
+@Document(collection="signal.mutation")
+public class SignalMutation
 {
     @Field("hugo_gene_symbol")
     private String hugoGeneSymbol;
