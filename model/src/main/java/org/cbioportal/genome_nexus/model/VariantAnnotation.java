@@ -68,6 +68,7 @@ public class VariantAnnotation
     private MyVariantInfoAnnotation myVariantInfoAnnotation;
     private HotspotAnnotation hotspotAnnotation;
     private PtmAnnotation ptmAnnotation;
+    private OncokbAnnotation oncokbAnnotation;
     private VariantAnnotationSummary annotationSummary;
 
     private Map<String, Object> dynamicProps;
@@ -291,6 +292,14 @@ public class VariantAnnotation
 
     public void setPtmAnnotation(PtmAnnotation ptmAnnotation) {
         this.ptmAnnotation = ptmAnnotation;
+    }
+
+    public OncokbAnnotation getOncokbAnnotation() {
+        return oncokbAnnotation;
+    }
+
+    public void setOncokbAnnotation(OncokbAnnotation oncokbAnnotation) {
+        this.oncokbAnnotation = oncokbAnnotation;
     }
 
     public void setDynamicProp(String key, Object value)

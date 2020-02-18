@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnnotationService
@@ -104,12 +105,14 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     @Override
     public VariantAnnotation getAnnotation(String genomicLocation,
                                            String isoformOverrideSource,
+                                           Map<String, String> token,
                                            List<String> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         return this.variantAnnotationService.getAnnotation(
             this.genomicLocationToVariantFormat.convert(genomicLocation),
             isoformOverrideSource,
+            token,
             fields
         );
     }
@@ -117,11 +120,13 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     @Override
     public List<VariantAnnotation> getAnnotations(List<GenomicLocation> genomicLocations,
                                                                     String isoformOverrideSource,
+                                                                    Map<String, String> token,
                                                                     List<String> fields)
     {
         return this.variantAnnotationService.getAnnotations(
             this.genomicLocationsToVariantFormats.convert(genomicLocations),
             isoformOverrideSource,
+            token,
             fields
         );
     }
