@@ -40,12 +40,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-          <groupId>com.github.leexgh.oncokb-java-api-client</groupId>
+          <groupId>com.github.genome-nexus.oncokb-java-api-client</groupId>
           <artifactId>oncokbPublicApiClient</artifactId>
           <version>fb669f193ba0ad2791b4e2f2680225aa892498f1</version>
         </dependency>
         <dependency>
-          <groupId>com.github.leexgh.oncokb-java-api-client</groupId>
+          <groupId>com.github.genome-nexus.oncokb-java-api-client</groupId>
           <artifactId>oncokbPremiumApiClient</artifactId>
           <version>fb669f193ba0ad2791b4e2f2680225aa892498f1</version>
         </dependency>
