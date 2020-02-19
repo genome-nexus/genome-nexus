@@ -42,12 +42,12 @@
         <dependency>
           <groupId>com.github.genome-nexus.oncokb-java-api-client</groupId>
           <artifactId>oncokbPublicApiClient</artifactId>
-          <version>fb669f193ba0ad2791b4e2f2680225aa892498f1</version>
+          <version>d7a38a4215d9bba561e7e2a555b7abc9dad6242b</version>
         </dependency>
         <dependency>
           <groupId>com.github.genome-nexus.oncokb-java-api-client</groupId>
-          <artifactId>oncokbPremiumApiClient</artifactId>
-          <version>fb669f193ba0ad2791b4e2f2680225aa892498f1</version>
+          <artifactId>oncokbPrivateApiClient</artifactId>
+          <version>d7a38a4215d9bba561e7e2a555b7abc9dad6242b</version>
         </dependency>
     </dependencies>
 
