@@ -106,6 +106,7 @@ public class AnnotationIntegrationTest
     @Test
     public void testLongDeletion()
     {
+        // long sequence works locally but doesn't work on production
 
         String[] variants = {
             // ref allele has 8614 characters
