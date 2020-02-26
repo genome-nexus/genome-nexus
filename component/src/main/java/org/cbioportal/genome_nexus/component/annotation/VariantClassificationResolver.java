@@ -197,6 +197,8 @@ public class VariantClassificationResolver
         variantMap.put("nmd_transcript_variant",        "Silent");
         variantMap.put("mature_mirna_variant",          "RNA");
         variantMap.put("non_coding_exon_variant",       "RNA");
+        variantMap.put("non_coding_exon",               "RNA");
+        variantMap.put("non-coding-exon",               "RNA");
         variantMap.put("non_coding_transcript_exon_variant", "RNA");
         variantMap.put("non_coding_transcript_variant", "RNA");
         variantMap.put("nc_transcript_variant",         "RNA");
