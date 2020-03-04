@@ -15,6 +15,15 @@ public class TranscriptConsequenceSummaryMixin
     @ApiModelProperty(value = "Codon change")
     private String codonChange;
 
+    @ApiModelProperty(value = "Amino acids change")
+    private String aminoAcids;
+
+    @ApiModelProperty(value = "Reference Amino Acid")
+    private String aminoAcidRef;
+
+    @ApiModelProperty(value = "Alt Amino Acid")
+    private String aminoAcidAlt;
+
     @ApiModelProperty(value = "Entrez gene id")
     private String entrezGeneId;
 
