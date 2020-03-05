@@ -24,6 +24,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final VariantAnnotationService variantAnnotationService;
     private final CanonicalTranscriptResolver canonicalTranscriptResolver;
     private final CodonChangeResolver codonChangeResolver;
+    private final AminoAcidsResolver aminoAcidsResolver;
     private final ConsequenceTermsResolver consequenceTermsResolver;
     private final EntrezGeneIdResolver entrezGeneIdResolver;
     private final GenomicLocationResolver genomicLocationResolver;
@@ -40,6 +41,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     @Autowired
     public VariantAnnotationSummaryServiceImpl(VariantAnnotationService hgvsVariantAnnotationService,
                                                CanonicalTranscriptResolver canonicalTranscriptResolver,
+                                               AminoAcidsResolver aminoAcidsResolver,
                                                CodonChangeResolver codonChangeResolver,
                                                ConsequenceTermsResolver consequenceTermsResolver,
                                                EntrezGeneIdResolver entrezGeneIdResolver,
@@ -57,6 +59,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         this.variantAnnotationService = hgvsVariantAnnotationService;
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
         this.codonChangeResolver = codonChangeResolver;
+        this.aminoAcidsResolver = aminoAcidsResolver;
         this.consequenceTermsResolver = consequenceTermsResolver;
         this.entrezGeneIdResolver = entrezGeneIdResolver;
         this.genomicLocationResolver = genomicLocationResolver;
@@ -202,6 +205,9 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
 
             summary.setTranscriptId(this.transcriptIdResolver.resolve(transcriptConsequence));
             summary.setCodonChange(this.codonChangeResolver.resolve(transcriptConsequence));
+            summary.setAminoAcids(this.aminoAcidsResolver.resolve(transcriptConsequence));
+            summary.setAminoAcidRef(this.aminoAcidsResolver.getRefAminoAcid(transcriptConsequence));
+            summary.setAminoAcidAlt(this.aminoAcidsResolver.getAltAminoAcid(transcriptConsequence));
             summary.setEntrezGeneId(this.resolveEntrezGeneId(transcriptConsequence));
             summary.setConsequenceTerms(this.consequenceTermsResolver.resolve(transcriptConsequence));
             summary.setHugoGeneSymbol(this.hugoGeneSymbolResolver.resolve(transcriptConsequence));

@@ -4,6 +4,9 @@ public class TranscriptConsequenceSummary
 {
     private String transcriptId;
     private String codonChange;
+    private String aminoAcids;
+    private String aminoAcidRef;
+    private String aminoAcidAlt;
     private String entrezGeneId;
     private String consequenceTerms;
     private String hugoGeneSymbol;
@@ -19,7 +22,23 @@ public class TranscriptConsequenceSummary
         return transcriptId;
     }
 
-    public void setTranscriptId(String transcriptId) {
+    public String getAminoAcidAlt() {
+		return aminoAcidAlt;
+	}
+
+	public void setAminoAcidAlt(String aminoAcidAlt) {
+		this.aminoAcidAlt = aminoAcidAlt;
+	}
+
+	public String getAminoAcidRef() {
+		return aminoAcidRef;
+	}
+
+	public void setAminoAcidRef(String aminoAcidRef) {
+		this.aminoAcidRef = aminoAcidRef;
+	}
+
+	public void setTranscriptId(String transcriptId) {
         this.transcriptId = transcriptId;
     }
 
@@ -29,6 +48,14 @@ public class TranscriptConsequenceSummary
 
     public void setCodonChange(String codonChange) {
         this.codonChange = codonChange;
+    }
+
+    public String getAminoAcids() {
+        return aminoAcids;
+    }
+
+    public void setAminoAcids(String aminoAcids) {
+        this.aminoAcids = aminoAcids;
     }
 
     public String getEntrezGeneId() {
