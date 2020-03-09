@@ -235,7 +235,7 @@ public class AnnotationController
     public VariantAnnotation fetchVariantAnnotationByGenomicLocationGET(
         @ApiParam(value="A genomic location. For example 7,140453136,140453136,A,T",
             required = true)
-        @PathVariable @ValidGenomicLocation String genomicLocation,
+        @PathVariable String genomicLocation,
         @ApiParam(value="Isoform override source. For example uniprot",
             required = false)
         @RequestParam(required = false) String isoformOverrideSource,

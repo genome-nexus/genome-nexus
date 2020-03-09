@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class CachedVariantAnnotationFetcher extends BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository>
+public class CachedVariantAnnotationFetcher extends BaseCachedVariantAnnotationFetcher
 {
 
     @Autowired
@@ -35,18 +35,6 @@ public class CachedVariantAnnotationFetcher extends BaseCachedExternalResourceFe
     @Override
     protected Boolean isValidId(String id) {
         return !id.contains("N") && !id.contains("-") && !id.contains("undefined") && !id.contains("g.0") && id.contains(":") && id.split(":")[1].matches(".*\\d+.*");
-    }
-
-    @Override
-    protected String extractId(VariantAnnotation instance)
-    {
-        return instance.getVariantId();
-    }
-
-    @Override
-    protected String extractId(DBObject dbObject)
-    {
-        return (String)dbObject.get("input");
     }
 
     @Override
