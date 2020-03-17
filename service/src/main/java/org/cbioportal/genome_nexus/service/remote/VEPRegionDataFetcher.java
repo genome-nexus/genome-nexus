@@ -27,6 +27,9 @@ public class VEPRegionDataFetcher extends BaseExternalResourceFetcher<VariantAnn
     private static final String MAIN_QUERY_PARAM = "variant";
     private static final String PLACEHOLDER = "VARIANT";
 
+    @Value("${gn_vep.timeout.seconds:0}")
+    private Integer timeoutSeconds;
+
     private final ExternalResourceTransformer<VariantAnnotation> transformer;
 
     @Autowired
@@ -48,22 +51,21 @@ public class VEPRegionDataFetcher extends BaseExternalResourceFetcher<VariantAnn
     public List<VariantAnnotation> fetchInstances(Object requestBody)
         throws HttpClientErrorException, ResourceAccessException, ResourceMappingException
     {
-        return this.transformer.transform(this.fetchRawValue(requestBody), VariantAnnotation.class);   
+        return this.transformer.transform(this.fetchRawValue(requestBody), VariantAnnotation.class);
     }
 
     @Override
     protected DBObject getForObject(String uri, Map<String, String> queryParams)
     {
         RestTemplate restTemplate = new RestTemplate();
-
-        return (DBObject) restTemplate.getForObject(uri, BasicDBObject.class);
+        return (DBObject) restTemplate.getForObject(uri + "?responseTimeout=" + timeoutSeconds, BasicDBObject.class);
     }
 
     @Override
     public DBObject fetchRawValue(Object requestBody)
         throws HttpClientErrorException, ResourceAccessException
     {
-        return this.postForObject(this.URI.replace("/" + PLACEHOLDER, ""), requestBody);
+        return this.postForObject(this.URI.replace("/" + PLACEHOLDER, "") + "?responseTimeout=" + timeoutSeconds, requestBody);
     }
 
     public ExternalResourceTransformer getTransformer(){
