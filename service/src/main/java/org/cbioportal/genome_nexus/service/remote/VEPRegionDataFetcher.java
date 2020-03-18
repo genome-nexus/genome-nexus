@@ -26,6 +26,7 @@ public class VEPRegionDataFetcher extends BaseExternalResourceFetcher<VariantAnn
 {
     private static final String MAIN_QUERY_PARAM = "variant";
     private static final String PLACEHOLDER = "VARIANT";
+    private static final String RESPONSE_TIMEOUT_FIELD_NAME = "responseTimeout";
 
     @Value("${gn_vep.timeout.seconds:0}")
     private Integer timeoutSeconds;
@@ -58,17 +59,25 @@ public class VEPRegionDataFetcher extends BaseExternalResourceFetcher<VariantAnn
     protected DBObject getForObject(String uri, Map<String, String> queryParams)
     {
         RestTemplate restTemplate = new RestTemplate();
-        return (DBObject) restTemplate.getForObject(uri + "?responseTimeout=" + timeoutSeconds, BasicDBObject.class);
+        return (DBObject) restTemplate.getForObject(uri + getOptionalQueryString(), BasicDBObject.class);
     }
 
     @Override
     public DBObject fetchRawValue(Object requestBody)
         throws HttpClientErrorException, ResourceAccessException
     {
-        return this.postForObject(this.URI.replace("/" + PLACEHOLDER, "") + "?responseTimeout=" + timeoutSeconds, requestBody);
+        return this.postForObject(this.URI.replace("/" + PLACEHOLDER, "") + getOptionalQueryString(), requestBody);
     }
 
     public ExternalResourceTransformer getTransformer(){
         return transformer;
     }
+
+    private String getOptionalQueryString() {
+        if (timeoutSeconds == 0) {
+            return "";
+        }
+        return "?" + RESPONSE_TIMEOUT_FIELD_NAME + "=" + timeoutSeconds;
+    }
+
 }
