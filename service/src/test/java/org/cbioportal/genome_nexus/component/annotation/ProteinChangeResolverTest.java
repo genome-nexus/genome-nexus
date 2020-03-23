@@ -133,6 +133,11 @@ public class ProteinChangeResolverTest
             "p.E1350del",
             this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("22:g.36689419_36689421delCCT"))
         );
+
+        assertEquals(
+            "p.Q575_G592dup",
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT"))
+        );
     }
 
     @Test
