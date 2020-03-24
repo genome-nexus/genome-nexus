@@ -24,6 +24,7 @@ public class ExternalResourceObjectMapper extends ObjectMapper
 
         mixinMap.put(GeneXref.class, GeneXrefMixin.class);
         mixinMap.put(MutationAssessor.class, MutationAssessorMixin.class);
+        mixinMap.put(NucleotideContext.class, NucleotideContextMixin.class);
         mixinMap.put(TranscriptConsequence.class, TranscriptConsequenceMixin.class);
         mixinMap.put(VariantAnnotation.class, VariantAnnotationMixin.class);
         mixinMap.put(MyVariantInfo.class, MyVariantInfoMixin.class);

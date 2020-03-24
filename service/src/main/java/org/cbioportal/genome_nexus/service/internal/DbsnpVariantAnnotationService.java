@@ -54,6 +54,7 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
                                          @Lazy CancerHotspotService hotspotService,
                                          @Lazy MutationAssessorService mutationAssessorService,
                                          @Lazy MyVariantInfoService myVariantInfoService,
+                                         @Lazy NucleotideContextService nucleotideContextService,
                                          @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
                                          @Lazy PostTranslationalModificationService postTranslationalModificationService,
                                          @Lazy OncokbService oncokbService)
@@ -63,6 +64,7 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
             hotspotService,
             mutationAssessorService,
             myVariantInfoService,
+            nucleotideContextService,
             variantAnnotationSummaryService,
             postTranslationalModificationService,
             oncokbService);

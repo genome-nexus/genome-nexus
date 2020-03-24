@@ -71,6 +71,10 @@ public class VariantAnnotationMixin {
     @ApiModelProperty(value = "Mutation Assessor Annotation", required = false)
     private MutationAssessorAnnotation mutationAssessorAnnotation;
 
+    @JsonProperty(value="nucleotide_context", required = true)
+    @ApiModelProperty(value = "Nucleotide Context Annotation", required = false)
+    private NucleotideContextAnnotation nucleotideContextAnnotation;
+
     @JsonProperty(value="hotspots", required = true)
     @ApiModelProperty(value = "Hotspot Annotation", required = false)
     private HotspotAnnotation hotspotAnnotation;

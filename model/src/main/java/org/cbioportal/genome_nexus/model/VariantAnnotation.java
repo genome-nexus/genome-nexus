@@ -66,6 +66,7 @@ public class VariantAnnotation
     private Boolean successfullyAnnotated;
 
     private MutationAssessorAnnotation mutationAssessorAnnotation;
+    private NucleotideContextAnnotation nucleotideContextAnnotation;
     private MyVariantInfoAnnotation myVariantInfoAnnotation;
     private HotspotAnnotation hotspotAnnotation;
     private PtmAnnotation ptmAnnotation;
@@ -243,6 +244,14 @@ public class VariantAnnotation
     public String toString()
     {
         return annotationJSON;
+    }
+
+    public NucleotideContextAnnotation getNucleotideContextAnnotation() {
+        return nucleotideContextAnnotation;
+    }
+
+    public void setNucleotideContextAnnotation(NucleotideContextAnnotation nucleotideContextAnnotation) {
+        this.nucleotideContextAnnotation = nucleotideContextAnnotation;
     }
 
     public MutationAssessorAnnotation getMutationAssessorAnnotation() {
