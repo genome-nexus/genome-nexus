@@ -63,6 +63,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     private final MutationAssessorService mutationAssessorService;
     private final VariantAnnotationSummaryService variantAnnotationSummaryService;
     private final MyVariantInfoService myVariantInfoService;
+    private final NucleotideContextService nucleotideContextService;
     private final PostTranslationalModificationService postTranslationalModificationService;
     private final OncokbService oncokbService;
 
@@ -71,6 +72,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
                                             CancerHotspotService hotspotService,
                                             MutationAssessorService mutationAssessorService,
                                             MyVariantInfoService myVariantInfoService,
+                                            NucleotideContextService nucleotideContextService,
                                             VariantAnnotationSummaryService variantAnnotationSummaryService,
                                             PostTranslationalModificationService postTranslationalModificationService,
                                             OncokbService oncokbService)
@@ -79,6 +81,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         this.isoformOverrideService = isoformOverrideService;
         this.hotspotService = hotspotService;
         this.mutationAssessorService = mutationAssessorService;
+        this.nucleotideContextService = nucleotideContextService;
         this.variantAnnotationSummaryService = variantAnnotationSummaryService;
         this.myVariantInfoService = myVariantInfoService;
         this.postTranslationalModificationService = postTranslationalModificationService;
@@ -258,6 +261,12 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         {
             AnnotationEnricher enricher = new MutationAssessorAnnotationEnricher(mutationAssessorService);
             postEnrichmentService.registerEnricher("mutation_assessor", enricher);
+        }
+
+        if (fields != null && fields.contains("nucleotide_context"))
+        {
+            AnnotationEnricher enricher = new NucleotideContextAnnotationEnricher(nucleotideContextService);
+            postEnrichmentService.registerEnricher("nucleotide_context", enricher);
         }
 
         if (fields != null && fields.contains("my_variant_info"))
