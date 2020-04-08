@@ -10,7 +10,9 @@
   <parent>
     <groupId>org.cbioportal.genome_nexus</groupId>
     <artifactId>genome-nexus</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <!-- project version is generated through git or can be passed as
+         PROJECT_VERSION env variable (see version.sh) -->
+    <version>0-unknown-version-SNAPSHOT</version>
   </parent>
   
   <profiles>
