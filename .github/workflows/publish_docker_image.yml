@@ -1,5 +1,7 @@
 name: Publish Docker Image on Tag
-on: [push]
+on:
+  push:
+    tags: '*'
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
