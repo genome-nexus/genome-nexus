@@ -20,12 +20,12 @@ import java.util.Map;
     properties = {
         "vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1",
         "spring.data.mongodb.uri=mongodb://localhost/integration",
-        "server.port=38893"
+        "server.port=38896"
     }
 )
 public class AnnotationIntegrationTest
 {
-    private final static String BASE_URL = "http://localhost:38893/annotation/";
+    private final static String BASE_URL = "http://localhost:38896/annotation/";
 
     private RestTemplate restTemplate = new RestTemplate();
 
