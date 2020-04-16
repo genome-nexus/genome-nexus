@@ -1,4 +1,6 @@
 package org.cbioportal.genome_nexus.web;
+
+import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.json.JsonParser;
@@ -27,6 +29,10 @@ public class AnnotationIntegrationTest
 {
     private final static String BASE_URL = "http://localhost:38896/annotation/";
 
+    private final static String BASE_URL_GENOMIC_LOCATION = "http://localhost:38896/annotation/genomic/";
+
+    private final static String ALL_ENSEMBL_FIELDS = "fields=annotation_summary,nucleotide_context";
+
     private RestTemplate restTemplate = new RestTemplate();
 
     private Map<String, Object> fetchVariantAnnotationGET(String variant)
@@ -39,6 +45,20 @@ public class AnnotationIntegrationTest
     private List<Map<String, Object>> fetchVariantAnnotationPOST(String[] variants)
     {
         String responses = this.restTemplate.postForObject(BASE_URL, variants, String.class);
+        JsonParser springParser = JsonParserFactory.getJsonParser();
+        return (List<Map<String, Object>>)(List<?>) springParser.parseList(responses);
+    }
+
+    private Map<String, Object> fetchVariantAnnotationByGenomicLocationGET(String genomicLocation)
+    {
+        String response = this.restTemplate.getForObject(BASE_URL_GENOMIC_LOCATION + genomicLocation + "?" + ALL_ENSEMBL_FIELDS, String.class);
+        JsonParser springParser = JsonParserFactory.getJsonParser();
+        return springParser.parseMap(response);
+    }
+
+    private List<Map<String, Object>> fetchVariantAnnotationByGenomicLocationPOST(GenomicLocation[] genomicLocations)
+    {
+        String responses = this.restTemplate.postForObject(BASE_URL_GENOMIC_LOCATION + "?" + ALL_ENSEMBL_FIELDS, genomicLocations, String.class);
         JsonParser springParser = JsonParserFactory.getJsonParser();
         return (List<Map<String, Object>>)(List<?>) springParser.parseList(responses);
     }
@@ -122,7 +142,6 @@ public class AnnotationIntegrationTest
         //////////////////
 
         String assemblyName = this.fetchVariantAnnotationGET(variants[0]).get("assembly_name").toString();
-        // most severe consequence for this MT variant hould be missense_variant
         assertEquals("GRCh37", assemblyName);
 
         //////////////////
@@ -135,5 +154,87 @@ public class AnnotationIntegrationTest
         String assemblyName0 = this.fetchVariantAnnotationPOST(variants).get(0).get("assembly_name").toString();
         assertEquals("GRCh37", assemblyName0);
 
+    }
+
+    @Test
+    public void testGenomicLocationSNVGET() {
+        String genomicLocation = "7,140453136,140453136,A,T";
+
+        Map<String, Object> response = this.fetchVariantAnnotationByGenomicLocationGET(genomicLocation);
+
+        // TODO: somehow only the POST contains hgvsg but not GET We should
+        // maybe do a more general test that checks for object equality between
+        // GET response and POST response for all types of endpoints. This is
+        // not enforced through typing because a lot of the fields are optional.
+        // assertEquals(response.get("hgvsg"), "7:g.140453136A>T");
+
+
+        HashMap annotationSummary = (HashMap) response.get("annotation_summary");
+        // transcriptConsequenceSummary is the object most often used for MAF
+        // annotation. It is a single transcript consequence that is deemed to
+        // be most relevant because it is the most impactful conequence to a
+        // canonical transcipt. If that is not available there are some other
+        // rules to decide which one is (see code)
+
+
+        // TODO: none of these fields work for GET endpoint, only works for POST
+        // HashMap transcriptConsequenceSummary = (HashMap) annotationSummary.get("transcriptConsequenceSummary");
+        // assertEquals(transcriptConsequenceSummary.get("transcriptId"), "ENST00000288602");
+        // assertEquals(transcriptConsequenceSummary.get("hugoGeneSymbol"), "BRAF");
+        // assertEquals(transcriptConsequenceSummary.get("hgvspShort"), "p.V600E");
+    }
+
+    @Test
+    public void testGenomicLocationSNVPOST() {
+        String genomicLocation = "7,140453136,140453136,A,T";
+
+        GenomicLocation[] genomicLocations = {
+            new GenomicLocation() {{
+                setChromosome(genomicLocation.split(",")[0]);
+                setStart(Integer.parseInt(genomicLocation.split(",")[1]));
+                setEnd(Integer.parseInt(genomicLocation.split(",")[2]));
+                setReferenceAllele(genomicLocation.split(",")[3]);
+                setVariantAllele(genomicLocation.split(",")[4]);
+            }}
+        };
+
+        List<Map<String, Object>> response = this.fetchVariantAnnotationByGenomicLocationPOST(genomicLocations);
+        assertEquals(response.get(0).get("hgvsg"), "7:g.140453136A>T");
+        HashMap annotationSummary = (HashMap) response.get(0).get("annotation_summary");
+        HashMap transcriptConsequenceSummary = (HashMap) annotationSummary.get("transcriptConsequenceSummary");
+        assertEquals(transcriptConsequenceSummary.get("transcriptId"), "ENST00000288602");
+        assertEquals(transcriptConsequenceSummary.get("hugoGeneSymbol"), "BRAF");
+        assertEquals(transcriptConsequenceSummary.get("hgvspShort"), "p.V600E");
+    }
+
+    @Test
+    public void testGenomicLocationNucleotideContextGET() {
+        String genomicLocation = "7,140453136,140453136,A,T";
+
+        Map<String, Object> response = this.fetchVariantAnnotationByGenomicLocationGET(genomicLocation);
+        HashMap nucleotideContext = (HashMap) response.get("nucleotide_context");
+        HashMap annotation = (HashMap) nucleotideContext.get("annotation");
+        String seq = (String) annotation.get("seq");
+        assertEquals("CAC", seq);
+    }
+
+    @Test
+    public void testGenomicLocationNucleotideContextPOST() {
+        String genomicLocation = "7,140453136,140453136,A,T";
+        GenomicLocation[] genomicLocations = {
+            new GenomicLocation() {{
+                setChromosome(genomicLocation.split(",")[0]);
+                setStart(Integer.parseInt(genomicLocation.split(",")[1]));
+                setEnd(Integer.parseInt(genomicLocation.split(",")[2]));
+                setReferenceAllele(genomicLocation.split(",")[3]);
+                setVariantAllele(genomicLocation.split(",")[4]);
+            }}
+        };
+        List<Map<String, Object>> response = this.fetchVariantAnnotationByGenomicLocationPOST(genomicLocations);
+
+        HashMap nucleotideContext = (HashMap) response.get(0).get("nucleotide_context");
+        HashMap annotation = (HashMap) nucleotideContext.get("annotation");
+        String seq = (String) annotation.get("seq");
+        assertEquals("CAC", seq);
     }
 }
