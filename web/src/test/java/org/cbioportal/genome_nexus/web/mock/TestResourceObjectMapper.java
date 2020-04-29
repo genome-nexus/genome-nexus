@@ -1,7 +1,9 @@
 package org.cbioportal.genome_nexus.web.mock;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.cbioportal.genome_nexus.model.CountByTumorType;
 import org.cbioportal.genome_nexus.model.Hotspot;
+import org.cbioportal.genome_nexus.model.SignalMutation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +15,8 @@ public class TestResourceObjectMapper extends ObjectMapper
         Map<Class<?>, Class<?>> mixinMap = new HashMap<>();
 
         mixinMap.put(Hotspot.class, HotspotMixin.class);
+        mixinMap.put(SignalMutation.class, SignalMutationMixin.class);
+        mixinMap.put(CountByTumorType.class, CountByTumorTypeMixin.class);
 
         super.setMixIns(mixinMap);
     }

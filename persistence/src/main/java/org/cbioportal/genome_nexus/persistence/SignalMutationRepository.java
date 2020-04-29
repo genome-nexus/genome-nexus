@@ -9,4 +9,11 @@ public interface SignalMutationRepository extends MongoRepository<SignalMutation
 {
     List<SignalMutation> findByHugoGeneSymbol(String hugoGeneSymbol);
     List<SignalMutation> findByHugoGeneSymbolIn(List<String> hugoGeneSymbol);
+    List<SignalMutation> findByChromosomeAndStartPositionAndEndPositionAndReferenceAlleleAndVariantAllele(
+        String chromosome,
+        Long startPosition,
+        Long endPosition,
+        String referenceAllele,
+        String variantAllele
+    );
 }

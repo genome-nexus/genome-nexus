@@ -52,4 +52,18 @@ public class SignalMutationController
     {
         return this.signalMutationService.getSignalMutations(hugoGeneSymbol);
     }
+
+    @ApiOperation(value = "Retrieves SignalDB mutations by hgvgs variant")
+    @RequestMapping(value = "/signal/mutation/hgvs/{variant:.+}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    public List<SignalMutation> fetchSignalMutationsByHgvsgGET(
+        @ApiParam(
+            value="A variant. For example 13:g.32890665G>A",
+            required = true)
+        @PathVariable String variant
+    )
+    {
+        return this.signalMutationService.getSignalMutationsByHgvsg(variant);
+    }
 }

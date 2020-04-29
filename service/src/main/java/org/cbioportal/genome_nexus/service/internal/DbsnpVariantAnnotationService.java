@@ -57,6 +57,7 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
                                          @Lazy NucleotideContextService nucleotideContextService,
                                          @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
                                          @Lazy PostTranslationalModificationService postTranslationalModificationService,
+                                         @Lazy SignalMutationService signalMutationService,
                                          @Lazy OncokbService oncokbService)
     {
         super(cachedVariantIdAnnotationFetcher,
@@ -67,6 +68,7 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
             nucleotideContextService,
             variantAnnotationSummaryService,
             postTranslationalModificationService,
+            signalMutationService,
             oncokbService);
     }
 }
