@@ -10,7 +10,9 @@
   <parent>
     <groupId>org.cbioportal.genome_nexus</groupId>
     <artifactId>genome-nexus</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <!-- project version is generated through git or can be passed as
+         PROJECT_VERSION env variable (see version.sh) -->
+    <version>0-unknown-version-SNAPSHOT</version>
   </parent>
   
   <profiles>
@@ -100,7 +102,7 @@
                 <artifactItem>
                   <groupId>com.github.genome-nexus</groupId>
                   <artifactId>genome-nexus-frontend</artifactId>
-                  <version>c0d1faa2241ef6e500096e4ac1d31c424ccd830e</version>
+                  <version>66b3b754c1725c4eadffacfd02679e93bb7f5a33</version>
                   <type>jar</type>
                   <outputDirectory>src/main/resources/static</outputDirectory>
                   <overWrite>true</overWrite>
@@ -194,7 +196,7 @@
           </dependency>
         </dependencies>
       </plugin>
-      <!-- don't alter static fonts -->
+      <!-- don't alter static fonts & favicon -->
       <!-- https://stackoverflow.com/questions/34037051/ -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -204,6 +206,7 @@
             <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
             <nonFilteredFileExtension>woff</nonFilteredFileExtension>
             <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
+            <nonFilteredFileExtension>ico</nonFilteredFileExtension>
           </nonFilteredFileExtensions>
         </configuration>
       </plugin>

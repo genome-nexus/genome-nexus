@@ -56,6 +56,7 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
                                         @Lazy CancerHotspotService hotspotService,
                                         @Lazy MutationAssessorService mutationAssessorService,
                                         @Lazy MyVariantInfoService myVariantInfoService,
+                                        @Lazy NucleotideContextService nucleotideContextService,
                                         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
                                         @Lazy PostTranslationalModificationService postTranslationalModificationService,
                                         @Lazy OncokbService oncokbService)
@@ -65,6 +66,7 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
             hotspotService,
             mutationAssessorService,
             myVariantInfoService,
+            nucleotideContextService,
             variantAnnotationSummaryService,
             postTranslationalModificationService,
             oncokbService);

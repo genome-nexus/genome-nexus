@@ -124,5 +124,10 @@ public class CanonicalTranscriptResolverTest
             variantMockData.get("22:g.36689419_36689421delCCT").getTranscriptConsequences().get(0),
             this.canonicalTranscriptResolver.resolve(variantMockData.get("22:g.36689419_36689421delCCT"))
         );
+
+        assertEquals(
+            variantMockData.get("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT").getTranscriptConsequences().get(0),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT"))
+        );
     }
 }

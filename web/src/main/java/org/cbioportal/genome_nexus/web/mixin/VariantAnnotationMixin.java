@@ -63,9 +63,17 @@ public class VariantAnnotationMixin {
     @ApiModelProperty(value = "List of transcripts", required = false)
     private List<TranscriptConsequence> transcriptConsequences;
 
+    @JsonProperty(value="successfully_annotated", required = true)
+    @ApiModelProperty(value = "Status flag indicating whether variant was succesfully annotated", required = false)
+    private Boolean successfullyAnnotated;
+    
     @JsonProperty(value="mutation_assessor", required = true)
     @ApiModelProperty(value = "Mutation Assessor Annotation", required = false)
     private MutationAssessorAnnotation mutationAssessorAnnotation;
+
+    @JsonProperty(value="nucleotide_context", required = true)
+    @ApiModelProperty(value = "Nucleotide Context Annotation", required = false)
+    private NucleotideContextAnnotation nucleotideContextAnnotation;
 
     @JsonProperty(value="hotspots", required = true)
     @ApiModelProperty(value = "Hotspot Annotation", required = false)

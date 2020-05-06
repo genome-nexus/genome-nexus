@@ -1,34 +1,46 @@
 package org.cbioportal.genome_nexus.util;
 
-enum Type {
-    SUBSTITUTION, INSERTION, DELETION, INDEL
-}
-
-enum RefType {
-    GENOMIC, MITOCHONDRIAL
-}
 public class GenomicVariant {
+
+    static enum Type {
+        SUBSTITUTION,
+        INSERTION,
+        DELETION,
+        INDEL
+        // hgvs DUPLICATION is not supported in this model
+    }
+
+    static enum RefType {
+        GENOMIC,
+        MITOCHONDRIAL // for future development (not yet implemented)
+    }
+
     private String chromosome;
-    private RefType ref_type;
+    private RefType refType;
     private Integer start;
     private Integer end;
     private Type type;
     private String ref;
     private String alt;
 
-    public GenomicVariant (String chromosome, RefType ref_type, Integer start, Integer end, Type type, String ref, String alt) {
+    public GenomicVariant() {
+        this.chromosome = null;
+        this.refType = null;
+        this.start = null;
+        this.end = null;
+        this.type = null;
+        this.ref = null;
+        this.alt = null;
+    }
+
+    public GenomicVariant (String chromosome, RefType refType, Integer start, Integer end, Type type, String ref, String alt) {
         this.chromosome = chromosome;
-        this.ref_type = ref_type;
+        this.refType = refType;
         this.start = start;
         this.end = end;
         this.type = type;
         this.ref = ref;
         this.alt = alt;
-    }
-
-    public GenomicVariant() {
-        this.chromosome = this.ref = this.alt = null;
-        this.start = this.end = null;
     }
 
     public String getChromosome() {
@@ -40,11 +52,11 @@ public class GenomicVariant {
     }
 
     public RefType getRefType() {
-        return this.ref_type;
+        return this.refType;
     }
 
-    public void setRefType(RefType ref_type) {
-        this.ref_type = ref_type;
+    public void setRefType(RefType refType) {
+        this.refType = refType;
     }
 
     public Integer getStart() {

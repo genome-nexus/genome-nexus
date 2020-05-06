@@ -63,8 +63,10 @@ public class VariantAnnotation
     private List<ColocatedVariant> colocatedVariants;
     private List<IntergenicConsequences> intergenicConsequences;
     private List<TranscriptConsequence> transcriptConsequences;
+    private Boolean successfullyAnnotated;
 
     private MutationAssessorAnnotation mutationAssessorAnnotation;
+    private NucleotideContextAnnotation nucleotideContextAnnotation;
     private MyVariantInfoAnnotation myVariantInfoAnnotation;
     private HotspotAnnotation hotspotAnnotation;
     private PtmAnnotation ptmAnnotation;
@@ -88,6 +90,7 @@ public class VariantAnnotation
         this.variant = variant;
         this.annotationJSON = annotationJSON;
         this.dynamicProps = new LinkedHashMap<>();
+        this.successfullyAnnotated = !(annotationJSON == null);
     }
 
     public String getVariant()
@@ -243,6 +246,14 @@ public class VariantAnnotation
         return annotationJSON;
     }
 
+    public NucleotideContextAnnotation getNucleotideContextAnnotation() {
+        return nucleotideContextAnnotation;
+    }
+
+    public void setNucleotideContextAnnotation(NucleotideContextAnnotation nucleotideContextAnnotation) {
+        this.nucleotideContextAnnotation = nucleotideContextAnnotation;
+    }
+
     public MutationAssessorAnnotation getMutationAssessorAnnotation() {
         return mutationAssessorAnnotation;
     }
@@ -272,20 +283,18 @@ public class VariantAnnotation
     }
 
     public String getHgvsg() {
-        if (this.getVariantId().contains("g."))
+        if (this.getVariantId() != null && this.getVariantId().contains("g."))
         {
             return this.getVariantId();
-        }
-        // id is not of hgvsg format
-        else {
-            // determine hgvsg from VEP output
+        } else if (this.getTranscriptConsequences() == null) {
+            return null;
+        } else {
+            // id is not of hgvsg format
             for (TranscriptConsequence ts : this.getTranscriptConsequences()) {
                 if (ts.getHgvsg() != null && !ts.getHgvsg().isEmpty()) {
                     return ts.getHgvsg();
                 }
-
             }
-            // TODO: check intergenic if still no hgvsg
             return null;
         }
     }
@@ -300,6 +309,14 @@ public class VariantAnnotation
 
     public void setOncokbAnnotation(OncokbAnnotation oncokbAnnotation) {
         this.oncokbAnnotation = oncokbAnnotation;
+    }
+
+    public void setSuccessfullyAnnotated(Boolean successfullyAnnotated) {
+        this.successfullyAnnotated = successfullyAnnotated;
+    }
+
+    public Boolean isSuccessfullyAnnotated() {
+        return successfullyAnnotated;
     }
 
     public void setDynamicProp(String key, Object value)

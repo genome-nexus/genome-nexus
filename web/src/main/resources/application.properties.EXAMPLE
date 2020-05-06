@@ -5,6 +5,11 @@ vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=appli
 # 200 is the max page size allowed by the public VEP service, it might be possible to increase this for a private instance
 vep.max_page_size=200
 
+# response timeout arg when sending requests to own VEP
+# should only be turned on when pointing to own VEP
+# 300 seconds is recommended with vep.max_page_size set to 5000
+# gn_vep.timeout.seconds=300
+
 # it is possible to use your own VEP instance by running https://github.com/genome-nexus/genome-nexus-vep
 # This is only the VEP part of the Ensembl REST API.
 # e.g. when running on port 6060:
@@ -20,10 +25,14 @@ genexrefs.url=http://grch37.rest.ensembl.org/xrefs/id/ACCESSION?content-type=app
 # Mutation Assessor web API URL
 #"VARIANT" will be replaced with actual variant upon each request.
 mutationAssessor.url=http://mutationassessor.org/r3/?cm=var&var=VARIANT&frm=json&fts=input,rgaa,rgvt,msa,pdb,F_impact,F_score,vc_score,vs_score,info,var,gene,uprot,rsprot,gaps,msa_height,chr,rs_pos,rs_res,up_pos,up_res,cnt_cosmic,cnt_snps
+# mutationAssessor url for GRCh38
+# mutationAssessor.url=http://mutationassessor.org/r3/?cm=var&var=hg38,VARIANT&frm=json&fts=input,rgaa,rgvt,msa,pdb,F_impact,F_score,vc_score,vs_score,info,var,gene,uprot,rsprot,gaps,msa_height,chr,rs_pos,rs_res,up_pos,up_res,cnt_cosmic,cnt_snps
 
 # my variant info web API URL
 #"VARIANT" will be replaced with actual variant upon each request.
 myvariantinfo.url=https://myvariant.info/v1/variant/VARIANT
+# myvariantinfo url for GRCh38
+# myvariantinfo.url=https://myvariant.info/v1/variant/VARIANT?assembly=hg38
 
 # Comma separated list of isoform_overrides_resource:overrides_filename pairs.
 vep.isoform.overrides=uniprot:isoform_overrides_uniprot.txt,mskcc:isoform_overrides_at_mskcc.txt

@@ -124,5 +124,11 @@ public class CanonicalTranscriptResolverMocker
         ).thenReturn(
             variantMockData.get("22:g.36689419_36689421delCCT").getTranscriptConsequences().get(0)
         );
+
+        Mockito.when(
+            canonicalTranscriptResolver.resolve(variantMockData.get("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT"))
+        ).thenReturn(
+            variantMockData.get("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT").getTranscriptConsequences().get(0)
+        );
     }
 }

@@ -133,7 +133,7 @@ public class ProteinChangeResolver
                 String variantClassification = this.variantClassificationResolver.resolve(
                     variantAnnotation, transcriptConsequence);
 
-                hgvspShort = "*" + String.valueOf(pPos);
+                hgvspShort = "p.*" + String.valueOf(pPos);
 
                 if (variantClassification != null && variantClassification.toLowerCase().startsWith("frame_shift")) {
                     hgvspShort += "fs*";
@@ -167,13 +167,26 @@ public class ProteinChangeResolver
                 if (transcriptConsequence.getHgvsc() != null &&
                     transcriptConsequence.getHgvsc().contains("dup"))
                 {
-                    hgvspShort = aaParts[1].substring(0,1) +
-                        String.valueOf(transcriptConsequence.getProteinStart() - 1) +
-                        "dup";
+                    if (aaParts[1].length() == 1) {
+                        hgvspShort = "p." + aaParts[1].substring(0,1) +
+                            String.valueOf(transcriptConsequence.getProteinStart() - 1) +
+                            "dup";
+                    } else {
+                        // e.g for KIT p.Q575_G592dup
+                        // 4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT
+                        hgvspShort = "p." + aaParts[1].substring(0,1) +
+                            String.valueOf(transcriptConsequence.getProteinStart() + 1) +
+                            "_" +
+                            aaParts[1].substring(aaParts[1].length() - 1) +
+                            // protein end for an instertion will be protein start + 1, so use length of amino acid insted
+                            String.valueOf(transcriptConsequence.getProteinStart() + aaParts[1].length()) +
+                            "dup";
+
+                    }
                 }
                 else
                 {
-                    hgvspShort = "X" +
+                    hgvspShort = "p.X" +
                         transcriptConsequence.getProteinStart() + "_X" +
                         transcriptConsequence.getProteinEnd() + "ins" +
                         aaParts[1];
@@ -182,11 +195,11 @@ public class ProteinChangeResolver
             else if (transcriptConsequence.getConsequenceTerms() != null &&
                 transcriptConsequence.getConsequenceTerms().get(0).toLowerCase().contains("inframe_deletion"))
             {
-                hgvspShort = aaParts[0] + "del";
+                hgvspShort = "p." + aaParts[0] + "del";
             }
             else
             {
-                hgvspShort = aaParts[0] + transcriptConsequence.getProteinStart();
+                hgvspShort = "p." + aaParts[0] + transcriptConsequence.getProteinStart();
 
                 if (transcriptConsequence.getConsequenceTerms() != null &&
                     transcriptConsequence.getConsequenceTerms().get(0).toLowerCase().contains("frameshift_variant"))

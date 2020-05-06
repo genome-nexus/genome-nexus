@@ -20,12 +20,12 @@ import java.util.Map;
     properties = {
         "vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1",
         "spring.data.mongodb.uri=mongodb://localhost/integration",
-        "server.port=38893"
+        "server.port=38896"
     }
 )
 public class AnnotationIntegrationTest
 {
-    private final static String BASE_URL = "http://localhost:38893/annotation/";
+    private final static String BASE_URL = "http://localhost:38896/annotation/";
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -67,12 +67,17 @@ public class AnnotationIntegrationTest
         //////////////////
 
         // for each variant we should have one matching instance, except the invalid one 
-        assertEquals(variants.length - 1, this.fetchVariantAnnotationPOST(variants).size());
+        assertEquals(variants.length, this.fetchVariantAnnotationPOST(variants).size());
 
         String variantAllele0 = ((HashMap)((ArrayList) this.fetchVariantAnnotationPOST(variants).get(0).get("intergenic_consequences")).get(0)).get("variantAllele").toString();
         // the Get and Post should have same result
         assertEquals(variantAllele, variantAllele0);
-
+        
+        Boolean validAnnotatedFlag = ((Boolean) this.fetchVariantAnnotationPOST(variants).get(1).get("successfully_annotated"));
+        assertEquals(validAnnotatedFlag, true);
+        
+        Boolean invalidAnnotatedFlag = ((Boolean) this.fetchVariantAnnotationPOST(variants).get(2).get("successfully_annotated"));
+        assertEquals(invalidAnnotatedFlag, false);
     }
 
     @Test

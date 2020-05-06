@@ -65,6 +65,8 @@ public class VariantAnnotationMockData implements MockData<VariantAnnotation>
             this.objectMapper.readVariantAnnotation("X_g.41242962_41242963insGA.json"));
         mockData.put("Y:g.41242962_41242963insGA",
             this.objectMapper.readVariantAnnotation("Y_g.41242962_41242963insGA.json"));
+        mockData.put("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT",
+            this.objectMapper.readVariantAnnotation("4_g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT.json"));
 
         return mockData;
     }
