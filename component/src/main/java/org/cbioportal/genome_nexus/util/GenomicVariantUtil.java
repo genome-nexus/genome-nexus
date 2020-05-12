@@ -248,15 +248,16 @@ public class GenomicVariantUtil {
                 }
                 return s.trim();
             case INSERTION:
-                return "";
+                return "-";
             case DELETION:
                 s = getPattern("(?<=[a-z+>])[ATCG]*$", hgvs);
                 if (s == null || s.trim().length() == 0) {
-                    return "";
+                    return "-";
                 }
                 return s.trim();
             case INDEL:
-                // use a string of "X" equal to length of alt allele TODO : check if this is used anywhere and drop this if not .. also check if this is needed above for DELETION
+                // use a string of "X" equal to length of alt allele
+                // TODO : check if this is used anywhere and drop this if not .. also check if this is needed above for DELETION
                 s = getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
                 return sameLengthUnknownNucleotideString(s);
             default:
@@ -272,13 +273,11 @@ public class GenomicVariantUtil {
             case INDEL:
                 s  = getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
                 if (s == null || s.trim().length() == 0) {
-                    return "";
+                    return "-";
                 }
                 return s.trim();
             case DELETION:
-                // TODO : here, the deleted nucleotids are optional .. but we convert them into a string of "X" if they are present. Is this correct?
-                s = getPattern("(?<=[a-z+>])[ATCG]*$", hgvs);
-                return sameLengthUnknownNucleotideString(s);
+                return "-";
             default:
                 throw new InvalidHgvsException(); // Never reached
         }
