@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-public class GenomicVariantTest {
+public class GenomicVariantUtilTest {
     @Test
     public void testHgvsSubstitutionToGenomicVariant() {
         GenomicVariant variant = GenomicVariantUtil.fromHgvs("7:g.140453136A>T");
@@ -28,22 +28,35 @@ public class GenomicVariantTest {
         assertEquals(GenomicVariant.RefType.GENOMIC, variant.getRefType());
         assertEquals((Integer) 32867861, variant.getStart());
         assertEquals((Integer) 32867862, variant.getEnd());
-        assertEquals("", variant.getRef());
+        assertEquals("-", variant.getRef());
         assertEquals(GenomicVariant.Type.INSERTION, variant.getType());
         assertEquals("T", variant.getAlt());
     }
 
     @Test
-    public void testHgvsDeletionToGenomicVariant() {
+    public void testHgvsDeletionToGenomicVariantWithoutRef() {
         GenomicVariant variant = GenomicVariantUtil.fromHgvs("1:g.4849848_4849857del");
 
         assertEquals("1", variant.getChromosome());
         assertEquals(GenomicVariant.RefType.GENOMIC, variant.getRefType());
         assertEquals((Integer) 4849848, variant.getStart());
         assertEquals((Integer) 4849857, variant.getEnd());
-        assertEquals("", variant.getRef());
+        assertEquals("-", variant.getRef());
         assertEquals(GenomicVariant.Type.DELETION, variant.getType());
-        assertEquals("", variant.getAlt());
+        assertEquals("-", variant.getAlt());
+    }
+
+    @Test
+    public void testHgvsDeletionToGenomicVariantWithRef() {
+        GenomicVariant variant = GenomicVariantUtil.fromHgvs( "10:g.89624230_89624231delAC");
+
+        assertEquals("10", variant.getChromosome());
+        assertEquals(GenomicVariant.RefType.GENOMIC, variant.getRefType());
+        assertEquals(89624230, variant.getStart().intValue());
+        assertEquals(89624231, variant.getEnd().intValue());
+        assertEquals("AC", variant.getRef());
+        assertEquals(GenomicVariant.Type.DELETION, variant.getType());
+        assertEquals("-", variant.getAlt());
     }
 
     @Test
