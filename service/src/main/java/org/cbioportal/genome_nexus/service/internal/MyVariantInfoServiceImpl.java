@@ -1,7 +1,9 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,11 +55,15 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     {
         List<MyVariantInfo> myVariantInfos = new ArrayList<>();
 
-        List<String> requestVariants =
-            variants.stream().map(this::buildRequest).collect(Collectors.toList());
+        Map<String, String> queryToVariant = this.queryToVariant(variants);
+        List<String> queryVariants = new ArrayList<>(queryToVariant.keySet());
 
         try {
-            myVariantInfos = this.getMyVariantInfoByMyVariantInfoVariant(requestVariants);
+            myVariantInfos = this.getMyVariantInfoByMyVariantInfoVariant(queryVariants);
+            // manually set the original hgvs variant field
+            for (MyVariantInfo myVariantInfo: myVariantInfos) {
+                myVariantInfo.setHgvs(queryToVariant.get(myVariantInfo.getQuery()));
+            }
         } catch (MyVariantInfoWebServiceException e) {
             LOG.warn(e.getResponseBody());
         }
@@ -89,7 +95,8 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
         try {
             // get the annotation from the web service and save it to the DB
             myVariantInfo = Optional.ofNullable(cachedExternalResourceFetcher.fetchAndCache(variant));
-            // TODO add hgvs field from id
+            // manually set the original hgvs variant field
+            myVariantInfo.ifPresent(m -> m.setHgvs(variant));
         } catch (ResourceMappingException e) {
             throw new MyVariantInfoWebServiceException(e.getMessage());
         } catch (HttpClientErrorException e) {
@@ -108,15 +115,11 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     /**
      * @param variants my variant info variants (ex: [chr1:g.35367G>A, chr6:g.152708291G>A])
      */
-    public List<MyVariantInfo> getMyVariantInfoByMyVariantInfoVariant(List<String> variants)
+    private List<MyVariantInfo> getMyVariantInfoByMyVariantInfoVariant(List<String> variants)
         throws MyVariantInfoWebServiceException
     {
         try {
             // get the annotations from the web service and save it to the DB
-            // TODO
-            //  1) MyVariantInfo service actually returns errored queries in the list too:
-            //      currently those are returned as empty objects
-            //  2) add hgvs field from id
             return cachedExternalResourceFetcher.fetchAndCache(variants);
         } catch (ResourceMappingException e) {
             throw new MyVariantInfoWebServiceException(e.getMessage());
@@ -144,5 +147,25 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     private String buildRequest(String variant)
     {
         return Hgvs.addChrPrefix(Hgvs.removeDeletedBases(variant));
+    }
+
+
+    /**
+     * Creates a LinkedHashMap to make sure that we keep the original input order.
+     * Key is the string created by buildRequest method.
+     * Value is the original variant string
+     *
+     * @param variants list of original input variants
+     * @return LinkedHashMap
+     */
+    private Map<String, String> queryToVariant(List<String> variants) {
+        return variants.stream().collect(
+            Collectors.toMap(
+                this::buildRequest,
+                v -> v,
+                (u, v) -> v,
+                LinkedHashMap::new
+            )
+        );
     }
 }

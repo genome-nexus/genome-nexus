@@ -4,13 +4,11 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Snpeff
 {
-
-    @Field(value = "license")
+    @Field(value = "_license")
     private String license;
 
     // @Field(value = "ann")
     // private List<Ann> ann;
-
 
     public String getLicense()
     {
@@ -21,14 +19,4 @@ public class Snpeff
     {
         this.license = license;
     }
-    // public List<Ann> getAnn()
-    // {
-    //     return ann;
-    // }
-
-    // public void setAnn(List<Ann> ann)
-    // {
-    //     this.ann = ann;
-    // }
-
 }

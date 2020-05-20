@@ -12,6 +12,9 @@ public class MyVariantInfo
     @Field("_id")
     private String variant;
 
+    @Field(value = "query")
+    private String query;
+
     @Field(value = "hgvs")
     private String hgvs;
 
@@ -48,6 +51,14 @@ public class MyVariantInfo
 
     public void setVariant(String variant) {
         this.variant = variant;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     public String getHgvs() {

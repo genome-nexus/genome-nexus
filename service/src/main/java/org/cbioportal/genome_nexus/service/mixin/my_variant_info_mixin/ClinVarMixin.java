@@ -16,7 +16,7 @@ import org.cbioportal.genome_nexus.model.my_variant_info_model.Rcv;
 
 public class ClinVarMixin
 {
-    @JsonProperty(value = "license", required = true)
+    @JsonProperty(value = "_license", required = true)
     private String license;
 
     @JsonProperty(value = "allele_id", required = true)

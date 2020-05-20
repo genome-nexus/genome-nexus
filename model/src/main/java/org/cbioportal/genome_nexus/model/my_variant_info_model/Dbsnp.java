@@ -6,8 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Dbsnp
 {
-
-    @Field(value = "license")
+    @Field(value = "_license")
     private String license;
 
     @Field(value = "allele_origin")

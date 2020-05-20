@@ -17,6 +17,9 @@ public class MyVariantInfoMixin
     @JsonProperty(value = "_id", required = true)
     private String variant;
 
+    @JsonProperty(value = "query", required = true)
+    private String query;
+
     @JsonProperty(value = "version", required = true)
     private Integer version;
 

@@ -4,7 +4,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Cosmic
 {
-
     @Field(value = "_license")
     private String license;
 
@@ -33,12 +32,12 @@ public class Cosmic
     private String tumorSite;
 
 
-    public String get_license()
+    public String getLicense()
     {
         return license;
     }
 
-    public void set_license(String license)
+    public void setLicense(String license)
     {
         this.license = license;
     }
