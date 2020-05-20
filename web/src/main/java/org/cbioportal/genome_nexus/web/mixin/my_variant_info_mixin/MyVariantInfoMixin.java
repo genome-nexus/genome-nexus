@@ -14,6 +14,9 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MyVariantInfoMixin
 {
+    @ApiModelProperty(value = "variant", required = false)
+    private String variant;
+
     @ApiModelProperty(value = "hgvs", required = false)
     private String hgvs;
 

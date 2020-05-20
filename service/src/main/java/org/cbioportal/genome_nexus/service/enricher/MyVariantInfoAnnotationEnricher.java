@@ -30,7 +30,8 @@ public class MyVariantInfoAnnotationEnricher implements AnnotationEnricher
             try {
                 myVariantInfo = myVariantInfoService.getMyVariantInfo(annotation);
             } catch (MyVariantInfoWebServiceException e) {
-                LOG.warn(e.getLocalizedMessage());
+                // message is always null for MyVariantInfoWebServiceException, log response instead
+                LOG.warn(e.getResponseBody());
             } catch (MyVariantInfoNotFoundException e) {
                 // fail silently for this variant annotation
             }

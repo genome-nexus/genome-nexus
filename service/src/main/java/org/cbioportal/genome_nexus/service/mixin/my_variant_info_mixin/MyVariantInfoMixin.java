@@ -14,8 +14,8 @@ import org.cbioportal.genome_nexus.model.my_variant_info_model.Vcf;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MyVariantInfoMixin
 {
-    @JsonProperty(value = "hgvs", required = true)
-    private String hgvs;
+    @JsonProperty(value = "_id", required = true)
+    private String variant;
 
     @JsonProperty(value = "version", required = true)
     private Integer version;
@@ -25,7 +25,7 @@ public class MyVariantInfoMixin
 
     @JsonProperty(value = "vcf", required = true)
     private Vcf vcf;
-    
+
     @JsonProperty(value = "dbsnp", required = true)
     private Integer dbsnp;
 

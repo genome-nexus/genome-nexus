@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,15 +53,13 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     {
         List<MyVariantInfo> myVariantInfos = new ArrayList<>();
 
-        for (String variant : variants)
-        {
-            try {
-                myVariantInfos.add(this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(variant)));
-            } catch (MyVariantInfoWebServiceException e) {
-                LOG.warn(e.getLocalizedMessage());
-            } catch (MyVariantInfoNotFoundException e) {
-                // fail silently for this variant
-            }
+        List<String> requestVariants =
+            variants.stream().map(this::buildRequest).collect(Collectors.toList());
+
+        try {
+            myVariantInfos = this.getMyVariantInfoByMyVariantInfoVariant(requestVariants);
+        } catch (MyVariantInfoWebServiceException e) {
+            LOG.warn(e.getResponseBody());
         }
 
         return myVariantInfos;
@@ -71,14 +70,8 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     {
         // get hgvsg from VEP (ID might not be in hgvsg format)
         String hgvsg = annotation.getHgvsg();
-        if (hgvsg != null)
-        {
-            MyVariantInfo myVariantInfo = this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(hgvsg));
-
-            // add original hgvsg variant value too
-            myVariantInfo.setHgvs(hgvsg);
-
-            return myVariantInfo;
+        if (hgvsg != null) {
+            return this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(hgvsg));
         }
         else {
             return null;
@@ -86,7 +79,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     }
 
     /**
-     * @param variant my varint info variant (ex: 1:g.35367G>A)
+     * @param variant my variant info variant (ex: chr1:g.35367G>A)
      */
     public MyVariantInfo getMyVariantInfoByMyVariantInfoVariant(String variant)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException
@@ -96,6 +89,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
         try {
             // get the annotation from the web service and save it to the DB
             myVariantInfo = Optional.ofNullable(cachedExternalResourceFetcher.fetchAndCache(variant));
+            // TODO add hgvs field from id
         } catch (ResourceMappingException e) {
             throw new MyVariantInfoWebServiceException(e.getMessage());
         } catch (HttpClientErrorException e) {
@@ -108,6 +102,28 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
             return myVariantInfo.get();
         } catch (NoSuchElementException e) {
             throw new MyVariantInfoNotFoundException(variant);
+        }
+    }
+
+    /**
+     * @param variants my variant info variants (ex: [chr1:g.35367G>A, chr6:g.152708291G>A])
+     */
+    public List<MyVariantInfo> getMyVariantInfoByMyVariantInfoVariant(List<String> variants)
+        throws MyVariantInfoWebServiceException
+    {
+        try {
+            // get the annotations from the web service and save it to the DB
+            // TODO
+            //  1) MyVariantInfo service actually returns errored queries in the list too:
+            //      currently those are returned as empty objects
+            //  2) add hgvs field from id
+            return cachedExternalResourceFetcher.fetchAndCache(variants);
+        } catch (ResourceMappingException e) {
+            throw new MyVariantInfoWebServiceException(e.getMessage());
+        } catch (HttpClientErrorException e) {
+            throw new MyVariantInfoWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
+        } catch (ResourceAccessException e) {
+            throw new MyVariantInfoWebServiceException(e.getMessage());
         }
     }
 
@@ -126,8 +142,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     }
 
     private String buildRequest(String variant)
-    {   
+    {
         return Hgvs.addChrPrefix(Hgvs.removeDeletedBases(variant));
     }
-
 }
