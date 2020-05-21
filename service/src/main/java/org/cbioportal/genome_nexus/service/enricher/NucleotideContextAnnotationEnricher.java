@@ -11,13 +11,17 @@ import org.cbioportal.genome_nexus.service.NucleotideContextService;
 import org.cbioportal.genome_nexus.service.exception.NucleotideContextNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.NucleotideContextWebServiceException;
 
-public class NucleotideContextAnnotationEnricher implements AnnotationEnricher
+public class NucleotideContextAnnotationEnricher extends BaseAnnotationEnricher
 {
     private static final Log LOG = LogFactory.getLog(NucleotideContextAnnotationEnricher.class);
 
     private NucleotideContextService nucleotideContextService;
 
-    public NucleotideContextAnnotationEnricher(NucleotideContextService nucleotideContextService) {
+    public NucleotideContextAnnotationEnricher(
+        String id,
+        NucleotideContextService nucleotideContextService
+    ) {
+        super(id);
         this.nucleotideContextService = nucleotideContextService;
     }
 

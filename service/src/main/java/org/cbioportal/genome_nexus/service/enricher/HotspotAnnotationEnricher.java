@@ -6,7 +6,6 @@ import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.HotspotAnnotation;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.cbioportal.genome_nexus.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 
@@ -16,20 +15,26 @@ import java.util.List;
 /**
  * @author Selcuk Onur Sumer
  */
-public class HotspotAnnotationEnricher implements AnnotationEnricher
+public class HotspotAnnotationEnricher extends BaseAnnotationEnricher
 {
     private static final Log LOG = LogFactory.getLog(HotspotAnnotationEnricher.class);
 
     private CancerHotspotService hotspotService;
     private Boolean fullInfo;
 
-    public HotspotAnnotationEnricher(CancerHotspotService hotspotService)
-    {
-        this(hotspotService, false);
+    public HotspotAnnotationEnricher(
+        String id,
+        CancerHotspotService hotspotService
+    ) {
+        this(id, hotspotService, false);
     }
 
-    public HotspotAnnotationEnricher(CancerHotspotService hotspotService, Boolean fullInfo)
-    {
+    public HotspotAnnotationEnricher(
+        String id,
+        CancerHotspotService hotspotService,
+        Boolean fullInfo
+    ) {
+        super(id);
         this.hotspotService = hotspotService;
         this.fullInfo = fullInfo;
     }

@@ -40,10 +40,9 @@ import org.cbioportal.genome_nexus.service.EnrichmentService;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * @author Benjamin Gross
@@ -57,20 +56,32 @@ public class VEPEnrichmentService implements EnrichmentService {
     public void enrichAnnotation(VariantAnnotation variantAnnotation) {
         // modify JSON returned by VEP
         if (enrichers != null) {
-            Iterator<Entry<String, AnnotationEnricher>> it = enrichers.entrySet().iterator();
-            while (it.hasNext()) {
-                Entry<String, AnnotationEnricher> enricher = it.next();
+            for (AnnotationEnricher enricher: this.enrichers.values()) {
                 try {
-                    enricher.getValue().enrich(variantAnnotation);
+                    enricher.enrich(variantAnnotation);
                 } catch (Exception e) {
-                    LOG.warn("Failed to enrich with " + enricher.getKey() + ": " + variantAnnotation.getVariant() + " " + e.getLocalizedMessage());
+                    LOG.warn("Failed to enrich with " + enricher.getId() + ": " + variantAnnotation.getVariant() + " " + e.getLocalizedMessage());
                 }
             }
         }
     }
 
     @Override
-    public void registerEnricher(String id, AnnotationEnricher enricher)
+    public void enrichAnnotations(List<VariantAnnotation> variantAnnotations) {
+        // modify JSON returned by VEP
+        if (enrichers != null) {
+            for (AnnotationEnricher enricher: this.enrichers.values()) {
+                try {
+                    enricher.enrich(variantAnnotations);
+                } catch (Exception e) {
+                    LOG.warn("Error while enriching " + variantAnnotations.size() + " annotations with " + enricher.getId());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void registerEnricher(AnnotationEnricher enricher)
     {
         // initiate enricher list if not initiated yet
         if (enrichers == null)
@@ -79,7 +90,7 @@ public class VEPEnrichmentService implements EnrichmentService {
             enrichers = new LinkedHashMap<>();
         }
 
-        enrichers.put(id, enricher);
+        enrichers.put(enricher.getId(), enricher);
     }
 
     @Override

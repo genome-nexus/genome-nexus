@@ -7,9 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document(collection = "my_variant_info.annotation")
 public class MyVariantInfo
 {
-    // TODO problems with id...
     @Id
-    @Field("_id")
     private String variant;
 
     @Field(value = "query")

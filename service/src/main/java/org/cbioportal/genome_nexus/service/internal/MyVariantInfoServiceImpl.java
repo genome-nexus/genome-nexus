@@ -1,6 +1,7 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     /**
      * @param variant   hgvs variant (ex: 7:g.140453136A>T)
      */
-    public MyVariantInfo getMyVariantInfo(String variant)
+    public MyVariantInfo getMyVariantInfoByHgvsVariant(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
     {
@@ -51,9 +52,9 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     /**
      * @param variants   hgvs variants (ex: 7:g.140453136A>T)
      */
-    public List<MyVariantInfo> getMyVariantInfo(List<String> variants)
+    public List<MyVariantInfo> getMyVariantInfoByHgvsVariant(List<String> variants)
     {
-        List<MyVariantInfo> myVariantInfos = new ArrayList<>();
+        List<MyVariantInfo> myVariantInfos = Collections.emptyList();
 
         Map<String, String> queryToVariant = this.queryToVariant(variants);
         List<String> queryVariants = new ArrayList<>(queryToVariant.keySet());
@@ -71,10 +72,10 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
         return myVariantInfos;
     }
 
-    public MyVariantInfo getMyVariantInfo(VariantAnnotation annotation)
+    public MyVariantInfo getMyVariantInfoByAnnotation(VariantAnnotation annotation)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException
     {
-        // get hgvsg from VEP (ID might not be in hgvsg format)
+        // get hgvsg from VEP (annotation.getId() might not be in hgvsg format)
         String hgvsg = annotation.getHgvsg();
         if (hgvsg != null) {
             return this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(hgvsg));
@@ -82,6 +83,15 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
         else {
             return null;
         }
+    }
+
+    @Override
+    public List<MyVariantInfo> getMyVariantInfoByAnnotation(List<VariantAnnotation> annotations)
+        throws MyVariantInfoWebServiceException
+    {
+        return this.getMyVariantInfoByHgvsVariant(
+            annotations.stream().map(VariantAnnotation::getHgvsg).collect(Collectors.toList())
+        );
     }
 
     /**
@@ -127,20 +137,6 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
             throw new MyVariantInfoWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
         } catch (ResourceAccessException e) {
             throw new MyVariantInfoWebServiceException(e.getMessage());
-        }
-    }
-
-    private MyVariantInfo getMyVariantInfoByVariantAnnotation(VariantAnnotation variantAnnotation)
-        throws MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
-    {
-        MyVariantInfo myVariantInfoObj = this.getMyVariantInfo(variantAnnotation);
-
-        if (myVariantInfoObj != null)
-        {
-            return myVariantInfoObj;
-        }
-        else {
-            throw new MyVariantInfoNotFoundException(variantAnnotation.getVariant());
         }
     }
 

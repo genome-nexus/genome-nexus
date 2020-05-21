@@ -19,16 +19,22 @@ import org.cbioportal.genome_nexus.service.exception.OncokbWebServiceException;
 import org.oncokb.client.CancerGene;
 import org.oncokb.client.IndicatorQueryResp;
 
-public class OncokbAnnotationEnricher implements AnnotationEnricher
+public class OncokbAnnotationEnricher extends BaseAnnotationEnricher
 {
     private static final Log LOG = LogFactory.getLog(OncokbAnnotationEnricher.class);
     private final VariantAnnotationSummaryService variantAnnotationSummaryService;
     private final OncokbResolver oncokbResolver = new OncokbResolver();
-    
+
     private OncokbService oncokbService;
     private String token;
 
-    public OncokbAnnotationEnricher(OncokbService oncokbService, VariantAnnotationSummaryService variantAnnotationSummaryService, String token) {
+    public OncokbAnnotationEnricher(
+        String id,
+        OncokbService oncokbService,
+        VariantAnnotationSummaryService variantAnnotationSummaryService,
+        String token
+    ) {
+        super(id);
         this.oncokbService = oncokbService;
         this.variantAnnotationSummaryService = variantAnnotationSummaryService;
         this.token = token;
@@ -55,7 +61,7 @@ public class OncokbAnnotationEnricher implements AnnotationEnricher
                     // fail silently for this variant annotation
                 }
             }
-            
+
             if (oncokb != null)
             {
                 OncokbAnnotation oncokbAnnotation = new OncokbAnnotation();

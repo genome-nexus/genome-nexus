@@ -65,10 +65,10 @@ public class MyVariantInfoServiceTest
         Mockito.when(fetcher.fetchAndCache("chr7:g.140453136A>T")).thenReturn(mviMockData.get("7:g.140453136A>T"));
         Mockito.when(fetcher.fetchAndCache("chr12:g.25398285C>A")).thenReturn(mviMockData.get("12:g.25398285C>A"));
 
-        MyVariantInfo myVariantInfo1 = service.getMyVariantInfo(variantMockData.get("7:g.140453136A>T"));
+        MyVariantInfo myVariantInfo1 = service.getMyVariantInfoByAnnotation(variantMockData.get("7:g.140453136A>T"));
         assertEquals(myVariantInfo1.getVersion(), mviMockData.get("7:g.140453136A>T").getVersion());
 
-        MyVariantInfo myVariantInfo2 = service.getMyVariantInfo(variantMockData.get("12:g.25398285C>A"));
+        MyVariantInfo myVariantInfo2 = service.getMyVariantInfoByAnnotation(variantMockData.get("12:g.25398285C>A"));
         assertEquals(myVariantInfo2.getVersion(), mviMockData.get("12:g.25398285C>A").getVersion());
     }
 }
