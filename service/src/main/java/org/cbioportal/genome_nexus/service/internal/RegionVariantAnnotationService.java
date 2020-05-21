@@ -57,6 +57,7 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
                                           @Lazy NucleotideContextService nucleotideContextService,
                                           @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
                                           @Lazy PostTranslationalModificationService postTranslationalModificationService,
+                                          @Lazy SignalMutationService signalMutationService,
                                           @Lazy OncokbService oncokbService)
     {
         super(cachedVariantRegionAnnotationFetcher,
@@ -67,6 +68,7 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
             nucleotideContextService,
             variantAnnotationSummaryService,
             postTranslationalModificationService,
+            signalMutationService,
             oncokbService);
     }
 }

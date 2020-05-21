@@ -2,6 +2,7 @@ package org.cbioportal.genome_nexus.web.mock;
 
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.PostTranslationalModification;
+import org.cbioportal.genome_nexus.model.SignalMutation;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -29,6 +30,14 @@ public class JsonToObjectMapper
         return this.objectMapper.readValue(
             new ClassPathResource("ptm/" + resourceName).getInputStream(),
             this.objectMapper.getTypeFactory().constructCollectionType(List.class, PostTranslationalModification.class)
+        );
+    }
+
+    public List<SignalMutation> readSignalMutations(String resourceName) throws IOException
+    {
+        return this.objectMapper.readValue(
+            new ClassPathResource("signal/" + resourceName).getInputStream(),
+            this.objectMapper.getTypeFactory().constructCollectionType(List.class, SignalMutation.class)
         );
     }
 }

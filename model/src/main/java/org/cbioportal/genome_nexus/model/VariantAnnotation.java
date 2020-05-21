@@ -72,6 +72,7 @@ public class VariantAnnotation
     private PtmAnnotation ptmAnnotation;
     private OncokbAnnotation oncokbAnnotation;
     private VariantAnnotationSummary annotationSummary;
+    private SignalAnnotation signalAnnotation;
 
     private Map<String, Object> dynamicProps;
 
@@ -301,6 +302,14 @@ public class VariantAnnotation
 
     public void setPtmAnnotation(PtmAnnotation ptmAnnotation) {
         this.ptmAnnotation = ptmAnnotation;
+    }
+
+    public SignalAnnotation getSignalAnnotation() {
+        return signalAnnotation;
+    }
+
+    public void setSignalAnnotation(SignalAnnotation signalAnnotation) {
+        this.signalAnnotation = signalAnnotation;
     }
 
     public OncokbAnnotation getOncokbAnnotation() {

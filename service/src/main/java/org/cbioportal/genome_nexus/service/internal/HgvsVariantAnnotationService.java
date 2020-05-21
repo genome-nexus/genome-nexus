@@ -59,6 +59,7 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
                                         @Lazy NucleotideContextService nucleotideContextService,
                                         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
                                         @Lazy PostTranslationalModificationService postTranslationalModificationService,
+                                        @Lazy SignalMutationService signalMutationService,
                                         @Lazy OncokbService oncokbService)
     {
         super(cachedVariantAnnotationFetcher,
@@ -69,6 +70,7 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
             nucleotideContextService,
             variantAnnotationSummaryService,
             postTranslationalModificationService,
+            signalMutationService,
             oncokbService);
 
         this.notationConverter = notationConverter;

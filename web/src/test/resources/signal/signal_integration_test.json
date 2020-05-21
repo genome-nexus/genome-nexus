@@ -1,0 +1,1864 @@
+[
+    {
+        "hugo_gene_symbol" : "TP53",
+        "chromosome" : "17",
+        "start_position" : 7574003,
+        "end_position" : 7574004,
+        "reference_allele" : "-",
+        "variant_allele" : "GAACATCTCGAAGCGCTCACGCCCAC",
+        "mutation_status" : "somatic",
+        "pathogenic" : null,
+        "penetrance" : null,
+        "counts_by_tumor_type" : [
+            {
+                "tumor_type" : "Esophagogastric Cancer",
+                "tumor_type_count" : 429,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Head and Neck Cancer",
+                "tumor_type_count" : 279,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Lung Neuroendocrine Tumor",
+                "tumor_type_count" : 97,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thymic Tumor",
+                "tumor_type_count" : 44,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Embryonal Tumor",
+                "tumor_type_count" : 112,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Appendiceal Adenocarcinoma",
+                "tumor_type_count" : 122,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Adrenocortical Carcinoma",
+                "tumor_type_count" : 41,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Neuroendocrine Tumor",
+                "tumor_type_count" : 112,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Cell Lung Cancer",
+                "tumor_type_count" : 132,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Diffuse Glioma",
+                "tumor_type_count" : 836,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thyroid Cancer",
+                "tumor_type_count" : 306,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Colorectal Adenocarcinoma",
+                "tumor_type_count" : 1495,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Germ Cell Tumor",
+                "tumor_type_count" : 367,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Non-Clear Cell Carcinoma",
+                "tumor_type_count" : 190,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Unknown",
+                "tumor_type_count" : 39,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Prostate Cancer",
+                "tumor_type_count" : 1042,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Uterine Sarcoma",
+                "tumor_type_count" : 127,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Sex Cord Stromal Tumor",
+                "tumor_type_count" : 27,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Neuroendocrine Tumors",
+                "tumor_type_count" : 85,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Salivary Carcinoma",
+                "tumor_type_count" : 149,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Small Cell Lung Cancer",
+                "tumor_type_count" : 2463,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Cholangio Hepatobiliary Cancer",
+                "tumor_type_count" : 236,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cancer of Unknown Primary",
+                "tumor_type_count" : 409,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cholangiocarcinoma",
+                "tumor_type_count" : 288,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ampullary Carcinoma",
+                "tumor_type_count" : 47,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Adenocarcinoma",
+                "tumor_type_count" : 758,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Invasive Breast Carcinoma",
+                "tumor_type_count" : 2422,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ovarian Cancer",
+                "tumor_type_count" : 384,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Anal Cancer",
+                "tumor_type_count" : 48,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-cutaneous Melanoma",
+                "tumor_type_count" : 197,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Skin Cancer, Non-Melanoma",
+                "tumor_type_count" : 196,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Endometrial Carcinoma",
+                "tumor_type_count" : 547,
+                "variant_count" : 1
+            },
+            {
+                "tumor_type" : "Non Glioma CNS Cancers",
+                "tumor_type_count" : 71,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Soft Tissue Sarcoma",
+                "tumor_type_count" : 666,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Mesothelioma",
+                "tumor_type_count" : 172,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Other",
+                "tumor_type_count" : 475,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cervical Cancer",
+                "tumor_type_count" : 79,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Stromal Tumor",
+                "tumor_type_count" : 211,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Retinoblastoma",
+                "tumor_type_count" : 12,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Bowel Cancer",
+                "tumor_type_count" : 59,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Nerve Sheath Tumor",
+                "tumor_type_count" : 33,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bladder Cancer",
+                "tumor_type_count" : 548,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cutaneous Melanoma",
+                "tumor_type_count" : 322,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bone Cancer",
+                "tumor_type_count" : 206,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Clear Cell Carcinoma",
+                "tumor_type_count" : 272,
+                "variant_count" : 0
+            }
+        ]
+    },
+    {
+        "hugo_gene_symbol" : "TP53",
+        "chromosome" : "17",
+        "start_position" : 7577018,
+        "end_position" : 7577018,
+        "reference_allele" : "C",
+        "variant_allele" : "G",
+        "mutation_status" : "germline",
+        "pathogenic" : 1,
+        "penetrance" : "High",
+        "counts_by_tumor_type" : [
+            {
+                "tumor_type" : "Esophagogastric Cancer",
+                "tumor_type_count" : 429,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Head and Neck Cancer",
+                "tumor_type_count" : 279,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Lung Neuroendocrine Tumor",
+                "tumor_type_count" : 97,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thymic Tumor",
+                "tumor_type_count" : 44,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Embryonal Tumor",
+                "tumor_type_count" : 112,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Appendiceal Adenocarcinoma",
+                "tumor_type_count" : 122,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Adrenocortical Carcinoma",
+                "tumor_type_count" : 41,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Neuroendocrine Tumor",
+                "tumor_type_count" : 112,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Cell Lung Cancer",
+                "tumor_type_count" : 132,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Diffuse Glioma",
+                "tumor_type_count" : 836,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thyroid Cancer",
+                "tumor_type_count" : 306,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Colorectal Adenocarcinoma",
+                "tumor_type_count" : 1495,
+                "variant_count" : 1
+            },
+            {
+                "tumor_type" : "Germ Cell Tumor",
+                "tumor_type_count" : 367,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Non-Clear Cell Carcinoma",
+                "tumor_type_count" : 190,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Unknown",
+                "tumor_type_count" : 39,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Prostate Cancer",
+                "tumor_type_count" : 1042,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Uterine Sarcoma",
+                "tumor_type_count" : 127,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Sex Cord Stromal Tumor",
+                "tumor_type_count" : 27,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Neuroendocrine Tumors",
+                "tumor_type_count" : 85,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Salivary Carcinoma",
+                "tumor_type_count" : 149,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Small Cell Lung Cancer",
+                "tumor_type_count" : 2463,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Cholangio Hepatobiliary Cancer",
+                "tumor_type_count" : 236,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cancer of Unknown Primary",
+                "tumor_type_count" : 409,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cholangiocarcinoma",
+                "tumor_type_count" : 288,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ampullary Carcinoma",
+                "tumor_type_count" : 47,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Adenocarcinoma",
+                "tumor_type_count" : 758,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Invasive Breast Carcinoma",
+                "tumor_type_count" : 2422,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ovarian Cancer",
+                "tumor_type_count" : 384,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Anal Cancer",
+                "tumor_type_count" : 48,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-cutaneous Melanoma",
+                "tumor_type_count" : 197,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Skin Cancer, Non-Melanoma",
+                "tumor_type_count" : 196,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Endometrial Carcinoma",
+                "tumor_type_count" : 547,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non Glioma CNS Cancers",
+                "tumor_type_count" : 71,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Soft Tissue Sarcoma",
+                "tumor_type_count" : 666,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Mesothelioma",
+                "tumor_type_count" : 172,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Other",
+                "tumor_type_count" : 475,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cervical Cancer",
+                "tumor_type_count" : 79,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Stromal Tumor",
+                "tumor_type_count" : 211,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Retinoblastoma",
+                "tumor_type_count" : 12,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Bowel Cancer",
+                "tumor_type_count" : 59,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Nerve Sheath Tumor",
+                "tumor_type_count" : 33,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bladder Cancer",
+                "tumor_type_count" : 548,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cutaneous Melanoma",
+                "tumor_type_count" : 322,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bone Cancer",
+                "tumor_type_count" : 206,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Clear Cell Carcinoma",
+                "tumor_type_count" : 272,
+                "variant_count" : 0
+            }
+        ],
+        "biallelic_counts_by_tumor_type" : null,
+        "qc_pass_counts_by_tumor_type" : [
+            {
+                "tumor_type" : "Esophagogastric Cancer",
+                "tumor_type_count" : 355,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Head and Neck Cancer",
+                "tumor_type_count" : 258,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Lung Neuroendocrine Tumor",
+                "tumor_type_count" : 86,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thymic Tumor",
+                "tumor_type_count" : 30,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Embryonal Tumor",
+                "tumor_type_count" : 101,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Appendiceal Adenocarcinoma",
+                "tumor_type_count" : 92,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Adrenocortical Carcinoma",
+                "tumor_type_count" : 36,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Neuroendocrine Tumor",
+                "tumor_type_count" : 99,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Cell Lung Cancer",
+                "tumor_type_count" : 118,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Diffuse Glioma",
+                "tumor_type_count" : 790,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thyroid Cancer",
+                "tumor_type_count" : 269,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Colorectal Adenocarcinoma",
+                "tumor_type_count" : 1384,
+                "variant_count" : 1
+            },
+            {
+                "tumor_type" : "Germ Cell Tumor",
+                "tumor_type_count" : 317,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Non-Clear Cell Carcinoma",
+                "tumor_type_count" : 174,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Unknown",
+                "tumor_type_count" : 20,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Prostate Cancer",
+                "tumor_type_count" : 879,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Uterine Sarcoma",
+                "tumor_type_count" : 107,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Sex Cord Stromal Tumor",
+                "tumor_type_count" : 24,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Neuroendocrine Tumors",
+                "tumor_type_count" : 77,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Salivary Carcinoma",
+                "tumor_type_count" : 125,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Small Cell Lung Cancer",
+                "tumor_type_count" : 2187,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Cholangio Hepatobiliary Cancer",
+                "tumor_type_count" : 208,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cancer of Unknown Primary",
+                "tumor_type_count" : 349,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cholangiocarcinoma",
+                "tumor_type_count" : 251,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ampullary Carcinoma",
+                "tumor_type_count" : 41,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Adenocarcinoma",
+                "tumor_type_count" : 649,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Invasive Breast Carcinoma",
+                "tumor_type_count" : 2206,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ovarian Cancer",
+                "tumor_type_count" : 333,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Anal Cancer",
+                "tumor_type_count" : 45,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-cutaneous Melanoma",
+                "tumor_type_count" : 175,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Skin Cancer, Non-Melanoma",
+                "tumor_type_count" : 179,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Endometrial Carcinoma",
+                "tumor_type_count" : 507,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non Glioma CNS Cancers",
+                "tumor_type_count" : 64,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Soft Tissue Sarcoma",
+                "tumor_type_count" : 550,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Mesothelioma",
+                "tumor_type_count" : 141,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Other",
+                "tumor_type_count" : 382,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cervical Cancer",
+                "tumor_type_count" : 74,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Stromal Tumor",
+                "tumor_type_count" : 193,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Retinoblastoma",
+                "tumor_type_count" : 11,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Bowel Cancer",
+                "tumor_type_count" : 52,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Nerve Sheath Tumor",
+                "tumor_type_count" : 25,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bladder Cancer",
+                "tumor_type_count" : 498,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cutaneous Melanoma",
+                "tumor_type_count" : 298,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bone Cancer",
+                "tumor_type_count" : 174,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Clear Cell Carcinoma",
+                "tumor_type_count" : 262,
+                "variant_count" : 0
+            }
+        ]
+    },
+    {
+        "hugo_gene_symbol" : "BRCA2",
+        "chromosome" : "13",
+        "start_position" : 32893385,
+        "end_position" : 32893389,
+        "reference_allele" : "TATTC",
+        "variant_allele" : "-",
+        "mutation_status" : "germline",
+        "pathogenic" : 1,
+        "penetrance" : "High",
+        "counts_by_tumor_type" : [
+            {
+                "tumor_type" : "Esophagogastric Cancer",
+                "tumor_type_count" : 429,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Head and Neck Cancer",
+                "tumor_type_count" : 279,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Lung Neuroendocrine Tumor",
+                "tumor_type_count" : 97,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thymic Tumor",
+                "tumor_type_count" : 44,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Embryonal Tumor",
+                "tumor_type_count" : 112,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Appendiceal Adenocarcinoma",
+                "tumor_type_count" : 122,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Adrenocortical Carcinoma",
+                "tumor_type_count" : 41,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Neuroendocrine Tumor",
+                "tumor_type_count" : 112,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Cell Lung Cancer",
+                "tumor_type_count" : 132,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Diffuse Glioma",
+                "tumor_type_count" : 836,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thyroid Cancer",
+                "tumor_type_count" : 306,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Colorectal Adenocarcinoma",
+                "tumor_type_count" : 1495,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Germ Cell Tumor",
+                "tumor_type_count" : 367,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Non-Clear Cell Carcinoma",
+                "tumor_type_count" : 190,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Unknown",
+                "tumor_type_count" : 39,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Prostate Cancer",
+                "tumor_type_count" : 1042,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Uterine Sarcoma",
+                "tumor_type_count" : 127,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Sex Cord Stromal Tumor",
+                "tumor_type_count" : 27,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Neuroendocrine Tumors",
+                "tumor_type_count" : 85,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Salivary Carcinoma",
+                "tumor_type_count" : 149,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Small Cell Lung Cancer",
+                "tumor_type_count" : 2463,
+                "variant_count" : 1
+            },
+            {
+                "tumor_type" : "Non-Cholangio Hepatobiliary Cancer",
+                "tumor_type_count" : 236,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cancer of Unknown Primary",
+                "tumor_type_count" : 409,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cholangiocarcinoma",
+                "tumor_type_count" : 288,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ampullary Carcinoma",
+                "tumor_type_count" : 47,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Adenocarcinoma",
+                "tumor_type_count" : 758,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Invasive Breast Carcinoma",
+                "tumor_type_count" : 2422,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ovarian Cancer",
+                "tumor_type_count" : 384,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Anal Cancer",
+                "tumor_type_count" : 48,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-cutaneous Melanoma",
+                "tumor_type_count" : 197,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Skin Cancer, Non-Melanoma",
+                "tumor_type_count" : 196,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Endometrial Carcinoma",
+                "tumor_type_count" : 547,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non Glioma CNS Cancers",
+                "tumor_type_count" : 71,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Soft Tissue Sarcoma",
+                "tumor_type_count" : 666,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Mesothelioma",
+                "tumor_type_count" : 172,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Other",
+                "tumor_type_count" : 475,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cervical Cancer",
+                "tumor_type_count" : 79,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Stromal Tumor",
+                "tumor_type_count" : 211,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Retinoblastoma",
+                "tumor_type_count" : 12,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Bowel Cancer",
+                "tumor_type_count" : 59,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Nerve Sheath Tumor",
+                "tumor_type_count" : 33,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bladder Cancer",
+                "tumor_type_count" : 548,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cutaneous Melanoma",
+                "tumor_type_count" : 322,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bone Cancer",
+                "tumor_type_count" : 206,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Clear Cell Carcinoma",
+                "tumor_type_count" : 272,
+                "variant_count" : 0
+            }
+        ],
+        "biallelic_counts_by_tumor_type" : [
+            {
+                "tumor_type" : "Esophagogastric Cancer",
+                "tumor_type_count" : 355,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Head and Neck Cancer",
+                "tumor_type_count" : 258,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Lung Neuroendocrine Tumor",
+                "tumor_type_count" : 86,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thymic Tumor",
+                "tumor_type_count" : 30,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Embryonal Tumor",
+                "tumor_type_count" : 101,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Appendiceal Adenocarcinoma",
+                "tumor_type_count" : 92,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Adrenocortical Carcinoma",
+                "tumor_type_count" : 36,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Neuroendocrine Tumor",
+                "tumor_type_count" : 99,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Cell Lung Cancer",
+                "tumor_type_count" : 118,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Diffuse Glioma",
+                "tumor_type_count" : 790,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thyroid Cancer",
+                "tumor_type_count" : 269,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Colorectal Adenocarcinoma",
+                "tumor_type_count" : 1384,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Germ Cell Tumor",
+                "tumor_type_count" : 317,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Non-Clear Cell Carcinoma",
+                "tumor_type_count" : 174,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Unknown",
+                "tumor_type_count" : 20,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Prostate Cancer",
+                "tumor_type_count" : 879,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Uterine Sarcoma",
+                "tumor_type_count" : 107,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Sex Cord Stromal Tumor",
+                "tumor_type_count" : 24,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Neuroendocrine Tumors",
+                "tumor_type_count" : 77,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Salivary Carcinoma",
+                "tumor_type_count" : 125,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Small Cell Lung Cancer",
+                "tumor_type_count" : 2187,
+                "variant_count" : 1
+            },
+            {
+                "tumor_type" : "Non-Cholangio Hepatobiliary Cancer",
+                "tumor_type_count" : 208,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cancer of Unknown Primary",
+                "tumor_type_count" : 349,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cholangiocarcinoma",
+                "tumor_type_count" : 251,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ampullary Carcinoma",
+                "tumor_type_count" : 41,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Adenocarcinoma",
+                "tumor_type_count" : 649,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Invasive Breast Carcinoma",
+                "tumor_type_count" : 2206,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ovarian Cancer",
+                "tumor_type_count" : 333,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Anal Cancer",
+                "tumor_type_count" : 45,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-cutaneous Melanoma",
+                "tumor_type_count" : 175,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Skin Cancer, Non-Melanoma",
+                "tumor_type_count" : 179,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Endometrial Carcinoma",
+                "tumor_type_count" : 507,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non Glioma CNS Cancers",
+                "tumor_type_count" : 64,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Soft Tissue Sarcoma",
+                "tumor_type_count" : 550,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Mesothelioma",
+                "tumor_type_count" : 141,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Other",
+                "tumor_type_count" : 382,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cervical Cancer",
+                "tumor_type_count" : 74,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Stromal Tumor",
+                "tumor_type_count" : 193,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Retinoblastoma",
+                "tumor_type_count" : 11,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Bowel Cancer",
+                "tumor_type_count" : 52,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Nerve Sheath Tumor",
+                "tumor_type_count" : 25,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bladder Cancer",
+                "tumor_type_count" : 498,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cutaneous Melanoma",
+                "tumor_type_count" : 298,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bone Cancer",
+                "tumor_type_count" : 174,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Clear Cell Carcinoma",
+                "tumor_type_count" : 262,
+                "variant_count" : 0
+            }
+        ],
+        "qc_pass_counts_by_tumor_type" : [
+            {
+                "tumor_type" : "Esophagogastric Cancer",
+                "tumor_type_count" : 355,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Head and Neck Cancer",
+                "tumor_type_count" : 258,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Lung Neuroendocrine Tumor",
+                "tumor_type_count" : 86,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thymic Tumor",
+                "tumor_type_count" : 30,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Embryonal Tumor",
+                "tumor_type_count" : 101,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Appendiceal Adenocarcinoma",
+                "tumor_type_count" : 92,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Adrenocortical Carcinoma",
+                "tumor_type_count" : 36,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Neuroendocrine Tumor",
+                "tumor_type_count" : 99,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Cell Lung Cancer",
+                "tumor_type_count" : 118,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Diffuse Glioma",
+                "tumor_type_count" : 790,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thyroid Cancer",
+                "tumor_type_count" : 269,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Colorectal Adenocarcinoma",
+                "tumor_type_count" : 1384,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Germ Cell Tumor",
+                "tumor_type_count" : 317,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Non-Clear Cell Carcinoma",
+                "tumor_type_count" : 174,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Unknown",
+                "tumor_type_count" : 20,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Prostate Cancer",
+                "tumor_type_count" : 879,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Uterine Sarcoma",
+                "tumor_type_count" : 107,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Sex Cord Stromal Tumor",
+                "tumor_type_count" : 24,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Neuroendocrine Tumors",
+                "tumor_type_count" : 77,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Salivary Carcinoma",
+                "tumor_type_count" : 125,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Small Cell Lung Cancer",
+                "tumor_type_count" : 2187,
+                "variant_count" : 1
+            },
+            {
+                "tumor_type" : "Non-Cholangio Hepatobiliary Cancer",
+                "tumor_type_count" : 208,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cancer of Unknown Primary",
+                "tumor_type_count" : 349,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cholangiocarcinoma",
+                "tumor_type_count" : 251,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ampullary Carcinoma",
+                "tumor_type_count" : 41,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Adenocarcinoma",
+                "tumor_type_count" : 649,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Invasive Breast Carcinoma",
+                "tumor_type_count" : 2206,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ovarian Cancer",
+                "tumor_type_count" : 333,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Anal Cancer",
+                "tumor_type_count" : 45,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-cutaneous Melanoma",
+                "tumor_type_count" : 175,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Skin Cancer, Non-Melanoma",
+                "tumor_type_count" : 179,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Endometrial Carcinoma",
+                "tumor_type_count" : 507,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non Glioma CNS Cancers",
+                "tumor_type_count" : 64,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Soft Tissue Sarcoma",
+                "tumor_type_count" : 550,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Mesothelioma",
+                "tumor_type_count" : 141,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Other",
+                "tumor_type_count" : 382,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cervical Cancer",
+                "tumor_type_count" : 74,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Stromal Tumor",
+                "tumor_type_count" : 193,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Retinoblastoma",
+                "tumor_type_count" : 11,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Bowel Cancer",
+                "tumor_type_count" : 52,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Nerve Sheath Tumor",
+                "tumor_type_count" : 25,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bladder Cancer",
+                "tumor_type_count" : 498,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cutaneous Melanoma",
+                "tumor_type_count" : 298,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bone Cancer",
+                "tumor_type_count" : 174,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Clear Cell Carcinoma",
+                "tumor_type_count" : 262,
+                "variant_count" : 0
+            }
+        ]
+    },
+    {
+        "hugo_gene_symbol" : "BRCA2",
+        "chromosome" : "13",
+        "start_position" : 32893378,
+        "end_position" : 32893378,
+        "reference_allele" : "C",
+        "variant_allele" : "T",
+        "mutation_status" : "germline",
+        "pathogenic" : 1,
+        "penetrance" : "High",
+        "counts_by_tumor_type" : [
+            {
+                "tumor_type" : "Esophagogastric Cancer",
+                "tumor_type_count" : 429,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Head and Neck Cancer",
+                "tumor_type_count" : 279,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Lung Neuroendocrine Tumor",
+                "tumor_type_count" : 97,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thymic Tumor",
+                "tumor_type_count" : 44,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Embryonal Tumor",
+                "tumor_type_count" : 112,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Appendiceal Adenocarcinoma",
+                "tumor_type_count" : 122,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Adrenocortical Carcinoma",
+                "tumor_type_count" : 41,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Neuroendocrine Tumor",
+                "tumor_type_count" : 112,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Cell Lung Cancer",
+                "tumor_type_count" : 132,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Diffuse Glioma",
+                "tumor_type_count" : 836,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thyroid Cancer",
+                "tumor_type_count" : 306,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Colorectal Adenocarcinoma",
+                "tumor_type_count" : 1495,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Germ Cell Tumor",
+                "tumor_type_count" : 367,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Non-Clear Cell Carcinoma",
+                "tumor_type_count" : 190,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Unknown",
+                "tumor_type_count" : 39,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Prostate Cancer",
+                "tumor_type_count" : 1042,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Uterine Sarcoma",
+                "tumor_type_count" : 127,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Sex Cord Stromal Tumor",
+                "tumor_type_count" : 27,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Neuroendocrine Tumors",
+                "tumor_type_count" : 85,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Salivary Carcinoma",
+                "tumor_type_count" : 149,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Small Cell Lung Cancer",
+                "tumor_type_count" : 2463,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Cholangio Hepatobiliary Cancer",
+                "tumor_type_count" : 236,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cancer of Unknown Primary",
+                "tumor_type_count" : 409,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cholangiocarcinoma",
+                "tumor_type_count" : 288,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ampullary Carcinoma",
+                "tumor_type_count" : 47,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Adenocarcinoma",
+                "tumor_type_count" : 758,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Invasive Breast Carcinoma",
+                "tumor_type_count" : 2422,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ovarian Cancer",
+                "tumor_type_count" : 384,
+                "variant_count" : 1
+            },
+            {
+                "tumor_type" : "Anal Cancer",
+                "tumor_type_count" : 48,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-cutaneous Melanoma",
+                "tumor_type_count" : 197,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Skin Cancer, Non-Melanoma",
+                "tumor_type_count" : 196,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Endometrial Carcinoma",
+                "tumor_type_count" : 547,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non Glioma CNS Cancers",
+                "tumor_type_count" : 71,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Soft Tissue Sarcoma",
+                "tumor_type_count" : 666,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Mesothelioma",
+                "tumor_type_count" : 172,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Other",
+                "tumor_type_count" : 475,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cervical Cancer",
+                "tumor_type_count" : 79,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Stromal Tumor",
+                "tumor_type_count" : 211,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Retinoblastoma",
+                "tumor_type_count" : 12,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Bowel Cancer",
+                "tumor_type_count" : 59,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Nerve Sheath Tumor",
+                "tumor_type_count" : 33,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bladder Cancer",
+                "tumor_type_count" : 548,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cutaneous Melanoma",
+                "tumor_type_count" : 322,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bone Cancer",
+                "tumor_type_count" : 206,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Clear Cell Carcinoma",
+                "tumor_type_count" : 272,
+                "variant_count" : 0
+            }
+        ],
+        "biallelic_counts_by_tumor_type" : null,
+        "qc_pass_counts_by_tumor_type" : [
+            {
+                "tumor_type" : "Esophagogastric Cancer",
+                "tumor_type_count" : 355,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Head and Neck Cancer",
+                "tumor_type_count" : 258,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Lung Neuroendocrine Tumor",
+                "tumor_type_count" : 86,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thymic Tumor",
+                "tumor_type_count" : 30,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Embryonal Tumor",
+                "tumor_type_count" : 101,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Appendiceal Adenocarcinoma",
+                "tumor_type_count" : 92,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Adrenocortical Carcinoma",
+                "tumor_type_count" : 36,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Neuroendocrine Tumor",
+                "tumor_type_count" : 99,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Cell Lung Cancer",
+                "tumor_type_count" : 118,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Diffuse Glioma",
+                "tumor_type_count" : 790,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Thyroid Cancer",
+                "tumor_type_count" : 269,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Colorectal Adenocarcinoma",
+                "tumor_type_count" : 1384,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Germ Cell Tumor",
+                "tumor_type_count" : 317,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Non-Clear Cell Carcinoma",
+                "tumor_type_count" : 174,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Unknown",
+                "tumor_type_count" : 20,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Prostate Cancer",
+                "tumor_type_count" : 879,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Uterine Sarcoma",
+                "tumor_type_count" : 107,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Sex Cord Stromal Tumor",
+                "tumor_type_count" : 24,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Neuroendocrine Tumors",
+                "tumor_type_count" : 77,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Salivary Carcinoma",
+                "tumor_type_count" : 125,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Small Cell Lung Cancer",
+                "tumor_type_count" : 2187,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-Cholangio Hepatobiliary Cancer",
+                "tumor_type_count" : 208,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cancer of Unknown Primary",
+                "tumor_type_count" : 349,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cholangiocarcinoma",
+                "tumor_type_count" : 251,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ampullary Carcinoma",
+                "tumor_type_count" : 41,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Pancreatic Adenocarcinoma",
+                "tumor_type_count" : 649,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Invasive Breast Carcinoma",
+                "tumor_type_count" : 2206,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Ovarian Cancer",
+                "tumor_type_count" : 333,
+                "variant_count" : 1
+            },
+            {
+                "tumor_type" : "Anal Cancer",
+                "tumor_type_count" : 45,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non-cutaneous Melanoma",
+                "tumor_type_count" : 175,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Skin Cancer, Non-Melanoma",
+                "tumor_type_count" : 179,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Endometrial Carcinoma",
+                "tumor_type_count" : 507,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Non Glioma CNS Cancers",
+                "tumor_type_count" : 64,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Soft Tissue Sarcoma",
+                "tumor_type_count" : 550,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Mesothelioma",
+                "tumor_type_count" : 141,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Other",
+                "tumor_type_count" : 382,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cervical Cancer",
+                "tumor_type_count" : 74,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Gastrointestinal Stromal Tumor",
+                "tumor_type_count" : 193,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Retinoblastoma",
+                "tumor_type_count" : 11,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Small Bowel Cancer",
+                "tumor_type_count" : 52,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Nerve Sheath Tumor",
+                "tumor_type_count" : 25,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bladder Cancer",
+                "tumor_type_count" : 498,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Cutaneous Melanoma",
+                "tumor_type_count" : 298,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Bone Cancer",
+                "tumor_type_count" : 174,
+                "variant_count" : 0
+            },
+            {
+                "tumor_type" : "Renal Clear Cell Carcinoma",
+                "tumor_type_count" : 262,
+                "variant_count" : 0
+            }
+        ]
+    }
+]

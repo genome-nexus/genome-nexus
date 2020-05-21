@@ -65,6 +65,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     private final MyVariantInfoService myVariantInfoService;
     private final NucleotideContextService nucleotideContextService;
     private final PostTranslationalModificationService postTranslationalModificationService;
+    private final SignalMutationService signalMutationService;
     private final OncokbService oncokbService;
 
     public BaseVariantAnnotationServiceImpl(BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher,
@@ -75,6 +76,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
                                             NucleotideContextService nucleotideContextService,
                                             VariantAnnotationSummaryService variantAnnotationSummaryService,
                                             PostTranslationalModificationService postTranslationalModificationService,
+                                            SignalMutationService signalMutationService,
                                             OncokbService oncokbService)
     {
         this.resourceFetcher = resourceFetcher;
@@ -85,6 +87,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         this.variantAnnotationSummaryService = variantAnnotationSummaryService;
         this.myVariantInfoService = myVariantInfoService;
         this.postTranslationalModificationService = postTranslationalModificationService;
+        this.signalMutationService = signalMutationService;
         this.oncokbService = oncokbService;
     }
 
@@ -279,6 +282,12 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         {
             AnnotationEnricher enricher = new PostTranslationalModificationEnricher(postTranslationalModificationService);
             postEnrichmentService.registerEnricher("ptm", enricher);
+        }
+
+        if (fields != null && fields.contains("signal"))
+        {
+            AnnotationEnricher enricher = new SignalAnnotationEnricher(signalMutationService);
+            postEnrichmentService.registerEnricher("signal", enricher);
         }
 
         if (fields != null && fields.contains("oncokb"))
