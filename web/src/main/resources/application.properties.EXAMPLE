@@ -31,6 +31,7 @@ mutationAssessor.url=http://mutationassessor.org/r3/?cm=var&var=VARIANT&frm=json
 # my variant info web API URL
 #"VARIANT" will be replaced with actual variant upon each request.
 myvariantinfo.url=https://myvariant.info/v1/variant/VARIANT
+myvariantinfo.max_page_size=200
 # myvariantinfo url for GRCh38
 # myvariantinfo.url=https://myvariant.info/v1/variant/VARIANT?assembly=hg38
 

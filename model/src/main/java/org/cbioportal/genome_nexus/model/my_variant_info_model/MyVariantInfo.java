@@ -1,11 +1,18 @@
 package org.cbioportal.genome_nexus.model.my_variant_info_model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "my_variant_info.annotation")
 public class MyVariantInfo
 {
+    @Id
+    private String variant;
+
+    @Field(value = "query")
+    private String query;
+
     @Field(value = "hgvs")
     private String hgvs;
 
@@ -35,6 +42,22 @@ public class MyVariantInfo
 
     @Field(value = "gnomad_genome")
     private Gnomad gnomadGenome;
+
+    public String getVariant() {
+        return variant;
+    }
+
+    public void setVariant(String variant) {
+        this.variant = variant;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
 
     public String getHgvs() {
         return hgvs;

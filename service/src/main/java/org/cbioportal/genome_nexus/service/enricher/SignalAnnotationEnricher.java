@@ -8,11 +8,15 @@ import org.cbioportal.genome_nexus.service.SignalMutationService;
 
 import java.util.List;
 
-public class SignalAnnotationEnricher implements AnnotationEnricher
+public class SignalAnnotationEnricher extends BaseAnnotationEnricher
 {
     private final SignalMutationService signalMutationService;
 
-    public SignalAnnotationEnricher(SignalMutationService signalMutationService) {
+    public SignalAnnotationEnricher(
+        String id,
+        SignalMutationService signalMutationService
+    ) {
+        super(id);
         this.signalMutationService = signalMutationService;
     }
 

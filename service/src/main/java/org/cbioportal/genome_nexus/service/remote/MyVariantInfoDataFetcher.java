@@ -1,10 +1,14 @@
 package org.cbioportal.genome_nexus.service.remote;
 
+import com.mongodb.BasicDBList;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -55,6 +59,18 @@ public class MyVariantInfoDataFetcher extends BaseExternalResourceFetcher<MyVari
         RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate.getForObject(uri, BasicDBObject.class);
+    }
+
+    @Override
+    protected DBObject postForObject(String uri, Object requestBody)
+    {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<Object> request = new HttpEntity<>(requestBody, httpHeaders);
+
+        return restTemplate.postForObject(uri, request, BasicDBList.class);
     }
 
     public ExternalResourceTransformer getTransformer() {

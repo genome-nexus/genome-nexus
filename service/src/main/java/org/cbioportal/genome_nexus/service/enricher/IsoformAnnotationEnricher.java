@@ -1,6 +1,5 @@
 package org.cbioportal.genome_nexus.service.enricher;
 
-import org.cbioportal.genome_nexus.service.AnnotationEnricher;
 import org.cbioportal.genome_nexus.model.IsoformOverride;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
@@ -13,13 +12,17 @@ import java.util.List;
 /**
  * @author Selcuk Onur Sumer
  */
-public class IsoformAnnotationEnricher implements AnnotationEnricher
+public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
 {
     String source;
     IsoformOverrideService service;
 
-    public IsoformAnnotationEnricher(String source, IsoformOverrideService service)
-    {
+    public IsoformAnnotationEnricher(
+        String id,
+        String source,
+        IsoformOverrideService service
+    ) {
+        super(id);
         this.source = source;
         this.service = service;
     }

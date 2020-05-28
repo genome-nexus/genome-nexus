@@ -182,6 +182,8 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
 
             if (rawValue != null) {
                 try {
+                    rawValue = this.normalizeResponse(rawValue);
+
                     // fetch instances to return:
                     // this does not contain all the information obtained from the web service
                     // only the fields mapped to the VariantAnnotation model will be returned
@@ -224,6 +226,11 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
             dbObject.put("_id", this.extractId(dbObject));
         }
 
+        // filter out objects with invalid ids, do not save them to DB!
+        dbObjects = dbObjects.stream()
+            .filter(o -> o.get("_id") != null)
+            .collect(Collectors.toList());
+
         this.repository.saveDBObjects(this.collection, dbObjects);
     }
 
@@ -247,6 +254,11 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
     protected String extractId(DBObject dbObject)
     {
         return null;
+    }
+
+    // No sanitization by default, just assume that response is consistent
+    protected DBObject normalizeResponse(DBObject rawValue) {
+        return rawValue;
     }
 
     protected Object buildRequestBody(Set<String> ids)

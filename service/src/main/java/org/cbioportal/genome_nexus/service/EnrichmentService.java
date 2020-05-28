@@ -34,12 +34,15 @@ package org.cbioportal.genome_nexus.service;
 
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 
+import java.util.List;
+
 /**
  * @author Benjamin Gross
  */
 public interface EnrichmentService
 {
     void enrichAnnotation(VariantAnnotation annotation);
-    void registerEnricher(String id, AnnotationEnricher enricher);
+    void enrichAnnotations(List<VariantAnnotation> annotations);
+    void registerEnricher(AnnotationEnricher enricher);
     void unregisterEnricher(String id);
 }

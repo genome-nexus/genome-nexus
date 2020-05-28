@@ -12,13 +12,17 @@ import org.cbioportal.genome_nexus.service.PostTranslationalModificationService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostTranslationalModificationEnricher implements AnnotationEnricher
+public class PostTranslationalModificationEnricher extends BaseAnnotationEnricher
 {
     private static final Log LOG = LogFactory.getLog(MyVariantInfoAnnotationEnricher.class);
 
     private PostTranslationalModificationService postTranslationalModificationService;
 
-    public PostTranslationalModificationEnricher(PostTranslationalModificationService postTranslationalModificationService) {
+    public PostTranslationalModificationEnricher(
+        String id,
+        PostTranslationalModificationService postTranslationalModificationService
+    ) {
+        super(id);
         this.postTranslationalModificationService = postTranslationalModificationService;
     }
 

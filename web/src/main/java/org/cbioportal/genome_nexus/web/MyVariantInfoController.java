@@ -43,7 +43,7 @@ public class MyVariantInfoController
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
     {
-        return this.myVariantInfoService.getMyVariantInfo(variant);
+        return this.myVariantInfoService.getMyVariantInfoByHgvsVariant(variant);
     }
 
     @ApiOperation(value = "Retrieves myvariant information for the provided list of variants",
@@ -57,6 +57,6 @@ public class MyVariantInfoController
             allowMultiple = true)
         @RequestBody List<String> variants)
     {
-        return this.myVariantInfoService.getMyVariantInfo(variants);
+        return this.myVariantInfoService.getMyVariantInfoByHgvsVariant(variants);
     }
 }

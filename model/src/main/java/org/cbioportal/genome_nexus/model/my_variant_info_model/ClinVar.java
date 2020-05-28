@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 public class ClinVar
 {
-
     @Field(value = "_license")
     private String license;
 
@@ -39,13 +38,13 @@ public class ClinVar
 
     @Field(value = "variant_id")
     private Integer variantId;
-    
-    public String get_license()
+
+    public String getLicense()
     {
         return license;
     }
 
-    public void set_license(String license)
+    public void setLicense(String license)
     {
         this.license = license;
     }

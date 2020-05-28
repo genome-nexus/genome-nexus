@@ -3,6 +3,7 @@ package org.cbioportal.genome_nexus.service.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.cbioportal.genome_nexus.model.*;
@@ -20,6 +21,11 @@ public class ExternalResourceObjectMapper extends ObjectMapper
 {
     public ExternalResourceObjectMapper()
     {
+        // convert any single value to an array if we define our model as a list
+        // this is useful for external services which return a single value when there is
+        // a single result, and a list if there are multiple results
+        this.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+
         Map<Class<?>, Class<?>> mixinMap = new HashMap<>();
 
         mixinMap.put(GeneXref.class, GeneXrefMixin.class);

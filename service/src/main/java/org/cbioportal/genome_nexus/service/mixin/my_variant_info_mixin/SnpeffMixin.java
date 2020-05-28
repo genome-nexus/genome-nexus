@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SnpeffMixin
 {
-    @JsonProperty(value = "license", required = true)
+    @JsonProperty(value = "_license", required = true)
     private String license;
 
     // @JsonProperty(value = "ann", required = true)

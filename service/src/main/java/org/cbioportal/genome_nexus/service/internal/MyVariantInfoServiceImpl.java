@@ -1,9 +1,13 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +42,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     /**
      * @param variant   hgvs variant (ex: 7:g.140453136A>T)
      */
-    public MyVariantInfo getMyVariantInfo(String variant)
+    public MyVariantInfo getMyVariantInfoByHgvsVariant(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
     {
@@ -48,45 +52,50 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     /**
      * @param variants   hgvs variants (ex: 7:g.140453136A>T)
      */
-    public List<MyVariantInfo> getMyVariantInfo(List<String> variants)
+    public List<MyVariantInfo> getMyVariantInfoByHgvsVariant(List<String> variants)
     {
-        List<MyVariantInfo> myVariantInfos = new ArrayList<>();
+        List<MyVariantInfo> myVariantInfos = Collections.emptyList();
 
-        for (String variant : variants)
-        {
-            try {
-                myVariantInfos.add(this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(variant)));
-            } catch (MyVariantInfoWebServiceException e) {
-                LOG.warn(e.getLocalizedMessage());
-            } catch (MyVariantInfoNotFoundException e) {
-                // fail silently for this variant
+        Map<String, String> queryToVariant = this.queryToVariant(variants);
+        List<String> queryVariants = new ArrayList<>(queryToVariant.keySet());
+
+        try {
+            myVariantInfos = this.getMyVariantInfoByMyVariantInfoVariant(queryVariants);
+            // manually set the original hgvs variant field
+            for (MyVariantInfo myVariantInfo: myVariantInfos) {
+                myVariantInfo.setHgvs(queryToVariant.get(myVariantInfo.getQuery()));
             }
+        } catch (MyVariantInfoWebServiceException e) {
+            LOG.warn(e.getResponseBody());
         }
 
         return myVariantInfos;
     }
 
-    public MyVariantInfo getMyVariantInfo(VariantAnnotation annotation)
+    public MyVariantInfo getMyVariantInfoByAnnotation(VariantAnnotation annotation)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException
     {
-        // get hgvsg from VEP (ID might not be in hgvsg format)
+        // get hgvsg from VEP (annotation.getId() might not be in hgvsg format)
         String hgvsg = annotation.getHgvsg();
-        if (hgvsg != null)
-        {
-            MyVariantInfo myVariantInfo = this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(hgvsg));
-
-            // add original hgvsg variant value too
-            myVariantInfo.setHgvs(hgvsg);
-
-            return myVariantInfo;
+        if (hgvsg != null) {
+            return this.getMyVariantInfoByMyVariantInfoVariant(buildRequest(hgvsg));
         }
         else {
             return null;
         }
     }
 
+    @Override
+    public List<MyVariantInfo> getMyVariantInfoByAnnotation(List<VariantAnnotation> annotations)
+        throws MyVariantInfoWebServiceException
+    {
+        return this.getMyVariantInfoByHgvsVariant(
+            annotations.stream().map(VariantAnnotation::getHgvsg).collect(Collectors.toList())
+        );
+    }
+
     /**
-     * @param variant my varint info variant (ex: 1:g.35367G>A)
+     * @param variant my variant info variant (ex: chr1:g.35367G>A)
      */
     public MyVariantInfo getMyVariantInfoByMyVariantInfoVariant(String variant)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException
@@ -96,6 +105,8 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
         try {
             // get the annotation from the web service and save it to the DB
             myVariantInfo = Optional.ofNullable(cachedExternalResourceFetcher.fetchAndCache(variant));
+            // manually set the original hgvs variant field
+            myVariantInfo.ifPresent(m -> m.setHgvs(variant));
         } catch (ResourceMappingException e) {
             throw new MyVariantInfoWebServiceException(e.getMessage());
         } catch (HttpClientErrorException e) {
@@ -111,23 +122,46 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
         }
     }
 
-    private MyVariantInfo getMyVariantInfoByVariantAnnotation(VariantAnnotation variantAnnotation)
-        throws MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
+    /**
+     * @param variants my variant info variants (ex: [chr1:g.35367G>A, chr6:g.152708291G>A])
+     */
+    private List<MyVariantInfo> getMyVariantInfoByMyVariantInfoVariant(List<String> variants)
+        throws MyVariantInfoWebServiceException
     {
-        MyVariantInfo myVariantInfoObj = this.getMyVariantInfo(variantAnnotation);
-
-        if (myVariantInfoObj != null)
-        {
-            return myVariantInfoObj;
-        }
-        else {
-            throw new MyVariantInfoNotFoundException(variantAnnotation.getVariant());
+        try {
+            // get the annotations from the web service and save it to the DB
+            return cachedExternalResourceFetcher.fetchAndCache(variants);
+        } catch (ResourceMappingException e) {
+            throw new MyVariantInfoWebServiceException(e.getMessage());
+        } catch (HttpClientErrorException e) {
+            throw new MyVariantInfoWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
+        } catch (ResourceAccessException e) {
+            throw new MyVariantInfoWebServiceException(e.getMessage());
         }
     }
 
     private String buildRequest(String variant)
-    {   
+    {
         return Hgvs.addChrPrefix(Hgvs.removeDeletedBases(variant));
     }
 
+
+    /**
+     * Creates a LinkedHashMap to make sure that we keep the original input order.
+     * Key is the string created by buildRequest method.
+     * Value is the original variant string
+     *
+     * @param variants list of original input variants
+     * @return LinkedHashMap
+     */
+    private Map<String, String> queryToVariant(List<String> variants) {
+        return variants.stream().collect(
+            Collectors.toMap(
+                this::buildRequest,
+                v -> v,
+                (u, v) -> v,
+                LinkedHashMap::new
+            )
+        );
+    }
 }

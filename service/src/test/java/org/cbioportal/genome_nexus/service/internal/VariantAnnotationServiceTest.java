@@ -95,7 +95,7 @@ public class VariantAnnotationServiceTest
         assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getStart(), annotation3.getStart());
         assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getVariant(), annotation3.getVariant());
 
-        // should convert chr prefix to 
+        // should convert chr prefix to
         VariantAnnotation annotation4 = variantAnnotationService.getAnnotation("chr23:g.41242962_41242963insGA");
         assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getStart(), annotation4.getStart());
         assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getVariant(), annotation4.getVariant());
@@ -310,9 +310,9 @@ public class VariantAnnotationServiceTest
     private void mockMyVariantInfoServiceMethods(Map<String, VariantAnnotation> variantMockData,
             Map<String, MyVariantInfo> mviMockData)
             throws MyVariantInfoWebServiceException, MyVariantInfoNotFoundException {
-        Mockito.when(this.myVariantInfoService.getMyVariantInfo(
+        Mockito.when(this.myVariantInfoService.getMyVariantInfoByAnnotation(
             variantMockData.get("7:g.140453136A>T"))).thenReturn(mviMockData.get("7:g.140453136A>T"));
-        Mockito.when(this.myVariantInfoService.getMyVariantInfo(
+        Mockito.when(this.myVariantInfoService.getMyVariantInfoByAnnotation(
             variantMockData.get("12:g.25398285C>A"))).thenReturn(mviMockData.get("12:g.25398285C>A"));
     }
 

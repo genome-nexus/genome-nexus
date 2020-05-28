@@ -12,17 +12,20 @@ import java.util.List;
 public interface MyVariantInfoService
 {
     // variant: hgvs variant (ex: 7:g.140453136A>T)
-    MyVariantInfo getMyVariantInfo(String variant)
+    MyVariantInfo getMyVariantInfoByHgvsVariant(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MyVariantInfoWebServiceException, MyVariantInfoNotFoundException;
 
-    // variant: myvariantinfo variant (ex: 7,140453136,A,T)
+    // variant: myvariantinfo variant (ex: chr7:g.140453136A>T)
     MyVariantInfo getMyVariantInfoByMyVariantInfoVariant(String variant)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException;
 
     // variant: hgvs variant (ex: 7:g.140453136A>T)
-    List<MyVariantInfo> getMyVariantInfo(List<String> variants);
+    List<MyVariantInfo> getMyVariantInfoByHgvsVariant(List<String> variants);
 
-    MyVariantInfo getMyVariantInfo(VariantAnnotation annotation)
+    MyVariantInfo getMyVariantInfoByAnnotation(VariantAnnotation annotation)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException;
+
+    List<MyVariantInfo> getMyVariantInfoByAnnotation(List<VariantAnnotation> annotations)
+        throws MyVariantInfoWebServiceException;
 }
