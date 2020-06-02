@@ -14,6 +14,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -178,6 +180,8 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 rawValue = this.fetcher.fetchRawValue(this.buildRequestBody(subSet));
             } catch (HttpClientErrorException e) {
                 LOG.error("HTTP ERROR " + e.getStatusCode() + " for " + subSet.toString() + ": " + e.getResponseBodyAsString());
+            } catch (RestClientException e) {
+                LOG.error("REST ERROR [" +  e.getLocalizedMessage() + "] for " + subSet.toString());
             }
 
             if (rawValue != null) {
