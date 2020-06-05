@@ -24,7 +24,8 @@ public class ExternalResourceObjectMapper extends ObjectMapper
         // convert any single value to an array if we define our model as a list
         // this is useful for external services which return a single value when there is
         // a single result, and a list if there are multiple results
-        this.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+        // TODO causes problems when mapping back from mongo collections, disabling for now
+        // this.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
         Map<Class<?>, Class<?>> mixinMap = new HashMap<>();
 

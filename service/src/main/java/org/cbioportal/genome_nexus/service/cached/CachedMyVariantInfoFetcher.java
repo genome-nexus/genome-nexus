@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.service.cached;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import org.apache.commons.logging.Log;
@@ -21,7 +22,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -36,8 +39,7 @@ public class CachedMyVariantInfoFetcher extends BaseCachedExternalResourceFetche
         ExternalResourceTransformer<MyVariantInfo> transformer,
         MyVariantInfoRepository repository,
         MyVariantInfoDataFetcher fetcher,
-        @Value("${myvariantinfo.max_page_size:200}") Integer maxPageSize,
-        ExternalResourceObjectMapper objectMapper
+        @Value("${myvariantinfo.max_page_size:500}") Integer maxPageSize
     )
     {
         super(
@@ -49,7 +51,9 @@ public class CachedMyVariantInfoFetcher extends BaseCachedExternalResourceFetche
             maxPageSize
         );
 
-        this.objectMapper = objectMapper;
+        // instantiate a custom object mapper for normalizing purposes
+        this.objectMapper = new ExternalResourceObjectMapper();
+        this.objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
     }
 
     protected Object buildRequestBody(Set<String> ids)
@@ -91,8 +95,8 @@ public class CachedMyVariantInfoFetcher extends BaseCachedExternalResourceFetche
                 // convert DBObject to a proper instance of the given class type
                 this.objectMapper.convertValue(dbObject, this.type);
 
-                // if can be successfully converted add to the curated list
-                curatedList.add(dbObject);
+                // if can be successfully converted normalize and add to the curated list
+                curatedList.add(this.normalizeRawEntity(dbObject));
             } catch (MyVariantInfoNotFoundException e) {
                 // fail silently for NotFoundException
                 // TODO we should cache "not found" queries somewhere
@@ -114,6 +118,32 @@ public class CachedMyVariantInfoFetcher extends BaseCachedExternalResourceFetche
     {
         if (dbObject.get("notfound") != null) {
             throw new MyVariantInfoNotFoundException(this.getId(dbObject).toString());
+        }
+    }
+
+    private DBObject normalizeRawEntity(DBObject rawJson)
+    {
+        if (rawJson.get("dbsnp") instanceof Map) {
+            Map<String, Object> dbsnp = (Map<String, Object>) rawJson.get("dbsnp");
+            dbsnp.put("alleles", convertToList(dbsnp.get("alleles")));
+            dbsnp.put("flags", convertToList(dbsnp.get("flags")));
+        }
+
+        if (rawJson.get("clinvar") instanceof Map) {
+            Map<String, Object> clinvar = (Map<String, Object>) rawJson.get("clinvar");
+            clinvar.put("rcv", convertToList(clinvar.get("rcv")));
+        }
+
+        return rawJson;
+    }
+
+    private List<Object> convertToList(Object listOrSingleValue)
+    {
+        if (listOrSingleValue instanceof List) {
+            return (List<Object>)listOrSingleValue;
+        }
+        else {
+            return Collections.singletonList(listOrSingleValue);
         }
     }
 }
