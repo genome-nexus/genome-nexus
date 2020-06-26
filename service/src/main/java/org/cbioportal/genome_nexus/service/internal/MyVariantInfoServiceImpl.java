@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,7 @@ import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.util.Hgvs;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -140,6 +142,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
         }
     }
 
+    @NotNull
     private String buildRequest(String variant)
     {
         return Hgvs.addChrPrefix(Hgvs.removeDeletedBases(variant));
@@ -155,8 +158,9 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
      * @return LinkedHashMap
      */
     private Map<String, String> queryToVariant(List<String> variants) {
-        return variants.stream().collect(
-            Collectors.toMap(
+        return variants.stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toMap(
                 this::buildRequest,
                 v -> v,
                 (u, v) -> v,
