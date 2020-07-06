@@ -12,9 +12,11 @@ import org.springframework.web.client.RestTemplate;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(
@@ -32,6 +34,7 @@ public class AnnotationIntegrationTest
     private final static String BASE_URL_GENOMIC_LOCATION = "http://localhost:38896/annotation/genomic/";
 
     private final static String ALL_ENSEMBL_FIELDS = "fields=annotation_summary,nucleotide_context";
+    private final static String MY_VARIANT_INFO_FIELD = "fields=my_variant_info";
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -63,6 +66,13 @@ public class AnnotationIntegrationTest
         return (List<Map<String, Object>>)(List<?>) springParser.parseList(responses);
     }
 
+    private List<Map<String, Object>> fetchVariantAnnotationWithMyVariantInfoByGenomicLocationPOST(GenomicLocation[] genomicLocations)
+    {
+        String responses = this.restTemplate.postForObject(BASE_URL_GENOMIC_LOCATION + "?" + MY_VARIANT_INFO_FIELD, genomicLocations, String.class);
+        JsonParser springParser = JsonParserFactory.getJsonParser();
+        return (List<Map<String, Object>>)(List<?>) springParser.parseList(responses);
+    }
+
     @Test
     public void testAnnotation()
     {
@@ -86,16 +96,16 @@ public class AnnotationIntegrationTest
         // POST request //
         //////////////////
 
-        // for each variant we should have one matching instance, except the invalid one 
+        // for each variant we should have one matching instance, except the invalid one
         assertEquals(variants.length, this.fetchVariantAnnotationPOST(variants).size());
 
         String variantAllele0 = ((HashMap)((ArrayList) this.fetchVariantAnnotationPOST(variants).get(0).get("intergenic_consequences")).get(0)).get("variantAllele").toString();
         // the Get and Post should have same result
         assertEquals(variantAllele, variantAllele0);
-        
+
         Boolean validAnnotatedFlag = ((Boolean) this.fetchVariantAnnotationPOST(variants).get(1).get("successfully_annotated"));
         assertEquals(validAnnotatedFlag, true);
-        
+
         Boolean invalidAnnotatedFlag = ((Boolean) this.fetchVariantAnnotationPOST(variants).get(2).get("successfully_annotated"));
         assertEquals(invalidAnnotatedFlag, false);
     }
@@ -189,13 +199,7 @@ public class AnnotationIntegrationTest
         String genomicLocation = "7,140453136,140453136,A,T";
 
         GenomicLocation[] genomicLocations = {
-            new GenomicLocation() {{
-                setChromosome(genomicLocation.split(",")[0]);
-                setStart(Integer.parseInt(genomicLocation.split(",")[1]));
-                setEnd(Integer.parseInt(genomicLocation.split(",")[2]));
-                setReferenceAllele(genomicLocation.split(",")[3]);
-                setVariantAllele(genomicLocation.split(",")[4]);
-            }}
+            genomicLocationStringToGenomicLocation(genomicLocation)
         };
 
         List<Map<String, Object>> response = this.fetchVariantAnnotationByGenomicLocationPOST(genomicLocations);
@@ -205,6 +209,40 @@ public class AnnotationIntegrationTest
         assertEquals(transcriptConsequenceSummary.get("transcriptId"), "ENST00000288602");
         assertEquals(transcriptConsequenceSummary.get("hugoGeneSymbol"), "BRAF");
         assertEquals(transcriptConsequenceSummary.get("hgvspShort"), "p.V600E");
+    }
+
+    @Test
+    public void testGenomicLocationMyVariantInfoPOST() {
+        String[] genomicLocationStrings = {
+            "10,89624245,89624245,G,T", // valid variant
+            "10.0,89624242,89624243,AA,-" // variant with invalid chromosome value
+        };
+
+        GenomicLocation[] genomicLocations = Arrays
+            .stream(genomicLocationStrings)
+            .map(this::genomicLocationStringToGenomicLocation)
+            .collect(Collectors.toList())
+            .toArray(new GenomicLocation[0]);
+
+        List<Map<String, Object>> response =
+            this.fetchVariantAnnotationWithMyVariantInfoByGenomicLocationPOST(genomicLocations);
+        assertEquals("response size should be equal to request size", response.size(), 2);
+
+        assertEquals(
+            "variant (10,89624245,89624245,G,T) should be successfully annotated",
+            true,
+            response.get(0).get("successfully_annotated")
+        );
+        assertEquals(
+            "variant (10,89624245,89624245,G,T) should be properly enriched with my variant info",
+            "chr10:g.89624245G>T",
+            ((HashMap) ((HashMap) response.get(0).get("my_variant_info")).get("annotation")).get("variant")
+        );
+        assertEquals(
+            "variant with invalid chromosome value (10.0) should NOT be successfully annotated",
+            false,
+            response.get(1).get("successfully_annotated")
+        );
     }
 
     @Test
@@ -222,13 +260,7 @@ public class AnnotationIntegrationTest
     public void testGenomicLocationNucleotideContextPOST() {
         String genomicLocation = "7,140453136,140453136,A,T";
         GenomicLocation[] genomicLocations = {
-            new GenomicLocation() {{
-                setChromosome(genomicLocation.split(",")[0]);
-                setStart(Integer.parseInt(genomicLocation.split(",")[1]));
-                setEnd(Integer.parseInt(genomicLocation.split(",")[2]));
-                setReferenceAllele(genomicLocation.split(",")[3]);
-                setVariantAllele(genomicLocation.split(",")[4]);
-            }}
+            genomicLocationStringToGenomicLocation(genomicLocation)
         };
         List<Map<String, Object>> response = this.fetchVariantAnnotationByGenomicLocationPOST(genomicLocations);
 
@@ -236,5 +268,15 @@ public class AnnotationIntegrationTest
         HashMap annotation = (HashMap) nucleotideContext.get("annotation");
         String seq = (String) annotation.get("seq");
         assertEquals("CAC", seq);
+    }
+
+    private GenomicLocation genomicLocationStringToGenomicLocation(String genomicLocation) {
+        return new GenomicLocation() {{
+            setChromosome(genomicLocation.split(",")[0]);
+            setStart(Integer.parseInt(genomicLocation.split(",")[1]));
+            setEnd(Integer.parseInt(genomicLocation.split(",")[2]));
+            setReferenceAllele(genomicLocation.split(",")[3]);
+            setVariantAllele(genomicLocation.split(",")[4]);
+        }};
     }
 }
