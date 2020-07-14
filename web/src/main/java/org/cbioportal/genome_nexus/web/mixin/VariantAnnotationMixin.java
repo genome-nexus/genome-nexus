@@ -15,6 +15,10 @@ public class VariantAnnotationMixin {
     @ApiModelProperty(value = "Variant key", required = true)
     private String variant;
 
+    @JsonProperty(required = true)
+    @ApiModelProperty(value = "Original variant query", required = true)
+    private String originalVariantQuery;
+
     @JsonProperty(required = false)
     @ApiModelProperty(value = "Annotation data as JSON string", required = false)
     private String annotationJSON;
@@ -66,7 +70,7 @@ public class VariantAnnotationMixin {
     @JsonProperty(value="successfully_annotated", required = true)
     @ApiModelProperty(value = "Status flag indicating whether variant was succesfully annotated", required = false)
     private Boolean successfullyAnnotated;
-    
+
     @JsonProperty(value="mutation_assessor", required = true)
     @ApiModelProperty(value = "Mutation Assessor Annotation", required = false)
     private MutationAssessorAnnotation mutationAssessorAnnotation;

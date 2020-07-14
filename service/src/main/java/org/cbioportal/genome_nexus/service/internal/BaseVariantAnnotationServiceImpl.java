@@ -46,11 +46,7 @@ import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebService
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotationService
@@ -170,19 +166,24 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     private List<VariantAnnotation> getVariantAnnotationsExternally(List<String> variants)
             throws VariantAnnotationWebServiceException {
         List<VariantAnnotation> variantAnnotations = null;
-
-        List<String> normalizedVariants = variants.stream().map(v -> this.normalizeVariant(v)).collect(Collectors.toList());
+        Map<String, String> normVarToOrigVarQueryMap = new LinkedHashMap<>();
+        variants.forEach((variant) -> {
+            normVarToOrigVarQueryMap.put(this.normalizeVariant(variant), variant);
+        });
 
         try {
             // get the annotations from the web service and save it to the DB
-            variantAnnotations = this.resourceFetcher.fetchAndCache(normalizedVariants);
+            variantAnnotations = this.resourceFetcher.fetchAndCache(new ArrayList(normVarToOrigVarQueryMap.keySet()));
+            for (VariantAnnotation variantAnnotation : variantAnnotations) {
+                variantAnnotation.setOriginalVariantQuery(normVarToOrigVarQueryMap.get(variantAnnotation.getVariant()));
+            }
         } catch (HttpClientErrorException e) {
             // in case of web service error, throw an exception to indicate that there is a
             // problem with the service.
-            throw new VariantAnnotationWebServiceException(normalizedVariants.toString(), e.getResponseBodyAsString(),
+            throw new VariantAnnotationWebServiceException(normVarToOrigVarQueryMap.keySet().toString(), e.getResponseBodyAsString(),
                     e.getStatusCode());
         } catch (ResourceAccessException e) {
-            throw new VariantAnnotationWebServiceException(normalizedVariants.toString(), e.getMessage());
+            throw new VariantAnnotationWebServiceException(normVarToOrigVarQueryMap.keySet().toString(), e.getMessage());
         } catch (ResourceMappingException e) {
             // TODO this indicates that web service returns an incompatible response
         }

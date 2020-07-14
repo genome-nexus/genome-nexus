@@ -34,6 +34,7 @@ public class NotationConverter {
         gl.setEnd(gv.getEnd());
         gl.setReferenceAllele(gv.getRef());
         gl.setVariantAllele(gv.getAlt());
+        gl.setOriginalInput(hgvsg);
         return gl;
     }
 
@@ -68,6 +69,7 @@ public class NotationConverter {
             location.setEnd(Integer.parseInt(parts[2]));
             location.setReferenceAllele(parts[3]);
             location.setVariantAllele(parts[4]);
+            location.setOriginalInput(genomicLocation);
         }
 
         return location;
@@ -92,6 +94,14 @@ public class NotationConverter {
      */
     public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation) {
         GenomicLocation normalizedGenomicLocation = new GenomicLocation();
+        // if original input is set in the incoming genomic location object then use the same value
+        // for the normalized genomic location object returned, otherwise set it to the
+        // string representation of the incoming genomic location object
+        if(genomicLocation.getOriginalInput() != null && !genomicLocation.getOriginalInput().isEmpty()) {
+            normalizedGenomicLocation.setOriginalInput(genomicLocation.getOriginalInput());
+        } else {
+            normalizedGenomicLocation.setOriginalInput(genomicLocation.toString());
+        }
 
         // normalize chromosome name
         String chr = chromosomeNormalizer(genomicLocation.getChromosome().trim());
@@ -246,7 +256,7 @@ public class NotationConverter {
 
     public List<String> genomicToHgvs(List<GenomicLocation> genomicLocations) {
         List<String> hgvsList = new ArrayList<>();
-        for (GenomicLocation location : genomicLocations) { 
+        for (GenomicLocation location : genomicLocations) {
             String hgvs = genomicToHgvs(location);
             if (hgvs != null) {
                 hgvsList.add(hgvs);
@@ -270,7 +280,7 @@ public class NotationConverter {
 
     public List<String> genomicToEnsemblRestRegion(List<GenomicLocation> genomicLocations) {
         List<String> ensemblRestRegionsList = new ArrayList<>();
-        for (GenomicLocation location : genomicLocations) { 
+        for (GenomicLocation location : genomicLocations) {
             String ensemblRestRegion = genomicToEnsemblRestRegion(location);
             if (ensemblRestRegion != null) {
                 ensemblRestRegionsList.add(ensemblRestRegion);
