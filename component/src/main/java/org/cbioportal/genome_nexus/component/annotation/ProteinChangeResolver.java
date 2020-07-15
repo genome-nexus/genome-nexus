@@ -120,6 +120,11 @@ public class ProteinChangeResolver
 
         if (m.matches())
         {
+            // "c.*" represents for UTR 
+            if (hgvsc.contains("c.*")) {
+                return null;
+            }
+            
             cPos = Integer.parseInt(m.group(1));
             cPos = cPos < 1 ? 1 : cPos;
             pPos = (cPos + 2) / 3;
