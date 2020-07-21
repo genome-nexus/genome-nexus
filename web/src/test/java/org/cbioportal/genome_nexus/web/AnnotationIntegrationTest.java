@@ -270,6 +270,18 @@ public class AnnotationIntegrationTest
         assertEquals("CAC", seq);
     }
 
+    @Test
+    public void testVariantAnnotationOriginalQuery() {
+        String expectedConvertedVariant = "4:g.55152096_55152107delTCATGCATGATT";
+        String genomicLocationString = "4,55152095,55152107,ATCATGCATGATT,A";
+        GenomicLocation[] genomicLocations = {
+            genomicLocationStringToGenomicLocation(genomicLocationString)
+        };
+        List<Map<String, Object>> response = this.fetchVariantAnnotationByGenomicLocationPOST(genomicLocations);
+        assertEquals(genomicLocationString, response.get(0).get("originalVariantQuery"));
+        assertEquals(expectedConvertedVariant, response.get(0).get("variant"));
+    }
+
     private GenomicLocation genomicLocationStringToGenomicLocation(String genomicLocation) {
         return new GenomicLocation() {{
             setChromosome(genomicLocation.split(",")[0]);
@@ -277,6 +289,7 @@ public class AnnotationIntegrationTest
             setEnd(Integer.parseInt(genomicLocation.split(",")[2]));
             setReferenceAllele(genomicLocation.split(",")[3]);
             setVariantAllele(genomicLocation.split(",")[4]);
+            setOriginalInput(genomicLocation);
         }};
     }
 }

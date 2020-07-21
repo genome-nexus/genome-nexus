@@ -1,5 +1,7 @@
 package org.cbioportal.genome_nexus.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class GenomicLocation
 {
     private String chromosome;
@@ -7,6 +9,8 @@ public class GenomicLocation
     private Integer end;
     private String referenceAllele;
     private String variantAllele;
+    @JsonIgnore
+    private String originalInput;
 
     public String getChromosome() {
         return chromosome;
@@ -46,6 +50,14 @@ public class GenomicLocation
 
     public void setVariantAllele(String variantAllele) {
         this.variantAllele = variantAllele;
+    }
+
+    public String getOriginalInput() {
+        return originalInput;
+    }
+
+    public void setOriginalInput(String originalInput) {
+        this.originalInput = originalInput;
     }
 
     public String toString() {

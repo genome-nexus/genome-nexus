@@ -45,8 +45,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnnotationService
@@ -56,7 +55,8 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     private final Boolean isRegionAnnotationEnabled;
     private final NotationConverter notationConverter;
     private final VariantAnnotationService variantAnnotationService;
-    private final GenomicLocationStringToVariantFormat genomicLocationToVariantFormat;
+    private final GenomicLocationToVariantFormat genomicLocationToVariantFormat;
+    private final GenomicLocationStringToVariantFormat genomicLocationStringToVariantFormat;
     private final GenomicLocationsToVariantFormats genomicLocationsToVariantFormats;
 
     @Autowired
@@ -73,10 +73,12 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
         if (this.isRegionAnnotationEnabled) {
             this.variantAnnotationService = regionVariantAnnotationService;
             this.genomicLocationToVariantFormat = notationConverter::genomicToEnsemblRestRegion;
+            this.genomicLocationStringToVariantFormat = notationConverter::genomicToEnsemblRestRegion;
             this.genomicLocationsToVariantFormats = notationConverter::genomicToEnsemblRestRegion;
         } else {
             this.variantAnnotationService = hgvsVariantAnnotationService;
             this.genomicLocationToVariantFormat = notationConverter::genomicToHgvs;
+            this.genomicLocationStringToVariantFormat = notationConverter::genomicToHgvs;
             this.genomicLocationsToVariantFormats = notationConverter::genomicToHgvs;
 
         }
@@ -110,7 +112,7 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         return this.variantAnnotationService.getAnnotation(
-            this.genomicLocationToVariantFormat.convert(genomicLocation),
+            this.genomicLocationStringToVariantFormat.convert(genomicLocation),
             isoformOverrideSource,
             token,
             fields
@@ -123,12 +125,31 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
                                                                     Map<String, String> token,
                                                                     List<String> fields)
     {
-        return this.variantAnnotationService.getAnnotations(
-            this.genomicLocationsToVariantFormats.convert(genomicLocations),
-            isoformOverrideSource,
-            token,
-            fields
-        );
+        Map<String, String> convertedVarsToOrigVarQueryMap = new HashMap<>();
+        genomicLocations.forEach((gl) -> {
+            gl.setOriginalInput(gl.toString());
+            convertedVarsToOrigVarQueryMap.put(this.genomicLocationToVariantFormat.convert(gl),
+                    gl.getOriginalInput());
+        });
+
+        List<VariantAnnotation> variantAnnotations = new ArrayList<>();
+        this.variantAnnotationService.getAnnotations(
+                this.genomicLocationsToVariantFormats.convert(genomicLocations),
+                isoformOverrideSource,
+                token,
+                fields
+        ).stream().map((a) -> {
+            a.setOriginalVariantQuery(convertedVarsToOrigVarQueryMap.get(a.getVariant()));
+            return a;
+        }).forEachOrdered((a) -> {
+            variantAnnotations.add(a);
+        });
+        return variantAnnotations;
+    }
+
+    @FunctionalInterface
+    private static interface GenomicLocationToVariantFormat {
+        String convert(GenomicLocation genomicLocation);
     }
 
     @FunctionalInterface

@@ -73,7 +73,7 @@ public class VariantAnnotation
     private OncokbAnnotation oncokbAnnotation;
     private VariantAnnotationSummary annotationSummary;
     private SignalAnnotation signalAnnotation;
-
+    private String originalVariantQuery;
     private Map<String, Object> dynamicProps;
 
     public VariantAnnotation()
@@ -326,6 +326,14 @@ public class VariantAnnotation
 
     public Boolean isSuccessfullyAnnotated() {
         return successfullyAnnotated;
+    }
+
+    public void setOriginalVariantQuery(String originalVariantQuery) {
+        this.originalVariantQuery = originalVariantQuery;
+    }
+
+    public String getOriginalVariantQuery() {
+        return this.originalVariantQuery;
     }
 
     public void setDynamicProp(String key, Object value)
