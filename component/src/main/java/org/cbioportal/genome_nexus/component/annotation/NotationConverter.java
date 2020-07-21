@@ -97,7 +97,7 @@ public class NotationConverter {
         // if original input is set in the incoming genomic location object then use the same value
         // for the normalized genomic location object returned, otherwise set it to the
         // string representation of the incoming genomic location object
-        if(genomicLocation.getOriginalInput() != null && !genomicLocation.getOriginalInput().isEmpty()) {
+        if (genomicLocation.getOriginalInput() != null && !genomicLocation.getOriginalInput().isEmpty()) {
             normalizedGenomicLocation.setOriginalInput(genomicLocation.getOriginalInput());
         } else {
             normalizedGenomicLocation.setOriginalInput(genomicLocation.toString());
