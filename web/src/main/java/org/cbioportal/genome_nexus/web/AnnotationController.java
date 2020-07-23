@@ -107,7 +107,7 @@ public class AnnotationController
             String token,
         @RequestParam(required = false)
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
-            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+            "For example: hotspots", required = false, defaultValue = "hotspots")
         List<String> fields)
     {
         return this.fetchVariantAnnotationPOST(variants, isoformOverrideSource, token, fields);
@@ -138,7 +138,7 @@ public class AnnotationController
             String token,
         @RequestParam(required = false)
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
-            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+            "For example: hotspots", required = false, defaultValue = "hotspots")
             List<String> fields)
     {
         return fetchVariantAnnotationPOST(variants, isoformOverrideSource, token, fields);
@@ -162,7 +162,7 @@ public class AnnotationController
             required = false)
         @RequestParam(required = false) String token,
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
-            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+            "For example: hotspots", required = false, defaultValue = "hotspots")
         @RequestParam(required = false) List<String> fields)
     {
         if (this.isRegionAnnotationEnabled && variants.size() > 0 && variants.stream().anyMatch(v -> v.contains("g.")))
@@ -191,7 +191,7 @@ public class AnnotationController
             required = false)
         @RequestParam(required = false) String token,
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
-            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+            "For example: hotspots", required = false, defaultValue = "hotspots")
         @RequestParam(required = false) List<String> fields)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
@@ -220,7 +220,7 @@ public class AnnotationController
             required = false)
         @RequestParam(required = false) String token,
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
-            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+            "For example: hotspots", required = false, defaultValue = "hotspots")
         @RequestParam(required = false) List<String> fields)
     {
         return this.genomicLocationAnnotationService.getAnnotations(
@@ -243,7 +243,7 @@ public class AnnotationController
             required = false)
         @RequestParam(required = false) String token,
         @ApiParam(value="Comma separated list of fields to include (case-sensitive!). " +
-            "For example: hotspots,mutation_assessor", required = false, defaultValue = "hotspots,mutation_assessor")
+            "For example: hotspots", required = false, defaultValue = "hotspots")
         @RequestParam(required = false) List<String> fields)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
