@@ -41,6 +41,7 @@ import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.util.GenomicLocationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -175,6 +176,11 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         // add genomic location info too
         for (AggregatedHotspots aggregatedHotspots: hotspots) {
             aggregatedHotspots.setGenomicLocation(variantToGenomicLocation.get(aggregatedHotspots.getVariant()));
+            
+        }
+
+        for (int i = 0; i < hotspots.size(); i++) {
+            hotspots.get(i).setOriginalVariantQuery(GenomicLocationUtil.buildGenomicLocationStringFromGenomicLocation(genomicLocations.get(i)));
         }
 
         return hotspots;

@@ -9,6 +9,7 @@ public class AggregatedHotspots
     private String transcriptId;
     private ProteinLocation proteinLocation;
     private List<Hotspot> hotspots;
+    private String originalVariantQuery;
 
     public String getVariant() {
         return variant;
@@ -48,5 +49,13 @@ public class AggregatedHotspots
 
     public void setTranscriptId(String transcriptId) {
         this.transcriptId = transcriptId;
+    }
+
+    public String getOriginalVariantQuery() {
+        return originalVariantQuery;
+    }
+
+    public void setOriginalVariantQuery(String originalVariantQuery) {
+        this.originalVariantQuery = originalVariantQuery;
     }
 }

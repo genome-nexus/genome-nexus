@@ -18,4 +18,7 @@ public class AggregatedHotspotsMixin
 
     @ApiModelProperty(value = "Hotspots", required = true)
     private List<Hotspot> hotspots;
+
+    @ApiModelProperty(value = "Original variant query", required = true)
+    private String originalVariantQuery;
 }
