@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale.Category;
 
 @InternalApi
 @RestController // shorthand for @Controller, @ResponseBody
@@ -27,7 +26,7 @@ public class UniprotController {
         this.uniprotService = uniprotService;
     }
 
-    @ApiOperation(value = "Get UniProt protein sequence features by accession",
+    @ApiOperation(value = "Retrieves UniProt protein sequence features by accession",
         nickname = "fetchUniprotFeaturesByAccessionGET")
     @RequestMapping(value = "/uniprot/features/{accession:.+}",
         method = RequestMethod.GET,
@@ -43,15 +42,12 @@ public class UniprotController {
         value="Category type(s): MOLECULE_PROCESSING, TOPOLOGY, SEQUENCE_INFORMATION, STRUCTURAL, DOMAINS_AND_SITES, PTM, VARIANTS, MUTAGENESIS. Comma separated values accepted up to 20",
         required = false)
     List<String> categories,
-    @RequestParam(required = false) // TODO do we need it to be a list since we only use ptm for now
+    @RequestParam(required = false)
     @ApiParam(
         value="Feature type(s): INIT_MET, SIGNAL, PROPEP, TRANSIT, CHAIN, PEPTIDE, TOPO_DOM, TRANSMEM, DOMAIN, REPEAT, CA_BIND, ZN_FING, DNA_BIND, NP_BIND, REGION, COILED, MOTIF, COMPBIAS, ACT_SITE, METAL, BINDING, SITE, NON_STD, MOD_RES, LIPID, CARBOHYD, DISULFID, CROSSLNK, VAR_SEQ, VARIANT, MUTAGEN, UNSURE, CONFLICT, NON_CONS, NON_TER, HELIX, TURN, STRAND, INTRAMEM. Comma separated values accepted up to 20",
         required = false)
     List<String> types)
     {
        return this.uniprotService.getUniprotFeaturesByAccession(accession, categories, types);
-       //return null;
-    }
-
-    
+    }  
 }

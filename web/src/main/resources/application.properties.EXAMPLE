@@ -41,6 +41,9 @@ vep.isoform.overrides=uniprot:isoform_overrides_uniprot.txt,mskcc:isoform_overri
 # PDB header web service URL
 pdb.header_service_url=http://files.rcsb.org/header/PDB_ID.pdb
 
+# Uniprot features API URL
+uniprot.features.url=https://www.ebi.ac.uk/proteins/api/features/ACCESSION
+
 # MongoDB URI in the form of mongodb://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DB>
 spring.data.mongodb.uri=mongodb://127.0.0.1:27017/annotator
 

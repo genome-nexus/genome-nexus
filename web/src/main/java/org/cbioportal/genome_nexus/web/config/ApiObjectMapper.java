@@ -3,8 +3,16 @@ package org.cbioportal.genome_nexus.web.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cbioportal.genome_nexus.web.mixin.*;
 import org.cbioportal.genome_nexus.web.mixin.my_variant_info_mixin.*;
+import org.cbioportal.genome_nexus.web.mixin.uniprot.DbReferenceObjectMixin;
+import org.cbioportal.genome_nexus.web.mixin.uniprot.EvidenceMixin;
+import org.cbioportal.genome_nexus.web.mixin.uniprot.FeatureMixin;
+import org.cbioportal.genome_nexus.web.mixin.uniprot.ProteinFeatureInfoMixin;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.*;
+import org.cbioportal.genome_nexus.model.uniprot.DbReferenceObject;
+import org.cbioportal.genome_nexus.model.uniprot.Evidence;
+import org.cbioportal.genome_nexus.model.uniprot.Feature;
+import org.cbioportal.genome_nexus.model.uniprot.ProteinFeatureInfo;
 import org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin.AlleleCountMixin;
 import org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin.AlleleFrequencyMixin;
 import org.cbioportal.genome_nexus.service.mixin.my_variant_info_mixin.AlleleNumberMixin;
@@ -61,6 +69,11 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(IntergenicConsequences.class, IntergenicConsequencesMixin.class);
         mixinMap.put(SignalMutation.class, SignalMutationMixin.class);
         mixinMap.put(CountByTumorType.class, CountByTumorTypeMixin.class);
+        mixinMap.put(DbReferenceObject.class, DbReferenceObjectMixin.class);
+        mixinMap.put(Evidence.class, EvidenceMixin.class);
+        mixinMap.put(Feature.class, FeatureMixin.class);
+        mixinMap.put(ProteinFeatureInfo.class, ProteinFeatureInfoMixin.class);
+
         super.setMixIns(mixinMap);
     }
 }
