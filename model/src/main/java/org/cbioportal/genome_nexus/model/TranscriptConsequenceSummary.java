@@ -17,6 +17,10 @@ public class TranscriptConsequenceSummary
     private String refSeq;
     private String variantClassification;
     private String exon;
+    private Double polyphenScore;
+    private String polyphenPrediction;
+    private Double siftScore;
+    private String siftPrediction;
 
     public String getTranscriptId() {
         return transcriptId;
@@ -136,5 +140,37 @@ public class TranscriptConsequenceSummary
 
     public void setExon(String exon) {
         this.exon = exon;
+    }
+
+    public Double getPolyphenScore() {
+        return polyphenScore;
+    }
+
+    public void setPolyphenScore(Double polyphenScore) {
+        this.polyphenScore = polyphenScore; 
+    }
+
+    public String getPolyphenPrediction() {
+        return polyphenPrediction;
+    }
+
+    public void setPolyphenPrediction(String polyphenPrediction) {
+        this.polyphenPrediction = polyphenPrediction; 
+    }
+
+    public Double getSiftScore() {
+        return siftScore;
+    }
+
+    public void setSiftScore(Double siftScore) {
+        this.siftScore = siftScore; 
+    }
+
+    public String getSiftPrediction() {
+        return siftPrediction;
+    }
+
+    public void setSiftPrediction(String siftPrediction) {
+        this.siftPrediction = siftPrediction; 
     }
 }

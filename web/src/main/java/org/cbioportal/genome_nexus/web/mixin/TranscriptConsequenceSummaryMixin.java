@@ -50,4 +50,16 @@ public class TranscriptConsequenceSummaryMixin
 
     @ApiModelProperty(value = "Variant classification")
     private String variantClassification;
+
+    @ApiModelProperty(value = "Polyphen Score")
+    private Double polyphenScore;
+
+    @ApiModelProperty(value = "Polyphen Prediction")
+    private String polyphenPrediction;
+
+    @ApiModelProperty(value = "Sift Score")
+    private Double siftScore;
+
+    @ApiModelProperty(value = "Sift Prediction")
+    private String siftPrediction;
 }
