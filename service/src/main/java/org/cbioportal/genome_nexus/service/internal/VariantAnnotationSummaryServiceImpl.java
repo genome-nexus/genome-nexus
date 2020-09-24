@@ -218,6 +218,10 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setRefSeq(this.refSeqResolver.resolve(transcriptConsequence));
             summary.setVariantClassification(this.variantClassificationResolver.resolve(annotation, transcriptConsequence));
             summary.setExon(this.exonResolver.resolve(transcriptConsequence));
+            summary.setPolyphenPrediction(transcriptConsequence.getPolyphenPrediction());
+            summary.setPolyphenScore(transcriptConsequence.getPolyphenScore());
+            summary.setSiftPrediction(transcriptConsequence.getSiftPrediction());
+            summary.setSiftScore(transcriptConsequence.getSiftScore());
         }
 
         return summary;
