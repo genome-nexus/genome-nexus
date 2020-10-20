@@ -65,7 +65,7 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
             myVariantInfos = this.getMyVariantInfoByMyVariantInfoVariant(queryVariants);
             // manually set the original hgvs variant field
             for (MyVariantInfo myVariantInfo: myVariantInfos) {
-                myVariantInfo.setHgvs(queryToVariant.get(myVariantInfo.getQuery()));
+                myVariantInfo.setHgvs(queryToVariant.get(myVariantInfo.getVariant()));
             }
         } catch (MyVariantInfoWebServiceException e) {
             LOG.warn(e.getResponseBody());
