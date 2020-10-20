@@ -263,7 +263,6 @@ public class VariantAnnotation
         this.mutationAssessorAnnotation = mutationAssessorAnnotation;
     }
 
-    @Field(value="my_variant_info")
     public MyVariantInfoAnnotation getMyVariantInfoAnnotation() {
         return myVariantInfoAnnotation;
     }
