@@ -4,11 +4,11 @@ public class SignalQuery
 {
     private SignalQueryType queryType;
     private SignalMatchType matchType;
-    private String hugoSymbol; // e.g: BRCA2, BRAF
-    private String alteration; // e.g: V600E
-    private String region; // e.g: 13:32968940-32968940
-    private String variant; // e.g: 17:g.37880220T>C
-    private String description; // optional free-form info
+    private String hugoSymbol;
+    private String alteration;
+    private String region;
+    private String variant;
+    private String description;
 
     public SignalQueryType getQueryType() {
         return queryType;

@@ -35,8 +35,12 @@ package org.cbioportal.genome_nexus.persistence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
+
 /**
  * @author Benjamin Gross
  */
 public interface VariantAnnotationRepository
-    extends MongoRepository<VariantAnnotation, String>, GenericMongoRepository {}
+    extends MongoRepository<VariantAnnotation, String>, GenericMongoRepository {
+    List<VariantAnnotation> findByVariantIn(List<String> variants);
+}
