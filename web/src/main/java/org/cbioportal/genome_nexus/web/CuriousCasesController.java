@@ -4,7 +4,7 @@ import org.cbioportal.genome_nexus.model.CuriousCasesComment;
 import org.cbioportal.genome_nexus.service.CuriousCasesService;
 import org.cbioportal.genome_nexus.service.exception.CuriousCasesCommentNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.CuriousCasesCommentWebServiceException;
-import org.cbioportal.genome_nexus.web.config.PublicApi;
+import org.cbioportal.genome_nexus.web.config.InternalApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@PublicApi
+@InternalApi
 @RestController // shorthand for @Controller, @ResponseBody
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")
@@ -32,12 +32,12 @@ public class CuriousCasesController
     }
 
     @ApiOperation(value = "Retrieves Curious Cases info by a variant",
-        nickname = "fetchCuriousCasesCommentGET")
-    @RequestMapping(value = "curious_cases/comment/{region}",
+        nickname = "fetchCuriousCasesGET")
+    @RequestMapping(value = "curious_cases/{region}",
         method = RequestMethod.GET,
         produces = "application/json")
-    public CuriousCasesComment fetchCuriousCasesCommentGET(
-        @ApiParam(value = "region, for example something_valid",
+    public CuriousCasesComment fetchCuriousCasesGET(
+        @ApiParam(value = "region, for example: 4:55595380-55595381",
             required = true,
             allowMultiple = false)
         @PathVariable String region) throws CuriousCasesCommentNotFoundException, CuriousCasesCommentWebServiceException
