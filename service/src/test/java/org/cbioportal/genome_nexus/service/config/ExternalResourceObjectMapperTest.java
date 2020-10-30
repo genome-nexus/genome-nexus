@@ -1,6 +1,7 @@
 package org.cbioportal.genome_nexus.service.config;
 
 import org.cbioportal.genome_nexus.model.GeneXref;
+import org.cbioportal.genome_nexus.model.SignalMutation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.mock.JsonToObjectMapper;
 import org.junit.Test;
@@ -64,6 +65,25 @@ public class ExternalResourceObjectMapperTest
             annotation.getTranscriptConsequences().get(1).getRefseqTranscriptIds());
 
         assertNull(annotation.getAnnotationSummary());
+    }
+
+    @Test
+    public void testSignalMutationMapping() throws IOException
+    {
+        SignalMutation mutation =
+            this.objectMapper.readSignalMutation("7_g.55241617G_A.json");
+
+        assertEquals("7", mutation.getChromosome());
+        assertEquals((Long)55241617L, mutation.getStartPosition());
+        assertEquals((Long)55241617L, mutation.getEndPosition());
+        assertEquals("G", mutation.getReferenceAllele());
+        assertEquals("A", mutation.getVariantAllele());
+        assertEquals("EGFR", mutation.getHugoGeneSymbol());
+        assertEquals("somatic", mutation.getMutationStatus());
+        assertEquals(45, mutation.getCountsByTumorType().size());
+
+        assertNull(mutation.getBiallelicCountsByTumorType());
+        assertNull(mutation.getQcPassCountsByTumorType());
     }
 
     @Test
