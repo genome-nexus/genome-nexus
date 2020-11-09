@@ -1,9 +1,9 @@
 package org.cbioportal.genome_nexus.web;
 
-import org.cbioportal.genome_nexus.model.CuriousCasesComment;
+import org.cbioportal.genome_nexus.model.CuriousCases;
 import org.cbioportal.genome_nexus.service.CuriousCasesService;
-import org.cbioportal.genome_nexus.service.exception.CuriousCasesCommentNotFoundException;
-import org.cbioportal.genome_nexus.service.exception.CuriousCasesCommentWebServiceException;
+import org.cbioportal.genome_nexus.service.exception.CuriousCasesNotFoundException;
+import org.cbioportal.genome_nexus.service.exception.CuriousCasesWebServiceException;
 import org.cbioportal.genome_nexus.web.config.InternalApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,17 +31,17 @@ public class CuriousCasesController
         this.curiousCasesService = curiousCasesService;
     }
 
-    @ApiOperation(value = "Retrieves Curious Cases info by a variant",
+    @ApiOperation(value = "Retrieves Curious Cases info by a genomic location",
         nickname = "fetchCuriousCasesGET")
-    @RequestMapping(value = "curious_cases/{region}",
+    @RequestMapping(value = "curious_cases/{genomicLocation}",
         method = RequestMethod.GET,
         produces = "application/json")
-    public CuriousCasesComment fetchCuriousCasesGET(
-        @ApiParam(value = "region, for example: 4:55595380-55595381",
+    public CuriousCases fetchCuriousCasesGET(
+        @ApiParam(value = "Genomic location, for example: 4,55593576,55593606,CCACAGAAACCCATGTATGAAGTACAGTGGA,-",
             required = true,
             allowMultiple = false)
-        @PathVariable String region) throws CuriousCasesCommentNotFoundException, CuriousCasesCommentWebServiceException
+        @PathVariable String genomicLocation) throws CuriousCasesNotFoundException, CuriousCasesWebServiceException
     {
-        return curiousCasesService.getCuriousCasesComment(region);
+        return curiousCasesService.getCuriousCases(genomicLocation);
     }
 }
