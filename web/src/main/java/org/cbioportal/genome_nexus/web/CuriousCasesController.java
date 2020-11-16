@@ -37,7 +37,7 @@ public class CuriousCasesController
         method = RequestMethod.GET,
         produces = "application/json")
     public CuriousCases fetchCuriousCasesGET(
-        @ApiParam(value = "Genomic location, for example: 4,55593576,55593606,CCACAGAAACCCATGTATGAAGTACAGTGGA,-",
+        @ApiParam(value = "Genomic location, for example: 4,55595377,55595383,CCACAGA,-",
             required = true,
             allowMultiple = false)
         @PathVariable String genomicLocation) throws CuriousCasesNotFoundException, CuriousCasesWebServiceException

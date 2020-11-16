@@ -65,31 +65,33 @@ public class CuriousCasesServiceImpl implements CuriousCasesService {
             String chr = annotation.getSeqRegionName();
             int start = annotation.getStart();
             int end = annotation.getEnd();
+            String ref = annotation.getAlleleString().split("/")[0];
+            String var = annotation.getAlleleString().split("/")[1];
             MutationType variantType = GenomicLocationUtil.getTypeFromGenomicLocation(genomicLocation);
 
-            if (chr.equals("4") && start >= 55593576 && end <= 55595381 && variantType.equals(MutationType.DEL)) {
+            if (chr.equals("4") && start <= 55595380 && end >= 55595381 && variantType.equals(MutationType.DEL)) {
                 comment = "Potential in-frame deletion event at intron10-exon 11 boundary, commmon in Gastrointestinal Stromal Tumors";
                 pubmedIds = new ArrayList<>(Arrays.asList(15507676, 27600498, 32697050));
             }
-            else if (chr.equals("5") && start == 112151184 && end == 112151184 && variantType.equals(MutationType.SNP)) {
+            else if (chr.equals("5") && start == 112151184 && end == 112151184 && variantType.equals(MutationType.SNP) && ref.equals("A") && var.equals("G")) {
                 comment = "Potential introduction of donor splice site, common in colorectal cancers";
                 pubmedIds = new ArrayList<>(Arrays.asList(29316426));
             }
-            else if (chr.equals("3") && start >= 41265579 && end <= 41266246 && variantType.equals(MutationType.DEL)) {
+            else if (chr.equals("3") && start <= 41266015 && end >= 41266246 && variantType.equals(MutationType.DEL)) {
                 comment = "Potential Exon Skip Event common in Colorectal Cancers";
                 pubmedIds = new ArrayList<>(Arrays.asList(15507676, 27600498, 3269705));
             }
-            else if (chr.equals("7") && variantType.equals(MutationType.SNP) && (start == 116411901 && end == 116411901 ||
-                start == 116411902 && end == 116411902 ||
-                start == 116412044 && end == 116412044 ||
-                start == 116412045 && end == 116412045)) {
-                comment = "Potential Exon Skip/In-frame Insertion common in ------";
+            // else if (chr.equals("7") && variantType.equals(MutationType.SNP) && (start == 116411901 && end == 116411901 ||
+            //     start == 116411902 && end == 116411902 ||
+            //     start == 116412044 && end == 116412044 ||
+            //     start == 116412045 && end == 116412045)) {
+            //     comment = "Potential Exon Skip/In-frame Insertion common in ------";
+            // }
+            else if (chr.equals("7") && start <= 116411901 && end >= 116411902 && variantType.equals(MutationType.DEL)) {
+                comment = "Potential Exon Skip Event common in Non-small Cell Lung Cancer";
             }
-            else if (chr.equals("7") && start >= 116411901 && end <= 116411902 && variantType.equals(MutationType.DEL)) {
-                comment = "Potential Exon Skip Event common in Colorectal Cancers";
-            }
-            else if (chr.equals("7") && start >= 116412044 && end <= 116412045 && variantType.equals(MutationType.DEL)) {
-                comment = "Potential Exon Skip Event common in Colorectal Cancers";
+            else if (chr.equals("7") && start <= 116412044 && end >= 116412045 && variantType.equals(MutationType.DEL)) {
+                comment = "Potential Exon Skip Event common in Non-small Cell Lung Cancer";
             }
             
             if (comment != null || pubmedIds != null) {
