@@ -2,7 +2,7 @@ package org.cbioportal.genome_nexus.util;
 
 public class GenomicVariant {
 
-    static enum Type {
+    public enum Type {
         SUBSTITUTION,
         INSERTION,
         DELETION,

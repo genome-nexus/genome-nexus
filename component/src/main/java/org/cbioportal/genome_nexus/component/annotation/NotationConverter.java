@@ -163,20 +163,27 @@ public class NotationConverter {
             } catch (NumberFormatException e) {
                 return null;
             }
-        } else if (var.equals("-") || var.length() == 0) {
+        } else if (var.equals("-") && ref.length() == 1 || var.length() == 0) {
+            /*
+            Process Deletion
+            Example deletion: 13 32914438 32914438 T -
+            Example output:   13:g.32914438del
+            */
+            hgvs = chr + ":g." + start + "del";
+        } else if (var.equals("-") && ref.length() > 1 || var.length() == 0) {    
             /*
             Process Deletion
             Example deletion: 1 206811015 206811016  AC -
-            Example output:   1:g.206811015_206811016delAC
+            Example output:   1:g.206811015_206811016del
             */
             hgvs = chr + ":g." + start + "_" + end + "del" + ref;
-        } else if (ref.length() > 1 || var.length() > 1) {
+        } else if (ref.length() > 1 && var.length() >= 1 || ref.length() >= 1 && var.length() > 1) {
             /*
             Process ONP
             Example SNP   : 2 216809708 216809709 CA T
-            Example output: 2:g.216809708_216809709delCAinsT
+            Example output: 2:g.216809708_216809709delinsT
             */
-            hgvs = chr + ":g." + start + "_" + end + "del" + ref + "ins" + var;
+            hgvs = chr + ":g." + start + "_" + end + "delins" + var;
         } else {
             /*
             Process SNV
