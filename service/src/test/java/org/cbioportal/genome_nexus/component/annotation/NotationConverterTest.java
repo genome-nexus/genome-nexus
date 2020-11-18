@@ -119,7 +119,7 @@ public class NotationConverterTest
         assertEquals("3:g.114058003del",
             this.notationConverter.genomicToHgvs("3,114058003,114058003,G,-"));
 
-        assertEquals("9:g.135797242_135797242delinsAT",
+        assertEquals("9:g.135797242delinsAT",
             this.notationConverter.genomicToHgvs("9,135797242,135797242,C,AT"));
 
         assertEquals("6:g.137519505_137519506delinsA",

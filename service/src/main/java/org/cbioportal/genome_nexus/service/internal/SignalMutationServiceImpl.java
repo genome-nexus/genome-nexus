@@ -53,13 +53,7 @@ public class SignalMutationServiceImpl implements SignalMutationService
         if (genomicLocation == null) {
             return Collections.emptyList();
         }
-        if (gv.getType() == GenomicVariant.Type.DELETION) {
-            return this.signalMutationRepository.findByChromosomeAndStartPositionAndEndPosition(
-                genomicLocation.getChromosome(),
-                genomicLocation.getStart().longValue(),
-                genomicLocation.getEnd().longValue()
-            );
-        } else if (gv.getType() == GenomicVariant.Type.INDEL) {
+        if (gv.getType() == GenomicVariant.Type.INDEL || gv.getType() == GenomicVariant.Type.DELETION) {
             return this.signalMutationRepository.findByChromosomeAndStartPositionAndEndPositionAndVariantAllele(
                 genomicLocation.getChromosome(),
                 genomicLocation.getStart().longValue(),
