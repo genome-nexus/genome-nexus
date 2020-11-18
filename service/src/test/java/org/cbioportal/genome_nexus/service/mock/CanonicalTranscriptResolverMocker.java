@@ -18,9 +18,9 @@ public class CanonicalTranscriptResolverMocker
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("3:g.14106026_14106037del"))
         ).thenReturn(
-            variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT").getTranscriptConsequences().get(1)
+            variantMockData.get("3:g.14106026_14106037del").getTranscriptConsequences().get(1)
         );
 
         Mockito.when(
@@ -30,9 +30,9 @@ public class CanonicalTranscriptResolverMocker
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("3:g.114058003_114058003delG"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("3:g.114058003del"))
         ).thenReturn(
-            variantMockData.get("3:g.114058003_114058003delG").getTranscriptConsequences().get(5)
+            variantMockData.get("3:g.114058003del").getTranscriptConsequences().get(5)
         );
 
         Mockito.when(
@@ -48,15 +48,15 @@ public class CanonicalTranscriptResolverMocker
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("6:g.137519505_137519506delCT"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("6:g.137519505_137519506del"))
         ).thenReturn(
-            variantMockData.get("6:g.137519505_137519506delCT").getTranscriptConsequences().get(0)
+            variantMockData.get("6:g.137519505_137519506del").getTranscriptConsequences().get(0)
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("6:g.137519505_137519506delCTinsA"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("6:g.137519505_137519506delinsA"))
         ).thenReturn(
-            variantMockData.get("6:g.137519505_137519506delCTinsA").getTranscriptConsequences().get(0)
+            variantMockData.get("6:g.137519505_137519506delinsA").getTranscriptConsequences().get(0)
         );
 
         Mockito.when(
@@ -72,21 +72,21 @@ public class CanonicalTranscriptResolverMocker
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("9:g.135797242_135797242delCinsAT"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("9:g.135797242delinsAT"))
         ).thenReturn(
-            variantMockData.get("9:g.135797242_135797242delCinsAT").getTranscriptConsequences().get(0)
+            variantMockData.get("9:g.135797242delinsAT").getTranscriptConsequences().get(0)
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("10:g.101953779_101953779delT"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("10:g.101953779del"))
         ).thenReturn(
-            variantMockData.get("10:g.101953779_101953779delT").getTranscriptConsequences().get(0)
+            variantMockData.get("10:g.101953779del").getTranscriptConsequences().get(0)
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("11:g.62393546_62393547delGGinsAA"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("11:g.62393546_62393547delinsAA"))
         ).thenReturn(
-            variantMockData.get("11:g.62393546_62393547delGGinsAA").getTranscriptConsequences().get(1)
+            variantMockData.get("11:g.62393546_62393547delinsAA").getTranscriptConsequences().get(1)
         );
 
         Mockito.when(
@@ -96,9 +96,9 @@ public class CanonicalTranscriptResolverMocker
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("13:g.28608258_28608275del"))
         ).thenReturn(
-            variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG").getTranscriptConsequences().get(0)
+            variantMockData.get("13:g.28608258_28608275del").getTranscriptConsequences().get(0)
         );
 
         Mockito.when(
@@ -108,21 +108,21 @@ public class CanonicalTranscriptResolverMocker
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("19:g.46141892_46141893delTCinsAA"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("19:g.46141892_46141893delinsAA"))
         ).thenReturn(
-            variantMockData.get("19:g.46141892_46141893delTCinsAA").getTranscriptConsequences().get(8)
+            variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(8)
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("22:g.29091840_29091841delTGinsCA"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("22:g.29091840_29091841delinsCA"))
         ).thenReturn(
-            variantMockData.get("22:g.29091840_29091841delTGinsCA").getTranscriptConsequences().get(5)
+            variantMockData.get("22:g.29091840_29091841delinsCA").getTranscriptConsequences().get(5)
         );
 
         Mockito.when(
-            canonicalTranscriptResolver.resolve(variantMockData.get("22:g.36689419_36689421delCCT"))
+            canonicalTranscriptResolver.resolve(variantMockData.get("22:g.36689419_36689421del"))
         ).thenReturn(
-            variantMockData.get("22:g.36689419_36689421delCCT").getTranscriptConsequences().get(0)
+            variantMockData.get("22:g.36689419_36689421del").getTranscriptConsequences().get(0)
         );
 
         Mockito.when(

@@ -47,9 +47,9 @@ public class VariantTypeResolverTest
 
         // allele_string: "CCAGCAGTAGCT/-" => expected: DEL
         assertEquals(
-            "Variant type for 3:g.14106026_14106037delCCAGCAGTAGCT should be DEL",
+            "Variant type for 3:g.14106026_14106037del should be DEL",
             "DEL",
-            this.variantTypeResolver.resolve(variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT"))
+            this.variantTypeResolver.resolve(variantMockData.get("3:g.14106026_14106037del"))
         );
 
         // allele_string: "-/CAT" => expected: INS
@@ -61,9 +61,9 @@ public class VariantTypeResolverTest
 
         // allele_string: "G/-" => expected: DEL
         assertEquals(
-            "Variant type for 3:g.114058003_114058003delG should be DEL",
+            "Variant type for 3:g.114058003del should be DEL",
             "DEL",
-            this.variantTypeResolver.resolve(variantMockData.get("3:g.114058003_114058003delG"))
+            this.variantTypeResolver.resolve(variantMockData.get("3:g.114058003del"))
         );
 
         // allele_string: "-/AGA" => expected: INS
@@ -82,16 +82,16 @@ public class VariantTypeResolverTest
 
         // allele_string: "CT/-" => expected: INS
         assertEquals(
-            "Variant type for 6:g.137519505_137519506delCT should be DEL",
+            "Variant type for 6:g.137519505_137519506del should be DEL",
             "DEL",
-            this.variantTypeResolver.resolve(variantMockData.get("6:g.137519505_137519506delCT"))
+            this.variantTypeResolver.resolve(variantMockData.get("6:g.137519505_137519506del"))
         );
 
         // allele_string: "CT/A" => expected: INS
         assertEquals(
-            "Variant type for 6:g.137519505_137519506delCTinsA should be DEL",
+            "Variant type for 6:g.137519505_137519506delinsA should be DEL",
             "DEL",
-            this.variantTypeResolver.resolve(variantMockData.get("6:g.137519505_137519506delCTinsA"))
+            this.variantTypeResolver.resolve(variantMockData.get("6:g.137519505_137519506delinsA"))
         );
 
         // allele_string: "A/T" => expected: SNP
@@ -110,23 +110,23 @@ public class VariantTypeResolverTest
 
         // allele_string: "C/AT" => expected: INS
         assertEquals(
-            "Variant type for 9:g.135797242_135797242delCinsAT should be INS",
+            "Variant type for 9:g.135797242delinsAT should be INS",
             "INS",
-            this.variantTypeResolver.resolve(variantMockData.get("9:g.135797242_135797242delCinsAT"))
+            this.variantTypeResolver.resolve(variantMockData.get("9:g.135797242delinsAT"))
         );
 
         // allele_string: "T/-" => expected: DEL
         assertEquals(
-            "Variant type for 10:g.101953779_101953779delT should be DEL",
+            "Variant type for 10:g.101953779del should be DEL",
             "DEL",
-            this.variantTypeResolver.resolve(variantMockData.get("10:g.101953779_101953779delT"))
+            this.variantTypeResolver.resolve(variantMockData.get("10:g.101953779del"))
         );
 
         // allele_string: "GG/AA" => expected: DNP
         assertEquals(
-            "Variant type for 11:g.62393546_62393547delGGinsAA should be DNP",
+            "Variant type for 11:g.62393546_62393547delinsAA should be DNP",
             "DNP",
-            this.variantTypeResolver.resolve(variantMockData.get("11:g.62393546_62393547delGGinsAA"))
+            this.variantTypeResolver.resolve(variantMockData.get("11:g.62393546_62393547delinsAA"))
         );
 
         // allele_string: "C/A" => expected: SNP
@@ -138,9 +138,9 @@ public class VariantTypeResolverTest
 
         // allele_string: "CATATTCATATTCTCTGA/GGGGTGGGGGGG" => expected: DEL
         assertEquals(
-            "Variant type for 13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG should be DEL",
+            "Variant type for 13:g.28608258_28608275del should be DEL",
             "DEL",
-            this.variantTypeResolver.resolve(variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG"))
+            this.variantTypeResolver.resolve(variantMockData.get("13:g.28608258_28608275del"))
         );
 
         // allele_string: "-/CTG" => expected: DEL
@@ -152,23 +152,23 @@ public class VariantTypeResolverTest
 
         // allele_string: "TC/AA" => expected: DNP
         assertEquals(
-            "Variant type for 19:g.46141892_46141893delTCinsAA should be DNP",
+            "Variant type for 19:g.46141892_46141893delinsAA should be DNP",
             "DNP",
-            this.variantTypeResolver.resolve(variantMockData.get("19:g.46141892_46141893delTCinsAA"))
+            this.variantTypeResolver.resolve(variantMockData.get("19:g.46141892_46141893delinsAA"))
         );
 
         // allele_string: "TG/CA" => expected: DNP
         assertEquals(
-            "Variant type for 22:g.29091840_29091841delTGinsCA should be DNP",
+            "Variant type for 22:g.29091840_29091841delinsCA should be DNP",
             "DNP",
-            this.variantTypeResolver.resolve(variantMockData.get("22:g.29091840_29091841delTGinsCA"))
+            this.variantTypeResolver.resolve(variantMockData.get("22:g.29091840_29091841delinsCA"))
         );
 
         // allele_string: "CCT/-" => expected: DEL
         assertEquals(
-            "Variant type for 22:g.36689419_36689421delCCT should be DEL",
+            "Variant type for 22:g.36689419_36689421del should be DEL",
             "DEL",
-            this.variantTypeResolver.resolve(variantMockData.get("22:g.36689419_36689421delCCT"))
+            this.variantTypeResolver.resolve(variantMockData.get("22:g.36689419_36689421del"))
         );
     }
 }

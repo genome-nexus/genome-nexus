@@ -18,7 +18,7 @@ public class VariantClassificationResolverMocker
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT"))
+            variantClassificationResolver.resolve(variantMockData.get("3:g.14106026_14106037del"))
         ).thenReturn(
             "In_Frame_Del"
         );
@@ -30,7 +30,7 @@ public class VariantClassificationResolverMocker
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("3:g.114058003_114058003delG"))
+            variantClassificationResolver.resolve(variantMockData.get("3:g.114058003del"))
         ).thenReturn(
             "Frame_Shift_Del"
         );
@@ -48,13 +48,13 @@ public class VariantClassificationResolverMocker
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("6:g.137519505_137519506delCT"))
+            variantClassificationResolver.resolve(variantMockData.get("6:g.137519505_137519506del"))
         ).thenReturn(
             "Frame_Shift_Del"
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("6:g.137519505_137519506delCTinsA"))
+            variantClassificationResolver.resolve(variantMockData.get("6:g.137519505_137519506delinsA"))
         ).thenReturn(
             "Frame_Shift_Del"
         );
@@ -72,19 +72,19 @@ public class VariantClassificationResolverMocker
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("9:g.135797242_135797242delCinsAT"))
+            variantClassificationResolver.resolve(variantMockData.get("9:g.135797242delinsAT"))
         ).thenReturn(
             "Frame_Shift_Ins"
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("10:g.101953779_101953779delT"))
+            variantClassificationResolver.resolve(variantMockData.get("10:g.101953779del"))
         ).thenReturn(
             "Frame_Shift_Del"
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("11:g.62393546_62393547delGGinsAA"))
+            variantClassificationResolver.resolve(variantMockData.get("11:g.62393546_62393547delinsAA"))
         ).thenReturn(
             "Nonsense_Mutation"
         );
@@ -96,7 +96,7 @@ public class VariantClassificationResolverMocker
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG"))
+            variantClassificationResolver.resolve(variantMockData.get("13:g.28608258_28608275del"))
         ).thenReturn(
             "In_Frame_Del"
         );
@@ -108,19 +108,19 @@ public class VariantClassificationResolverMocker
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("19:g.46141892_46141893delTCinsAA"))
+            variantClassificationResolver.resolve(variantMockData.get("19:g.46141892_46141893delinsAA"))
         ).thenReturn(
             "Splice_Site"
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("22:g.29091840_29091841delTGinsCA"))
+            variantClassificationResolver.resolve(variantMockData.get("22:g.29091840_29091841delinsCA"))
         ).thenReturn(
             "Missense_Mutation"
         );
 
         Mockito.when(
-            variantClassificationResolver.resolve(variantMockData.get("22:g.36689419_36689421delCCT"))
+            variantClassificationResolver.resolve(variantMockData.get("22:g.36689419_36689421del"))
         ).thenReturn(
             "In_Frame_Del"
         );

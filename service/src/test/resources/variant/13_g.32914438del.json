@@ -1,5 +1,5 @@
 {
-    "variant": "13:g.32914438_32914438delT",
+    "variant": "13:g.32914438del",
     "colocatedVariants": [
         {
             "dbSnpId": "CD126349"
@@ -17,9 +17,9 @@
             "dbSnpId": "rs80359550"
         }
     ],
-    "originalVariantQuery": "13:g.32914438_32914438delT",
-    "hgvsg": "13:g.32914438_32914438delT",
-    "id": "13:g.32914438_32914438delT",
+    "originalVariantQuery": "13:g.32914438del",
+    "hgvsg": "13:g.32914438del",
+    "id": "13:g.32914438del",
     "assembly_name": "GRCh37",
     "seq_region_name": "13",
     "start": 32914438,

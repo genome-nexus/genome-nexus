@@ -272,7 +272,7 @@ public class AnnotationIntegrationTest
 
     @Test
     public void testVariantAnnotationOriginalQuery() {
-        String expectedConvertedVariant = "4:g.55152096_55152107delTCATGCATGATT";
+        String expectedConvertedVariant = "4:g.55152096_55152107del";
         String genomicLocationString = "4,55152095,55152107,ATCATGCATGATT,A";
         GenomicLocation[] genomicLocations = {
             genomicLocationStringToGenomicLocation(genomicLocationString)

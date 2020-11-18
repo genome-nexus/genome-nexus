@@ -36,8 +36,8 @@ public class CanonicalTranscriptResolverTest
         );
 
         assertEquals(
-            variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT").getTranscriptConsequences().get(1),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT"))
+            variantMockData.get("3:g.14106026_14106037del").getTranscriptConsequences().get(1),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("3:g.14106026_14106037del"))
         );
 
         assertEquals(
@@ -46,8 +46,8 @@ public class CanonicalTranscriptResolverTest
         );
 
         assertEquals(
-            variantMockData.get("3:g.114058003_114058003delG").getTranscriptConsequences().get(5),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("3:g.114058003_114058003delG"))
+            variantMockData.get("3:g.114058003del").getTranscriptConsequences().get(5),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("3:g.114058003del"))
         );
 
         assertEquals(
@@ -61,13 +61,13 @@ public class CanonicalTranscriptResolverTest
         );
 
         assertEquals(
-            variantMockData.get("6:g.137519505_137519506delCT").getTranscriptConsequences().get(0),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("6:g.137519505_137519506delCT"))
+            variantMockData.get("6:g.137519505_137519506del").getTranscriptConsequences().get(0),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("6:g.137519505_137519506del"))
         );
 
         assertEquals(
-            variantMockData.get("6:g.137519505_137519506delCTinsA").getTranscriptConsequences().get(0),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("6:g.137519505_137519506delCTinsA"))
+            variantMockData.get("6:g.137519505_137519506delinsA").getTranscriptConsequences().get(0),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("6:g.137519505_137519506delinsA"))
         );
 
         assertEquals(
@@ -81,18 +81,18 @@ public class CanonicalTranscriptResolverTest
         );
 
         assertEquals(
-            variantMockData.get("9:g.135797242_135797242delCinsAT").getTranscriptConsequences().get(0),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("9:g.135797242_135797242delCinsAT"))
+            variantMockData.get("9:g.135797242delinsAT").getTranscriptConsequences().get(0),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("9:g.135797242delinsAT"))
         );
 
         assertEquals(
-            variantMockData.get("10:g.101953779_101953779delT").getTranscriptConsequences().get(0),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("10:g.101953779_101953779delT"))
+            variantMockData.get("10:g.101953779del").getTranscriptConsequences().get(0),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("10:g.101953779del"))
         );
 
         assertEquals(
-            variantMockData.get("11:g.62393546_62393547delGGinsAA").getTranscriptConsequences().get(1),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("11:g.62393546_62393547delGGinsAA"))
+            variantMockData.get("11:g.62393546_62393547delinsAA").getTranscriptConsequences().get(1),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("11:g.62393546_62393547delinsAA"))
         );
 
         assertEquals(
@@ -101,8 +101,8 @@ public class CanonicalTranscriptResolverTest
         );
 
         assertEquals(
-            variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG").getTranscriptConsequences().get(0),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG"))
+            variantMockData.get("13:g.28608258_28608275del").getTranscriptConsequences().get(0),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("13:g.28608258_28608275del"))
         );
 
         assertEquals(
@@ -111,18 +111,18 @@ public class CanonicalTranscriptResolverTest
         );
 
         assertEquals(
-            variantMockData.get("19:g.46141892_46141893delTCinsAA").getTranscriptConsequences().get(8),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("19:g.46141892_46141893delTCinsAA"))
+            variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(8),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("19:g.46141892_46141893delinsAA"))
         );
 
         assertEquals(
-            variantMockData.get("22:g.29091840_29091841delTGinsCA").getTranscriptConsequences().get(5),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("22:g.29091840_29091841delTGinsCA"))
+            variantMockData.get("22:g.29091840_29091841delinsCA").getTranscriptConsequences().get(5),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("22:g.29091840_29091841delinsCA"))
         );
 
         assertEquals(
-            variantMockData.get("22:g.36689419_36689421delCCT").getTranscriptConsequences().get(0),
-            this.canonicalTranscriptResolver.resolve(variantMockData.get("22:g.36689419_36689421delCCT"))
+            variantMockData.get("22:g.36689419_36689421del").getTranscriptConsequences().get(0),
+            this.canonicalTranscriptResolver.resolve(variantMockData.get("22:g.36689419_36689421del"))
         );
 
         assertEquals(

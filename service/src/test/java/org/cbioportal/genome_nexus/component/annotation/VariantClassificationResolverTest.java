@@ -52,7 +52,7 @@ public class VariantClassificationResolverTest
 
         assertEquals(
             "In_Frame_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT"))
+            this.variantClassificationResolver.resolve(variantMockData.get("3:g.14106026_14106037del"))
         );
 
         assertEquals(
@@ -62,7 +62,7 @@ public class VariantClassificationResolverTest
 
         assertEquals(
             "Frame_Shift_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("3:g.114058003_114058003delG"))
+            this.variantClassificationResolver.resolve(variantMockData.get("3:g.114058003del"))
         );
 
         assertEquals(
@@ -77,12 +77,12 @@ public class VariantClassificationResolverTest
 
         assertEquals(
             "Frame_Shift_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("6:g.137519505_137519506delCT"))
+            this.variantClassificationResolver.resolve(variantMockData.get("6:g.137519505_137519506del"))
         );
 
         assertEquals(
             "Frame_Shift_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("6:g.137519505_137519506delCTinsA"))
+            this.variantClassificationResolver.resolve(variantMockData.get("6:g.137519505_137519506delinsA"))
         );
 
         assertEquals(
@@ -97,17 +97,17 @@ public class VariantClassificationResolverTest
 
         assertEquals(
             "Frame_Shift_Ins",
-            this.variantClassificationResolver.resolve(variantMockData.get("9:g.135797242_135797242delCinsAT"))
+            this.variantClassificationResolver.resolve(variantMockData.get("9:g.135797242delinsAT"))
         );
 
         assertEquals(
             "Frame_Shift_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("10:g.101953779_101953779delT"))
+            this.variantClassificationResolver.resolve(variantMockData.get("10:g.101953779del"))
         );
 
         assertEquals(
             "Nonsense_Mutation",
-            this.variantClassificationResolver.resolve(variantMockData.get("11:g.62393546_62393547delGGinsAA"))
+            this.variantClassificationResolver.resolve(variantMockData.get("11:g.62393546_62393547delinsAA"))
         );
 
         assertEquals(
@@ -117,7 +117,7 @@ public class VariantClassificationResolverTest
 
         assertEquals(
             "In_Frame_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG"))
+            this.variantClassificationResolver.resolve(variantMockData.get("13:g.28608258_28608275del"))
         );
 
         assertEquals(
@@ -127,17 +127,17 @@ public class VariantClassificationResolverTest
 
         assertEquals(
             "Splice_Site",
-            this.variantClassificationResolver.resolve(variantMockData.get("19:g.46141892_46141893delTCinsAA"))
+            this.variantClassificationResolver.resolve(variantMockData.get("19:g.46141892_46141893delinsAA"))
         );
 
         assertEquals(
             "Missense_Mutation",
-            this.variantClassificationResolver.resolve(variantMockData.get("22:g.29091840_29091841delTGinsCA"))
+            this.variantClassificationResolver.resolve(variantMockData.get("22:g.29091840_29091841delinsCA"))
         );
 
         assertEquals(
             "In_Frame_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("22:g.36689419_36689421delCCT"))
+            this.variantClassificationResolver.resolve(variantMockData.get("22:g.36689419_36689421del"))
         );
     }
 
@@ -158,16 +158,16 @@ public class VariantClassificationResolverTest
         assertEquals(
             "5'Flank",
             this.variantClassificationResolver.resolve(
-                variantMockData.get("11:g.62393546_62393547delGGinsAA"),
-                variantMockData.get("11:g.62393546_62393547delGGinsAA").getTranscriptConsequences().get(0)
+                variantMockData.get("11:g.62393546_62393547delinsAA"),
+                variantMockData.get("11:g.62393546_62393547delinsAA").getTranscriptConsequences().get(0)
             )
         );
 
         assertEquals(
             "3'Flank",
             this.variantClassificationResolver.resolve(
-                variantMockData.get("19:g.46141892_46141893delTCinsAA"),
-                variantMockData.get("19:g.46141892_46141893delTCinsAA").getTranscriptConsequences().get(1)
+                variantMockData.get("19:g.46141892_46141893delinsAA"),
+                variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(1)
             )
         );
 

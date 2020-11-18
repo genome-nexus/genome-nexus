@@ -52,8 +52,8 @@ public class EntrezGeneXrefResolverTest
         );
 
         assertNull(
-            "No EntrezGene info exists for the canonical transcript of 3:g.14106026_14106037delCCAGCAGTAGCT",
-            this.resolveGeneXref("3:g.14106026_14106037delCCAGCAGTAGCT", variantMockData)
+            "No EntrezGene info exists for the canonical transcript of 3:g.14106026_14106037del",
+            this.resolveGeneXref("3:g.14106026_14106037del", variantMockData)
         );
 
         assertEquals(
@@ -68,7 +68,7 @@ public class EntrezGeneXrefResolverTest
 
         assertEquals(
             "26137",
-            this.resolveGeneXref("3:g.114058003_114058003delG", variantMockData).getPrimaryId()
+            this.resolveGeneXref("3:g.114058003del", variantMockData).getPrimaryId()
         );
 
         assertEquals(
@@ -83,12 +83,12 @@ public class EntrezGeneXrefResolverTest
 
         assertEquals(
             "3459",
-            this.resolveGeneXref("6:g.137519505_137519506delCT", variantMockData).getPrimaryId()
+            this.resolveGeneXref("6:g.137519505_137519506del", variantMockData).getPrimaryId()
         );
 
         assertEquals(
             "3459",
-            this.resolveGeneXref("6:g.137519505_137519506delCTinsA", variantMockData).getPrimaryId()
+            this.resolveGeneXref("6:g.137519505_137519506delinsA", variantMockData).getPrimaryId()
         );
 
         assertEquals(
@@ -103,17 +103,17 @@ public class EntrezGeneXrefResolverTest
 
         assertEquals(
             "7248",
-            this.resolveGeneXref("9:g.135797242_135797242delCinsAT", variantMockData).getPrimaryId()
+            this.resolveGeneXref("9:g.135797242delinsAT", variantMockData).getPrimaryId()
         );
 
         assertEquals(
             "1147",
-            this.resolveGeneXref("10:g.101953779_101953779delT", variantMockData).getPrimaryId()
+            this.resolveGeneXref("10:g.101953779del", variantMockData).getPrimaryId()
         );
 
         assertEquals(
             "23193",
-            this.resolveGeneXref("11:g.62393546_62393547delGGinsAA", variantMockData).getPrimaryId()
+            this.resolveGeneXref("11:g.62393546_62393547delinsAA", variantMockData).getPrimaryId()
         );
 
         assertEquals(
@@ -123,7 +123,7 @@ public class EntrezGeneXrefResolverTest
 
         assertEquals(
             "2322",
-            this.resolveGeneXref("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG", variantMockData).getPrimaryId()
+            this.resolveGeneXref("13:g.28608258_28608275del", variantMockData).getPrimaryId()
         );
 
         assertEquals(
@@ -133,17 +133,17 @@ public class EntrezGeneXrefResolverTest
 
         assertEquals(
             "24139",
-            this.resolveGeneXref("19:g.46141892_46141893delTCinsAA", variantMockData).getPrimaryId()
+            this.resolveGeneXref("19:g.46141892_46141893delinsAA", variantMockData).getPrimaryId()
         );
 
         assertEquals(
             "11200",
-            this.resolveGeneXref("22:g.29091840_29091841delTGinsCA", variantMockData).getPrimaryId()
+            this.resolveGeneXref("22:g.29091840_29091841delinsCA", variantMockData).getPrimaryId()
         );
 
         assertEquals(
             "4627",
-            this.resolveGeneXref("22:g.36689419_36689421delCCT", variantMockData).getPrimaryId()
+            this.resolveGeneXref("22:g.36689419_36689421del", variantMockData).getPrimaryId()
         );
     }
 
