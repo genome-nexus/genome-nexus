@@ -61,7 +61,7 @@ public class StrandSignResolverTest
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT"))
+            this.strandSignResolver.resolve(variantMockData.get("3:g.14106026_14106037del"))
         );
 
         // strand: 1
@@ -73,7 +73,7 @@ public class StrandSignResolverTest
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("3:g.114058003_114058003delG"))
+            this.strandSignResolver.resolve(variantMockData.get("3:g.114058003del"))
         );
 
         // strand: 1
@@ -91,13 +91,13 @@ public class StrandSignResolverTest
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("6:g.137519505_137519506delCT"))
+            this.strandSignResolver.resolve(variantMockData.get("6:g.137519505_137519506del"))
         );
 
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("6:g.137519505_137519506delCTinsA"))
+            this.strandSignResolver.resolve(variantMockData.get("6:g.137519505_137519506delinsA"))
         );
 
         // strand: 1
@@ -115,19 +115,19 @@ public class StrandSignResolverTest
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("9:g.135797242_135797242delCinsAT"))
+            this.strandSignResolver.resolve(variantMockData.get("9:g.135797242delinsAT"))
         );
 
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("10:g.101953779_101953779delT"))
+            this.strandSignResolver.resolve(variantMockData.get("10:g.101953779del"))
         );
 
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("11:g.62393546_62393547delGGinsAA"))
+            this.strandSignResolver.resolve(variantMockData.get("11:g.62393546_62393547delinsAA"))
         );
 
         // strand: 1
@@ -139,7 +139,7 @@ public class StrandSignResolverTest
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG"))
+            this.strandSignResolver.resolve(variantMockData.get("13:g.28608258_28608275del"))
         );
 
         // strand: 1
@@ -151,19 +151,19 @@ public class StrandSignResolverTest
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("19:g.46141892_46141893delTCinsAA"))
+            this.strandSignResolver.resolve(variantMockData.get("19:g.46141892_46141893delinsAA"))
         );
 
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("22:g.29091840_29091841delTGinsCA"))
+            this.strandSignResolver.resolve(variantMockData.get("22:g.29091840_29091841delinsCA"))
         );
 
         // strand: 1
         assertEquals(
             "+",
-            this.strandSignResolver.resolve(variantMockData.get("22:g.36689419_36689421delCCT"))
+            this.strandSignResolver.resolve(variantMockData.get("22:g.36689419_36689421del"))
         );
     }
 }

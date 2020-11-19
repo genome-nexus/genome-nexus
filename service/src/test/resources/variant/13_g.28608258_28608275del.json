@@ -1,6 +1,6 @@
 {
-    "variant": "13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG",
-    "id": "13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG",
+    "variant": "13:g.28608258_28608275del",
+    "id": "13:g.28608258_28608275del",
     "assembly_name": "GRCh37",
     "seq_region_name": "13",
     "start": 28608258,

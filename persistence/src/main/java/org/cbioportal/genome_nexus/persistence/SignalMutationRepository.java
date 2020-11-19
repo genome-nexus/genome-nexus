@@ -17,4 +17,10 @@ public interface SignalMutationRepository extends MongoRepository<SignalMutation
         String referenceAllele,
         String variantAllele
     );
+    List<SignalMutation> findByChromosomeAndStartPositionAndEndPositionAndVariantAllele(
+        String chromosome,
+        Long startPosition,
+        Long endPosition,
+        String variantAllele
+    );
 }

@@ -5,6 +5,8 @@ import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.SignalMutation;
 import org.cbioportal.genome_nexus.persistence.SignalMutationRepository;
 import org.cbioportal.genome_nexus.service.SignalMutationService;
+import org.cbioportal.genome_nexus.util.GenomicVariant;
+import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +48,27 @@ public class SignalMutationServiceImpl implements SignalMutationService
 
     @Override
     public List<SignalMutation> getSignalMutationsByHgvsg(String hgvsg) {
-        return this.getSignalMutations(this.notationConverter.hgvsgToGenomicLocation(hgvsg));
+        GenomicLocation genomicLocation = this.notationConverter.hgvsgToGenomicLocation(hgvsg);
+        GenomicVariant gv = GenomicVariantUtil.fromHgvs(hgvsg);
+        if (genomicLocation == null) {
+            return Collections.emptyList();
+        }
+        if (gv.getType() == GenomicVariant.Type.INDEL || gv.getType() == GenomicVariant.Type.DELETION) {
+            return this.signalMutationRepository.findByChromosomeAndStartPositionAndEndPositionAndVariantAllele(
+                genomicLocation.getChromosome(),
+                genomicLocation.getStart().longValue(),
+                genomicLocation.getEnd().longValue(),
+                genomicLocation.getVariantAllele()
+            );            
+        } else {
+            return this.signalMutationRepository.findByChromosomeAndStartPositionAndEndPositionAndReferenceAlleleAndVariantAllele(
+                genomicLocation.getChromosome(),
+                genomicLocation.getStart().longValue(),
+                genomicLocation.getEnd().longValue(),
+                genomicLocation.getReferenceAllele(),
+                genomicLocation.getVariantAllele()
+            );
+        }
     }
 
     @Override

@@ -46,7 +46,7 @@ public class ProteinChangeResolverTest
 
         assertEquals(
             "p.S124_S127del",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("3:g.14106026_14106037del"))
         );
 
         assertEquals(
@@ -56,7 +56,7 @@ public class ProteinChangeResolverTest
 
         assertEquals(
             "p.P692Lfs*43",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("3:g.114058003_114058003delG"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("3:g.114058003del"))
         );
 
         assertEquals(
@@ -71,12 +71,12 @@ public class ProteinChangeResolverTest
 
         assertEquals(
             "p.S378Ffs*6",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("6:g.137519505_137519506delCT"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("6:g.137519505_137519506del"))
         );
 
         assertEquals(
             "p.S378Ffs*5",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("6:g.137519505_137519506delCTinsA"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("6:g.137519505_137519506delinsA"))
         );
 
         assertEquals(
@@ -91,17 +91,17 @@ public class ProteinChangeResolverTest
 
         assertEquals(
             "p.M209Ifs*2",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("9:g.135797242_135797242delCinsAT"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("9:g.135797242delinsAT"))
         );
 
         assertEquals(
             "p.R646Gfs*22",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("10:g.101953779_101953779delT"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("10:g.101953779del"))
         );
 
         assertEquals(
             "p.Q928*",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("11:g.62393546_62393547delGGinsAA"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("11:g.62393546_62393547delinsAA"))
         );
 
         assertEquals(
@@ -111,7 +111,7 @@ public class ProteinChangeResolverTest
 
         assertEquals(
             "p.F594_D600delinsSPPPH",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("13:g.28608258_28608275del"))
         );
 
         assertEquals(
@@ -121,17 +121,17 @@ public class ProteinChangeResolverTest
 
         assertEquals(
             "p.X218_splice",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("19:g.46141892_46141893delTCinsAA"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("19:g.46141892_46141893delinsAA"))
         );
 
         assertEquals(
             "p.K416E",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("22:g.29091840_29091841delTGinsCA"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("22:g.29091840_29091841delinsCA"))
         );
 
         assertEquals(
             "p.E1350del",
-            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("22:g.36689419_36689421delCCT"))
+            this.proteinChangeResolver.resolveHgvspShort(variantMockData.get("22:g.36689419_36689421del"))
         );
 
         assertEquals(
@@ -155,24 +155,24 @@ public class ProteinChangeResolverTest
 
         assertNull(
             this.proteinChangeResolver.resolveHgvspShort(
-                variantMockData.get("11:g.62393546_62393547delGGinsAA"),
-                variantMockData.get("11:g.62393546_62393547delGGinsAA").getTranscriptConsequences().get(0)
+                variantMockData.get("11:g.62393546_62393547delinsAA"),
+                variantMockData.get("11:g.62393546_62393547delinsAA").getTranscriptConsequences().get(0)
             )
         );
 
         assertEquals(
             "p.X17_splice",
             this.proteinChangeResolver.resolveHgvspShort(
-                variantMockData.get("19:g.46141892_46141893delTCinsAA"),
-                variantMockData.get("19:g.46141892_46141893delTCinsAA").getTranscriptConsequences().get(0)
+                variantMockData.get("19:g.46141892_46141893delinsAA"),
+                variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(0)
             )
         );
 
         assertEquals(
             "p.K373E",
             this.proteinChangeResolver.resolveHgvspShort(
-                variantMockData.get("22:g.29091840_29091841delTGinsCA"),
-                variantMockData.get("22:g.29091840_29091841delTGinsCA").getTranscriptConsequences().get(0)
+                variantMockData.get("22:g.29091840_29091841delinsCA"),
+                variantMockData.get("22:g.29091840_29091841delinsCA").getTranscriptConsequences().get(0)
             )
         );
 

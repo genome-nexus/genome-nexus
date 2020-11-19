@@ -65,10 +65,10 @@ public class NotationConverterTest
         assertEquals("16:g.9057113_9057114insCTG",
             this.notationConverter.genomicToHgvs("16,9057113,9057114,-,CTG"));
 
-        assertEquals("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG",
+        assertEquals("13:g.28608258_28608275delinsGGGGTGGGGGGG",
             this.notationConverter.genomicToHgvs("13,28608258,28608275,CATATTCATATTCTCTGA,GGGGTGGGGGGG"));
 
-        assertEquals("22:g.36689419_36689421delCCT",
+        assertEquals("22:g.36689419_36689421del",
             this.notationConverter.genomicToHgvs("22,36689419,36689421,CCT,-"));
             
         assertEquals("X:g.41242962_41242963insGA",
@@ -89,16 +89,16 @@ public class NotationConverterTest
         assertEquals("Y:g.41242962_41242963insGA",
             this.notationConverter.genomicToHgvs("chr24,41242962,41242963,-,GA"));
 
-        assertEquals("3:g.14106026_14106037delCCAGCAGTAGCT",
+        assertEquals("3:g.14106026_14106037del",
             this.notationConverter.genomicToHgvs("3,14106026,14106037,CCAGCAGTAGCT,-"));
 
-        assertEquals("22:g.29091840_29091841delTGinsCA",
+        assertEquals("22:g.29091840_29091841delinsCA",
             this.notationConverter.genomicToHgvs("22,29091840,29091841,TG,CA"));
 
-        assertEquals("19:g.46141892_46141893delTCinsAA",
+        assertEquals("19:g.46141892_46141893delinsAA",
             this.notationConverter.genomicToHgvs("19,46141892,46141893,TC,AA"));
 
-        assertEquals("11:g.62393546_62393547delGGinsAA",
+        assertEquals("11:g.62393546_62393547delinsAA",
             this.notationConverter.genomicToHgvs("11,62393546,62393547,GG,AA"));
 
         assertEquals("1:g.65325832_65325833insG",
@@ -110,19 +110,19 @@ public class NotationConverterTest
         assertEquals("8:g.37696499_37696500insG",
             this.notationConverter.genomicToHgvs("8,37696499,37696500,-,G"));
 
-        assertEquals("10:g.101953779_101953779delT",
+        assertEquals("10:g.101953779del",
             this.notationConverter.genomicToHgvs("10,101953779,101953779,T,-"));
 
-        assertEquals("6:g.137519505_137519506delCT",
+        assertEquals("6:g.137519505_137519506del",
             this.notationConverter.genomicToHgvs("6,137519505,137519506,CT,-"));
 
-        assertEquals("3:g.114058003_114058003delG",
+        assertEquals("3:g.114058003del",
             this.notationConverter.genomicToHgvs("3,114058003,114058003,G,-"));
 
-        assertEquals("9:g.135797242_135797242delCinsAT",
+        assertEquals("9:g.135797242delinsAT",
             this.notationConverter.genomicToHgvs("9,135797242,135797242,C,AT"));
 
-        assertEquals("6:g.137519505_137519506delCTinsA",
+        assertEquals("6:g.137519505_137519506delinsA",
             this.notationConverter.genomicToHgvs("6,137519505,137519506,CT,A"));
 
         assertEquals("7:g.140453136A>T",
@@ -132,7 +132,7 @@ public class NotationConverterTest
             this.notationConverter.genomicToHgvs("12,25398285,25398285,C,A"));
 
         assertEquals("Whitespace should be omitted",
-            "17:g.7577121_7577122delGGinsA",
+            "17:g.7577121_7577122delinsA",
             this.notationConverter.genomicToHgvs(" 17 , 7577121 , 7577122 , GG , A "));
     }
 

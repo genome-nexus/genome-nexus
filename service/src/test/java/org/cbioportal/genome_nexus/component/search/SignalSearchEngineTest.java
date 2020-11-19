@@ -24,10 +24,10 @@ import static org.junit.Assert.assertEquals;
 public class SignalSearchEngineTest {
 
     @InjectMocks
-    private SignalSearchEngine searchEngine;
-
-    @InjectMocks
     private SignalIndexBuilder indexBuilder;
+
+    @Spy
+    private SignalSearchEngine searchEngine;
 
     @Spy
     private NotationConverter notationConverter;
@@ -55,10 +55,10 @@ public class SignalSearchEngineTest {
                 .when(proteinChangeResolver.resolveHgvspShort(variantAnnotationMockData.get("7:g.140453136A>T")))
                 .thenReturn("p.V600E");
             Mockito
-                .when(proteinChangeResolver.resolveHgvspShort(variantAnnotationMockData.get("13:g.32914438_32914438delT")))
+                .when(proteinChangeResolver.resolveHgvspShort(variantAnnotationMockData.get("13:g.32914438del")))
                 .thenReturn("p.S1982Rfs*22");
             Mockito
-                .when(proteinChangeResolver.resolveHgvspShort(variantAnnotationMockData.get("17:g.41276045_41276046delCT")))
+                .when(proteinChangeResolver.resolveHgvspShort(variantAnnotationMockData.get("17:g.41276045_41276046del")))
                 .thenReturn("p.E23Vfs*17");
             Mockito
                 .when(proteinChangeResolver.resolveHgvspShort(variantAnnotationMockData.get("17:g.41276046_41276047insG")))

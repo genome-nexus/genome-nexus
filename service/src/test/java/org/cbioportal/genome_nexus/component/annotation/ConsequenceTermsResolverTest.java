@@ -40,7 +40,7 @@ public class ConsequenceTermsResolverTest
 
         assertEquals(
             "inframe_deletion",
-            this.consequenceTermsResolver.resolve(variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("3:g.14106026_14106037del"))
         );
 
         assertEquals(
@@ -50,7 +50,7 @@ public class ConsequenceTermsResolverTest
 
         assertEquals(
             "frameshift_variant",
-            this.consequenceTermsResolver.resolve(variantMockData.get("3:g.114058003_114058003delG"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("3:g.114058003del"))
         );
 
         assertEquals(
@@ -65,12 +65,12 @@ public class ConsequenceTermsResolverTest
 
         assertEquals(
             "frameshift_variant",
-            this.consequenceTermsResolver.resolve(variantMockData.get("6:g.137519505_137519506delCT"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("6:g.137519505_137519506del"))
         );
 
         assertEquals(
             "frameshift_variant",
-            this.consequenceTermsResolver.resolve(variantMockData.get("6:g.137519505_137519506delCTinsA"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("6:g.137519505_137519506delinsA"))
         );
 
         assertEquals(
@@ -85,17 +85,17 @@ public class ConsequenceTermsResolverTest
 
         assertEquals(
             "frameshift_variant",
-            this.consequenceTermsResolver.resolve(variantMockData.get("9:g.135797242_135797242delCinsAT"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("9:g.135797242delinsAT"))
         );
 
         assertEquals(
             "frameshift_variant",
-            this.consequenceTermsResolver.resolve(variantMockData.get("10:g.101953779_101953779delT"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("10:g.101953779del"))
         );
 
         assertEquals(
             "stop_gained",
-            this.consequenceTermsResolver.resolve(variantMockData.get("11:g.62393546_62393547delGGinsAA"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("11:g.62393546_62393547delinsAA"))
         );
 
         assertEquals(
@@ -105,7 +105,7 @@ public class ConsequenceTermsResolverTest
 
         assertEquals(
             "protein_altering_variant",
-            this.consequenceTermsResolver.resolve(variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("13:g.28608258_28608275del"))
         );
 
         assertEquals(
@@ -115,17 +115,17 @@ public class ConsequenceTermsResolverTest
 
         assertEquals(
             "splice_acceptor_variant,coding_sequence_variant",
-            this.consequenceTermsResolver.resolve(variantMockData.get("19:g.46141892_46141893delTCinsAA"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("19:g.46141892_46141893delinsAA"))
         );
 
         assertEquals(
             "missense_variant",
-            this.consequenceTermsResolver.resolve(variantMockData.get("22:g.29091840_29091841delTGinsCA"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("22:g.29091840_29091841delinsCA"))
         );
 
         assertEquals(
             "inframe_deletion",
-            this.consequenceTermsResolver.resolve(variantMockData.get("22:g.36689419_36689421delCCT"))
+            this.consequenceTermsResolver.resolve(variantMockData.get("22:g.36689419_36689421del"))
         );
     }
 
@@ -144,27 +144,27 @@ public class ConsequenceTermsResolverTest
         assertEquals(
             "upstream_gene_variant",
             this.consequenceTermsResolver.resolve(
-                variantMockData.get("11:g.62393546_62393547delGGinsAA").getTranscriptConsequences().get(0)
+                variantMockData.get("11:g.62393546_62393547delinsAA").getTranscriptConsequences().get(0)
             )
         );
 
         assertEquals(
             "downstream_gene_variant",
             this.consequenceTermsResolver.resolve(
-                variantMockData.get("19:g.46141892_46141893delTCinsAA").getTranscriptConsequences().get(1)
+                variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(1)
             )
         );
 
         assertEquals(
             "splice_acceptor_variant,coding_sequence_variant",
             this.consequenceTermsResolver.resolve(
-                variantMockData.get("19:g.46141892_46141893delTCinsAA").getTranscriptConsequences().get(0))
+                variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(0))
         );
 
         assertEquals(
             "splice_acceptor_variant,coding_sequence_variant,NMD_transcript_variant",
             this.consequenceTermsResolver.resolve(
-                variantMockData.get("19:g.46141892_46141893delTCinsAA").getTranscriptConsequences().get(2))
+                variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(2))
         );
     }
 
@@ -178,7 +178,7 @@ public class ConsequenceTermsResolverTest
         assertEquals(
             Arrays.asList(consequenceTerms1),
             this.consequenceTermsResolver.resolveAll(
-                variantMockData.get("19:g.46141892_46141893delTCinsAA").getTranscriptConsequences().get(0))
+                variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(0))
         );
 
         String[] consequenceTerms2 = {"splice_acceptor_variant", "coding_sequence_variant", "NMD_transcript_variant"};
@@ -186,7 +186,7 @@ public class ConsequenceTermsResolverTest
         assertEquals(
             Arrays.asList(consequenceTerms2),
             this.consequenceTermsResolver.resolveAll(
-                variantMockData.get("19:g.46141892_46141893delTCinsAA").getTranscriptConsequences().get(2))
+                variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(2))
         );
     }
 }

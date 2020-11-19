@@ -1,6 +1,6 @@
 {
-    "variant": "9:g.135797242_135797242delCinsAT",
-    "id": "9:g.135797242_135797242delCinsAT",
+    "variant": "9:g.135797242delinsAT",
+    "id": "9:g.135797242delinsAT",
     "assembly_name": "GRCh37",
     "seq_region_name": "9",
     "start": 135797242,

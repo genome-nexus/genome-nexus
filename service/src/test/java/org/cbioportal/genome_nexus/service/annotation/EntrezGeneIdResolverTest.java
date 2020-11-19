@@ -84,8 +84,8 @@ public class EntrezGeneIdResolverTest
         );
 
         assertNull(
-            "No EntrezGene info exists for the canonical transcript of 3:g.14106026_14106037delCCAGCAGTAGCT",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("3:g.14106026_14106037delCCAGCAGTAGCT"))
+            "No EntrezGene info exists for the canonical transcript of 3:g.14106026_14106037del",
+            this.entrezGeneIdResolver.resolve(variantMockData.get("3:g.14106026_14106037del"))
         );
 
         assertEquals(
@@ -95,7 +95,7 @@ public class EntrezGeneIdResolverTest
 
         assertEquals(
             "26137",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("3:g.114058003_114058003delG"))
+            this.entrezGeneIdResolver.resolve(variantMockData.get("3:g.114058003del"))
         );
 
         assertEquals(
@@ -110,12 +110,12 @@ public class EntrezGeneIdResolverTest
 
         assertEquals(
             "3459",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("6:g.137519505_137519506delCT"))
+            this.entrezGeneIdResolver.resolve(variantMockData.get("6:g.137519505_137519506del"))
         );
 
         assertEquals(
             "3459",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("6:g.137519505_137519506delCTinsA"))
+            this.entrezGeneIdResolver.resolve(variantMockData.get("6:g.137519505_137519506delinsA"))
         );
 
         assertEquals(
@@ -130,17 +130,17 @@ public class EntrezGeneIdResolverTest
 
         assertEquals(
             "7248",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("9:g.135797242_135797242delCinsAT"))
+            this.entrezGeneIdResolver.resolve(variantMockData.get("9:g.135797242delinsAT"))
         );
 
         assertEquals(
             "1147",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("10:g.101953779_101953779delT"))
+            this.entrezGeneIdResolver.resolve(variantMockData.get("10:g.101953779del"))
         );
 
         assertEquals(
             "23193",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("11:g.62393546_62393547delGGinsAA"))
+            this.entrezGeneIdResolver.resolve(variantMockData.get("11:g.62393546_62393547delinsAA"))
         );
 
         assertEquals(
@@ -150,7 +150,7 @@ public class EntrezGeneIdResolverTest
 
         assertEquals(
             "2322",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("13:g.28608258_28608275delCATATTCATATTCTCTGAinsGGGGTGGGGGGG"))
+            this.entrezGeneIdResolver.resolve(variantMockData.get("13:g.28608258_28608275del"))
         );
 
         assertEquals(
@@ -160,17 +160,17 @@ public class EntrezGeneIdResolverTest
 
         assertEquals(
             "24139",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("19:g.46141892_46141893delTCinsAA"))
+            this.entrezGeneIdResolver.resolve(variantMockData.get("19:g.46141892_46141893delinsAA"))
         );
 
         assertEquals(
             "11200",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("22:g.29091840_29091841delTGinsCA"))
+            this.entrezGeneIdResolver.resolve(variantMockData.get("22:g.29091840_29091841delinsCA"))
         );
 
         assertEquals(
             "4627",
-            this.entrezGeneIdResolver.resolve(variantMockData.get("22:g.36689419_36689421delCCT"))
+            this.entrezGeneIdResolver.resolve(variantMockData.get("22:g.36689419_36689421del"))
         );
     }
 }

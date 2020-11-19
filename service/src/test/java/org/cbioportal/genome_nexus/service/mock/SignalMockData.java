@@ -25,10 +25,10 @@ public class SignalMockData implements MockData<SignalMutation>
             this.objectMapper.readSignalMutation("7_g.55241617G_A.json"));
         mockData.put("7:g.140453136A>T",
             this.objectMapper.readSignalMutation("7_g.140453136A_T.json"));
-        mockData.put("13:g.32914438_32914438delT",
-            this.objectMapper.readSignalMutation("13_g.32914438_32914438delT.json"));
-        mockData.put("17:g.41276045_41276046delCT",
-            this.objectMapper.readSignalMutation("17_g.41276045_41276046delCT.json"));
+        mockData.put("13:g.32914438del",
+            this.objectMapper.readSignalMutation("13_g.32914438del.json"));
+        mockData.put("17:g.41276045_41276046del",
+            this.objectMapper.readSignalMutation("17_g.41276045_41276046del.json"));
         mockData.put("17:g.41276046_41276047insG",
             this.objectMapper.readSignalMutation("17_g.41276046_41276047insG.json"));
 

@@ -188,7 +188,7 @@ public class GenomicVariantUtil {
     }
 
     private static Integer getStartFromHgvs(String hgvs) {
-        String startString = getPattern("(?<=\\.)\\d+(?=[_ATGC])", hgvs);
+        String startString = getPattern("(?<=\\.)\\d+(?=[_ATGC]|del)", hgvs);
         if (startString == null || startString.trim().length() == 0) {
             throw new InvalidHgvsException("Start position could not be parsed");
         }

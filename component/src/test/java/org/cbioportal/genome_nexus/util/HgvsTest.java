@@ -10,14 +10,14 @@ public class HgvsTest
     public void buildVariantId()
     {
         String[] hgvsIds = {
-            "17:g.41276045_41276046delCT",
+            "17:g.41276045_41276046del",
             "7:g.140453136A>T",
             "17:g.41242962_41242963insGA",
             "13:g.28611219_28611221delTGTinsGC",
             "chr1:g.182712A>C"
         };
 
-        assertEquals("chr17:g.41276045_41276046delCT", Hgvs.addChrPrefix(hgvsIds[0]));
+        assertEquals("chr17:g.41276045_41276046del", Hgvs.addChrPrefix(hgvsIds[0]));
         assertEquals("17:g.41276045_41276046del", Hgvs.removeDeletedBases(hgvsIds[0]));
         
         assertEquals("chr7:g.140453136A>T", Hgvs.addChrPrefix(hgvsIds[1]));

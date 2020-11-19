@@ -1,6 +1,6 @@
 {
-    "variant": "10:g.101953779_101953779delT",
-    "id": "10:g.101953779_101953779delT",
+    "variant": "10:g.101953779del",
+    "id": "10:g.101953779del",
     "assembly_name": "GRCh37",
     "seq_region_name": "10",
     "start": 101953779,

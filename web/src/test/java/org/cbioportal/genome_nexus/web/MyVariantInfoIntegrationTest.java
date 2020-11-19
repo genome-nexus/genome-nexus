@@ -56,7 +56,7 @@ public class MyVariantInfoIntegrationTest
         String[] variants = {
             "7:g.140453136A>T",
             "rs12190874",
-            "17:g.41276045_41276046delCT",
+            "17:g.41276045_41276046del",
             "INVALID"
         };
 

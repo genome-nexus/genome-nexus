@@ -50,23 +50,23 @@ public class TranscriptConsequencePrioritizerTest
                 annotation.getMostSevereConsequence())
         );
 
-        annotation = variantMockData.get("11:g.62393546_62393547delGGinsAA");
+        annotation = variantMockData.get("11:g.62393546_62393547delinsAA");
 
         // "most_severe_consequence": "frameshift_variant"
         // "transcript_consequences"[1]["consequence_terms"]: ["frameshift_variant"]
         assertEquals(
-            "transcript at index 1 should be selected for 11:g.62393546_62393547delGGinsAA",
+            "transcript at index 1 should be selected for 11:g.62393546_62393547delinsAA",
             annotation.getTranscriptConsequences().get(1),
             transcriptConsequencePrioritizer.transcriptWithMostSevereConsequence(annotation.getTranscriptConsequences(),
                 annotation.getMostSevereConsequence())
         );
 
-        annotation = variantMockData.get("19:g.46141892_46141893delTCinsAA");
+        annotation = variantMockData.get("19:g.46141892_46141893delinsAA");
 
         // "most_severe_consequence": "splice_acceptor_variant"
         // "transcript_consequences"[0]["consequence_terms"]: ["splice_acceptor_variant"]
         assertEquals(
-            "transcript at index 0 should be selected for 19:g.46141892_46141893delTCinsAA",
+            "transcript at index 0 should be selected for 19:g.46141892_46141893delinsAA",
             annotation.getTranscriptConsequences().get(0),
             transcriptConsequencePrioritizer.transcriptWithMostSevereConsequence(annotation.getTranscriptConsequences(),
                 annotation.getMostSevereConsequence())
