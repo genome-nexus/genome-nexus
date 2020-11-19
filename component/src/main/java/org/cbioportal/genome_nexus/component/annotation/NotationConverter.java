@@ -163,30 +163,33 @@ public class NotationConverter {
             } catch (NumberFormatException e) {
                 return null;
             }
-        } else if (var.equals("-") && ref.length() == 1 || var.length() == 0) {
-            /*
-            Process Deletion (single positon)
-            Example deletion: 13 32914438 32914438 T -
-            Example output:   13:g.32914438del
-            */
-            hgvs = chr + ":g." + start + "del";
-        } else if (var.equals("-") && ref.length() > 1 || var.length() == 0) {    
-            /*
-            Process Deletion (multiple postion)
-            Example deletion: 1 206811015 206811016  AC -
-            Example output:   1:g.206811015_206811016del
-            */
-            hgvs = chr + ":g." + start + "_" + end + "del";
+        } else if (var.equals("-") || var.length() == 0 || var.equals("NA") || var.contains("--")) {
+            if (ref.length() == 1) {
+                /*
+                Process Deletion (single positon)
+                Example deletion: 13 32914438 32914438 T -
+                Example output:   13:g.32914438del
+                */
+                hgvs = chr + ":g." + start + "del";
+            }
+            else {
+                /*
+                Process Deletion (multiple postion)
+                Example deletion: 1 206811015 206811016  AC -
+                Example output:   1:g.206811015_206811016del
+                */
+                hgvs = chr + ":g." + start + "_" + end + "del";
+            } 
         } else if (ref.length() > 1 && var.length() >= 1) {
             /*
-            Process ONP (multiple deletion)
+            Process ONP (multiple deletion insertion)
             Example INDEL   : 2 216809708 216809709 CA T
             Example output: 2:g.216809708_216809709delinsT
             */
             hgvs = chr + ":g." + start + "_" + end + "delins" + var;
         } else if (ref.length() == 1 && var.length() > 1) {
             /*
-            Process ONP (single deletion)
+            Process ONP (single deletion insertion)
             Example INDEL   : 17 7579363 7579363 A TTT
             Example output: 17:g.7579363delinsTTT
             */
