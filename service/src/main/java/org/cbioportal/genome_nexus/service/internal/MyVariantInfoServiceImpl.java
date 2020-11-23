@@ -65,7 +65,9 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
             myVariantInfos = this.getMyVariantInfoByMyVariantInfoVariant(queryVariants);
             // manually set the original hgvs variant field
             for (MyVariantInfo myVariantInfo: myVariantInfos) {
-                myVariantInfo.setHgvs(queryToVariant.get(myVariantInfo.getQuery()));
+                // myVariantInfo.getVariant() will return my_variant_info query id (e.g. chr7:g.140453136A>T)
+                // queryToVariant.get() will return genome nexus query id (e.g. 7:g.140453136A>T)
+                myVariantInfo.setHgvs(queryToVariant.get(myVariantInfo.getVariant()));
             }
         } catch (MyVariantInfoWebServiceException e) {
             LOG.warn(e.getResponseBody());
