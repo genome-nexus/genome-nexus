@@ -15,8 +15,6 @@ public class TestResourceObjectMapper extends ObjectMapper
         Map<Class<?>, Class<?>> mixinMap = new HashMap<>();
 
         mixinMap.put(Hotspot.class, HotspotMixin.class);
-        mixinMap.put(SignalMutation.class, SignalMutationMixin.class);
-        mixinMap.put(CountByTumorType.class, CountByTumorTypeMixin.class);
 
         super.setMixIns(mixinMap);
     }

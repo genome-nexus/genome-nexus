@@ -3,6 +3,8 @@ package org.cbioportal.genome_nexus.web.mixin;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 import org.cbioportal.genome_nexus.model.CountByTumorType;
+import org.cbioportal.genome_nexus.model.GeneralPopulationStats;
+import org.cbioportal.genome_nexus.model.StatsByTumorType;
 
 import java.util.List;
 
@@ -44,4 +46,13 @@ public class SignalMutationMixin
 
     @ApiModelProperty("QC Pass Counts by Tumor Type")
     private List<CountByTumorType> qcPassCountsByTumorType;
+
+    @ApiModelProperty("General Population Stats")
+    private GeneralPopulationStats generalPopulationStats;
+
+    @ApiModelProperty("Msk Expert Review")
+    private Boolean mskExperReview;
+
+    @ApiModelProperty("Stats By Tumor Type")
+    private StatsByTumorType statsByTumorType;
 }
