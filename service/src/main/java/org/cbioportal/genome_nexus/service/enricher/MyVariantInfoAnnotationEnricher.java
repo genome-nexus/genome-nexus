@@ -52,9 +52,7 @@ public class MyVariantInfoAnnotationEnricher extends BaseAnnotationEnricher
         try {
             List<MyVariantInfo> myVariantInfo = myVariantInfoService.getMyVariantInfoByAnnotation(annotations);
             Map<String, MyVariantInfo> hgvsToMyVariantInfoMap =
-                myVariantInfo.stream()
-                    .filter(info -> info.getHgvs() != null)
-                    .collect(Collectors.toMap(MyVariantInfo::getHgvs, v -> v));
+                myVariantInfo.stream().collect(Collectors.toMap(MyVariantInfo::getHgvs, v -> v));
 
             for (VariantAnnotation annotation: annotations) {
                 this.enrichAnnotationWithMyVariantInfo(annotation,

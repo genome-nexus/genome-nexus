@@ -229,7 +229,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
                 postEnrichmentService.enrichAnnotations(variantAnnotations);
             }
         } catch (VariantAnnotationWebServiceException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
+            LOG.warn(e.getLocalizedMessage());
         }
 
         return variantAnnotations;
