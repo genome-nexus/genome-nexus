@@ -132,6 +132,8 @@ public class CachedMyVariantInfoFetcher extends BaseCachedExternalResourceFetche
         if (rawJson.get("clinvar") instanceof Map) {
             Map<String, Object> clinvar = (Map<String, Object>) rawJson.get("clinvar");
             clinvar.put("rcv", convertToList(clinvar.get("rcv")));
+            Map<String, Object> hgvs = (Map<String, Object>) clinvar.get("hgvs");
+            hgvs.put("coding", convertToList(hgvs.get("coding")));
         }
 
         return rawJson;

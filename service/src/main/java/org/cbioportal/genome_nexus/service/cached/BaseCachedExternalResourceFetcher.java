@@ -91,6 +91,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 // construct an instance to return:
                 // this does not contain all the information obtained from the web service
                 // only the fields mapped to the VariantAnnotation model will be returned
+                rawValue = this.normalizeResponse(rawValue);
                 List<T> list = this.transformer.transform(rawValue, this.type);
 
                 if (list.size() > 0) {
