@@ -47,97 +47,97 @@ public class VariantClassificationResolverTest
 
         assertEquals(
             "Frame_Shift_Ins",
-            this.variantClassificationResolver.resolve(variantMockData.get("1:g.65325832_65325833insG"))
+            this.resolveForCanonical(variantMockData.get("1:g.65325832_65325833insG"))
         );
 
         assertEquals(
             "In_Frame_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("3:g.14106026_14106037del"))
+            this.resolveForCanonical(variantMockData.get("3:g.14106026_14106037del"))
         );
 
         assertEquals(
             "In_Frame_Ins",
-            this.variantClassificationResolver.resolve(variantMockData.get("3:g.14940279_14940280insCAT"))
+            this.resolveForCanonical(variantMockData.get("3:g.14940279_14940280insCAT"))
         );
 
         assertEquals(
             "Frame_Shift_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("3:g.114058003del"))
+            this.resolveForCanonical(variantMockData.get("3:g.114058003del"))
         );
 
         assertEquals(
             "In_Frame_Ins",
-            this.variantClassificationResolver.resolve(variantMockData.get("4:g.9784947_9784948insAGA"))
+            this.resolveForCanonical(variantMockData.get("4:g.9784947_9784948insAGA"))
         );
 
         assertEquals(
             "Frame_Shift_Ins",
-            this.variantClassificationResolver.resolve(variantMockData.get("4:g.77675978_77675979insC"))
+            this.resolveForCanonical(variantMockData.get("4:g.77675978_77675979insC"))
         );
 
         assertEquals(
             "Frame_Shift_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("6:g.137519505_137519506del"))
+            this.resolveForCanonical(variantMockData.get("6:g.137519505_137519506del"))
         );
 
         assertEquals(
             "Frame_Shift_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("6:g.137519505_137519506delinsA"))
+            this.resolveForCanonical(variantMockData.get("6:g.137519505_137519506delinsA"))
         );
 
         assertEquals(
             "Missense_Mutation",
-            this.variantClassificationResolver.resolve(variantMockData.get("7:g.140453136A>T"))
+            this.resolveForCanonical(variantMockData.get("7:g.140453136A>T"))
         );
 
         assertEquals(
             "Frame_Shift_Ins",
-            this.variantClassificationResolver.resolve(variantMockData.get("8:g.37696499_37696500insG"))
+            this.resolveForCanonical(variantMockData.get("8:g.37696499_37696500insG"))
         );
 
         assertEquals(
             "Frame_Shift_Ins",
-            this.variantClassificationResolver.resolve(variantMockData.get("9:g.135797242delinsAT"))
+            this.resolveForCanonical(variantMockData.get("9:g.135797242delinsAT"))
         );
 
         assertEquals(
             "Frame_Shift_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("10:g.101953779del"))
+            this.resolveForCanonical(variantMockData.get("10:g.101953779del"))
         );
 
         assertEquals(
             "Nonsense_Mutation",
-            this.variantClassificationResolver.resolve(variantMockData.get("11:g.62393546_62393547delinsAA"))
+            this.resolveForCanonical(variantMockData.get("11:g.62393546_62393547delinsAA"))
         );
 
         assertEquals(
             "Missense_Mutation",
-            this.variantClassificationResolver.resolve(variantMockData.get("12:g.25398285C>A"))
+            this.resolveForCanonical(variantMockData.get("12:g.25398285C>A"))
         );
 
         assertEquals(
             "In_Frame_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("13:g.28608258_28608275del"))
+            this.resolveForCanonical(variantMockData.get("13:g.28608258_28608275del"))
         );
 
         assertEquals(
             "In_Frame_Ins",
-            this.variantClassificationResolver.resolve(variantMockData.get("16:g.9057113_9057114insCTG"))
+            this.resolveForCanonical(variantMockData.get("16:g.9057113_9057114insCTG"))
         );
 
         assertEquals(
             "Splice_Site",
-            this.variantClassificationResolver.resolve(variantMockData.get("19:g.46141892_46141893delinsAA"))
+            this.resolveForCanonical(variantMockData.get("19:g.46141892_46141893delinsAA"))
         );
 
         assertEquals(
             "Missense_Mutation",
-            this.variantClassificationResolver.resolve(variantMockData.get("22:g.29091840_29091841delinsCA"))
+            this.resolveForCanonical(variantMockData.get("22:g.29091840_29091841delinsCA"))
         );
 
         assertEquals(
             "In_Frame_Del",
-            this.variantClassificationResolver.resolve(variantMockData.get("22:g.36689419_36689421del"))
+            this.resolveForCanonical(variantMockData.get("22:g.36689419_36689421del"))
         );
     }
 
@@ -177,6 +177,14 @@ public class VariantClassificationResolverTest
                 null,
                 variantMockData.get("7:g.55220240G>T").getTranscriptConsequences().get(0)
             )
+        );
+    }
+
+    private String resolveForCanonical(VariantAnnotation variantAnnotation)
+    {
+        return this.variantClassificationResolver.resolve(
+            variantAnnotation,
+            this.canonicalTranscriptResolver.resolve(variantAnnotation)
         );
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class EnsemblServiceImpl implements EnsemblService
@@ -182,5 +183,10 @@ public class EnsemblServiceImpl implements EnsemblService
     @Override
     public String getHugoSymbolByEntrezGeneId(String entrezGeneId) {
         return this.ensemblRepository.findHugoSymbolByEntrezGeneId(entrezGeneId);
+    }
+
+    @Override
+    public Set<String> getCanonicalTranscriptIdsBySource(String isoformOverrideSource) {
+        return this.ensemblRepository.findCanonicalTranscriptIdsBySource(isoformOverrideSource);
     }
 }

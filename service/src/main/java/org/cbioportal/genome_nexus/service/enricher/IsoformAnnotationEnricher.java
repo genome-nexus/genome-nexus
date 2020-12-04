@@ -1,95 +1,84 @@
 package org.cbioportal.genome_nexus.service.enricher;
 
-import org.cbioportal.genome_nexus.model.IsoformOverride;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.cbioportal.genome_nexus.service.IsoformOverrideService;
-import org.cbioportal.genome_nexus.service.exception.IsoformOverrideNotFoundException;
+import org.cbioportal.genome_nexus.service.EnsemblService;
+import org.cbioportal.genome_nexus.util.IsoformOverrideSource;
 
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-/**
- * @author Selcuk Onur Sumer
- */
+
 public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
 {
     String source;
-    IsoformOverrideService service;
+    EnsemblService ensemblService;
 
     public IsoformAnnotationEnricher(
         String id,
         String source,
-        IsoformOverrideService service
+        EnsemblService ensemblService
     ) {
         super(id);
         this.source = source;
-        this.service = service;
+        this.ensemblService = ensemblService;
     }
 
     @Override
     public void enrich(VariantAnnotation annotation)
     {
         // no transcripts to enrich, abort.
-        if (annotation.getTranscriptConsequences() == null)
-        {
+        if (annotation.getTranscriptConsequences() == null) {
             return;
         }
 
-        List<TranscriptConsequence> transcripts = new LinkedList<>();
+        // get transcript overrides for the given isoform override source
+        // if no isoform override source is provided, then the default is uniprot
+        Set<String> predefinedCanonicalTranscriptIds = this.ensemblService.getCanonicalTranscriptIdsBySource(
+            IsoformOverrideSource.getOrDefault(this.source)
+        );
 
-        /* This logic handles the case when there are more than one potential genes that a variant could be affecting.
-            When two genes are extremely close in the genome/overlapping, VEP will return the transcripts for both genes.
-            In the case where we only have an override for one of the genes, we do not want to force those transcripts as canonical
-            if the most severe consequence does not exist in that gene, because more likely the correct transcript that the user
-            cares about exists in the other gene.
+        List<TranscriptConsequence> canonicalTranscriptCandidates = this.findCanonicalTranscriptCandidates(
+            annotation.getTranscriptConsequences(),
+            predefinedCanonicalTranscriptIds
+        );
 
-            We only apply isoform overrides if the most severe consequence exists in the gene we want to apply to override to.
-            If it does not, do not touch the canonical fields for those transcripts.
-        */
-        String geneWithMostSevereConsequence = "";
-        String mostSevereConsequence = annotation.getMostSevereConsequence();
-        for (TranscriptConsequence transcript : annotation.getTranscriptConsequences()) {
-            if (transcript.getConsequenceTerms().contains(mostSevereConsequence)) {
-                geneWithMostSevereConsequence = transcript.getGeneSymbol();
-                break;
-            }
-        }
-
-        // search override service for the transcripts
-        for (TranscriptConsequence transcript: annotation.getTranscriptConsequences())
-        {
-            IsoformOverride override = null;
-
-            try {
-                override = service.getIsoformOverride(source, transcript.getTranscriptId());
-            } catch (IsoformOverrideNotFoundException e) {
-                // fail silently for this transcript
-            }
-
-            // override the canonical field
-            if (override != null && transcript.getGeneSymbol().equals(geneWithMostSevereConsequence))
-            // TODO && override.getGeneSymbol().equalsIgnoreCase(transcript.getGeneSymbol())
-            {
-                transcript.setCanonical("1");
-            }
-            else
-            {
-                transcripts.add(transcript);
-            }
-        }
-
-        // if at least one transcript is overridden as canonical in the previous iteration
-        // then mark all other as non-canonical.
+        // if at least one canonical transcript candidate is found
+        // then mark all transcripts as non-canonical.
         //
         // if no override, then we should leave the transcript list intact
         // (rely on the canonical info provided by the web service in that case).
-        if (transcripts.size() < annotation.getTranscriptConsequences().size())
-        {
-            for (TranscriptConsequence transcript: transcripts)
-            {
+        if (canonicalTranscriptCandidates.size() > 0) {
+            for (TranscriptConsequence transcript: annotation.getTranscriptConsequences()) {
                 transcript.setCanonical(null);
             }
         }
+
+        // override the canonical field for all the candidates
+        for (TranscriptConsequence transcript: canonicalTranscriptCandidates) {
+            transcript.setCanonical("1");
+        }
+    }
+
+    /**
+     * Tries to find a matching transcript consequence by using
+     * the given predefined canonical assignment.
+     */
+    private List<TranscriptConsequence> findCanonicalTranscriptCandidates(
+        List<TranscriptConsequence> transcriptConsequences,
+        Set<String> predefinedCanonicalTranscriptIds
+    ) {
+        List<TranscriptConsequence> transcripts = Collections.emptyList();
+
+        if (predefinedCanonicalTranscriptIds != null) {
+            transcripts = transcriptConsequences
+                .stream()
+                .filter(t -> predefinedCanonicalTranscriptIds.contains(t.getTranscriptId()))
+                .collect(Collectors.toList());
+        }
+
+        return transcripts;
     }
 }

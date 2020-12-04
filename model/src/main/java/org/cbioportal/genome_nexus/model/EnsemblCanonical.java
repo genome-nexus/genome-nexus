@@ -60,8 +60,8 @@ public class EnsemblCanonical
                 case "mskcc":
                     canonicalTranscriptId = this.mskccCanonicalTranscriptId;
                     break;
-                case "uniprot":
-                    canonicalTranscriptId = this.uniprotCanonicalTranscriptId;
+                case "genome_nexus":
+                    canonicalTranscriptId = this.genomeNexusCanonicalTranscriptId;
                     break;
                 case "ensembl":
                     canonicalTranscriptId = this.ensemblCanonicalTranscriptId;

@@ -45,7 +45,8 @@ public class OncokbAnnotationEnricher extends BaseAnnotationEnricher
         if (annotation != null)
         {
             IndicatorQueryResp oncokb = null;
-            VariantAnnotationSummary annotationSummary = this.variantAnnotationSummaryService.getAnnotationSummaryForCanonical(annotation);
+            VariantAnnotationSummary annotationSummary =
+                this.variantAnnotationSummaryService.getAnnotationSummaryForCanonical(annotation);
             Alteration alteration = oncokbResolver.resolve(annotationSummary);
 
             // get OncoKB cancer gene list from database

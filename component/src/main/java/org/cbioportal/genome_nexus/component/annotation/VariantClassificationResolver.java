@@ -17,46 +17,21 @@ public class VariantClassificationResolver
 {
     public static Map<String, String> VARIANT_MAP = initVariantMap();
 
-    private final CanonicalTranscriptResolver canonicalTranscriptResolver;
     private final TranscriptConsequencePrioritizer consequencePrioritizer;
     private final VariantTypeResolver variantTypeResolver;
     private final GenomicLocationResolver genomicLocationResolver;
 
     @Autowired
-    public VariantClassificationResolver(CanonicalTranscriptResolver canonicalTranscriptResolver,
-                                         VariantTypeResolver variantTypeResolver,
-                                         TranscriptConsequencePrioritizer consequencePrioritizer,
-                                         GenomicLocationResolver genomicLocationResolver)
-    {
-        this.canonicalTranscriptResolver = canonicalTranscriptResolver;
+    public VariantClassificationResolver(
+        VariantTypeResolver variantTypeResolver,
+        TranscriptConsequencePrioritizer consequencePrioritizer,
+        GenomicLocationResolver genomicLocationResolver
+    ) {
         this.consequencePrioritizer = consequencePrioritizer;
         this.variantTypeResolver = variantTypeResolver;
         this.genomicLocationResolver = genomicLocationResolver;
     }
 
-    /**
-     * Resolves to a single variant classification for the given variant annotation.
-     *
-     * @param variantAnnotation
-     * @return
-     */
-    @Nullable
-    public String resolve(VariantAnnotation variantAnnotation)
-    {
-        TranscriptConsequence canonicalTranscript = this.canonicalTranscriptResolver.resolve(variantAnnotation);
-
-        // resolve for the canonical transcript
-        // if canonical transcript resolver returns null, then most severe consequence will be used
-        return this.resolve(variantAnnotation, canonicalTranscript);
-    }
-
-    /**
-     * Resolves to a single variant classification for the given variant annotation and transcript consequence.
-     *
-     * @param variantAnnotation
-     * @param transcriptConsequence
-     * @return
-     */
     @Nullable
     public String resolve(VariantAnnotation variantAnnotation, TranscriptConsequence transcriptConsequence)
     {
@@ -81,13 +56,6 @@ public class VariantClassificationResolver
         return variantClassification;
     }
 
-    /**
-     * Resolves all possible variant classification for the given transcript.
-     *
-     * @param variantAnnotation
-     * @param transcriptConsequence
-     * @return
-     */
     @NotNull
     public Set<String> resolveAll(VariantAnnotation variantAnnotation, TranscriptConsequence transcriptConsequence)
     {

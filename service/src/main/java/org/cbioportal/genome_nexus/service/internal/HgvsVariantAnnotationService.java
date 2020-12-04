@@ -48,22 +48,24 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
     private NotationConverter notationConverter;
 
     @Autowired
-    public HgvsVariantAnnotationService(CachedVariantAnnotationFetcher cachedVariantAnnotationFetcher,
-                                        // Lazy autowire services used for enrichment,
-                                        // otherwise we are getting circular dependency issues
-                                        NotationConverter notationConverter,
-                                        @Lazy IsoformOverrideService isoformOverrideService,
-                                        @Lazy CancerHotspotService hotspotService,
-                                        @Lazy MutationAssessorService mutationAssessorService,
-                                        @Lazy MyVariantInfoService myVariantInfoService,
-                                        @Lazy NucleotideContextService nucleotideContextService,
-                                        @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
-                                        @Lazy PostTranslationalModificationService postTranslationalModificationService,
-                                        @Lazy SignalMutationService signalMutationService,
-                                        @Lazy OncokbService oncokbService)
-    {
-        super(cachedVariantAnnotationFetcher,
-            isoformOverrideService,
+    public HgvsVariantAnnotationService(
+        CachedVariantAnnotationFetcher cachedVariantAnnotationFetcher,
+        // Lazy autowire services used for enrichment,
+        // otherwise we are getting circular dependency issues
+        NotationConverter notationConverter,
+        @Lazy EnsemblService ensemblService,
+        @Lazy CancerHotspotService hotspotService,
+        @Lazy MutationAssessorService mutationAssessorService,
+        @Lazy MyVariantInfoService myVariantInfoService,
+        @Lazy NucleotideContextService nucleotideContextService,
+        @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
+        @Lazy PostTranslationalModificationService postTranslationalModificationService,
+        @Lazy SignalMutationService signalMutationService,
+        @Lazy OncokbService oncokbService
+    ) {
+        super(
+            cachedVariantAnnotationFetcher,
+            ensemblService,
             hotspotService,
             mutationAssessorService,
             myVariantInfoService,
@@ -71,7 +73,8 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
             variantAnnotationSummaryService,
             postTranslationalModificationService,
             signalMutationService,
-            oncokbService);
+            oncokbService
+        );
 
         this.notationConverter = notationConverter;
     }

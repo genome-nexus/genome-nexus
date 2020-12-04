@@ -48,7 +48,8 @@ public class ProteinChangeResolver
     @Nullable
     public String resolveHgvspShort(VariantAnnotation variantAnnotation)
     {
-        TranscriptConsequence canonicalTranscript = this.canonicalTranscriptResolver.resolve(variantAnnotation);
+        TranscriptConsequence canonicalTranscript =
+            this.canonicalTranscriptResolver.resolve(variantAnnotation);
 
         // resolve for the canonical transcript
         return this.resolveHgvspShort(variantAnnotation, canonicalTranscript);
@@ -120,11 +121,11 @@ public class ProteinChangeResolver
 
         if (m.matches())
         {
-            // "c.*" represents for UTR 
+            // "c.*" represents for UTR
             if (hgvsc.contains("c.*")) {
                 return null;
             }
-            
+
             cPos = Integer.parseInt(m.group(1));
             cPos = cPos < 1 ? 1 : cPos;
             pPos = (cPos + 2) / 3;

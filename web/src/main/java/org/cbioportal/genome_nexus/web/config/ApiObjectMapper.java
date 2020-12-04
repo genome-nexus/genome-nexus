@@ -22,7 +22,6 @@ public class ApiObjectMapper extends ObjectMapper
 
         mixinMap.put(GeneXref.class, GeneXrefMixin.class);
         mixinMap.put(Hotspot.class, HotspotMixin.class);
-        mixinMap.put(IsoformOverride.class, IsoformOverrideMixin.class);
         mixinMap.put(MutationAssessor.class, MutationAssessorMixin.class);
         mixinMap.put(NucleotideContext.class, NucleotideContextMixin.class);
         mixinMap.put(PfamDomain.class, PfamDomainMixin.class);
@@ -65,7 +64,7 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(GeneralPopulationStats.class, GeneralPopulationStatsMixin.class);
         mixinMap.put(StatsByTumorType.class, StatsByTumorTypeMixin.class);
         mixinMap.put(SignalPopulationStats.class, SignalPopulationStatsMixin.class);
-        mixinMap.put(HrdScore.class, HrdScoreMixin.class);        
+        mixinMap.put(HrdScore.class, HrdScoreMixin.class);
         super.setMixIns(mixinMap);
     }
 }

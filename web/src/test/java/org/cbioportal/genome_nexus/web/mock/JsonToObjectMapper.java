@@ -1,5 +1,7 @@
 package org.cbioportal.genome_nexus.web.mock;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import org.cbioportal.genome_nexus.model.Hotspot;
 import org.cbioportal.genome_nexus.model.PostTranslationalModification;
 import org.cbioportal.genome_nexus.model.SignalMutation;
@@ -38,6 +40,14 @@ public class JsonToObjectMapper
         return this.objectMapper.readValue(
             new ClassPathResource("signal/" + resourceName).getInputStream(),
             this.objectMapper.getTypeFactory().constructCollectionType(List.class, SignalMutation.class)
+        );
+    }
+
+    public List<DBObject> readRawDbObjects(String resourceName) throws IOException
+    {
+        return this.objectMapper.readValue(
+            new ClassPathResource("raw/" + resourceName).getInputStream(),
+            this.objectMapper.getTypeFactory().constructCollectionType(List.class, BasicDBObject.class)
         );
     }
 }

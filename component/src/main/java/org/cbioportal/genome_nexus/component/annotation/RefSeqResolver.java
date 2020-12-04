@@ -1,9 +1,7 @@
 package org.cbioportal.genome_nexus.component.annotation;
 
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,26 +9,6 @@ import java.util.List;
 @Component
 public class RefSeqResolver
 {
-    private final CanonicalTranscriptResolver canonicalTranscriptResolver;
-
-    @Autowired
-    public RefSeqResolver(CanonicalTranscriptResolver canonicalTranscriptResolver)
-    {
-        this.canonicalTranscriptResolver = canonicalTranscriptResolver;
-    }
-
-    @Nullable
-    public String resolve(VariantAnnotation variantAnnotation)
-    {
-        return this.resolve(this.canonicalTranscriptResolver.resolve(variantAnnotation));
-    }
-
-    @Nullable
-    public List<String> resolveAll(VariantAnnotation variantAnnotation)
-    {
-        return this.resolveAll(this.canonicalTranscriptResolver.resolve(variantAnnotation));
-    }
-
     @Nullable
     public String resolve(TranscriptConsequence transcriptConsequence)
     {

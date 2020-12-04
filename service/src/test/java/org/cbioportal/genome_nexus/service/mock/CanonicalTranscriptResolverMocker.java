@@ -8,9 +8,10 @@ import java.util.Map;
 
 public class CanonicalTranscriptResolverMocker
 {
-    public void mockMethods(Map<String, VariantAnnotation> variantMockData,
-                             CanonicalTranscriptResolver canonicalTranscriptResolver)
-    {
+    public void mockMethods(
+        Map<String, VariantAnnotation> variantMockData,
+        CanonicalTranscriptResolver canonicalTranscriptResolver
+    ) {
         Mockito.when(
             canonicalTranscriptResolver.resolve(variantMockData.get("1:g.65325832_65325833insG"))
         ).thenReturn(

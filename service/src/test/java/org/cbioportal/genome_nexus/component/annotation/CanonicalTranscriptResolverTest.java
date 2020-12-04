@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Map;
 
+import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
 import org.junit.Test;
@@ -13,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
-// TODO: fix unnecessary stub tests 
+// TODO: fix unnecessary stub tests
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class CanonicalTranscriptResolverTest
 {
@@ -128,6 +129,36 @@ public class CanonicalTranscriptResolverTest
         assertEquals(
             variantMockData.get("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT").getTranscriptConsequences().get(0),
             this.canonicalTranscriptResolver.resolve(variantMockData.get("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT"))
+        );
+    }
+
+    @Test
+    public void resolveCanonicalTranscriptWithMultipleCanonicals() throws IOException
+    {
+        Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
+
+        VariantAnnotation annotation = variantMockData.get("3:g.14106026_14106037del");
+
+        // mark "ENST00000532753", "ENST00000532924", and "ENST00000532880" canonical
+        for (TranscriptConsequence transcript: annotation.getTranscriptConsequences()) {
+            if (
+                transcript.getTranscriptId().equals("ENST00000532753") ||
+                transcript.getTranscriptId().equals("ENST00000532924") ||
+                transcript.getTranscriptId().equals("ENST00000532880")
+            ) {
+                transcript.setCanonical("1");
+            }
+            else {
+                transcript.setCanonical("0");
+            }
+        }
+
+        // should pick the most impactful one (inframe_deletion)
+        assertEquals(
+            "ENST00000532924",
+            this.canonicalTranscriptResolver
+                .resolve(variantMockData.get("3:g.14106026_14106037del"))
+                .getTranscriptId()
         );
     }
 }

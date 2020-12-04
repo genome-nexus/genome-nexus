@@ -47,21 +47,23 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
     private static final Log LOG = LogFactory.getLog(DbsnpVariantAnnotationService.class);
 
     @Autowired
-    public DbsnpVariantAnnotationService(CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher,
-                                         // Lazy autowire services used for enrichment,
-                                         // otherwise we are getting circular dependency issues
-                                         @Lazy IsoformOverrideService isoformOverrideService,
-                                         @Lazy CancerHotspotService hotspotService,
-                                         @Lazy MutationAssessorService mutationAssessorService,
-                                         @Lazy MyVariantInfoService myVariantInfoService,
-                                         @Lazy NucleotideContextService nucleotideContextService,
-                                         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
-                                         @Lazy PostTranslationalModificationService postTranslationalModificationService,
-                                         @Lazy SignalMutationService signalMutationService,
-                                         @Lazy OncokbService oncokbService)
-    {
-        super(cachedVariantIdAnnotationFetcher,
-            isoformOverrideService,
+    public DbsnpVariantAnnotationService(
+        CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher,
+        // Lazy autowire services used for enrichment,
+        // otherwise we are getting circular dependency issues
+        @Lazy EnsemblService ensemblService,
+        @Lazy CancerHotspotService hotspotService,
+        @Lazy MutationAssessorService mutationAssessorService,
+        @Lazy MyVariantInfoService myVariantInfoService,
+        @Lazy NucleotideContextService nucleotideContextService,
+        @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
+        @Lazy PostTranslationalModificationService postTranslationalModificationService,
+        @Lazy SignalMutationService signalMutationService,
+        @Lazy OncokbService oncokbService
+    ) {
+        super(
+            cachedVariantIdAnnotationFetcher,
+            ensemblService,
             hotspotService,
             mutationAssessorService,
             myVariantInfoService,
@@ -69,6 +71,7 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
             variantAnnotationSummaryService,
             postTranslationalModificationService,
             signalMutationService,
-            oncokbService);
+            oncokbService
+        );
     }
 }

@@ -2,9 +2,7 @@ package org.cbioportal.genome_nexus.component.annotation;
 
 import org.apache.commons.lang.StringUtils;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,14 +10,6 @@ import java.util.List;
 @Component
 public class ConsequenceTermsResolver
 {
-    private final CanonicalTranscriptResolver canonicalTranscriptResolver;
-
-    @Autowired
-    public ConsequenceTermsResolver(CanonicalTranscriptResolver canonicalTranscriptResolver)
-    {
-        this.canonicalTranscriptResolver = canonicalTranscriptResolver;
-    }
-
     @Nullable
     public String resolve(TranscriptConsequence transcriptConsequence)
     {
@@ -34,12 +24,6 @@ public class ConsequenceTermsResolver
     }
 
     @Nullable
-    public String resolve(VariantAnnotation variantAnnotation)
-    {
-        return this.resolve(this.canonicalTranscriptResolver.resolve(variantAnnotation));
-    }
-
-    @Nullable
     public List<String> resolveAll(TranscriptConsequence transcriptConsequence)
     {
         List<String> consequenceTerms = null;
@@ -49,11 +33,5 @@ public class ConsequenceTermsResolver
         }
 
         return consequenceTerms;
-    }
-
-    @Nullable
-    public List<String> resolveAll(VariantAnnotation variantAnnotation)
-    {
-        return this.resolveAll(this.canonicalTranscriptResolver.resolve(variantAnnotation));
     }
 }

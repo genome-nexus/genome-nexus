@@ -34,6 +34,7 @@ package org.cbioportal.genome_nexus.persistence.internal;
 import java.util.*;
 import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
+import org.springframework.cache.annotation.Cacheable;
 
 public interface EnsemblRepositoryCustom
 {
@@ -43,4 +44,7 @@ public interface EnsemblRepositoryCustom
     String findEntrezGeneIdByHugoSymbol(String hugoSymbol);
     List<String> findEntrezGeneIdByHugoSymbol(String hugoSymbol, Boolean searchInAliases);
     String findHugoSymbolByEntrezGeneId(String entrezGeneId);
+
+    @Cacheable("canonicalTranscriptIdsBySource")
+    Set<String> findCanonicalTranscriptIdsBySource(String isoformOverrideSource);
 }
