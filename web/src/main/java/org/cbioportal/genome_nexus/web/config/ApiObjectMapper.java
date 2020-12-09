@@ -62,6 +62,10 @@ public class ApiObjectMapper extends ObjectMapper
         mixinMap.put(SignalMutation.class, SignalMutationMixin.class);
         mixinMap.put(SignalQuery.class, SignalQueryMixin.class);
         mixinMap.put(CountByTumorType.class, CountByTumorTypeMixin.class);
+        mixinMap.put(GeneralPopulationStats.class, GeneralPopulationStatsMixin.class);
+        mixinMap.put(StatsByTumorType.class, StatsByTumorTypeMixin.class);
+        mixinMap.put(SignalPopulationStats.class, SignalPopulationStatsMixin.class);
+        mixinMap.put(HrdScore.class, HrdScoreMixin.class);        
         super.setMixIns(mixinMap);
     }
 }

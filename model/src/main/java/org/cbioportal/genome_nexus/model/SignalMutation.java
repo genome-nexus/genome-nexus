@@ -5,9 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
-@Document(collection="signal.mutation")
-public class SignalMutation
-{
+@Document(collection = "signal.mutation")
+public class SignalMutation {
     @Field("hugo_gene_symbol")
     private String hugoGeneSymbol;
 
@@ -44,8 +43,41 @@ public class SignalMutation
     @Field("qc_pass_counts_by_tumor_type")
     private List<CountByTumorType> qcPassCountsByTumorType;
 
+    @Field("general_population_stats")
+    private GeneralPopulationStats generalPopulationStats;
+
+    @Field("msk_expert_review")
+    private Boolean mskExperReview;
+
+    @Field("stats_by_tumor_type")
+    private List<StatsByTumorType> statsByTumorType;
+
     public String getHugoGeneSymbol() {
         return hugoGeneSymbol;
+    }
+
+    public List<StatsByTumorType> getStatsByTumorType() {
+        return statsByTumorType;
+    }
+
+    public void setStatsByTumorType(List<StatsByTumorType> statsByTumorType) {
+        this.statsByTumorType = statsByTumorType;
+    }
+
+    public Boolean getMskExperReview() {
+        return mskExperReview;
+    }
+
+    public void setMskExperReview(Boolean mskExperReview) {
+        this.mskExperReview = mskExperReview;
+    }
+
+    public GeneralPopulationStats getGeneralPopulationStats() {
+        return generalPopulationStats;
+    }
+
+    public void setGeneralPopulationStats(GeneralPopulationStats generalPopulationStats) {
+        this.generalPopulationStats = generalPopulationStats;
     }
 
     public void setHugoGeneSymbol(String hugoGeneSymbol) {
