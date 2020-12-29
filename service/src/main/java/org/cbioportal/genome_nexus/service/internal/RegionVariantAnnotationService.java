@@ -47,21 +47,23 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
     private static final Log LOG = LogFactory.getLog(RegionVariantAnnotationService.class);
 
     @Autowired
-    public RegionVariantAnnotationService(CachedVariantRegionAnnotationFetcher cachedVariantRegionAnnotationFetcher,
-                                          // Lazy autowire services used for enrichment,
-                                          // otherwise we are getting circular dependency issues
-                                          @Lazy IsoformOverrideService isoformOverrideService,
-                                          @Lazy CancerHotspotService hotspotService,
-                                          @Lazy MutationAssessorService mutationAssessorService,
-                                          @Lazy MyVariantInfoService myVariantInfoService,
-                                          @Lazy NucleotideContextService nucleotideContextService,
-                                          @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
-                                          @Lazy PostTranslationalModificationService postTranslationalModificationService,
-                                          @Lazy SignalMutationService signalMutationService,
-                                          @Lazy OncokbService oncokbService)
-    {
-        super(cachedVariantRegionAnnotationFetcher,
-            isoformOverrideService,
+    public RegionVariantAnnotationService(
+        CachedVariantRegionAnnotationFetcher cachedVariantRegionAnnotationFetcher,
+        // Lazy autowire services used for enrichment,
+        // otherwise we are getting circular dependency issues
+        @Lazy EnsemblService ensemblService,
+        @Lazy CancerHotspotService hotspotService,
+        @Lazy MutationAssessorService mutationAssessorService,
+        @Lazy MyVariantInfoService myVariantInfoService,
+        @Lazy NucleotideContextService nucleotideContextService,
+        @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
+        @Lazy PostTranslationalModificationService postTranslationalModificationService,
+        @Lazy SignalMutationService signalMutationService,
+        @Lazy OncokbService oncokbService
+    ) {
+        super(
+            cachedVariantRegionAnnotationFetcher,
+            ensemblService,
             hotspotService,
             mutationAssessorService,
             myVariantInfoService,
@@ -69,6 +71,7 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
             variantAnnotationSummaryService,
             postTranslationalModificationService,
             signalMutationService,
-            oncokbService);
+            oncokbService
+        );
     }
 }

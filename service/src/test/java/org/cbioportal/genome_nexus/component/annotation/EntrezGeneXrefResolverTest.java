@@ -147,9 +147,10 @@ public class EntrezGeneXrefResolverTest
         );
     }
 
-    private GeneXref resolveGeneXref(String variantId,
-                                     Map<String, VariantAnnotation> variantMockData)
-        throws IOException, EnsemblWebServiceException
+    private GeneXref resolveGeneXref(
+        String variantId,
+        Map<String, VariantAnnotation> variantMockData
+    ) throws EnsemblWebServiceException
     {
         return this.entrezGeneXrefResolver.resolve(
             this.geneXrefService.getGeneXrefs(

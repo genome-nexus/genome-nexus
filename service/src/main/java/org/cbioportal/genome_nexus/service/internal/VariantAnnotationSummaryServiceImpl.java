@@ -5,18 +5,21 @@ import org.cbioportal.genome_nexus.model.TranscriptConsequenceSummary;
 import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationSummaryService;
 import org.cbioportal.genome_nexus.service.annotation.EntrezGeneIdResolver;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.util.IsoformOverrideSource;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSummaryService
@@ -39,23 +42,24 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final ExonResolver exonResolver;
 
     @Autowired
-    public VariantAnnotationSummaryServiceImpl(VariantAnnotationService hgvsVariantAnnotationService,
-                                               CanonicalTranscriptResolver canonicalTranscriptResolver,
-                                               AminoAcidsResolver aminoAcidsResolver,
-                                               CodonChangeResolver codonChangeResolver,
-                                               ConsequenceTermsResolver consequenceTermsResolver,
-                                               EntrezGeneIdResolver entrezGeneIdResolver,
-                                               GenomicLocationResolver genomicLocationResolver,
-                                               HugoGeneSymbolResolver hugoGeneSymbolResolver,
-                                               ProteinChangeResolver proteinChangeResolver,
-                                               ProteinPositionResolver proteinPositionResolver,
-                                               RefSeqResolver refSeqResolver,
-                                               StrandSignResolver strandSignResolver,
-                                               TranscriptIdResolver transcriptIdResolver,
-                                               VariantClassificationResolver variantClassificationResolver,
-                                               VariantTypeResolver variantTypeResolver,
-                                               ExonResolver exonResolver)
-    {
+    public VariantAnnotationSummaryServiceImpl(
+        VariantAnnotationService hgvsVariantAnnotationService,
+        CanonicalTranscriptResolver canonicalTranscriptResolver,
+        AminoAcidsResolver aminoAcidsResolver,
+        CodonChangeResolver codonChangeResolver,
+        ConsequenceTermsResolver consequenceTermsResolver,
+        EntrezGeneIdResolver entrezGeneIdResolver,
+        GenomicLocationResolver genomicLocationResolver,
+        HugoGeneSymbolResolver hugoGeneSymbolResolver,
+        ProteinChangeResolver proteinChangeResolver,
+        ProteinPositionResolver proteinPositionResolver,
+        RefSeqResolver refSeqResolver,
+        StrandSignResolver strandSignResolver,
+        TranscriptIdResolver transcriptIdResolver,
+        VariantClassificationResolver variantClassificationResolver,
+        VariantTypeResolver variantTypeResolver,
+        ExonResolver exonResolver
+    ) {
         this.variantAnnotationService = hgvsVariantAnnotationService;
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
         this.codonChangeResolver = codonChangeResolver;
@@ -79,7 +83,8 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         return this.getAnnotationSummaryForCanonical(
-            this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, null, null));
+            this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, null, null)
+        );
     }
 
     @Override
@@ -90,7 +95,6 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
 
         if (annotationSummary != null && canonicalTranscript != null)
         {
-
             annotationSummary.setTranscriptConsequenceSummary(this.getTranscriptSummary(annotation, canonicalTranscript));
             annotationSummary.setCanonicalTranscriptId(canonicalTranscript.getTranscriptId());
 
@@ -108,7 +112,8 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         return this.getAnnotationSummary(
-            this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, null, null));
+            this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, null, null)
+        );
     }
 
     @Override
@@ -126,7 +131,10 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     }
 
     @Override
-    public List<VariantAnnotationSummary> getAnnotationSummaryForCanonical(List<String> variants, String isoformOverrideSource) {
+    public List<VariantAnnotationSummary> getAnnotationSummaryForCanonical(
+        List<String> variants,
+        String isoformOverrideSource
+    ) {
         List<VariantAnnotationSummary> summaries = new ArrayList<>();
 
         List<VariantAnnotation> annotations =

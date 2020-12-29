@@ -2,25 +2,20 @@ package org.cbioportal.genome_nexus.service.annotation;
 
 import java.util.*;
 import org.cbioportal.genome_nexus.component.annotation.CanonicalTranscriptResolver;
-import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
-import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EntrezGeneIdResolver
 {
-    private final CanonicalTranscriptResolver canonicalTranscriptResolver;
     private final EnsemblService ensemblService;
 
-    public EntrezGeneIdResolver(CanonicalTranscriptResolver canonicalTranscriptResolver,
-                                EnsemblService ensemblService)
+    public EntrezGeneIdResolver(EnsemblService ensemblService)
     {
-        this.canonicalTranscriptResolver = canonicalTranscriptResolver;
         this.ensemblService = ensemblService;
     }
 
@@ -45,7 +40,7 @@ public class EntrezGeneIdResolver
 
             // if (ensemblGene != null) {
             //     entrezGeneId = ensemblGene.getEntrezGeneId();
-            // } 
+            // }
             // NOTE: Transcript consequence does not have an entrez gene id field, therefore can
             // only search for the entrez gene id by the hugo symbol.
             // TODO: allow searching in gene aliases and/or by entrez gene id to get the hugo symbol
@@ -53,11 +48,5 @@ public class EntrezGeneIdResolver
         }
 
         return entrezGeneId;
-    }
-
-    @Nullable
-    public String resolve(VariantAnnotation variantAnnotation) throws EnsemblWebServiceException
-    {
-        return this.resolve(this.canonicalTranscriptResolver.resolve(variantAnnotation));
     }
 }

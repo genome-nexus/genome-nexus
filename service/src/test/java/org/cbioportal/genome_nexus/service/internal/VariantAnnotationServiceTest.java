@@ -4,12 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
-import org.cbioportal.genome_nexus.service.IsoformOverrideService;
+import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
@@ -17,7 +19,6 @@ import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher
 import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantRegionAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
-import org.cbioportal.genome_nexus.service.exception.IsoformOverrideNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoNotFoundException;
@@ -53,7 +54,7 @@ public class VariantAnnotationServiceTest
     private MutationAssessorService mutationAssessorService;
 
     @Mock
-    private IsoformOverrideService isoformOverrideService;
+    private EnsemblService ensemblService;
 
     @Mock
     private CancerHotspotServiceImpl cancerHotspotService;
@@ -71,7 +72,6 @@ public class VariantAnnotationServiceTest
     private VariantAnnotationMockData variantAnnotationMockData = new VariantAnnotationMockData();
     private MutationAssessorMockData mutationAssessorMockData = new MutationAssessorMockData();
     private CancerHotspotMockData cancerHotspotMockData = new CancerHotspotMockData();
-    private IsoformOverrideMockData isoformOverrideMockData = new IsoformOverrideMockData();
     private MyVariantInfoMockData myVariantInfoMockData = new MyVariantInfoMockData();
     private PtmMockData ptmMockData = new PtmMockData();
 
@@ -133,16 +133,15 @@ public class VariantAnnotationServiceTest
     @Test
     public void getMutationAssessorEnrichedAnnotationByVariantString()
         throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
-        MutationAssessorWebServiceException, MutationAssessorNotFoundException, IsoformOverrideNotFoundException,
+        MutationAssessorWebServiceException, MutationAssessorNotFoundException,
         IOException, MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         Map<String, MutationAssessor> maMockData = this.mutationAssessorMockData.generateData();
-        Map<String, IsoformOverride> isoformOverrideMockData = this.isoformOverrideMockData.generateData();
 
         this.mockVariantFetcherMethods(variantMockData);
         this.mockMutationAssessorServiceMethods(variantMockData, maMockData);
-        this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
+        this.mockEnsemblServiceMethods();
 
         List<String> fields = new ArrayList<>(1);
         fields.add("mutation_assessor");
@@ -163,16 +162,14 @@ public class VariantAnnotationServiceTest
     @Test
     public void getMyVariantInfoEnrichedAnnotationByVariantString()
         throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
-        MyVariantInfoWebServiceException, MyVariantInfoNotFoundException, IsoformOverrideNotFoundException,
         IOException, MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         Map<String, MyVariantInfo> mviMockData = this.myVariantInfoMockData.generateData();
-        Map<String, IsoformOverride> isoformOverrideMockData = this.isoformOverrideMockData.generateData();
 
         this.mockVariantFetcherMethods(variantMockData);
         this.mockMyVariantInfoServiceMethods(variantMockData, mviMockData);
-        this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
+        this.mockEnsemblServiceMethods();
 
         List<String> fields = new ArrayList<>(1);
         fields.add("my_variant_info");
@@ -192,15 +189,14 @@ public class VariantAnnotationServiceTest
 
     @Test
     public void getPtmEnrichedAnnotationByVariantString() throws IOException, VariantAnnotationWebServiceException,
-        VariantAnnotationNotFoundException, ResourceMappingException, IsoformOverrideNotFoundException
+        VariantAnnotationNotFoundException, ResourceMappingException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         Map<String, List<PostTranslationalModification>> ptmMockData = this.ptmMockData.generateData();
-        Map<String, IsoformOverride> isoformOverrideMockData = this.isoformOverrideMockData.generateData();
 
         this.mockVariantFetcherMethods(variantMockData);
         this.mockPtmServiceMethods(ptmMockData);
-        this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
+        this.mockEnsemblServiceMethods();
 
         List<String> fields = new ArrayList<>(1);
         fields.add("ptms");
@@ -221,15 +217,14 @@ public class VariantAnnotationServiceTest
     @Test
     public void getHotspotEnrichedAnnotationByVariantString()
         throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
-        CancerHotspotsWebServiceException, IsoformOverrideNotFoundException, IOException
+        CancerHotspotsWebServiceException, IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         Map<String, List<Hotspot>> hotspotMockData = this.cancerHotspotMockData.generateData();
-        Map<String, IsoformOverride> isoformOverrideMockData = this.isoformOverrideMockData.generateData();
 
         this.mockVariantFetcherMethods(variantMockData);
         this.mockHotspotServiceMethods(hotspotMockData);
-        this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
+        this.mockEnsemblServiceMethods();
 
         List<String> fields = new ArrayList<>(1);
         fields.add("hotspots");
@@ -250,13 +245,12 @@ public class VariantAnnotationServiceTest
     @Test
     public void getIsorformOverrideEnrichedAnnotationByVariantString()
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException, ResourceMappingException,
-        IsoformOverrideNotFoundException, IOException
+        IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
-        Map<String, IsoformOverride> isoformOverrideMockData = this.isoformOverrideMockData.generateData();
 
         this.mockVariantFetcherMethods(variantMockData);
-        this.mockIsoformOverrideServiceMethods(isoformOverrideMockData);
+        this.mockEnsemblServiceMethods();
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", "mskcc", null, null);
@@ -347,26 +341,16 @@ public class VariantAnnotationServiceTest
             "ENST00000256078")).thenReturn(ptmMockData.get("ENST00000256078"));
     }
 
-    private void mockIsoformOverrideServiceMethods(Map<String, IsoformOverride> isoformOverrideMockData)
-        throws IsoformOverrideNotFoundException
+    private void mockEnsemblServiceMethods()
     {
-        // false for null values
-        Mockito.when(this.isoformOverrideService.hasData(null)).thenReturn(false);
-
-        // true for mskcc and uniprot
-        Mockito.when(this.isoformOverrideService.hasData("mskcc")).thenReturn(true);
-        Mockito.when(this.isoformOverrideService.hasData("uniprot")).thenReturn(true);
-
         // when called for "mskcc" override, set first transcript "ENST00000288602" as canonical
-        Mockito.when(this.isoformOverrideService.getIsoformOverride(
-            "mskcc", "ENST00000288602")).thenReturn(isoformOverrideMockData.get("ENST00000288602"));
-        Mockito.when(this.isoformOverrideService.getIsoformOverride(
-            "uniprot", "ENST00000288602")).thenReturn(null);
+        Set<String> mskccOverrides = new HashSet<>();
+        mskccOverrides.add("ENST00000288602");
+        Mockito.when(this.ensemblService.getCanonicalTranscriptIdsBySource("mskcc")).thenReturn(mskccOverrides);
 
         // when called for "uniprot" override, set second transcript "ENST00000479537" as canonical
-        Mockito.when(this.isoformOverrideService.getIsoformOverride(
-            "uniprot", "ENST00000479537")).thenReturn(isoformOverrideMockData.get("ENST00000479537"));
-        Mockito.when(this.isoformOverrideService.getIsoformOverride(
-            "mskcc", "ENST00000479537")).thenReturn(null);
+        Set<String> uniprotOverrides = new HashSet<>();
+        uniprotOverrides.add("ENST00000479537");
+        Mockito.when(this.ensemblService.getCanonicalTranscriptIdsBySource("uniprot")).thenReturn(uniprotOverrides);
     }
 }

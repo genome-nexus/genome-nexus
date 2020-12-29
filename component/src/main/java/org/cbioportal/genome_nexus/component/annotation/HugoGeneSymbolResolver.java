@@ -1,22 +1,13 @@
 package org.cbioportal.genome_nexus.component.annotation;
 
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class HugoGeneSymbolResolver
 {
-    private final CanonicalTranscriptResolver canonicalTranscriptResolver;
-
-    @Autowired
-    public HugoGeneSymbolResolver(CanonicalTranscriptResolver canonicalTranscriptResolver)
-    {
-        this.canonicalTranscriptResolver = canonicalTranscriptResolver;
-    }
-
     @Nullable
     public String resolve(TranscriptConsequence transcriptConsequence)
     {
@@ -30,11 +21,5 @@ public class HugoGeneSymbolResolver
         }
 
         return hugoSymbol;
-    }
-
-    @Nullable
-    public String resolve(VariantAnnotation variantAnnotation)
-    {
-        return this.resolve(this.canonicalTranscriptResolver.resolve(variantAnnotation));
     }
 }

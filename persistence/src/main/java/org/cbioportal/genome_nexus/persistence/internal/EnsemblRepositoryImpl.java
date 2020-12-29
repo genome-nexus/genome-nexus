@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -162,5 +164,16 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
     @Override
     public String findHugoSymbolByEntrezGeneId(String entrezGeneId) {
         return entrezGeneIdToHugoSymbolMap.get(entrezGeneId);
+    }
+
+    @Override
+    public Set<String> findCanonicalTranscriptIdsBySource(String isoformOverrideSource) {
+        List<EnsemblCanonical> transcripts = mongoTemplate.findAll(
+            EnsemblCanonical.class, CANONICAL_TRANSCRIPTS_COLLECTION);
+
+        return transcripts
+            .stream()
+            .map(t -> t.getCanonicalTranscriptId(isoformOverrideSource))
+            .collect(Collectors.toSet());
     }
 }

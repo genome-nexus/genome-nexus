@@ -29,4 +29,6 @@ public interface EnsemblService
     String getEntrezGeneIdByHugoSymbol(String hugoSymbol);
     List<String> getEntrezGeneIdByHugoSymbol(String hugoSymbol, Boolean searchInAliases);
     String getHugoSymbolByEntrezGeneId(String entrezGeneId);
+
+    Set<String> getCanonicalTranscriptIdsBySource(String isoformOverrideSource);
 }
