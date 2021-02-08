@@ -81,7 +81,7 @@ public class VariantClassificationResolverTest
         );
 
         assertEquals(
-            "Frame_Shift_Del",
+            "Frame_Shift_Delins",
             this.resolveForCanonical(variantMockData.get("6:g.137519505_137519506delinsA"))
         );
 
@@ -96,7 +96,7 @@ public class VariantClassificationResolverTest
         );
 
         assertEquals(
-            "Frame_Shift_Ins",
+            "Frame_Shift_Delins",
             this.resolveForCanonical(variantMockData.get("9:g.135797242delinsAT"))
         );
 
