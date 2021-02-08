@@ -117,6 +117,9 @@ public class VariantClassificationResolver
             else if (variantType.equals("INS")) {
                 return "Frame_Shift_Ins";
             }
+            else if (variantType.equals("DELINS")) {
+                return "Frame_Shift_Delins";
+            }
         }
         else if ((variant.equals("protein_altering_variant") || variant.equals("coding_sequence_variant")) &&
             isInframe)
@@ -126,6 +129,9 @@ public class VariantClassificationResolver
             }
             else if (variantType.equals("INS")) {
                 return "In_Frame_Ins";
+            }
+            else if (variantType.equals("DELINS")) {
+                return "In_Frame_Delins";
             }
         }
 
