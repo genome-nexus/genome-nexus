@@ -56,7 +56,7 @@ public class VariantTypeResolverMocker
         Mockito.when(
             variantTypeResolver.resolve(variantMockData.get("6:g.137519505_137519506delinsA"))
         ).thenReturn(
-            "DEL"
+            "DELINS"
         );
 
         Mockito.when(
@@ -74,7 +74,7 @@ public class VariantTypeResolverMocker
         Mockito.when(
             variantTypeResolver.resolve(variantMockData.get("9:g.135797242delinsAT"))
         ).thenReturn(
-            "INS"
+            "DELINS"
         );
 
         Mockito.when(
