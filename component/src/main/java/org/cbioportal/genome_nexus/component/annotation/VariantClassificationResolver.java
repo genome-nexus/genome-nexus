@@ -161,6 +161,7 @@ public class VariantClassificationResolver
         variantMap.put("intragenic_variant",            "Intron");
         variantMap.put("incomplete_terminal_codon_variant", "Silent");
         variantMap.put("synonymous_variant",            "Silent");
+        variantMap.put("start_retained_variant",        "Silent");
         variantMap.put("stop_retained_variant",         "Silent");
         variantMap.put("nmd_transcript_variant",        "Silent");
         variantMap.put("mature_mirna_variant",          "RNA");
