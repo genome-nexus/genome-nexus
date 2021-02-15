@@ -34,17 +34,17 @@ VEP includes various other annotations:
 
 Source | Version (GRCh38) | Version (GRCh37)
 --- | --- | ---
-Ensembl database version | 97 | 97
+Ensembl database version | 103 | 103
 Genome assembly | GRCh38.p12 | GRCh37.p13
-GENCODE | 31 | 19
-RefSeq | 2019-01-30 (interim_GRCh38.p12_top_level_2019-01-25.gff3) | 2015-01
+GENCODE | 37 | 19
+RefSeq | 2020-09-29 (GCF_000001405.39_GRCh38.p13_genomic.gff) | 2019-11-01 (GCF_000001405.25_GRCh37.p13_genomic.gff)
 Regulatory build | 1.0 | 1.0
 PolyPhen | 2.2.2 | 2.2.2
 SIFT | 5.2.2 | 5.2.2
-dbSNP | 151 | 151
-COSMIC | 88 | 86
-HGMD-PUBLIC | 2018.4 | 2017.4
-ClinVar | 2019-04 | 2018-10
+dbSNP | 154 | 153
+COSMIC | 92 | 90
+HGMD-PUBLIC | 2019.4 | 2019.4
+ClinVar | 	2020-08/2020-09 | 	2019-12
 1000 Genomes | Phase 3 (remapped) | Phase 3
 NHLBI-ESP | V2-SSA137 (remapped) | V2-SSA137
 gnomAD | r2.1, exomes only (remapped) | r2.1, exomes only
