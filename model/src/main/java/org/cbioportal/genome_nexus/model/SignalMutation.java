@@ -1,11 +1,13 @@
 package org.cbioportal.genome_nexus.model;
 
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
 @Document(collection = "signal.mutation")
+@CompoundIndex(def = "{'chromosome': 1, 'start_position': 1, 'end_position': 1}")
 public class SignalMutation {
     @Field("hugo_gene_symbol")
     private String hugoGeneSymbol;

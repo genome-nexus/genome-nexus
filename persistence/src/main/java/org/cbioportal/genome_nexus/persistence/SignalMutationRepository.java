@@ -1,7 +1,6 @@
 package org.cbioportal.genome_nexus.persistence;
 
 import org.cbioportal.genome_nexus.model.SignalMutation;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
