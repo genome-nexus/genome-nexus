@@ -50,24 +50,19 @@ public class SignalMutationServiceImpl implements SignalMutationService
     public List<SignalMutation> getSignalMutationsByHgvsg(String hgvsg) {
         GenomicLocation genomicLocation = this.notationConverter.hgvsgToGenomicLocation(hgvsg);
         GenomicVariant gv = GenomicVariantUtil.fromHgvs(hgvsg);
+
         if (genomicLocation == null) {
             return Collections.emptyList();
         }
         if (gv.getType() == GenomicVariant.Type.INDEL || gv.getType() == GenomicVariant.Type.DELETION) {
-            return this.signalMutationRepository.findByChromosomeAndStartPositionAndEndPositionAndVariantAllele(
-                genomicLocation.getChromosome(),
-                genomicLocation.getStart().longValue(),
-                genomicLocation.getEnd().longValue(),
-                genomicLocation.getVariantAllele()
-            );            
-        } else {
-            return this.signalMutationRepository.findByChromosomeAndStartPositionAndEndPositionAndReferenceAlleleAndVariantAllele(
-                genomicLocation.getChromosome(),
-                genomicLocation.getStart().longValue(),
-                genomicLocation.getEnd().longValue(),
-                genomicLocation.getReferenceAllele(),
-                genomicLocation.getVariantAllele()
+            return this.signalMutationRepository.findByChromosomeAndStartPositionAndEndPositionAndVariantAllele(	
+                genomicLocation.getChromosome(),	
+                genomicLocation.getStart().longValue(),	
+                genomicLocation.getEnd().longValue(),	
+                genomicLocation.getVariantAllele()	
             );
+        } else {
+            return this.getSignalMutations(genomicLocation);	
         }
     }
 
@@ -76,7 +71,6 @@ public class SignalMutationServiceImpl implements SignalMutationService
         if (genomicLocation == null) {
             return Collections.emptyList();
         }
-
         return this.signalMutationRepository.findByChromosomeAndStartPositionAndEndPositionAndReferenceAlleleAndVariantAllele(
             genomicLocation.getChromosome(),
             genomicLocation.getStart().longValue(),
