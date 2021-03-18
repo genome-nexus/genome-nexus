@@ -59,7 +59,8 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
         @Lazy PostTranslationalModificationService postTranslationalModificationService,
         @Lazy SignalMutationService signalMutationService,
-        @Lazy OncokbService oncokbService
+        @Lazy OncokbService oncokbService,
+        @Lazy ClinvarVariantAnnotationService clinvarVariantAnnotationService
     ) {
         super(
             cachedVariantRegionAnnotationFetcher,
@@ -71,7 +72,8 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
             variantAnnotationSummaryService,
             postTranslationalModificationService,
             signalMutationService,
-            oncokbService
+            oncokbService,
+            clinvarVariantAnnotationService
         );
     }
 }

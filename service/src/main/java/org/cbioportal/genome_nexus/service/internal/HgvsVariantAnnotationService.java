@@ -61,7 +61,8 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
         @Lazy PostTranslationalModificationService postTranslationalModificationService,
         @Lazy SignalMutationService signalMutationService,
-        @Lazy OncokbService oncokbService
+        @Lazy OncokbService oncokbService,
+        @Lazy ClinvarVariantAnnotationService clinvarVariantAnnotationService
     ) {
         super(
             cachedVariantAnnotationFetcher,
@@ -73,7 +74,8 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
             variantAnnotationSummaryService,
             postTranslationalModificationService,
             signalMutationService,
-            oncokbService
+            oncokbService,
+            clinvarVariantAnnotationService
         );
 
         this.notationConverter = notationConverter;

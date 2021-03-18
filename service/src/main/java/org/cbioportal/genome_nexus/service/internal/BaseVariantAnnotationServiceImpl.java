@@ -63,6 +63,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     private final PostTranslationalModificationService postTranslationalModificationService;
     private final SignalMutationService signalMutationService;
     private final OncokbService oncokbService;
+    private final ClinvarVariantAnnotationService clinvarVariantAnnotationService;
 
     public BaseVariantAnnotationServiceImpl(
         BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher,
@@ -74,7 +75,8 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         VariantAnnotationSummaryService variantAnnotationSummaryService,
         PostTranslationalModificationService postTranslationalModificationService,
         SignalMutationService signalMutationService,
-        OncokbService oncokbService
+        OncokbService oncokbService,
+        ClinvarVariantAnnotationService clinvarVariantAnnotationService
     ) {
         this.resourceFetcher = resourceFetcher;
         this.ensemblService = ensemblService;
@@ -86,6 +88,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         this.postTranslationalModificationService = postTranslationalModificationService;
         this.signalMutationService = signalMutationService;
         this.oncokbService = oncokbService;
+        this.clinvarVariantAnnotationService = clinvarVariantAnnotationService;
     }
 
     // Needs to be overridden to support normalizing variants
@@ -307,6 +310,13 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
                     variantAnnotationSummaryService,
                     oncokbToken
                 )
+            );
+        }
+
+        if (fields != null && fields.contains("clinvar"))
+        {
+            postEnrichmentService.registerEnricher(
+                new ClinvarVariantAnnotationEnricher("clinvar", clinvarVariantAnnotationService)
             );
         }
 

@@ -59,7 +59,8 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
         @Lazy PostTranslationalModificationService postTranslationalModificationService,
         @Lazy SignalMutationService signalMutationService,
-        @Lazy OncokbService oncokbService
+        @Lazy OncokbService oncokbService,
+        @Lazy ClinvarVariantAnnotationService clinvarVariantAnnotationService
     ) {
         super(
             cachedVariantIdAnnotationFetcher,
@@ -71,7 +72,8 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
             variantAnnotationSummaryService,
             postTranslationalModificationService,
             signalMutationService,
-            oncokbService
+            oncokbService,
+            clinvarVariantAnnotationService
         );
     }
 }
