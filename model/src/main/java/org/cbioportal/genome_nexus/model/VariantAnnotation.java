@@ -71,6 +71,7 @@ public class VariantAnnotation
     private HotspotAnnotation hotspotAnnotation;
     private PtmAnnotation ptmAnnotation;
     private OncokbAnnotation oncokbAnnotation;
+    private ClinvarAnnotation clinvarAnnotation;
     private VariantAnnotationSummary annotationSummary;
     private SignalAnnotation signalAnnotation;
     private String originalVariantQuery;
@@ -318,6 +319,14 @@ public class VariantAnnotation
 
     public void setOncokbAnnotation(OncokbAnnotation oncokbAnnotation) {
         this.oncokbAnnotation = oncokbAnnotation;
+    }
+
+    public ClinvarAnnotation getClinvarAnnotation() {
+        return clinvarAnnotation;
+    }
+
+    public void setClinvarAnnotation(ClinvarAnnotation clinvarAnnotation) {
+        this.clinvarAnnotation = clinvarAnnotation;
     }
 
     public void setSuccessfullyAnnotated(Boolean successfullyAnnotated) {
