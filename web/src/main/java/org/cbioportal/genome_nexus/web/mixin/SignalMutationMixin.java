@@ -38,6 +38,9 @@ public class SignalMutationMixin
     @ApiModelProperty("Penetrance")
     private String penetrance;
 
+    @ApiModelProperty("Number Of Germline Homozygous Per Variant")
+    private Integer overallNGermlineHomozygous;
+
     @ApiModelProperty("Counts by Tumor Type")
     private List<CountByTumorType> countsByTumorType;
 

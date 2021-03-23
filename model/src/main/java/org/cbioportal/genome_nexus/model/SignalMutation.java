@@ -36,6 +36,9 @@ public class SignalMutation {
     @Field("penetrance")
     private String penetrance;
 
+    @Field("n_germline_homozygous")
+    private Integer overallNumberOfGermlineHomozygous;
+    
     @Field("counts_by_tumor_type")
     private List<CountByTumorType> countsByTumorType;
 
@@ -148,6 +151,14 @@ public class SignalMutation {
 
     public void setPenetrance(String penetrance) {
         this.penetrance = penetrance;
+    }
+
+    public Integer getOverallNumberOfGermlineHomozygous() {
+        return overallNumberOfGermlineHomozygous;
+    }
+
+    public void setOverallNumberOfGermlineHomozygous(Integer overallNumberOfGermlineHomozygous) {
+        this.overallNumberOfGermlineHomozygous = overallNumberOfGermlineHomozygous;
     }
 
     public List<CountByTumorType> getCountsByTumorType() {
