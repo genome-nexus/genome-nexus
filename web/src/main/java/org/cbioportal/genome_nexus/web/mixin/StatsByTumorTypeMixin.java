@@ -25,9 +25,12 @@ public class StatsByTumorTypeMixin {
     @ApiModelProperty("Msi Score")
     private Double msiScore;
 
-    @ApiModelProperty("Number With Signature")
-    private Integer nWithSig;
+    @ApiModelProperty("Number of Variants with Signature")
+    private Integer numberWithSig;
 
     @ApiModelProperty("Hrd Score")
     private HrdScore hrdScore;
+
+    @ApiModelProperty("Number Of Germline Homozygous Per Tumor Type")
+    private Integer numberOfGermlineHomozygous;
 }

@@ -26,21 +26,24 @@ public class StatsByTumorType {
     private Double msiScore;
 
     @Field("n_with_sig")
-    private Integer nWithSig;
+    private Integer numberWithSig;
 
     @Field("hrd_score")
     private HrdScore hrdScore;
+
+    @Field("n_germline_homozygous")
+    private Integer numberOfGermlineHomozygous;
 
     public String getTumorType() {
         return tumorType;
     }
 
-    public Integer getNWithSig() {
-        return nWithSig;
+    public Integer getNumberWithSig() {
+        return numberWithSig;
     }
 
-    public void setNWithSig(Integer nWithSig) {
-        this.nWithSig = nWithSig;
+    public void setNumberWithSig(Integer numberWithSig) {
+        this.numberWithSig = numberWithSig;
     }
 
     public Double getMsiScore() {
@@ -103,5 +106,11 @@ public class StatsByTumorType {
         this.tumorType = tumorType;
     }
 
+    public Integer getNumberOfGermlineHomozygous() {
+        return numberOfGermlineHomozygous;
+    }
 
+    public void setNumberOfGermlineHomozygous(Integer numberOfGermlineHomozygous) {
+        this.numberOfGermlineHomozygous = numberOfGermlineHomozygous;
+    }
 }
