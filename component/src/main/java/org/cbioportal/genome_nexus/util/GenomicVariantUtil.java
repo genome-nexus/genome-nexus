@@ -138,6 +138,41 @@ public class GenomicVariantUtil {
         return Pattern.matches("^[\\w\\-\\./]+(\\.maf)|^[\\w\\-\\./]+(\\.tsv)|^[\\w\\-\\./]+(\\.txt)$$", file);
     }
 
+    // Hgvs formatted variants of several types are parsed for provided Reference Alleles
+    // empty string is returned if no reference allele can be extracted
+    public static String providedReferenceAlleleFromHgvs(String hgvs) {
+        // Substitutions require a single nucleotide reference sequence:
+        // 1g.123456A>G  (chromosome 1, genomic position 123456, reference sequence A, substituted with G)
+        // ref: http://varnomen.hgvs.org/recommendations/DNA/variant/substitution/
+        String match = getPattern("(?<=[^ATGC])[ATGC]>", hgvs);
+        if (match != null && match.trim().length() > 0) {
+            return match.substring(0, 1);
+        }
+        // Deletion-Insertions are recommended to *not* include specified deleted seqeunce/Reference Allele, but it is not prohibited.
+        // Examples showing specified deleted sequence/ReferenceAllele are mentioned here : http://varnomen.hgvs.org/recommendations/DNA/variant/delins/
+        // 1g.123456_123457delAAinsTT (chromosome 1, genomic positions 123456-123457, reference sequence AA deleted, sequence TT inserted in place)
+        // recommended representation omits the deleted nucleotides "1g.123456_123457delinsTT"
+        match = getPattern("del[ATGC]*ins", hgvs);
+        if (match != null && match.trim().length() > 0) {
+            return match.trim().substring(3, match.trim().length() - 3);
+        }
+        // Deletions are recommended to *not* include specified deleted seqeunce/Reference Allele, but it is not prohibited.
+        // An example showing a specified deletion is mentioned here : http://varnomen.hgvs.org/recommendations/DNA/variant/alleles/
+        // 1g.123456_123457delAA (chromosome 1, genomic positions 123456-123457, reference sequence AA deleted)
+        // recommended representation omits the deleted nucleotides "1g.123456_123457del"
+        match = getPattern("del[ATGC]*", hgvs);
+        if (match != null && match.trim().length() > 0) {
+            return match.trim().substring(3);
+        }
+        // Duplications are not supported by this system, but would be handled with logic similar to deletions
+        // Examples showing specified deleted sequence/ReferenceAllele are mentioned here : http://varnomen.hgvs.org/recommendations/DNA/variant/duplication/
+        // 1g.123456_123457dupAA (chromosome 1, genomic positions 123456-123457, reference sequence AA duplicated)
+        // Hgvs repeats and inversions are not supported by this system and this method does not attempt to parse these formats
+        //
+        // no reference allele was found
+        return "";
+    }
+
     // postcondition: returns a substring of hgvs that matched to the regex, or null if not matched
     private static String getPattern(String regex, String hgvs) {
         Pattern p = Pattern.compile(regex);

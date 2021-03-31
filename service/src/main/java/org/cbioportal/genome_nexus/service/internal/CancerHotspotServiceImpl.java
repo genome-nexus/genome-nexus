@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Memorial Sloan-Kettering Cancer Center.
+ * Copyright (c) 2016 - 2021 Memorial Sloan-Kettering Cancer Center.
  *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS
@@ -59,12 +59,12 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
 
     @Autowired
     public CancerHotspotServiceImpl(HotspotRepository hotspotRepository,
-                                    VariantAnnotationService hgvsVariantAnnotationService,
+                                    VariantAnnotationService verifiedHgvsVariantAnnotationService,
                                     HotspotFilter hotspotFilter,
                                     NotationConverter notationConverter)
     {
         this.hotspotRepository = hotspotRepository;
-        this.variantAnnotationService = hgvsVariantAnnotationService;
+        this.variantAnnotationService = verifiedHgvsVariantAnnotationService;
         this.hotspotFilter = hotspotFilter;
         this.notationConverter = notationConverter;
     }
@@ -97,16 +97,16 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     {
         return this.hotspotRepository.findAll();
     }
-   
+
     public List<AggregatedHotspots> getHotspotsByTranscriptIds(List<String> transcriptIds) throws CancerHotspotsWebServiceException
     {
         List<AggregatedHotspots> hotspots = new ArrayList<>();
         for (String transcriptId : transcriptIds) {
             AggregatedHotspots aggregatedHotspots = new AggregatedHotspots();
-            
+
             // add protein location information
             aggregatedHotspots.setTranscriptId(transcriptId);
-            
+
             // query hotspots service by protein location
             aggregatedHotspots.setHotspots(this.getHotspots(transcriptId));
             hotspots.add(aggregatedHotspots);
@@ -218,7 +218,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
             aggregatedHotspots.setHotspots(hotspotFilter.proteinLocationHotspotsFilter(this.getHotspots(proteinLocation.getTranscriptId()), proteinLocation));
             hotspots.add(aggregatedHotspots);
         }
-        
+
         return hotspots;
     }
 }
