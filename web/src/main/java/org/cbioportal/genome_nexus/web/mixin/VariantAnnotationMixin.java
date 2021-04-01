@@ -99,6 +99,10 @@ public class VariantAnnotationMixin {
     @ApiModelProperty(value = "My Variant Info Annotation", required = false)
     private MyVariantInfoAnnotation myVariantInfoAnnotation;
 
+    @JsonProperty(value="clinvar", required = true)
+    @ApiModelProperty(value = "ClinVar", required = false)
+    private ClinvarAnnotation clinvarAnnotation;
+
     @JsonIgnore
     private Map<String, Object> dynamicProps;
 
