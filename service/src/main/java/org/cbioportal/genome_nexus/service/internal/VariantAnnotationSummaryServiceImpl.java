@@ -3,12 +3,14 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.component.annotation.*;
 import org.cbioportal.genome_nexus.model.TranscriptConsequenceSummary;
 import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
+import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationSummaryService;
 import org.cbioportal.genome_nexus.service.annotation.EntrezGeneIdResolver;
+import org.cbioportal.genome_nexus.service.exception.EnsemblTranscriptNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -25,6 +27,7 @@ import java.util.Set;
 public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSummaryService
 {
     private final VariantAnnotationService variantAnnotationService;
+    private final EnsemblService ensemblService;
     private final CanonicalTranscriptResolver canonicalTranscriptResolver;
     private final CodonChangeResolver codonChangeResolver;
     private final AminoAcidsResolver aminoAcidsResolver;
@@ -44,6 +47,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     @Autowired
     public VariantAnnotationSummaryServiceImpl(
         VariantAnnotationService hgvsVariantAnnotationService,
+        EnsemblService ensemblService,
         CanonicalTranscriptResolver canonicalTranscriptResolver,
         AminoAcidsResolver aminoAcidsResolver,
         CodonChangeResolver codonChangeResolver,
@@ -61,6 +65,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         ExonResolver exonResolver
     ) {
         this.variantAnnotationService = hgvsVariantAnnotationService;
+        this.ensemblService = ensemblService;
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
         this.codonChangeResolver = codonChangeResolver;
         this.aminoAcidsResolver = aminoAcidsResolver;
@@ -230,6 +235,15 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setPolyphenScore(transcriptConsequence.getPolyphenScore());
             summary.setSiftPrediction(transcriptConsequence.getSiftPrediction());
             summary.setSiftScore(transcriptConsequence.getSiftScore());
+            if (transcriptConsequence.getTranscriptId() != null) {
+                try {
+                    EnsemblTranscript transcript = this.ensemblService.getEnsemblTranscriptsByTranscriptId(transcriptConsequence.getTranscriptId());
+                    summary.setUniprotId(transcript.getUniprotId());
+                } catch (EnsemblTranscriptNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
         }
 
         return summary;

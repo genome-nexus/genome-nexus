@@ -21,6 +21,7 @@ public class TranscriptConsequenceSummary
     private String polyphenPrediction;
     private Double siftScore;
     private String siftPrediction;
+    private String uniprotId;
 
     public String getTranscriptId() {
         return transcriptId;
@@ -172,5 +173,13 @@ public class TranscriptConsequenceSummary
 
     public void setSiftPrediction(String siftPrediction) {
         this.siftPrediction = siftPrediction; 
+    }
+
+    public String getUniprotId() {
+        return uniprotId;
+    }
+
+    public void setUniprotId(String uniprotId) {
+        this.uniprotId = uniprotId; 
     }
 }
