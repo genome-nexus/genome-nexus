@@ -238,7 +238,9 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             if (transcriptConsequence.getTranscriptId() != null) {
                 try {
                     EnsemblTranscript transcript = this.ensemblService.getEnsemblTranscriptsByTranscriptId(transcriptConsequence.getTranscriptId());
-                    summary.setUniprotId(transcript.getUniprotId());
+                    if (transcript != null) {
+                        summary.setUniprotId(transcript.getUniprotId());
+                    }
                 } catch (EnsemblTranscriptNotFoundException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
