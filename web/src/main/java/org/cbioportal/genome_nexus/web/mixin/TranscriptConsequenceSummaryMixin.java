@@ -62,4 +62,7 @@ public class TranscriptConsequenceSummaryMixin
 
     @ApiModelProperty(value = "Sift Prediction")
     private String siftPrediction;
+
+    @ApiModelProperty(value = "Uniprot ID")
+    private String uniprotId;
 }

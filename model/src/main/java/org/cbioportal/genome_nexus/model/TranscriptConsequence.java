@@ -63,6 +63,7 @@ public class TranscriptConsequence
     private Double siftScore;
     private String siftPrediction;
     private String exon;
+    private String uniprotId;
 
     private List<String> refseqTranscriptIds;
     private List<String> consequenceTerms;
@@ -275,6 +276,14 @@ public class TranscriptConsequence
     public void setExon(String exon)
     {
         this.exon = exon;
+    }
+
+    public String getUniprotId() {
+        return uniprotId;
+    }
+
+    public void setUniprotId(String uniprotId) {
+        this.uniprotId = uniprotId; 
     }
 
     @Field(value="refseq_transcript_ids")

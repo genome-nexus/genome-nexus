@@ -43,6 +43,9 @@ public class EnsemblTranscript
     @Field(value="utrs")
     private List<UntranslatedRegion> utrs;
 
+    @Field(value="uniprot_id")
+    private String uniprotId;
+
     public String getTranscriptId() {
         return transcriptId;
     }
@@ -121,6 +124,14 @@ public class EnsemblTranscript
 
     public void setUtrs(List<UntranslatedRegion> utrs) {
         this.utrs = utrs;
+    }
+
+    public String getUniprotId() {
+        return this.uniprotId;
+    }
+
+    public void setUniprotId(String uniprotId) {
+        this.uniprotId = uniprotId;
     }
 }
 
