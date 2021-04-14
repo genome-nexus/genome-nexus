@@ -31,4 +31,5 @@ public interface EnsemblService
     String getHugoSymbolByEntrezGeneId(String entrezGeneId);
 
     Set<String> getCanonicalTranscriptIdsBySource(String isoformOverrideSource);
+    String getUniprotId(String transcript);
 }

@@ -237,11 +237,11 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setSiftScore(transcriptConsequence.getSiftScore());
             if (transcriptConsequence.getTranscriptId() != null) {
                 try {
-                    EnsemblTranscript transcript = this.ensemblService.getEnsemblTranscriptsByTranscriptId(transcriptConsequence.getTranscriptId());
-                    if (transcript != null) {
-                        summary.setUniprotId(transcript.getUniprotId());
+                    String uniprotId = this.ensemblService.getUniprotId(transcriptConsequence.getTranscriptId());
+                    if (uniprotId != null) {
+                        summary.setUniprotId(uniprotId);
                     }
-                } catch (EnsemblTranscriptNotFoundException e) {
+                } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
