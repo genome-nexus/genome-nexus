@@ -1,6 +1,8 @@
 package org.cbioportal.genome_nexus.model;
 
 import java.util.List;
+
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -12,7 +14,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class EnsemblTranscript
 {
     public final static String TRANSCRIPT_ID_FIELD_NAME = "transcript_stable_id";
-
+    
+    @Indexed
     @Field(value=EnsemblTranscript.TRANSCRIPT_ID_FIELD_NAME)
     private String transcriptId;
 

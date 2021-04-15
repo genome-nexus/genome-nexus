@@ -9,21 +9,30 @@ import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForEntrezGen
 import org.cbioportal.genome_nexus.service.exception.NoEnsemblGeneIdForHugoSymbolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
 public class EnsemblServiceImpl implements EnsemblService
 {
     private final EnsemblRepository ensemblRepository;
+    private Map<String, String> transcriptToUniprotMap = new HashMap<>();
+    private static final Log LOG = LogFactory.getLog(SignalQueryServiceImpl.class);
 
     @Autowired
     public EnsemblServiceImpl(EnsemblRepository ensemblRepository)
     {
         this.ensemblRepository = ensemblRepository;
+        LOG.info("Building transcript to Uniprot id map");
+        this.transcriptToUniprotMap = this.buildMap();
+        LOG.info("Finished building transcript to Uniprot id map");
     }
 
     @Override
@@ -189,4 +198,19 @@ public class EnsemblServiceImpl implements EnsemblService
     public Set<String> getCanonicalTranscriptIdsBySource(String isoformOverrideSource) {
         return this.ensemblRepository.findCanonicalTranscriptIdsBySource(isoformOverrideSource);
     }
+
+    private Map<String, String> buildMap()
+    {
+        List<EnsemblTranscript> transcripts = this.ensemblRepository.findAll();
+        for (EnsemblTranscript transcript : transcripts) {
+            this.transcriptToUniprotMap.put(transcript.getTranscriptId(), transcript.getUniprotId());
+        }
+        return transcriptToUniprotMap;
+    }
+
+    public String getUniprotId(String transcript)
+    {
+        return this.transcriptToUniprotMap.get(transcript);
+    }
+
 }
