@@ -1,9 +1,11 @@
 package org.cbioportal.genome_nexus.model;
 
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection="clinvar.mutation")
+@CompoundIndex(def = "{'chromosome': 1, 'start_position': 1, 'end_position': 1}", name = "clinvar.mutation")
 public class Clinvar {
     @Field(value = "chromosome")
     private String chromosome;
