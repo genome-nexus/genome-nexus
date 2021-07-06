@@ -102,7 +102,7 @@
                 <artifactItem>
                   <groupId>com.github.genome-nexus</groupId>
                   <artifactId>genome-nexus-frontend</artifactId>
-                  <version>09eca959822966c3e2e8573af207174cddf5a57b</version>
+                  <version>764b1af42e6f8daab574bd2d88a1b06ca96b092f</version>
                   <type>jar</type>
                   <outputDirectory>src/main/resources/static</outputDirectory>
                   <overWrite>true</overWrite>
