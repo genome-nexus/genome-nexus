@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Memorial Sloan-Kettering Cancer Center.
+ * Copyright (c) 2015 - 2021 Memorial Sloan-Kettering Cancer Center.
  *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS
@@ -161,7 +161,9 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         }
 
         try {
-            return variantAnnotation.get();
+            VariantAnnotation returnValue = variantAnnotation.get();
+            returnValue.setOriginalVariantQuery(variant);
+            return returnValue;
         } catch (NoSuchElementException e) {
             throw new VariantAnnotationNotFoundException(normalizedVariant);
         }

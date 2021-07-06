@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 - 2021 Memorial Sloan-Kettering Cancer Center.
+ * Copyright (c) 2021 Memorial Sloan-Kettering Cancer Center.
  *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS
@@ -39,15 +39,18 @@ import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebService
 
 import java.util.*;
 
-/**
- * @author Benjamin Gross
- */
-public interface VariantAnnotationService
-{
-    VariantAnnotation getAnnotation(String variant)
-        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
-    List<VariantAnnotation> getAnnotations(List<String> variants);
-    VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<String> fields)
-        throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
-    List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<String> fields);
+public interface SelectedAnnotationService {
+
+    public VariantAnnotation getAnnotation(
+            String variant,
+            String isoformOverrideSource,
+            Map<String, String> token,
+            List<String> fields) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
+
+    public List<VariantAnnotation> getAnnotations(
+            List<String> variants,
+            String isoformOverrideSource,
+            Map<String, String> token,
+            List<String> fields) throws VariantAnnotationNotFoundException, VariantAnnotationQueryMixedFormatException, VariantAnnotationWebServiceException;
+
 }

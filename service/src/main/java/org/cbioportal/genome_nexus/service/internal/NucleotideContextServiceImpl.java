@@ -29,10 +29,10 @@ public class NucleotideContextServiceImpl implements NucleotideContextService
 
     @Autowired
     public NucleotideContextServiceImpl(CachedNucleotideContextFetcher cachedExternalResourceFetcher,
-                                       VariantAnnotationService hgvsVariantAnnotationService)
+                                       VariantAnnotationService verifiedHgvsVariantAnnotationService)
     {
         this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
-        this.variantAnnotationService = hgvsVariantAnnotationService;
+        this.variantAnnotationService = verifiedHgvsVariantAnnotationService;
     }
 
     /**

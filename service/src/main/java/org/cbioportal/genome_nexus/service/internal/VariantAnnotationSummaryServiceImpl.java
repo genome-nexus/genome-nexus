@@ -46,7 +46,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
 
     @Autowired
     public VariantAnnotationSummaryServiceImpl(
-        VariantAnnotationService hgvsVariantAnnotationService,
+        VariantAnnotationService verifiedHgvsVariantAnnotationService,
         EnsemblService ensemblService,
         CanonicalTranscriptResolver canonicalTranscriptResolver,
         AminoAcidsResolver aminoAcidsResolver,
@@ -64,7 +64,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         VariantTypeResolver variantTypeResolver,
         ExonResolver exonResolver
     ) {
-        this.variantAnnotationService = hgvsVariantAnnotationService;
+        this.variantAnnotationService = verifiedHgvsVariantAnnotationService;
         this.ensemblService = ensemblService;
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
         this.codonChangeResolver = codonChangeResolver;

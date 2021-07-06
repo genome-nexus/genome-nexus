@@ -136,7 +136,30 @@ public class AnnotationIntegrationTest
 
     }
 
-    @Test
+    // THIS TEST HAS BEEN DISABLED. Several things need to be worked out here.
+    // - the format of this query is erroneous. HGVS format for deletions no longer recommend specifying the referene allele nucleotides,
+    //   and additionally our code base has been altered to convert these request into the recommended format before sending, so the request
+    //   will be sent simply as "11:g.4967810del" which is a single nucleotide deletion. Additionally, even if the request to the ensembl
+    //   rest endpoint did include the reference allele, the ensembl service itself is ignoring the reference allele and only annotates
+    //   based on the genomic start and stop positions. This can be seen by making requests such as :
+    //       - 11:g.4967810delT
+    //       - 11:g.4967810delTT
+    //       - 11:g.4967810delTTT
+    //   all of these come back annotated as a single nucleotide deletion. To annotate a long deletion, the end position must also be given
+    //   such as 11:g.4967810_4976423del for a 8614 nucleotide deletion. The reference allele *could* be specified in the (no longer
+    //   recommended) fully specified format.
+    // - if the format is adjusted to properly specify a 8614 nucleotide deletion, the ensembl vep annotation endpoint is failing to annotate
+    //   this long deletion. This request: https://rest.ensembl.org/vep/human/hgvs/11:g.4967810_4976423del?content-type=application/json
+    //   leads to this response : {"error":"Unable to parse HGVS notation '11:g.4967810_4976423del': Region requested must be smaller than 5kb"}
+    //   so this integration test cannot be passed using the ensembl rest api endpoint (unless we choose to adopt the expectation that requests
+    //   5kb or longer fail)
+    // - when genome-nexus is deployed using a local instance of the vep command line tool (from repo genome-nexus-vep), queries are first
+    //   converted to ensembl rest-like region format. So this query will be converted to "11:4967811-4976423:1/-". It has been verified that
+    //   the ensembl public vep region endpoint will respond appropriately to this query, and our local deployment of genome-nexus-vep
+    //   command line tool will also respond appropriately. However, there is currently a bug in the conversion code which instead converts
+    //   the request into a request which is a zero-lengh insert at the start position: "11:4967811-4967810:1/-", so this alternate mode for
+    //   querying a long deletion is not even possible.
+    //@Test
     public void testLongDeletion()
     {
         String[] variants = {

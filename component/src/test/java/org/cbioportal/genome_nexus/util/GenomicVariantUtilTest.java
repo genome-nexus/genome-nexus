@@ -2,7 +2,7 @@ package org.cbioportal.genome_nexus.util;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import org.junit.Test;
 
@@ -186,4 +186,46 @@ public class GenomicVariantUtilTest {
         assertEquals("G", two.getRef());
         assertEquals("T", two.getAlt());
     }
+
+    @Test
+    public void testProvidedReferenceAlleleFromHgvs() {
+        // The tested function only extracts specified reference alleles. Position ranges are not examined for correct count.
+        String NONE = "";
+        LinkedHashMap<String, String> testCases = new LinkedHashMap<String, String>();
+        // Substitution cases
+        testCases.put("1g.1A>G", "A");
+        testCases.put("1g.1T>G", "T");
+        testCases.put("1g.1C>G", "C");
+        testCases.put("1g.1G>G", "G");
+        testCases.put("1g.1G>G ", "G"); // trailing whitespace is acceptable
+        testCases.put("1g.1C>", "C"); // reference allele was specified, even if required tumor seq allele was missing
+        testCases.put("1g.1AA>G", NONE); // too many nucleotides in reference allele
+        testCases.put("1g.1>G", NONE); // reference allele missing
+        testCases.put("1g.1>", NONE); // both alleles missing
+        // Deletion-Insertion cases
+        testCases.put("1g.1delinsT", NONE);
+        testCases.put("1g.1delinsT ", NONE);
+        testCases.put("1g.1delAinsT", "A");
+        testCases.put("1g.1delAinsT ", "A");
+        testCases.put("1g.1delAins", "A"); // tumor seq allele
+        testCases.put("1g.1insTdelA", "A"); // although order of ins-del is invalid, the specified reference allele is returned
+        testCases.put("1g.1_2delAAinsTT", "AA");
+        testCases.put("1g.1_3delAAAinsT", "AAA");
+        testCases.put("1g.1_2delinsTT", NONE);
+        testCases.put("1g.1_2delAinsTT", "A"); // although nucleotide count does not match reference allele size, the tested function will extract the specified Reference Allele
+        testCases.put("1g.1delAAinsTT", "AA"); // although nucleotide count does not match reference allele size, the tested function will extract the specified Reference Allele
+        // Deletion cases
+        testCases.put("1g.1del", NONE);
+        testCases.put("1g.1del ", NONE);
+        testCases.put("1g.1delA", "A");
+        testCases.put("1g.1delA ", "A");
+        testCases.put("1g.1_2delAA", "AA");
+        testCases.put("1g.1_3delAAA", "AAA");
+        testCases.put("1g.1_2del", NONE);
+        testCases.put("1g.1_2delA", "A");
+        testCases.put("1g.1delAA", "AA");
+        // if supported, duplication cases would have the same rules / test cases as deletion
+        testCases.forEach((hgvs, expectedValue) -> assertEquals("for test case " + hgvs, expectedValue, GenomicVariantUtil.providedReferenceAlleleFromHgvs(hgvs)));
+    }
+
 }
