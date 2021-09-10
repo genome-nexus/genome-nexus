@@ -1,6 +1,7 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -102,25 +103,25 @@ public class MyVariantInfoServiceImpl implements MyVariantInfoService
     public MyVariantInfo getMyVariantInfoByMyVariantInfoVariant(String variant)
         throws MyVariantInfoNotFoundException, MyVariantInfoWebServiceException
     {
-        Optional<MyVariantInfo> myVariantInfo = null;
-
         try {
             // get the annotation from the web service and save it to the DB
-            myVariantInfo = Optional.ofNullable(cachedExternalResourceFetcher.fetchAndCache(variant));
-            // manually set the original hgvs variant field
-            myVariantInfo.ifPresent(m -> m.setHgvs(variant));
+            List<MyVariantInfo> myVariantInfoList = cachedExternalResourceFetcher.fetchAndCache(Arrays.asList(variant));
+            // One variant was sent for My Variant Info annotation, return should have only one annotation result if available
+            if (myVariantInfoList.size() == 1) {
+                // manually set the original hgvs variant field
+                MyVariantInfo myVariantInfo = myVariantInfoList.get(0);
+                myVariantInfo.setHgvs(variant);
+                return myVariantInfo;
+            }
+            else {
+                throw new MyVariantInfoNotFoundException(variant);
+            }
         } catch (ResourceMappingException e) {
             throw new MyVariantInfoWebServiceException(e.getMessage());
         } catch (HttpClientErrorException e) {
             throw new MyVariantInfoWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
         } catch (ResourceAccessException e) {
             throw new MyVariantInfoWebServiceException(e.getMessage());
-        }
-
-        try {
-            return myVariantInfo.get();
-        } catch (NoSuchElementException e) {
-            throw new MyVariantInfoNotFoundException(variant);
         }
     }
 
