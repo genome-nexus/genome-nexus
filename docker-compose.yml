@@ -27,4 +27,4 @@ services:
     ports:
       - "6060:8080"
     volumes:
-      - ${VEP_CACHE}:/opt/vep/.vep/:ro
+      - ${VEP_CACHE}:/opt/vep/.vep/

@@ -88,7 +88,7 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     public VariantAnnotation getAnnotation(GenomicLocation genomicLocation)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(this.notationConverter.genomicToEnsemblRestRegion(genomicLocation));
+        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(this.genomicLocationToVariantFormat.convert(genomicLocation));
         genomicLocation.setOriginalInput(genomicLocation.toString());
         variantAnnotation.setOriginalVariantQuery(genomicLocation.getOriginalInput());
         return variantAnnotation;
@@ -109,7 +109,7 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
         Map<String, String> convertedVarsToOrigVarQueryMap = mapConvertedVarsToOrigVarQuery(genomicLocations);
         List<VariantAnnotation> variantAnnotations = new ArrayList<>();
         this.variantAnnotationService.getAnnotations(
-                this.notationConverter.genomicToEnsemblRestRegion(genomicLocations)
+                this.genomicLocationsToVariantFormats.convert(genomicLocations)
         ).stream().map((a) -> {
             a.setOriginalVariantQuery(convertedVarsToOrigVarQueryMap.get(a.getVariant()));
             return a;
