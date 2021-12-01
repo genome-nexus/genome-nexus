@@ -34,7 +34,10 @@ package org.cbioportal.genome_nexus.service.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cbioportal.genome_nexus.component.annotation.IndexResolver;
+import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
 import org.cbioportal.genome_nexus.model.*;
+import org.cbioportal.genome_nexus.persistence.IndexRepository;
 import org.cbioportal.genome_nexus.persistence.VariantAnnotationRepository;
 import org.cbioportal.genome_nexus.service.*;
 
@@ -48,6 +51,10 @@ import org.springframework.web.client.ResourceAccessException;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 
 public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotationService
 {
@@ -64,6 +71,8 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     private final SignalMutationService signalMutationService;
     private final OncokbService oncokbService;
     private final ClinvarVariantAnnotationService clinvarVariantAnnotationService;
+    private final IndexRepository indexRepository;
+    private final ProteinChangeResolver proteinChangeResolver;
 
     public BaseVariantAnnotationServiceImpl(
         BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher,
@@ -76,7 +85,9 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         PostTranslationalModificationService postTranslationalModificationService,
         SignalMutationService signalMutationService,
         OncokbService oncokbService,
-        ClinvarVariantAnnotationService clinvarVariantAnnotationService
+        ClinvarVariantAnnotationService clinvarVariantAnnotationService,
+        IndexRepository indexRepository,
+        ProteinChangeResolver proteinChangeResolver
     ) {
         this.resourceFetcher = resourceFetcher;
         this.ensemblService = ensemblService;
@@ -89,12 +100,19 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         this.signalMutationService = signalMutationService;
         this.oncokbService = oncokbService;
         this.clinvarVariantAnnotationService = clinvarVariantAnnotationService;
+        this.indexRepository = indexRepository;
+        this.proteinChangeResolver = proteinChangeResolver;
     }
 
     // Needs to be overridden to support normalizing variants
     protected String normalizeVariant(String id)
     {
         return id;
+    }
+
+    private Index extractIndex(VariantAnnotation variantAnnotation) {
+        IndexResolver resolver = new IndexResolver(this.proteinChangeResolver);
+        return resolver.resolve(variantAnnotation);
     }
 
     @Override
@@ -143,7 +161,14 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         try {
             // get the annotation from the web service and save it to the DB
             variantAnnotation = Optional.ofNullable(this.resourceFetcher.fetchAndCache(normalizedVariant));
-
+            
+            // add new annotation to index db
+            variantAnnotation.ifPresent(annotation -> {
+                Gson gson = new Gson();
+                DBObject dbObject = BasicDBObject.parse(gson.toJson(this.extractIndex(annotation)));
+                this.indexRepository.saveDBObject("index", normalizedVariant, dbObject);
+            });
+    
             // include original variant value too
             variantAnnotation.ifPresent(x -> x.setVariant(normalizedVariant));
         }
@@ -181,6 +206,11 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
             // get the annotations from the web service and save it to the DB
             variantAnnotations = this.resourceFetcher.fetchAndCache(new ArrayList(normVarToOrigVarQueryMap.keySet()));
             for (VariantAnnotation variantAnnotation : variantAnnotations) {
+                // add new annotation to index db
+                Gson gson = new Gson();
+                DBObject dbObject = BasicDBObject.parse(gson.toJson(this.extractIndex(variantAnnotation)));
+                this.indexRepository.saveDBObject("index", normVarToOrigVarQueryMap.get(variantAnnotation.getVariant()), dbObject);
+                
                 variantAnnotation.setOriginalVariantQuery(normVarToOrigVarQueryMap.get(variantAnnotation.getVariant()));
             }
         } catch (HttpClientErrorException e) {

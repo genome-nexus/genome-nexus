@@ -34,6 +34,8 @@ package org.cbioportal.genome_nexus.service.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
+import org.cbioportal.genome_nexus.persistence.IndexRepository;
 import org.cbioportal.genome_nexus.service.*;
 
 import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
@@ -60,7 +62,9 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
         @Lazy PostTranslationalModificationService postTranslationalModificationService,
         @Lazy SignalMutationService signalMutationService,
         @Lazy OncokbService oncokbService,
-        @Lazy ClinvarVariantAnnotationService clinvarVariantAnnotationService
+        @Lazy ClinvarVariantAnnotationService clinvarVariantAnnotationService,
+        IndexRepository indexRepository,
+        ProteinChangeResolver proteinChangeResolver
     ) {
         super(
             cachedVariantIdAnnotationFetcher,
@@ -73,7 +77,9 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
             postTranslationalModificationService,
             signalMutationService,
             oncokbService,
-            clinvarVariantAnnotationService
+            clinvarVariantAnnotationService,
+            indexRepository,
+            proteinChangeResolver
         );
     }
 }

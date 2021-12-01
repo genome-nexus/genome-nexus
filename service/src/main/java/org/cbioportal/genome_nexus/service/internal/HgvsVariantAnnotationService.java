@@ -36,6 +36,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.service.*;
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
+import org.cbioportal.genome_nexus.persistence.IndexRepository;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -62,7 +64,9 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
         @Lazy PostTranslationalModificationService postTranslationalModificationService,
         @Lazy SignalMutationService signalMutationService,
         @Lazy OncokbService oncokbService,
-        @Lazy ClinvarVariantAnnotationService clinvarVariantAnnotationService
+        @Lazy ClinvarVariantAnnotationService clinvarVariantAnnotationService,
+        IndexRepository indexRepository,
+        ProteinChangeResolver proteinChangeResolver
     ) {
         super(
             cachedVariantAnnotationFetcher,
@@ -75,7 +79,9 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
             postTranslationalModificationService,
             signalMutationService,
             oncokbService,
-            clinvarVariantAnnotationService
+            clinvarVariantAnnotationService,
+            indexRepository,
+            proteinChangeResolver
         );
 
         this.notationConverter = notationConverter;
