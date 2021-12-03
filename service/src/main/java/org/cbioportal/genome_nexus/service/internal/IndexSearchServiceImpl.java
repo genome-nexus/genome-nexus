@@ -80,7 +80,7 @@ public class IndexSearchServiceImpl implements IndexSearchService{
         Index index = this.indexRepository.findByVariant(queryString);
         IndexSearch query = new IndexSearch();
         query.setQueryType(IndexSearchType.HGVSG);
-        query.setIndexes(Arrays.asList(index));
+        query.setResults(Arrays.asList(index));
 
         return Arrays.asList(query); 
     }
@@ -91,7 +91,7 @@ public class IndexSearchServiceImpl implements IndexSearchService{
         List<Index> indexes = this.indexRepository.findByHgvsc(queryString);
         IndexSearch query = new IndexSearch();
         query.setQueryType(IndexSearchType.HGVSG);
-        query.setIndexes(indexes);
+        query.setResults(indexes);
 
         return Arrays.asList(query); 
     }
@@ -106,7 +106,7 @@ public class IndexSearchServiceImpl implements IndexSearchService{
         List<Index> indexes = this.indexRepository.findByHugoSymbolAndHgvspShort(geneSymbol, hgvspShort);
         IndexSearch query = new IndexSearch();
         query.setQueryType(IndexSearchType.GENE_HGVSPSHORT);
-        query.setIndexes(indexes);
+        query.setResults(indexes);
 
         return Arrays.asList(query); 
     }
@@ -121,7 +121,7 @@ public class IndexSearchServiceImpl implements IndexSearchService{
         List<Index> indexes = this.indexRepository.findByHugoSymbolAndCdna(geneSymbol, cdna);
         IndexSearch query = new IndexSearch();
         query.setQueryType(IndexSearchType.GENE_CDNA);
-        query.setIndexes(indexes);
+        query.setResults(indexes);
 
         return Arrays.asList(query); 
     }
@@ -136,7 +136,7 @@ public class IndexSearchServiceImpl implements IndexSearchService{
         List<Index> indexes = this.indexRepository.findByHugoSymbolAndHgvsp(geneSymbol, hgvsp);
         IndexSearch query = new IndexSearch();
         query.setQueryType(IndexSearchType.GENE_HGVSP);
-        query.setIndexes(indexes);
+        query.setResults(indexes);
 
         return Arrays.asList(query); 
     }

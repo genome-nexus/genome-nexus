@@ -16,18 +16,18 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins="*")
 @RequestMapping(value= "/")
-@Api(tags = "Index-search-controller", description = "Index Search Controller")
-public class IndexSearchController {
+@Api(tags = "search-controller", description = "Search Controller")
+public class SearchController {
     private final IndexSearchService indexSearchService;
 
     @Autowired
-    public IndexSearchController(IndexSearchService indexSearchService)
+    public SearchController(IndexSearchService indexSearchService)
     {
         this.indexSearchService = indexSearchService;
     }
 
     @ApiOperation(value = "Performs index search.")
-    @RequestMapping(value = "/index/search",
+    @RequestMapping(value = "/search",
         method = RequestMethod.GET,
         produces = "application/json")
     public List<IndexSearch> searchAnnotationByKeywordGET(

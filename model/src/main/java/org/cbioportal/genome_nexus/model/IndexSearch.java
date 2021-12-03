@@ -5,7 +5,7 @@ import java.util.List;
 public class IndexSearch {
 
     private IndexSearchType queryType;
-    private List<Index> indexes;
+    private List<Index> results;
 
     public IndexSearchType getQueryType() {
         return queryType;
@@ -15,11 +15,11 @@ public class IndexSearch {
         this.queryType = queryType;
     }
 
-    public List<Index> getIndexes() {
-        return indexes;
+    public List<Index> getResults() {
+        return results;
     }
 
-    public void setIndexes(List<Index> indexes) {
-        this.indexes = indexes;
+    public void setResults(List<Index> results) {
+        this.results = results;
     }
 }
