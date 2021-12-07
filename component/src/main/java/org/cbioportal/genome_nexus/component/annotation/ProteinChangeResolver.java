@@ -8,9 +8,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Component
 public class ProteinChangeResolver
@@ -258,6 +260,91 @@ public class ProteinChangeResolver
     }
 
     @Nullable
+    public List<String> resolveAllHgvsp(VariantAnnotation variantAnnotation)
+    {
+        List<String> hgvsp = null;
+
+        if (variantAnnotation != null &&
+            variantAnnotation.getTranscriptConsequences() != null &&
+            variantAnnotation.getTranscriptConsequences().size() > 0)
+        {
+            Set<String> hgvspSet = new HashSet<>();
+            for (TranscriptConsequence transcriptConsequence : variantAnnotation.getTranscriptConsequences()) {
+                if (transcriptConsequence.getHgvsp() != null) {
+                    hgvspSet.add(transcriptConsequence.getHgvsp());
+                }
+            }
+            hgvsp = hgvspSet.stream().collect(Collectors.toList());
+        }
+
+        return hgvsp;
+    }
+
+    @Nullable
+    public List<String> resolveAllHgvsc(VariantAnnotation variantAnnotation)
+    {
+        List<String> hgvsc = null;
+
+        if (variantAnnotation != null &&
+            variantAnnotation.getTranscriptConsequences() != null &&
+            variantAnnotation.getTranscriptConsequences().size() > 0)
+        {
+            Set<String> hgvscSet = new HashSet<>();
+            for (TranscriptConsequence transcriptConsequence : variantAnnotation.getTranscriptConsequences()) {
+                if (transcriptConsequence.getHgvsc() != null) {
+                    hgvscSet.add(transcriptConsequence.getHgvsc());
+                }
+            }
+            hgvsc = hgvscSet.stream().collect(Collectors.toList());
+        }
+
+        return hgvsc;
+    }
+
+    @Nullable
+    public List<String> resolveAllHgvspShort(VariantAnnotation variantAnnotation)
+    {
+        List<String> hgvspShort = null;
+
+        if (variantAnnotation != null &&
+            variantAnnotation.getTranscriptConsequences() != null &&
+            variantAnnotation.getTranscriptConsequences().size() > 0)
+        {
+            Set<String> hgvspShortSet = new HashSet<>();
+            for (TranscriptConsequence transcriptConsequence : variantAnnotation.getTranscriptConsequences()) {
+                String hgvspShortResult = this.resolveHgvspShort(variantAnnotation, transcriptConsequence);
+                if (hgvspShortResult != null) {
+                    hgvspShortSet.add(hgvspShortResult);
+                }
+            }
+            hgvspShort = hgvspShortSet.stream().collect(Collectors.toList());
+        }
+
+        return hgvspShort;
+    }
+
+    @Nullable
+    public List<String> resolveAllCdna(VariantAnnotation variantAnnotation)
+    {
+        List<String> cdna = null;
+
+        if (variantAnnotation != null &&
+            variantAnnotation.getTranscriptConsequences() != null &&
+            variantAnnotation.getTranscriptConsequences().size() > 0)
+        {
+            Set<String> cdnaSet = new HashSet<>();
+            for (TranscriptConsequence transcriptConsequence : variantAnnotation.getTranscriptConsequences()) {
+                if (transcriptConsequence.getHgvsc() != null && transcriptConsequence.getHgvsc().contains(":c.")) {
+                    cdnaSet.add(transcriptConsequence.getHgvsc().split(":")[1]);
+                }
+            }
+            cdna = cdnaSet.stream().collect(Collectors.toList());
+        }
+
+        return cdna;
+    }
+
+    @Nullable
     private String normalizeHgvsp(String hgvsp)
     {
         if (hgvsp == null) {
@@ -273,4 +360,6 @@ public class ProteinChangeResolver
             return hgvsp.substring(index+1);
         }
     }
+
+    
 }

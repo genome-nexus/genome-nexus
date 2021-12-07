@@ -34,6 +34,7 @@ package org.cbioportal.genome_nexus.service.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cbioportal.genome_nexus.component.annotation.HugoGeneSymbolResolver;
 import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
 import org.cbioportal.genome_nexus.persistence.IndexRepository;
 import org.cbioportal.genome_nexus.service.*;
@@ -64,7 +65,8 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
         @Lazy OncokbService oncokbService,
         @Lazy ClinvarVariantAnnotationService clinvarVariantAnnotationService,
         IndexRepository indexRepository,
-        ProteinChangeResolver proteinChangeResolver
+        ProteinChangeResolver proteinChangeResolver,
+        HugoGeneSymbolResolver hugoGeneSymbolResolver
     ) {
         super(
             cachedVariantRegionAnnotationFetcher,
@@ -79,7 +81,8 @@ public class RegionVariantAnnotationService extends BaseVariantAnnotationService
             oncokbService,
             clinvarVariantAnnotationService,
             indexRepository,
-            proteinChangeResolver
+            proteinChangeResolver,
+            hugoGeneSymbolResolver
         );
     }
 }
