@@ -69,12 +69,6 @@ public class GlobalExceptionHandler
         return new ResponseEntity<>(new ErrorResponse(ex.getResponseBody()), ex.getStatusCode());
     }
 
-    @ExceptionHandler(IsoformOverrideNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleIsoformOverrideNotFound(IsoformOverrideNotFoundException ex)
-    {
-        return new ResponseEntity<>(new ErrorResponse(ex.getLocalizedMessage()), HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(CuriousCasesNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleCuriousCasesNotFound(CuriousCasesNotFoundException ex)
     {
