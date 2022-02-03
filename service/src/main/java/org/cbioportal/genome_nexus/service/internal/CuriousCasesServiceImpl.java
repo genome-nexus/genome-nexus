@@ -41,7 +41,7 @@ public class CuriousCasesServiceImpl implements CuriousCasesService {
                 CuriousCases.setGenomicLocation(genomicLocation);
                 return CuriousCases;
             } else {
-                throw new CuriousCasesNotFoundException(genomicLocation);
+                return null;
             }
         } catch (HttpClientErrorException e) {
             // in case of web service error, throw an exception to indicate that there is a
