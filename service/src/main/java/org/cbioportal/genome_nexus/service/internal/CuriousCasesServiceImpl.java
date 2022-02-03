@@ -25,8 +25,8 @@ public class CuriousCasesServiceImpl implements CuriousCasesService {
     private final GenomicLocationAnnotationService genomicLocationAnnotationService;
 
     @Autowired
-    public CuriousCasesServiceImpl(GenomicLocationAnnotationService genomicLocationAnnotationService) {
-        this.genomicLocationAnnotationService = genomicLocationAnnotationService;
+    public CuriousCasesServiceImpl(GenomicLocationAnnotationService genomicLocationAnnotationServiceImpl) {
+        this.genomicLocationAnnotationService = genomicLocationAnnotationServiceImpl;
     }
 
     @Override
