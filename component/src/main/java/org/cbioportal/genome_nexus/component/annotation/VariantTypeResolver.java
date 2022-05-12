@@ -48,7 +48,7 @@ public class VariantTypeResolver
                 return null;
             }
 
-            return refLength < 3 ? npType[refLength - 1] : "ONP";
+            return refLength <= 3 ? npType[refLength - 1] : "ONP";
         }
         else {
             return refLength < varLength ? "INS" : "DEL";

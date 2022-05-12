@@ -170,5 +170,17 @@ public class VariantTypeResolverTest
             "DEL",
             this.variantTypeResolver.resolve(variantMockData.get("22:g.36689419_36689421del"))
         );
+        // allele_string: "TTC/AAA" => expected: TNP
+        assertEquals(
+            "Variant type for 13:g.48954120_48954122delinsAAA should be TNP",
+            "TNP",
+            this.variantTypeResolver.resolve(variantMockData.get("13:g.48954120_48954122delinsAAA"))
+        );
+        // allele_string: "TGAG/AACT" => expected: ONP
+        assertEquals(
+            "Variant type for 10:g.8100129_8100132delinsAACT should be ONP",
+            "ONP",
+            this.variantTypeResolver.resolve(variantMockData.get("10:g.8100129_8100132delinsAACT"))
+        );
     }
 }
