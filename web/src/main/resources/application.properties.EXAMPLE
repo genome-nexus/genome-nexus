@@ -14,6 +14,8 @@ vep.max_page_size=200
 # This is only the VEP part of the Ensembl REST API.
 # e.g. when running on port 6060:
 # gn_vep.region.url=http://localhost:6060/vep/human/region/VARIANT
+# gn_vep.cache.version=
+# gn_vep.server.version=
 # Note that this overrides vep.url
 # To get the full advantage of running your own VEP, several optimizations are
 # required, please read documentation in
@@ -44,6 +46,7 @@ spring.data.mongodb.uri=mongodb://127.0.0.1:27017/annotator
 # Server port number for the embedded tomcat. This property is required only when building
 # a jar file, and ignored when building a war file.
 server.port=38080
+genomenexus.server.version=1.0.2
 
 # For testing use same embeded mongo version as genome-nexus-importer
 # https://github.com/genome-nexus/genome-nexus-importer/blob/master/Dockerfile#L1
