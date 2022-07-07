@@ -47,6 +47,7 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
+import java.util.function.Function;
 
 @Service
 public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnnotationService
@@ -58,6 +59,7 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     private final VariantAnnotationService variantAnnotationService;
     private final GenomicLocationToVariantFormat genomicLocationToVariantFormat;
     private final GenomicLocationStringToVariantFormat genomicLocationStringToVariantFormat;
+
     private final GenomicLocationsToVariantFormats genomicLocationsToVariantFormats;
 
     @Autowired
@@ -207,5 +209,9 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     @FunctionalInterface
     private static interface GenomicLocationsToVariantFormats {
         List<String> convert(List<GenomicLocation> genomicLocation);
+    }
+
+    public Function<GenomicLocation, String> getGenomicLocationToVariantFormat() {
+        return genomicLocationToVariantFormat::convert;
     }
 }

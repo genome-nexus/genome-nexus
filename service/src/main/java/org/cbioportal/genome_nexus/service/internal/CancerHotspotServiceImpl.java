@@ -36,8 +36,8 @@ import org.cbioportal.genome_nexus.component.annotation.HotspotFilter;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.persistence.HotspotRepository;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
+import org.cbioportal.genome_nexus.service.GenomicLocationAnnotationService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
-import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -45,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author Selcuk Onur Sumer
@@ -52,21 +53,23 @@ import java.util.*;
 @Service
 public class CancerHotspotServiceImpl implements CancerHotspotService
 {
+
     private final HotspotRepository hotspotRepository;
     private final VariantAnnotationService variantAnnotationService;
     private final HotspotFilter hotspotFilter;
-    private final NotationConverter notationConverter;
+
+    private final GenomicLocationAnnotationService genomicLocationAnnotationService;
 
     @Autowired
     public CancerHotspotServiceImpl(HotspotRepository hotspotRepository,
                                     VariantAnnotationService verifiedHgvsVariantAnnotationService,
-                                    HotspotFilter hotspotFilter,
-                                    NotationConverter notationConverter)
+                                    GenomicLocationAnnotationService verifiedGenomicLocationAnnotationServiceImpl,
+                                    HotspotFilter hotspotFilter)
     {
         this.hotspotRepository = hotspotRepository;
         this.variantAnnotationService = verifiedHgvsVariantAnnotationService;
+        this.genomicLocationAnnotationService = verifiedGenomicLocationAnnotationServiceImpl;
         this.hotspotFilter = hotspotFilter;
-        this.notationConverter = notationConverter;
     }
 
     @Override
@@ -156,25 +159,29 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
     {
-        GenomicLocation location = this.notationConverter.parseGenomicLocation(genomicLocation);
-
-        return this.getHotspotAnnotationsByVariant(this.notationConverter.genomicToHgvs(location));
+        VariantAnnotation variantAnnotation = genomicLocationAnnotationService.getAnnotation(genomicLocation);
+        return this.getHotspotAnnotations(variantAnnotation);
     }
 
     @Override
     public List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations)
         throws CancerHotspotsWebServiceException
     {
-        // convert genomic location to hgvs notation (there is always 1-1 mapping)
-        Map<String, GenomicLocation> variantToGenomicLocation = notationConverter.genomicToHgvsMap(genomicLocations);
+        List<VariantAnnotation> variantAnnotations = this.genomicLocationAnnotationService.getAnnotations(genomicLocations);
 
-        // query hotspots service by variant
-        List<AggregatedHotspots> hotspots = this.getHotspotAnnotationsByVariants(
-            new ArrayList<>(variantToGenomicLocation.keySet()));
-
-        // add genomic location info too
-        for (AggregatedHotspots aggregatedHotspots: hotspots) {
-            aggregatedHotspots.setGenomicLocation(variantToGenomicLocation.get(aggregatedHotspots.getVariant()));
+        Function<GenomicLocation, String> genomicLocationToVariantFormat = this.genomicLocationAnnotationService.getGenomicLocationToVariantFormat();
+        Map<String, GenomicLocation> variantToGenomicLocation = new HashMap<>();
+        for (GenomicLocation genomicLocation: genomicLocations) {
+            variantToGenomicLocation.put(genomicLocationToVariantFormat.apply(genomicLocation), genomicLocation);
+        }
+        List<AggregatedHotspots> hotspots = new ArrayList<>();
+        for (VariantAnnotation variantAnnotation : variantAnnotations)
+        {
+            AggregatedHotspots aggregatedHotspots = new AggregatedHotspots();
+            aggregatedHotspots.setHotspots(this.getHotspotAnnotations(variantAnnotation));
+            aggregatedHotspots.setVariant(variantAnnotation.getVariant());
+            aggregatedHotspots.setGenomicLocation(variantToGenomicLocation.get(variantAnnotation.getVariant()));
+            hotspots.add(aggregatedHotspots);
         }
 
         return hotspots;

@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
+import java.util.function.Function;
 
 @Service
 public class VerifiedGenomicLocationAnnotationServiceImpl implements GenomicLocationAnnotationService
@@ -119,6 +120,11 @@ public class VerifiedGenomicLocationAnnotationServiceImpl implements GenomicLoca
             annotations.set(index, verifiedAnnotation);
         }
         return annotations;
+    }
+
+    @Override
+    public Function<GenomicLocation, String> getGenomicLocationToVariantFormat() {
+        return genomicLocationAnnotationService.getGenomicLocationToVariantFormat();
     }
 
     private VariantAnnotation verifyOrFailAnnotation(VariantAnnotation annotation)
