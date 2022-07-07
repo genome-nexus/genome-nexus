@@ -180,9 +180,9 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 // get the raw annotation string from the web service
                 rawValue = this.fetcher.fetchRawValue(this.buildRequestBody(subSet));
             } catch (HttpClientErrorException e) {
-                LOG.error("HTTP ERROR " + e.getStatusCode() + " for " + subSet.toString() + ": " + e.getResponseBodyAsString());
+                LOG.error("HTTP ERROR " + e.getStatusCode() + " for " + subSet.toString() + ": " + e.getResponseBodyAsString(), e);
             } catch (RestClientException e) {
-                LOG.error("REST ERROR [" +  e.getLocalizedMessage() + "] for " + subSet.toString());
+                LOG.error("REST ERROR [" +  e.getLocalizedMessage() + "] for " + subSet.toString(), e);
             }
 
             if (rawValue != null) {
