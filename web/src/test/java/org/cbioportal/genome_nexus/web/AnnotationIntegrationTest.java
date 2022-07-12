@@ -291,6 +291,17 @@ public class AnnotationIntegrationTest
     }
 
     @Test
+    public void testIdenticalGenomicLocationsPOST() {
+        List<GenomicLocation> genomicLocations = new ArrayList<>();
+        // If input has two identical genomic locations but in different representations
+        // Return should have two objects too
+        genomicLocations.add(genomicLocationStringToGenomicLocation("12,25398284,25398284,C,A"));
+        genomicLocations.add(genomicLocationStringToGenomicLocation("12,25398283,25398284,AC,AA"));
+        List<Map<String, Object>> response = this.fetchVariantAnnotationByGenomicLocationPOST(genomicLocations.toArray(new GenomicLocation[0]));
+        assertEquals(2, response.size());
+    }
+
+    @Test
     public void testVariantAnnotationOriginalQuery() {
         String expectedConvertedVariant = "4:g.55152096_55152107del";
         String genomicLocationString = "4,55152095,55152107,ATCATGCATGATT,A";
