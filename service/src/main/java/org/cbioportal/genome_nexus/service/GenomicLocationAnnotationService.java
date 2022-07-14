@@ -52,5 +52,5 @@ public interface GenomicLocationAnnotationService
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
     List<VariantAnnotation> getAnnotations(List<GenomicLocation> genomicLocations, String isoformOverrideSource, Map<String, String> token, List<String> fields);
 
-    Function<GenomicLocation, String> getGenomicLocationToVariantFormat();
+    String getVariantFormat(GenomicLocation genomicLocation);
 }

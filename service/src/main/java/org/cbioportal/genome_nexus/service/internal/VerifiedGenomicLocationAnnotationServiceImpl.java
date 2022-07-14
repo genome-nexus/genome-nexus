@@ -123,8 +123,8 @@ public class VerifiedGenomicLocationAnnotationServiceImpl implements GenomicLoca
     }
 
     @Override
-    public Function<GenomicLocation, String> getGenomicLocationToVariantFormat() {
-        return genomicLocationAnnotationService.getGenomicLocationToVariantFormat();
+    public String getVariantFormat(GenomicLocation genomicLocation) {
+        return genomicLocationAnnotationService.getVariantFormat(genomicLocation);
     }
 
     private VariantAnnotation verifyOrFailAnnotation(VariantAnnotation annotation)

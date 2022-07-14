@@ -169,10 +169,9 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     {
         List<VariantAnnotation> variantAnnotations = this.genomicLocationAnnotationService.getAnnotations(genomicLocations);
 
-        Function<GenomicLocation, String> genomicLocationToVariantFormat = this.genomicLocationAnnotationService.getGenomicLocationToVariantFormat();
         Map<String, GenomicLocation> variantToGenomicLocation = new HashMap<>();
         for (GenomicLocation genomicLocation: genomicLocations) {
-            variantToGenomicLocation.put(genomicLocationToVariantFormat.apply(genomicLocation), genomicLocation);
+            variantToGenomicLocation.put(genomicLocationAnnotationService.getVariantFormat(genomicLocation), genomicLocation);
         }
         List<AggregatedHotspots> hotspots = new ArrayList<>();
         for (VariantAnnotation variantAnnotation : variantAnnotations)
