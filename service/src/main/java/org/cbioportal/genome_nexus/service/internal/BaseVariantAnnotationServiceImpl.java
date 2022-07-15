@@ -114,7 +114,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         return id;
     }
 
-    private Index buildIndex(VariantAnnotation variantAnnotation) {
+    public Index buildIndex(VariantAnnotation variantAnnotation) {
         IndexBuilder builder = new IndexBuilder(this.proteinChangeResolver, this.hugoGeneSymbolResolver);
         return builder.buildIndex(variantAnnotation);
     }
@@ -270,7 +270,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         return variantAnnotations;
     }
 
-    private void saveToIndexDb(String normalizedVariant, VariantAnnotation annotation) {
+    public void saveToIndexDb(String normalizedVariant, VariantAnnotation annotation) {
         Gson gson = new Gson();
         DBObject dbObject = BasicDBObject.parse(gson.toJson(this.buildIndex(annotation)));
         this.indexRepository.saveDBObject("index", normalizedVariant, dbObject);

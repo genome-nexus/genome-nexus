@@ -1,6 +1,9 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.spy;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,10 +14,13 @@ import java.util.Set;
 
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
+import org.cbioportal.genome_nexus.persistence.IndexRepository;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
+import org.cbioportal.genome_nexus.component.annotation.HugoGeneSymbolResolver;
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantRegionAnnotationFetcher;
@@ -40,6 +46,16 @@ public class VariantAnnotationServiceTest
 {
     @InjectMocks
     private HgvsVariantAnnotationService variantAnnotationService;
+
+    @Mock
+    private BaseVariantAnnotationServiceImpl baseVariantAnnotationServiceImpl;
+
+    @Mock
+    private ProteinChangeResolver proteinChangeResolver;
+    @Mock
+    private HugoGeneSymbolResolver hugoGeneSymbolResolver;
+    @Mock
+    private IndexRepository indexRepository;
 
     @Mock
     private CachedVariantAnnotationFetcher fetcher;
@@ -275,6 +291,7 @@ public class VariantAnnotationServiceTest
         Mockito.when(this.fetcher.fetchAndCache("12:g.25398285C>A")).thenReturn(variantMockData.get("12:g.25398285C>A"));
         Mockito.when(this.fetcher.fetchAndCache("X:g.41242962_41242963insGA")).thenReturn(variantMockData.get("X:g.41242962_41242963insGA"));
         Mockito.when(this.fetcher.fetchAndCache("Y:g.41242962_41242963insGA")).thenReturn(variantMockData.get("Y:g.41242962_41242963insGA"));
+        Mockito.doNothing().when(this.baseVariantAnnotationServiceImpl).saveToIndexDb(any(), any());
 
         List<String> variants = new ArrayList<>(4);
         variants.add("7:g.140453136A>T");

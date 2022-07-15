@@ -3,6 +3,7 @@ package org.cbioportal.genome_nexus.service.internal;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
@@ -13,6 +14,7 @@ import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceExce
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.mock.MyVariantInfoMockData;
 import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,9 +41,9 @@ public class MyVariantInfoServiceTest
         Map<String, MyVariantInfo> mockData = this.myVariantInfoMockData.generateData();
 
         // mock methods in order to prevent hitting the live mutation assessor web API
-        Mockito.when(fetcher.fetchAndCache("7:g.140453136A>T")).thenReturn(mockData.get("7:g.140453136A>T"));
-        Mockito.when(fetcher.fetchAndCache("12:g.25398285C>A")).thenReturn(mockData.get("12:g.25398285C>A"));
-        Mockito.when(fetcher.fetchAndCache("INVALID")).thenReturn(mockData.get("INVALID"));
+        Mockito.when(fetcher.fetchAndCache(Arrays.asList("7:g.140453136A>T"))).thenReturn(Arrays.asList(mockData.get("7:g.140453136A>T")));
+        Mockito.when(fetcher.fetchAndCache(Arrays.asList("12:g.25398285C>A"))).thenReturn(Arrays.asList(mockData.get("12:g.25398285C>A")));
+        Mockito.when(fetcher.fetchAndCache(Arrays.asList("INVALID"))).thenReturn(Arrays.asList(mockData.get("INVALID")));
 
         MyVariantInfo myVariantInfo1 = service.getMyVariantInfoByMyVariantInfoVariant("7:g.140453136A>T");
         assertEquals(myVariantInfo1.getVersion(), mockData.get("7:g.140453136A>T").getVersion());
@@ -62,8 +64,8 @@ public class MyVariantInfoServiceTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
 
         // mock methods in order to prevent hitting the live mutation assessor web API
-        Mockito.when(fetcher.fetchAndCache("chr7:g.140453136A>T")).thenReturn(mviMockData.get("7:g.140453136A>T"));
-        Mockito.when(fetcher.fetchAndCache("chr12:g.25398285C>A")).thenReturn(mviMockData.get("12:g.25398285C>A"));
+        Mockito.when(fetcher.fetchAndCache(Arrays.asList("chr7:g.140453136A>T"))).thenReturn(Arrays.asList(mviMockData.get("7:g.140453136A>T")));
+        Mockito.when(fetcher.fetchAndCache(Arrays.asList("chr12:g.25398285C>A"))).thenReturn(Arrays.asList(mviMockData.get("12:g.25398285C>A")));
 
         MyVariantInfo myVariantInfo1 = service.getMyVariantInfoByAnnotation(variantMockData.get("7:g.140453136A>T"));
         assertEquals(myVariantInfo1.getVersion(), mviMockData.get("7:g.140453136A>T").getVersion());
