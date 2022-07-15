@@ -14,7 +14,6 @@ import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceExce
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.mock.MyVariantInfoMockData;
 import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
