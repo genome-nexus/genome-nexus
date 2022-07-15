@@ -55,8 +55,8 @@ public class MyVariantInfoIntegrationTest
     {
         String[] variants = {
             "7:g.140453136A>T",
-            "rs12190874",
             "17:g.41276045_41276046del",
+            "rs12190874",
             "INVALID"
         };
 
@@ -76,15 +76,15 @@ public class MyVariantInfoIntegrationTest
         // test clinVar, the variantId should be 13961
         assertEquals((Integer)13961, variantId);
 
-        String alt = this.fetchMyVariantInfoAnnotationGET(variants[1]).get("vcf").get("alt").toString();
+        String alt = this.fetchMyVariantInfoAnnotationGET(variants[2]).get("vcf").get("alt").toString();
         // the alt should be A
         assertEquals("A", alt);
 
-        Object alleleCount = ((HashMap) this.fetchMyVariantInfoAnnotationGET(variants[1]).get("gnomadGenome").get("alleleCount")).get("ac");
+        Object alleleCount = ((HashMap) this.fetchMyVariantInfoAnnotationGET(variants[2]).get("gnomadGenome").get("alleleCount")).get("ac");
         // the allele count should be 3282
         assertEquals(3282, alleleCount);
 
-        String ref = this.fetchMyVariantInfoAnnotationGET(variants[2]).get("vcf").get("ref").toString();
+        String ref = this.fetchMyVariantInfoAnnotationGET(variants[1]).get("vcf").get("ref").toString();
         // the ref shout be ACF
         assertEquals("ACT", ref);
 
@@ -108,13 +108,13 @@ public class MyVariantInfoIntegrationTest
         Integer variantId0 = (Integer)postResponses.get(0).get("clinVar").get("variantId");
         assertEquals((Integer)variantId, variantId0);
 
-        String alt1 = postResponses.get(1).get("vcf").get("alt").toString();
+        String alt1 = postResponses.get(2).get("vcf").get("alt").toString();
         assertEquals(alt, alt1);
 
-        Object alleleCount1 = ((HashMap) postResponses.get(1).get("gnomadGenome").get("alleleCount")).get("ac");
+        Object alleleCount1 = ((HashMap) postResponses.get(2).get("gnomadGenome").get("alleleCount")).get("ac");
         assertEquals(alleleCount, alleleCount1);
 
-        String ref2 = postResponses.get(2).get("vcf").get("ref").toString();
+        String ref2 = postResponses.get(1).get("vcf").get("ref").toString();
         assertEquals(ref, ref2);
     }
 
