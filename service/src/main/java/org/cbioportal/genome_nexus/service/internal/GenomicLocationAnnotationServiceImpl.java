@@ -47,7 +47,6 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
-import java.util.function.Function;
 
 @Service
 public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnnotationService
