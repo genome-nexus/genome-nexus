@@ -45,6 +45,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Selcuk Onur Sumer
@@ -168,10 +170,8 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     {
         List<VariantAnnotation> variantAnnotations = this.genomicLocationAnnotationService.getAnnotations(genomicLocations);
 
-        Map<String, GenomicLocation> variantToGenomicLocation = new HashMap<>();
-        for (GenomicLocation genomicLocation: genomicLocations) {
-            variantToGenomicLocation.put(genomicLocationAnnotationService.getVariantFormat(genomicLocation), genomicLocation);
-        }
+        Map<String, GenomicLocation> variantToGenomicLocation = genomicLocations.stream()
+            .collect(Collectors.toMap(genomicLocationAnnotationService::getVariantFormat, Function.identity()));
         List<AggregatedHotspots> hotspots = new ArrayList<>();
         for (VariantAnnotation variantAnnotation : variantAnnotations)
         {
