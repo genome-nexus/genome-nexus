@@ -58,6 +58,7 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     private final VariantAnnotationService variantAnnotationService;
     private final GenomicLocationToVariantFormat genomicLocationToVariantFormat;
     private final GenomicLocationStringToVariantFormat genomicLocationStringToVariantFormat;
+
     private final GenomicLocationsToVariantFormats genomicLocationsToVariantFormats;
 
     @Autowired
@@ -207,5 +208,10 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     @FunctionalInterface
     private static interface GenomicLocationsToVariantFormats {
         List<String> convert(List<GenomicLocation> genomicLocation);
+    }
+
+    @Override
+    public String getVariantFormat(GenomicLocation genomicLocation) {
+        return genomicLocationToVariantFormat.convert(genomicLocation);
     }
 }

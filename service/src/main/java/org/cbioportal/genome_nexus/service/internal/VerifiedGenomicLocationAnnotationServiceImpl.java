@@ -38,10 +38,8 @@ import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.service.*;
 
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
-import org.cbioportal.genome_nexus.service.cached.CachedVariantRegionAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
 
@@ -119,6 +117,11 @@ public class VerifiedGenomicLocationAnnotationServiceImpl implements GenomicLoca
             annotations.set(index, verifiedAnnotation);
         }
         return annotations;
+    }
+
+    @Override
+    public String getVariantFormat(GenomicLocation genomicLocation) {
+        return genomicLocationAnnotationService.getVariantFormat(genomicLocation);
     }
 
     private VariantAnnotation verifyOrFailAnnotation(VariantAnnotation annotation)
