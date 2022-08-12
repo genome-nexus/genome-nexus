@@ -2,6 +2,7 @@ package org.cbioportal.genome_nexus.web;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.cbioportal.genome_nexus.model.AggregateSourceInfo;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,9 @@ public class InfoController
         method = RequestMethod.GET,
         produces = "application/json")
     @ResponseBody
-    public InfoServiceImpl.Version fetchVersionGET()
+    public AggregateSourceInfo fetchVersionGET()
     {
-        return infoService.getVersion();
+        return infoService.getAggregateSourceInfo();
     }
 
 }
