@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.persistence.MutationAssessorRepository;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.cached.CachedMutationAssessorFetcher;
@@ -23,14 +24,14 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
 {
     private static final Log LOG = LogFactory.getLog(MutationAssessorServiceImpl.class);
 
-    private final CachedMutationAssessorFetcher cachedExternalResourceFetcher;
+    private final MutationAssessorRepository mutationAssessorRepository;
     private final VariantAnnotationService variantAnnotationService;
 
     @Autowired
-    public MutationAssessorServiceImpl(CachedMutationAssessorFetcher cachedExternalResourceFetcher,
+    public MutationAssessorServiceImpl(MutationAssessorRepository mutationAssessorRepository,
                                        VariantAnnotationService verifiedHgvsVariantAnnotationService)
     {
-        this.cachedExternalResourceFetcher = cachedExternalResourceFetcher;
+        this.mutationAssessorRepository = mutationAssessorRepository;
         this.variantAnnotationService = verifiedHgvsVariantAnnotationService;
     }
 
@@ -94,18 +95,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
         throws MutationAssessorNotFoundException, MutationAssessorWebServiceException
     {
         Optional<MutationAssessor> mutationAssessor = null;
-
-        try {
-            // get the annotation from the web service and save it to the DB
-            mutationAssessor = Optional.of(cachedExternalResourceFetcher.fetchAndCache(variant));
-        } catch (ResourceMappingException e) {
-            throw new MutationAssessorWebServiceException(e.getMessage());
-        } catch (HttpClientErrorException e) {
-            throw new MutationAssessorWebServiceException(e.getResponseBodyAsString(), e.getStatusCode());
-        } catch (ResourceAccessException e) {
-            throw new MutationAssessorWebServiceException(e.getMessage());
-        }
-
+        mutationAssessor = mutationAssessorRepository.findById(variant);
         try {
             return mutationAssessor.get();
         } catch (NoSuchElementException e) {
