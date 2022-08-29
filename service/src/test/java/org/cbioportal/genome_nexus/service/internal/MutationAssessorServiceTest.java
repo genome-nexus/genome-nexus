@@ -14,7 +14,6 @@ import java.util.Optional;
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.persistence.MutationAssessorRepository;
-import org.cbioportal.genome_nexus.service.cached.CachedMutationAssessorFetcher;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
@@ -34,9 +33,6 @@ public class MutationAssessorServiceTest
     @Spy
     @InjectMocks
     private MutationAssessorServiceImpl service;
-
-    @Mock
-    private CachedMutationAssessorFetcher fetcher;
 
     @Mock
     MutationAssessorRepository mutationAssessorRepository;
