@@ -15,6 +15,23 @@ public class MutationAssessorMockData implements MockData<MutationAssessor>
 
         MutationAssessor mutationAssessor;
 
+        // mock data for variant: 17,7578479,G,A
+        
+        mutationAssessor = new MutationAssessor();
+        mutationAssessor.setHugoSymbol("TP53");
+        mutationAssessor.setHgvs("17:g.7578479G>A");
+        mutationAssessor.setMappingIssue("");
+
+        mockData.put("17,7578479,G,A", mutationAssessor);
+
+        // mock data for variant: 17,7578416,C,A
+        mutationAssessor = new MutationAssessor();
+        mutationAssessor.setHugoSymbol("TP53");
+        mutationAssessor.setHgvs("17:g.7578416C>A");
+        mutationAssessor.setMappingIssue("");
+
+        mockData.put("17,7578416,C,A", mutationAssessor);
+
         // mock data for variant: 7,140453136,A,T
         mutationAssessor = new MutationAssessor();
         mutationAssessor.setHugoSymbol("BRAF");
