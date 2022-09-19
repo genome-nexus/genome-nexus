@@ -33,7 +33,9 @@ The docker container is located here:
 
 	• https://hub.docker.com/repository/docker/price0416/nexus_bash
 
-The Dockerfile for nuilding this container is located in the Genome-Nexus repository at /containers/Dockerfile
+The Dockerfile for building this container is located in the Genome-Nexus repository at 
+
+    • /containers/Dockerfile
 
 In addition to the above genome nexus repositories, the container builds the following:
 
