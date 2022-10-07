@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -381,5 +382,21 @@ public class CancerHotspotsIntegrationTest
         hotspots = this.fetchHotspotsByProteinLocationPOST(locations);
         assertEquals("The result should have one record no matter whether it is hotspot", 1, hotspots.length);
         assertEquals("This splice region is not a hotspot", 0, hotspots[0].getHotspots().size());
+    }
+
+    @Test
+    public void testIdenticalVariantsInDifferentRepresentations()
+    {
+        String[] genomicLocationString = {
+            "7,140453193,140453193,T,C",
+            "7,140453192,140453193,AT,AC", // identical variant as above
+        };
+        List<GenomicLocation> genomicLocationsList = Arrays.stream(genomicLocationString).map(
+            g -> this.notationConverter.parseGenomicLocation(g, ",")).collect(Collectors.toList());
+
+        AggregatedHotspots[] aggregatedHotspots = this.fetchHotspotsPOST(genomicLocationsList);
+        // If input variants are identical after normalization, but since the input is not the same, it still should return two annotations
+        assertEquals(genomicLocationString.length, aggregatedHotspots.length);
+        
     }
 }
