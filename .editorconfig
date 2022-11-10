@@ -31,3 +31,7 @@ trim_trailing_whitespace = false
 # Formats for HTML files only
 [**.html]
 insert_final_newline = false
+
+# Formats for YAML files only
+[{**.yml,**.yaml}]
+indent_size = 2
