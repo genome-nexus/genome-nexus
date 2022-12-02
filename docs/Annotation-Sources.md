@@ -1,4 +1,4 @@
-# Annotation Sources🗄️
+# Annotation Sources 🗄️
 Genome Nexus aggregates variant annotation from various sources. There are two types:
 
 1. Small sized annotations are stored as static data in the mongo database
