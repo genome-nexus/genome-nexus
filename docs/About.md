@@ -4,7 +4,7 @@ Genome Nexus is developed at [Memorial Sloan Kettering Cancer Center](http://www
 ### How do I cite Genome Nexus?
 When using Genome Nexus, please cite [de Bruijn et al., JCO CCI 2022](https://ascopubs.org/doi/abs/10.1200/CCI.21.00144).
 
-Genome Nexus aggregates variant annotation from various sources. See this [documentation](./Annotation-Sources.md#annotation-sources🗄️) for all supported annotation sources. Remember to also cite the the annotation sources you are using.
+Genome Nexus aggregates variant annotation from various sources. See this [documentation](./Annotation-Sources.md#annotation-sources🗄️) for all supported annotation sources. Remember to also cite the underlying annotation sources you are using.
 
 ### Current Funding
 *   [Marie-José and Henry R. Kravis Center for Molecular Oncology at MSK](http://www.mskcc.org/research/molecular-oncology)
