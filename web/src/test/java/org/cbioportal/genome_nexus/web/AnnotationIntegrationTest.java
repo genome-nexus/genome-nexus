@@ -10,6 +10,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -322,5 +324,18 @@ public class AnnotationIntegrationTest
             setVariantAllele(genomicLocation.split(",")[4]);
             setOriginalInput(genomicLocation);
         }};
+    }
+
+    @Test
+    public void testColocatedVariantDbSnpId() {
+        String genomicLocationString = "4,55152095,55152107,ATCATGCATGATT,A";
+        GenomicLocation[] genomicLocations = {
+            genomicLocationStringToGenomicLocation(genomicLocationString)
+        };
+
+        List<Map<String, Object>> response = this.fetchVariantAnnotationByGenomicLocationPOST(genomicLocations);
+
+        List<Map<String, Object>> colocatedVariants = (List<Map<String, Object>>) response.get(0).get("colocatedVariants");
+        assertThat(colocatedVariants, hasItem(hasEntry("dbSnpId", (Object) "rs121913268")));
     }
 }

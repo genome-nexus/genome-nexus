@@ -32,8 +32,11 @@
 
 package org.cbioportal.genome_nexus.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ColocatedVariant
 {
     private String gnomad_nfe_maf;
@@ -114,6 +117,7 @@ public class ColocatedVariant
         this.gnomad_eas_allele = gnomad_eas_allele;
     }
 
+    @JsonAlias("id")
     private String dbSnpId;
 
     @Field(value="id")

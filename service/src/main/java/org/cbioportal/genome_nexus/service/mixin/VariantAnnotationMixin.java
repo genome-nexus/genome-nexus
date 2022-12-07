@@ -2,6 +2,7 @@ package org.cbioportal.genome_nexus.service.mixin;
 
 import com.fasterxml.jackson.annotation.*;
 
+import org.cbioportal.genome_nexus.model.ColocatedVariant;
 import org.cbioportal.genome_nexus.model.IntergenicConsequences;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 
@@ -53,6 +54,9 @@ public class VariantAnnotationMixin
 
     @JsonProperty(value="transcript_consequences", required = true)
     private List<TranscriptConsequence> transcriptConsequences;
+
+    @JsonAlias("colocated_variants")
+    private List<ColocatedVariant> colocatedVariants;
 
     @JsonIgnore
     private Map<String, Object> dynamicProps;
