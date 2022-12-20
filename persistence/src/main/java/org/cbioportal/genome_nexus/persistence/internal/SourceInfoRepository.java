@@ -1,8 +1,13 @@
 package org.cbioportal.genome_nexus.persistence.internal;
 
+import java.util.List;
+
 import org.cbioportal.genome_nexus.model.AggregateSourceInfo;
+import org.cbioportal.genome_nexus.model.AnnotationSourcesInfo;
 import org.cbioportal.genome_nexus.model.GenomeNexusInfo;
+import org.cbioportal.genome_nexus.model.SourceVersionInfo;
 import org.cbioportal.genome_nexus.model.VEPInfo;
+import org.cbioportal.genome_nexus.persistence.AnnotationVersionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +23,7 @@ public class SourceInfoRepository {
     private VEPInfo vepInfo;
 
     @Autowired
-    private AggregateSourceInfo aggregateSourceInfo;
+    private AnnotationVersionRepository annotationVersionRepository;
 
     @Bean
     public GenomeNexusInfo genomeNexusInfo(@Value("${genomenexus.server.version:NA}") String serverVersion, @Value("${spring.mongodb.embedded.version:NA}") String dbVersion) {
@@ -30,12 +35,11 @@ public class SourceInfoRepository {
         return new VEPInfo(serverVersion, cacheVersion, vepRegionURL);
     }
 
-    @Bean
-    public AggregateSourceInfo aggregateSourceInfo() {
-        return new AggregateSourceInfo(genomeNexusInfo, vepInfo);
-    }
-
     public AggregateSourceInfo getAggregateSourceInfo() {
+        AggregateSourceInfo aggregateSourceInfo = new AggregateSourceInfo(genomeNexusInfo, vepInfo);
+        List<SourceVersionInfo> sourceVersionInfos = annotationVersionRepository.findAll();
+        AnnotationSourcesInfo annotationSourcesInfo = new AnnotationSourcesInfo(sourceVersionInfos);
+        aggregateSourceInfo.setAnnotationSourcesInfo(annotationSourcesInfo);
         return aggregateSourceInfo;
     }
 }
