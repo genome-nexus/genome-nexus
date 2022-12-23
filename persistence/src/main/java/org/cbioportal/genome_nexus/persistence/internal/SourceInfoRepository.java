@@ -3,7 +3,6 @@ package org.cbioportal.genome_nexus.persistence.internal;
 import java.util.List;
 
 import org.cbioportal.genome_nexus.model.AggregateSourceInfo;
-import org.cbioportal.genome_nexus.model.AnnotationSourcesInfo;
 import org.cbioportal.genome_nexus.model.GenomeNexusInfo;
 import org.cbioportal.genome_nexus.model.SourceVersionInfo;
 import org.cbioportal.genome_nexus.model.VEPInfo;
@@ -38,8 +37,7 @@ public class SourceInfoRepository {
     public AggregateSourceInfo getAggregateSourceInfo() {
         AggregateSourceInfo aggregateSourceInfo = new AggregateSourceInfo(genomeNexusInfo, vepInfo);
         List<SourceVersionInfo> sourceVersionInfos = annotationVersionRepository.findAll();
-        AnnotationSourcesInfo annotationSourcesInfo = new AnnotationSourcesInfo(sourceVersionInfos);
-        aggregateSourceInfo.setAnnotationSourcesInfo(annotationSourcesInfo);
+        aggregateSourceInfo.setAnnotationSourcesInfo(sourceVersionInfos);
         return aggregateSourceInfo;
     }
 }
