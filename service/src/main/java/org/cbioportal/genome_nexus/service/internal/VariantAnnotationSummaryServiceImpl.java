@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.cbioportal.genome_nexus.util.jsonReader;
+import org.cbioportal.genome_nexus.model.VUEs;
+
 @Service
 public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSummaryService
 {
@@ -43,6 +46,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final VariantClassificationResolver variantClassificationResolver;
     private final VariantTypeResolver variantTypeResolver;
     private final ExonResolver exonResolver;
+    private final VUEs vuesList;
 
     @Autowired
     public VariantAnnotationSummaryServiceImpl(
@@ -81,6 +85,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         this.variantClassificationResolver = variantClassificationResolver;
         this.variantTypeResolver = variantTypeResolver;
         this.exonResolver = exonResolver;
+        this.vuesList = jsonReader.getVuesList();
     }
 
     @Override
@@ -211,6 +216,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                                                               TranscriptConsequence transcriptConsequence)
     {
         TranscriptConsequenceSummary summary = null;
+        System.out.println(vuesList);
 
         if (transcriptConsequence != null)
         {
@@ -235,6 +241,19 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setPolyphenScore(transcriptConsequence.getPolyphenScore());
             summary.setSiftPrediction(transcriptConsequence.getSiftPrediction());
             summary.setSiftScore(transcriptConsequence.getSiftScore());
+            
+            String revueId = this.vuesList.gettranscriptId();
+            String revueVarClass = this.vuesList.getrevisedProteinEffects().get("variantClassification");
+            String revueProteinEffect = this.vuesList.getrevisedProteinEffects().get("revisedProteinEffect");
+            System.out.println(revueId);
+            System.out.println(revueVarClass);
+            System.out.println(revueProteinEffect);
+            if (transcriptConsequence.getTranscriptId() == revueId) {
+                summary.setTranscriptId(revueId);
+                summary.setVariantClassification(revueVarClass);
+                summary.setHgvspShort(revueProteinEffect);
+            }
+
             if (transcriptConsequence.getTranscriptId() != null) {
                 try {
                     String uniprotId = this.ensemblService.getUniprotId(transcriptConsequence.getTranscriptId());

@@ -1,0 +1,13 @@
+{
+    "hugoGeneSymbol": "KIT",
+    "genomicLocation": "Deletions flanking intron 10 - exon 11 boundary (4:55593576_55593606del)",
+    "transcriptId": "ENST00000288135",
+    "defaultEffect": "splice",
+    "comment": "Changes splice donor site, cause inframe deletion in exon 11",
+    "context": "Actionable in GIST",
+    "pubmedIds": [15507676],
+    "referenceText": "Corless et al, 2004",
+    "revisedProteinEffects": 
+        {"variant":"4:g.55593576_55593606del", "transcriptId": "ENST00000288135", "revisedProteinEffect": "p.549_557del", "variantClassification":"In_Frame_Del"}
+    
+}

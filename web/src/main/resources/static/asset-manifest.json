@@ -1,0 +1,31 @@
+{
+  "files": {
+    "main.css": "/static/css/main.f725a119.chunk.css",
+    "main.js": "/static/js/main.5303498d.chunk.js",
+    "main.js.map": "/static/js/main.5303498d.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.b1c67cf7.js",
+    "runtime-main.js.map": "/static/js/runtime-main.b1c67cf7.js.map",
+    "static/css/2.312d43a4.chunk.css": "/static/css/2.312d43a4.chunk.css",
+    "static/js/2.d15e70e9.chunk.js": "/static/js/2.d15e70e9.chunk.js",
+    "static/js/2.d15e70e9.chunk.js.map": "/static/js/2.d15e70e9.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.dcc4d4d72c025d69701a3f795471ca27.js": "/precache-manifest.dcc4d4d72c025d69701a3f795471ca27.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.312d43a4.chunk.css.map": "/static/css/2.312d43a4.chunk.css.map",
+    "static/css/main.f725a119.chunk.css.map": "/static/css/main.f725a119.chunk.css.map",
+    "static/js/2.d15e70e9.chunk.js.LICENSE.txt": "/static/js/2.d15e70e9.chunk.js.LICENSE.txt",
+    "static/media/oncokb.css": "/static/media/icons.79816b84.png",
+    "static/media/font-awesome.css": "/static/media/fontawesome-webfont.fee66e71.woff",
+    "static/media/logo_square_white_background_with_padding.png": "/static/media/logo_square_white_background_with_padding.cddcda01.png",
+    "static/media/oncogenic.svg": "/static/media/oncogenic.fe24e65f.svg",
+    "static/media/oncokb.svg": "/static/media/oncokb.c3e6d611.svg",
+    "static/media/index.css": "/static/media/open-sans-latin-800italic.79b58175.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b1c67cf7.js",
+    "static/css/2.312d43a4.chunk.css",
+    "static/js/2.d15e70e9.chunk.js",
+    "static/css/main.f725a119.chunk.css",
+    "static/js/main.5303498d.chunk.js"
+  ]
+}
