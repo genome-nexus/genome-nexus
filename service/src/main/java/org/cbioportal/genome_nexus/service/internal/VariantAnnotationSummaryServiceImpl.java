@@ -222,7 +222,6 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                                                               TranscriptConsequence transcriptConsequence)
     {
         TranscriptConsequenceSummary summary = null;
-        System.out.println(vuesList);
 
         if (transcriptConsequence != null)
         {
