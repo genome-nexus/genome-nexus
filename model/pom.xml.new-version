@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.cbioportal.genome_nexus</groupId>
     <artifactId>genome-nexus</artifactId>
-    <version>1.2.4-dirty-SNAPSHOT</version>
+    <version>1.2.4-1-g7e144f2-dirty-SNAPSHOT</version>
   </parent>
   <artifactId>model</artifactId>
-  <version>1.2.4-dirty-SNAPSHOT</version>
+  <version>1.2.4-1-g7e144f2-dirty-SNAPSHOT</version>
   <name>Genome Nexus Model</name>
   <description>Genome Nexus Model Module</description>
   <dependencies>

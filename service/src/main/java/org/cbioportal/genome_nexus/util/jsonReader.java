@@ -11,14 +11,14 @@ import java.io.Reader;
 
 public class jsonReader {
 
-    public static VUEs getVuesList() {
+    public static VUEs [] getVuesList() {
 
         Gson gson = new Gson();
 
         try (Reader reader = new FileReader("data/curiousCases/VUEs.json")) {
 
             // Convert JSON File to Java Object
-            VUEs vues = gson.fromJson(reader, VUEs.class);
+            VUEs [] vues = gson.fromJson(reader, VUEs[].class);
 			
 			// print vues 
             System.out.println(vues);

@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.model;
 
+import java.util.List;
 import java.util.Map;
 
 public class VUEs {
@@ -12,7 +13,7 @@ public class VUEs {
     private String comment;
     private String referenceText;
     private String defaultEffect;          
-    private Map<String, String> revisedProteinEffects; 
+    private List<RevisedProteinEffect> revisedProteinEffects;
 
     public String gethugoGeneSymbol() {
         return hugoGeneSymbol;
@@ -78,11 +79,11 @@ public class VUEs {
         this.defaultEffect = defaultEffect;
     }
 
-    public Map<String, String> getrevisedProteinEffects() {
+    public List<RevisedProteinEffect> getrevisedProteinEffects() {
         return revisedProteinEffects;
     }
 
-    public void setrevisedProteinEffects(Map<String, String> revisedProteinEffects) {
+    public void setrevisedProteinEffects(List<RevisedProteinEffect>  revisedProteinEffects) {
         this.revisedProteinEffects = revisedProteinEffects;
     }
 }
