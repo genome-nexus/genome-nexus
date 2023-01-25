@@ -1,0 +1,122 @@
+[
+    {
+        "hugoGeneSymbol": "KIT",
+        "transcriptId": "ENST00000288135",
+        "genomicLocation": "Deletions flanking intron 10 - exon 11 boundary (4:55593576_55593606del)",
+        "defaultEffect": "splice",
+        "comment": "Changes splice donor site, cause inframe deletion in exon 11",
+        "context": "Actionable in GIST",
+        "pubmedIds": [15507676],
+        "referenceText": "Corless et al, 2004",
+        "revisedProteinEffects": [ 
+        {
+            "variant":"4:g.55593576_55593606del", 
+            "genomicLocation": "4,5,55593576,55593606,ATATAATATATATATAT,-",
+            "transcriptId": "ENST00000288135", 
+            "revisedProteinEffect": "p.549_557del", 
+            "variantClassification":"In_Frame_Del"
+        },
+        {
+            "variant":"4:g.55593576_55593607del", 
+            "genomicLocation": "4,5,55593576,55593607,ATATAATATATATATAT,-",
+            "transcriptId": "ENST00000288136", 
+            "revisedProteinEffect": "p.549_557del", 
+            "variantClassification":"In_Frame_Del"
+        },
+        {
+            "variant":"4:g.55593576_55593608del",
+            "genomicLocation": "4,5,55593576,55593608,ATATAATATATATATAT,-", 
+            "transcriptId": "ENST00000288137", 
+            "revisedProteinEffect": "p.549_557del", 
+            "variantClassification":"In_Frame_Del"
+        }
+    ]
+    },
+    {
+        "hugoGeneSymbol": "APC",
+        "transcriptId": "ENST00000257430",
+        "genomicLocation": "5:g.112151184A>G",
+        "defaultEffect": "synonymous",
+        "comment": "Introduces splice acceptor site causing a frameshift",
+        "pubmedIds": [29316426],
+        "context": "Recurrent alteration in CRC",
+        "referenceText": "Yaeger et al, 2018"
+        
+    },
+    {
+        "hugoGeneSymbol": "BAP1",
+        "transcriptId": "ENST00000460680",
+        "genomicLocation": "3:g.52439306A>G",
+        "defaultEffect": "synonymous",
+        "comment": "Leads to exon 11 skipping",
+        "context": "Recurrent and prognostic in kidney cancer",
+        "pubmedIds": [33681728],
+        "referenceText": "Niersch et al, 2021"
+        
+    },
+    {
+        "genomicLocation": "17:g.7579883G>A",
+        "transcriptId": "ENST00000269305",
+        "defaultEffect": "synonymous",
+        "comment": "Affects mRNA structure, reduces HDM2 binding",
+        "context": "Recurrent in many cancer types",
+        "pubmedIds": [31671760],
+        "hugoGeneSymbol": "TP53",
+        "referenceText": "Swiatkowska et al, 2019"
+       
+    },
+    {
+        "genomicLocation": "12:g.25380277G>T",
+        "transcriptId": "-",
+        "defaultEffect": "missense",
+        "comment": "Introduces a splice donor site if Q61K is not co-occurring with G60G",
+        "context": "Recurrent in many cancer types",
+        "pubmedIds": [35236983],
+        "hugoGeneSymbol": "KRAS",
+        "referenceText": "Kobayashi et al, 2022"
+        
+    },
+    {
+        "hugoGeneSymbol": "CTNNB1",
+        "transcriptId": "-",
+        "genomicLocation": "Deletions flanking exon 2-3 (chr3:41265579_41266277del)",
+        "defaultEffect": "splice",
+        "comment": "Complete exon 3 skip or inframe deletion in exon 3",
+        "pubmedIds": [29316426],
+        "context": "Recurrent alteration in CRC",
+        "referenceText": "Yaeger et al, 2018"
+   
+    },
+    {
+        "hugoGeneSymbol": "MET",
+        "transcriptId": "-",
+        "genomicLocation": "Indels and substitutions flanking exon 14 (7:116411926_116412083del)",
+        "defaultEffect": "splice",
+        "comment": "Skipping of exon 14",
+        "context": "Actionable in NSCLC",
+        "pubmedIds": [27343443],
+        "referenceText": "Schrock et al, 2014"
+       
+    },
+    {
+        "hugoGeneSymbol": "PIK3R1",
+        "transcriptId": "-",
+        "genomicLocation": "Indels and substitutions flanking exon 11 (5:67589663G>A)",
+        "defaultEffect": "splice",
+        "comment": "Skipping of exon 11",
+        "context": "Recurrent in breast and uterine cancer",
+        "pubmedIds": [25488983],
+        "referenceText": "Lucas et al, 2014"
+       
+    },
+    {
+        "hugoGeneSymbol": "FLT3",
+        "transcriptId": "-",
+        "genomicLocation": "Indels around tyrosine kinase (13:28608214_28608215insTT...)",
+        "defaultEffect": "splice",
+        "comment": "Internal Tandem Duplication",
+        "context": "Recurrent alteration in AML",
+        "pubmedIds": [25488983],
+        "referenceText": "Zhang et al, 2020"
+    }
+]

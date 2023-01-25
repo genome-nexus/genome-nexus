@@ -4,6 +4,7 @@ import org.cbioportal.genome_nexus.component.annotation.*;
 import org.cbioportal.genome_nexus.model.TranscriptConsequenceSummary;
 import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
+import org.cbioportal.genome_nexus.model.RevisedProteinEffect;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.EnsemblService;
@@ -20,8 +21,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Objects;
+
+import org.cbioportal.genome_nexus.util.jsonReader;
+import org.cbioportal.genome_nexus.model.VUEs;
 
 @Service
 public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSummaryService
@@ -43,6 +53,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final VariantClassificationResolver variantClassificationResolver;
     private final VariantTypeResolver variantTypeResolver;
     private final ExonResolver exonResolver;
+    private final VUEs[] vuesList;
 
     @Autowired
     public VariantAnnotationSummaryServiceImpl(
@@ -81,6 +92,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         this.variantClassificationResolver = variantClassificationResolver;
         this.variantTypeResolver = variantTypeResolver;
         this.exonResolver = exonResolver;
+        this.vuesList = jsonReader.getVuesList();
     }
 
     @Override
@@ -211,6 +223,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                                                               TranscriptConsequence transcriptConsequence)
     {
         TranscriptConsequenceSummary summary = null;
+        System.out.println(vuesList);
 
         if (transcriptConsequence != null)
         {
@@ -235,6 +248,25 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setPolyphenScore(transcriptConsequence.getPolyphenScore());
             summary.setSiftPrediction(transcriptConsequence.getSiftPrediction());
             summary.setSiftScore(transcriptConsequence.getSiftScore());
+            
+            System.out.println(vuesList);
+    
+
+            List<VUEs> vueArray =  Arrays.asList(vuesList);
+            Map <String, RevisedProteinEffect> vuesMap = vueArray
+            .stream()
+            .map(VUEs::getrevisedProteinEffects)
+            .filter(Objects::nonNull)
+            .flatMap(revisedProteinEffects -> revisedProteinEffects.stream())
+            .collect(Collectors.toMap(RevisedProteinEffect::getTranscriptId, Function.identity()));
+            System.out.println(vuesMap.get("ENST00000288135"));
+
+            if (vuesMap.get(transcriptConsequence.getTranscriptId()) != null && vuesMap.get(transcriptConsequence.getTranscriptId()).getVariant().equals(annotation.getVariant()))
+            {
+                summary.setVariantClassification(vuesMap.get(transcriptConsequence.getTranscriptId()).getVariantClassification());
+                summary.setHgvspShort(vuesMap.get(transcriptConsequence.getTranscriptId()).getRevisedProteinEffect());
+            }
+
             if (transcriptConsequence.getTranscriptId() != null) {
                 try {
                     String uniprotId = this.ensemblService.getUniprotId(transcriptConsequence.getTranscriptId());
