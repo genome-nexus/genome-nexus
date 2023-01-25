@@ -17,10 +17,7 @@ public class jsonReader {
 
             // Convert JSON File to Java Object
             VUEs [] vues = gson.fromJson(reader, VUEs[].class);
-			
-			// print vues 
-            System.out.println(vues);
-
+            
             return vues;
 
         } catch (IOException e) {

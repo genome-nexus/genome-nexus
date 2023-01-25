@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -248,18 +247,14 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setPolyphenScore(transcriptConsequence.getPolyphenScore());
             summary.setSiftPrediction(transcriptConsequence.getSiftPrediction());
             summary.setSiftScore(transcriptConsequence.getSiftScore());
-            
-            System.out.println(vuesList);
-    
 
             List<VUEs> vueArray =  Arrays.asList(vuesList);
             Map <String, RevisedProteinEffect> vuesMap = vueArray
             .stream()
-            .map(VUEs::getrevisedProteinEffects)
+            .map(VUEs::getRevisedProteinEffects)
             .filter(Objects::nonNull)
             .flatMap(revisedProteinEffects -> revisedProteinEffects.stream())
             .collect(Collectors.toMap(RevisedProteinEffect::getTranscriptId, Function.identity()));
-            System.out.println(vuesMap.get("ENST00000288135"));
 
             if (vuesMap.get(transcriptConsequence.getTranscriptId()) != null && vuesMap.get(transcriptConsequence.getTranscriptId()).getVariant().equals(annotation.getVariant()))
             {

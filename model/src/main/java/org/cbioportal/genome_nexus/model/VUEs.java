@@ -5,84 +5,66 @@ import java.util.List;
 public class VUEs {
 
     private String hugoGeneSymbol;
-    private String transcriptId;
-    private String genomicLocation;
-    private int[] pubmedIds;     
-    private String context;
-    private String comment;
-    private String referenceText;
-    private String defaultEffect;          
-    private List<RevisedProteinEffect> revisedProteinEffects;
-
-    public String gethugoGeneSymbol() {
+    public String getHugoGeneSymbol() {
         return hugoGeneSymbol;
     }
-
-    public void sethugoGeneSymbol(String hugoGeneSymbol) {
+    public void setHugoGeneSymbol(String hugoGeneSymbol) {
         this.hugoGeneSymbol = hugoGeneSymbol;
     }
-
-    public String getgenomicLocation() {
-        return genomicLocation;
-    }
-
-    public void setgenomicLocation(String genomicLocation) {
-        this.genomicLocation = genomicLocation;
-    }
-
-    public String gettranscriptId() {
+    private String transcriptId;
+    public String getTranscriptId() {
         return transcriptId;
     }
-
-    public void settranscriptId(String transcriptId) {
+    public void setTranscriptId(String transcriptId) {
         this.transcriptId = transcriptId;
     }
-
-    public int[] getpubedIds() {
+    private String genomicLocation;
+    public String getGenomicLocation() {
+        return genomicLocation;
+    }
+    public void setGenomicLocation(String genomicLocation) {
+        this.genomicLocation = genomicLocation;
+    }
+    private int[] pubmedIds;     
+    public int[] getPubmedIds() {
         return pubmedIds;
     }
-
-    public void setpubmedIds(int[] pubmedIds) {
+    public void setPubmedIds(int[] pubmedIds) {
         this.pubmedIds = pubmedIds;
     }
-
-    public String getcontext() {
+    private String context;
+    public String getContext() {
         return context;
     }
-
-    public void setcontext(String context) {
+    public void setContext(String context) {
         this.context = context;
     }
-
-    public String getcomment() {
+    private String comment;
+    public String getComment() {
         return comment;
     }
-
-    public void setcomment(String comment) {
+    public void setComment(String comment) {
         this.comment = comment;
     }
-
-    public String getreferenceText() {
+    private String referenceText;
+    public String getReferenceText() {
         return referenceText;
     }
-
-    public void setreferenceText(String referenceText) {
+    public void setReferenceText(String referenceText) {
         this.referenceText = referenceText;
     }
-
-    public String getdefaultEffect() {
+    private String defaultEffect;          
+    public String getDefaultEffect() {
         return defaultEffect;
     }
-
-    public void setdefaultEffect(String defaultEffect) {
+    public void setDefaultEffect(String defaultEffect) {
         this.defaultEffect = defaultEffect;
     }
-
-    public List<RevisedProteinEffect> getrevisedProteinEffects() {
+    private List<RevisedProteinEffect> revisedProteinEffects;
+    public List<RevisedProteinEffect> getRevisedProteinEffects() {
         return revisedProteinEffects;
     }
-
-    public void setrevisedProteinEffects(List<RevisedProteinEffect>  revisedProteinEffects) {
+    public void setRevisedProteinEffects(List<RevisedProteinEffect> revisedProteinEffects) {
         this.revisedProteinEffects = revisedProteinEffects;
     }
 }

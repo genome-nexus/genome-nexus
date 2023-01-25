@@ -11,22 +11,8 @@
         "revisedProteinEffects": [ 
         {
             "variant":"4:g.55593576_55593606del", 
-            "genomicLocation": "4,5,55593576,55593606,ATATAATATATATATAT,-",
+            "genomicLocation": "4,5,55593576,55593606,CCACAGAAACCCATGTATGAAGTACAGTGGA,-",
             "transcriptId": "ENST00000288135", 
-            "revisedProteinEffect": "p.549_557del", 
-            "variantClassification":"In_Frame_Del"
-        },
-        {
-            "variant":"4:g.55593576_55593607del", 
-            "genomicLocation": "4,5,55593576,55593607,ATATAATATATATATAT,-",
-            "transcriptId": "ENST00000288136", 
-            "revisedProteinEffect": "p.549_557del", 
-            "variantClassification":"In_Frame_Del"
-        },
-        {
-            "variant":"4:g.55593576_55593608del",
-            "genomicLocation": "4,5,55593576,55593608,ATATAATATATATATAT,-", 
-            "transcriptId": "ENST00000288137", 
             "revisedProteinEffect": "p.549_557del", 
             "variantClassification":"In_Frame_Del"
         }
