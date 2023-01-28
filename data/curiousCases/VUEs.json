@@ -9,14 +9,14 @@
         "pubmedIds": [15507676],
         "referenceText": "Corless et al, 2004",
         "revisedProteinEffects": [ 
-        {
-            "variant":"4:g.55593576_55593606del", 
-            "genomicLocation": "4,5,55593576,55593606,CCACAGAAACCCATGTATGAAGTACAGTGGA,-",
-            "transcriptId": "ENST00000288135", 
-            "revisedProteinEffect": "p.549_557del", 
-            "variantClassification":"In_Frame_Del"
-        }
-    ]
+            {
+                "variant":"4:g.55593576_55593606del", 
+                "genomicLocation": "4,5,55593576,55593606,CCACAGAAACCCATGTATGAAGTACAGTGGA,-",
+                "transcriptId": "ENST00000288135", 
+                "revisedProteinEffect": "p.549_557del", 
+                "variantClassification":"In_Frame_Del"
+            }
+        ]
     },
     {
         "hugoGeneSymbol": "APC",

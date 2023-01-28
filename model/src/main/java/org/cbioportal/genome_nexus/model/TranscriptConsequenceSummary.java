@@ -22,6 +22,7 @@ public class TranscriptConsequenceSummary
     private Double siftScore;
     private String siftPrediction;
     private String uniprotId;
+    private Boolean isVue;
 
     public String getTranscriptId() {
         return transcriptId;
@@ -181,5 +182,13 @@ public class TranscriptConsequenceSummary
 
     public void setUniprotId(String uniprotId) {
         this.uniprotId = uniprotId; 
+    }
+
+    public Boolean getIsVue() {
+        return isVue;
+    }
+
+    public void setIsVue(Boolean isVue) {
+        this.isVue = isVue;
     }
 }

@@ -22,6 +22,8 @@ public class VariantAnnotationSummary
     // annotation
     private TranscriptConsequenceSummary transcriptConsequenceSummary;
 
+    private Vues vues;
+
     public String getVariant() {
         return variant;
     }
@@ -92,5 +94,13 @@ public class VariantAnnotationSummary
 
     public void setTranscriptConsequenceSummary(TranscriptConsequenceSummary transcriptConsequenceSummary) {
         this.transcriptConsequenceSummary = transcriptConsequenceSummary;
+    }
+
+    public Vues getVues() {
+        return vues;
+    }
+
+    public void setVues(Vues vues) {
+        this.vues = vues;
     }
 }
