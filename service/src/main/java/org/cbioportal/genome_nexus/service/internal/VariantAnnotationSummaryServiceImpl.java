@@ -3,25 +3,28 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.component.annotation.*;
 import org.cbioportal.genome_nexus.model.TranscriptConsequenceSummary;
 import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
-import org.cbioportal.genome_nexus.model.EnsemblTranscript;
+import org.cbioportal.genome_nexus.model.RevisedProteinEffectJsonRecord;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationSummaryService;
 import org.cbioportal.genome_nexus.service.annotation.EntrezGeneIdResolver;
-import org.cbioportal.genome_nexus.service.exception.EnsemblTranscriptNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
-import org.cbioportal.genome_nexus.util.IsoformOverrideSource;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+
+import org.cbioportal.genome_nexus.util.JsonReader;
+import org.cbioportal.genome_nexus.model.Vues;
+import org.cbioportal.genome_nexus.model.VuesJsonRecord;
 
 @Service
 public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSummaryService
@@ -43,6 +46,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final VariantClassificationResolver variantClassificationResolver;
     private final VariantTypeResolver variantTypeResolver;
     private final ExonResolver exonResolver;
+    private final Map<String, Vues> vuesMap;
 
     @Autowired
     public VariantAnnotationSummaryServiceImpl(
@@ -81,6 +85,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         this.variantClassificationResolver = variantClassificationResolver;
         this.variantTypeResolver = variantTypeResolver;
         this.exonResolver = exonResolver;
+        this.vuesMap = this.buildVuesMap(JsonReader.getVuesList());
     }
 
     @Override
@@ -100,13 +105,19 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
 
         if (annotationSummary != null && canonicalTranscript != null)
         {
-            annotationSummary.setTranscriptConsequenceSummary(this.getTranscriptSummary(annotation, canonicalTranscript));
+            annotationSummary.setTranscriptConsequenceSummary(this.getTranscriptSummary(annotation, canonicalTranscript, vuesMap));
             annotationSummary.setCanonicalTranscriptId(canonicalTranscript.getTranscriptId());
 
             // for backwards compatibility set transcriptConsequences
             List<TranscriptConsequenceSummary> transcriptConsequences = new ArrayList<>(1);
             transcriptConsequences.add(annotationSummary.getTranscriptConsequenceSummary());
             annotationSummary.setTranscriptConsequences(transcriptConsequences);
+            // if this variant is VUE, add Vues infomation
+            if (annotationSummary.getTranscriptConsequenceSummary() != null && 
+                annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null && 
+                annotationSummary.getTranscriptConsequenceSummary().getIsVue() == true) {
+                annotationSummary.setVues(this.vuesMap.get(annotationSummary.getTranscriptConsequenceSummary().getTranscriptId()));
+            }
         }
 
         return annotationSummary;
@@ -163,11 +174,18 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             List<TranscriptConsequence> transcriptConsequences = annotation.getTranscriptConsequences();
             if (transcriptConsequences != null) {
                 for (TranscriptConsequence transcriptConsequence: transcriptConsequences) {
-                    summaries.add(this.getTranscriptSummary(annotation, transcriptConsequence));
+                    summaries.add(this.getTranscriptSummary(annotation, transcriptConsequence, vuesMap));
                 }
             }
             annotationSummary.setTranscriptConsequenceSummaries(summaries);
             annotationSummary.setTranscriptConsequences(summaries);
+
+            // if this variant is VUE, add Vues infomation
+            if (annotationSummary.getTranscriptConsequenceSummary() != null && 
+                annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null && 
+                annotationSummary.getTranscriptConsequenceSummary().getIsVue() == true) {
+                annotationSummary.setVues(this.vuesMap.get(annotationSummary.getTranscriptConsequenceSummary().getTranscriptId()));
+            }
         }
 
         return annotationSummary;
@@ -206,9 +224,36 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         return summary;
     }
 
+    // Read VUES.json and build Vues map
+    // key is transcript id, value is Vues that contians more information of each VUE variant
+    private Map <String, Vues> buildVuesMap(VuesJsonRecord[] vuesArray) {
+        Map <String, Vues> vuesMap = new HashMap<>();
+        for (VuesJsonRecord vueRecord: vuesArray) {
+            if (vueRecord.getRevisedProteinEffects() != null) {
+                for (RevisedProteinEffectJsonRecord revisedProteinEffectJsonRecord: vueRecord.getRevisedProteinEffects()) {
+                    Vues vue = new Vues();
+                    vue.setComment(vueRecord.getComment());
+                    vue.setDefaultEffect(vueRecord.getDefaultEffect());
+                    vue.setGenomicLocationDescription(vueRecord.getGenomicLocationDescription());
+                    vue.setHugoGeneSymbol(vueRecord.getHugoGeneSymbol());
+                    vue.setPubmedIds(vueRecord.getPubmedIds());
+                    vue.setReferenceText(vueRecord.getReferenceText());
+                    vue.setGenomicLocation(revisedProteinEffectJsonRecord.getGenomicLocation());
+                    vue.setRevisedProteinEffect(revisedProteinEffectJsonRecord.getRevisedProteinEffect());
+                    vue.setTranscriptId(revisedProteinEffectJsonRecord.getTranscriptId());
+                    vue.setVariant(revisedProteinEffectJsonRecord.getVariant());
+                    vue.setVariantClassification(revisedProteinEffectJsonRecord.getVariantClassification());
+                    vuesMap.put(revisedProteinEffectJsonRecord.getTranscriptId(), vue);
+                }
+            }
+        }
+        return vuesMap;
+    }
+
     @Nullable
     private TranscriptConsequenceSummary getTranscriptSummary(VariantAnnotation annotation,
-                                                              TranscriptConsequence transcriptConsequence)
+                                                              TranscriptConsequence transcriptConsequence,
+                                                              Map<String, Vues> vuesMap)
     {
         TranscriptConsequenceSummary summary = null;
 
@@ -235,6 +280,16 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setPolyphenScore(transcriptConsequence.getPolyphenScore());
             summary.setSiftPrediction(transcriptConsequence.getSiftPrediction());
             summary.setSiftScore(transcriptConsequence.getSiftScore());
+
+            // If transcript id and variant id match one of the record in vuesMap, replace variantClassification, hgvspShort and proteinPosition to the value from vuesMap, set isVue to true
+            if (vuesMap.get(transcriptConsequence.getTranscriptId()) != null && vuesMap.get(transcriptConsequence.getTranscriptId()).getVariant().equals(annotation.getVariant()))
+            {
+                summary.setVariantClassification(vuesMap.get(transcriptConsequence.getTranscriptId()).getVariantClassification());
+                summary.setHgvspShort(vuesMap.get(transcriptConsequence.getTranscriptId()).getRevisedProteinEffect());
+                summary.setProteinPosition(this.proteinPositionResolver.extractProteinPos(vuesMap.get(transcriptConsequence.getTranscriptId()).getRevisedProteinEffect()));
+                summary.setIsVue(true);
+            }
+
             if (transcriptConsequence.getTranscriptId() != null) {
                 try {
                     String uniprotId = this.ensemblService.getUniprotId(transcriptConsequence.getTranscriptId());
