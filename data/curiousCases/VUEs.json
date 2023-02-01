@@ -2,7 +2,7 @@
     {
         "hugoGeneSymbol": "KIT",
         "transcriptId": "ENST00000288135",
-        "genomicLocation": "Deletions flanking intron 10 - exon 11 boundary (4:55593576_55593606del)",
+        "genomicLocationDescription": "Deletions flanking intron 10 - exon 11 boundary (4:55593576_55593606del)",
         "defaultEffect": "splice",
         "comment": "Changes splice donor site, cause inframe deletion in exon 11",
         "context": "Actionable in GIST",
@@ -21,7 +21,7 @@
     {
         "hugoGeneSymbol": "APC",
         "transcriptId": "ENST00000257430",
-        "genomicLocation": "5:g.112151184A>G",
+        "genomicLocationDescription": "5:g.112151184A>G",
         "defaultEffect": "synonymous",
         "comment": "Introduces splice acceptor site causing a frameshift",
         "pubmedIds": [29316426],
@@ -32,7 +32,7 @@
     {
         "hugoGeneSymbol": "BAP1",
         "transcriptId": "ENST00000460680",
-        "genomicLocation": "3:g.52439306A>G",
+        "genomicLocationDescription": "3:g.52439306A>G",
         "defaultEffect": "synonymous",
         "comment": "Leads to exon 11 skipping",
         "context": "Recurrent and prognostic in kidney cancer",
@@ -41,7 +41,7 @@
         
     },
     {
-        "genomicLocation": "17:g.7579883G>A",
+        "genomicLocationDescription": "17:g.7579883G>A",
         "transcriptId": "ENST00000269305",
         "defaultEffect": "synonymous",
         "comment": "Affects mRNA structure, reduces HDM2 binding",
@@ -52,7 +52,7 @@
        
     },
     {
-        "genomicLocation": "12:g.25380277G>T",
+        "genomicLocationDescription": "12:g.25380277G>T",
         "transcriptId": "-",
         "defaultEffect": "missense",
         "comment": "Introduces a splice donor site if Q61K is not co-occurring with G60G",
@@ -65,7 +65,7 @@
     {
         "hugoGeneSymbol": "CTNNB1",
         "transcriptId": "-",
-        "genomicLocation": "Deletions flanking exon 2-3 (chr3:41265579_41266277del)",
+        "genomicLocationDescription": "Deletions flanking exon 2-3 (chr3:41265579_41266277del)",
         "defaultEffect": "splice",
         "comment": "Complete exon 3 skip or inframe deletion in exon 3",
         "pubmedIds": [29316426],
@@ -76,7 +76,7 @@
     {
         "hugoGeneSymbol": "MET",
         "transcriptId": "-",
-        "genomicLocation": "Indels and substitutions flanking exon 14 (7:116411926_116412083del)",
+        "genomicLocationDescription": "Indels and substitutions flanking exon 14 (7:116411926_116412083del)",
         "defaultEffect": "splice",
         "comment": "Skipping of exon 14",
         "context": "Actionable in NSCLC",
@@ -87,7 +87,7 @@
     {
         "hugoGeneSymbol": "PIK3R1",
         "transcriptId": "-",
-        "genomicLocation": "Indels and substitutions flanking exon 11 (5:67589663G>A)",
+        "genomicLocationDescription": "Indels and substitutions flanking exon 11 (5:67589663G>A)",
         "defaultEffect": "splice",
         "comment": "Skipping of exon 11",
         "context": "Recurrent in breast and uterine cancer",
@@ -98,7 +98,7 @@
     {
         "hugoGeneSymbol": "FLT3",
         "transcriptId": "-",
-        "genomicLocation": "Indels around tyrosine kinase (13:28608214_28608215insTT...)",
+        "genomicLocationDescription": "Indels around tyrosine kinase (13:28608214_28608215insTT...)",
         "defaultEffect": "splice",
         "comment": "Internal Tandem Duplication",
         "context": "Recurrent alteration in AML",
