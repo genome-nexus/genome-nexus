@@ -1,4 +1,6 @@
-# About Us
+# About
+Genome Nexus is a comprehensive resource integrating variant annotations from [more than a dozen sources](https://docs.genomenexus.org/annotation-sources) relevant to cancer. The annotations can be accessed through a performant [application programming interface](https://docs.genomenexus.org/api) and an [intuitive user interface](https://www.genomenexus.org/), supporting various use cases of variant interpretation. It is freely available under an open source license and can be installed in a private cloud or local environment and integrated with local institutional resources.
+
 Genome Nexus is developed at [Memorial Sloan Kettering Cancer Center](http://www.mskcc.org/) (MSK) and has received several contributions from [The Hyve](http://thehyve.nl/). The [Genome Nexus website](https://www.genomenexus.org/) is hosted by the [Center for Molecular Oncology](http://www.mskcc.org/research/molecular-oncology) at MSK. The software is available under an open source license via [GitHub](https://github.com/genome-nexus). 
 
 ### How do I cite Genome Nexus?
