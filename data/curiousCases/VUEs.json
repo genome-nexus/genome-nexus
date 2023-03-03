@@ -26,8 +26,15 @@
         "comment": "Introduces splice acceptor site causing a frameshift",
         "pubmedIds": [29316426],
         "context": "Recurrent alteration in CRC",
-        "referenceText": "Yaeger et al, 2018"
-        
+        "referenceText": "Yaeger et al, 2018",
+        "revisedProteinEffects": [
+            {
+                "variant": "5:g.112151184A>G",
+                "transcriptId": "ENST00000257430",
+                "revisedProteinEffect": "p.G279Ffs*10",
+                "variantClassification": "Frame_Shift_Ins"
+            }
+        ]
     },
     {
         "hugoGeneSymbol": "BAP1",
@@ -70,8 +77,153 @@
         "comment": "Complete exon 3 skip or inframe deletion in exon 3",
         "pubmedIds": [29316426],
         "context": "Recurrent alteration in CRC",
-        "referenceText": "Yaeger et al, 2018"
-   
+        "referenceText": "Yaeger et al, 2018",
+        "revisedProteinEffects": [
+            {
+                "variant": "3:g.41266086_41266304del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.Q28_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41266012_41266312del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41266038_41266264del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.M12_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265709_41266219del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_Q72del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41266090_41266253del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.S29_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265579_41266277del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265722_41266253del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41266029_41266287del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.E9_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41266028_41266420del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.E9_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41266016_41266403del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265975_41266211del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_G69del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265908_41266236del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_Q79del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41266013_41266355del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265897_41266218del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_Q72del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41266002_41266029del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_E9del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265562_41266260del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A2_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265568_41266266del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.Q4_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265571_41266206del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_Q68del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265648_41266493del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_A97del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265674_41266212del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_F70del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41265990_41266204del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_Q68del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41266017_41266244del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_Q68del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.41266017_41266244del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.A5_D81del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "3:g.55593576_55593606del",
+                "transcriptId": "ENST00000349496",
+                "revisedProteinEffect": "p.E9_D81del",
+                "variantClassification": "In_Frame_Del"
+            }
+        ]
     },
     {
         "hugoGeneSymbol": "MET",

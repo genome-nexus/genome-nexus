@@ -243,7 +243,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                     vue.setTranscriptId(revisedProteinEffectJsonRecord.getTranscriptId());
                     vue.setVariant(revisedProteinEffectJsonRecord.getVariant());
                     vue.setVariantClassification(revisedProteinEffectJsonRecord.getVariantClassification());
-                    vuesMap.put(revisedProteinEffectJsonRecord.getTranscriptId(), vue);
+                    vuesMap.put(revisedProteinEffectJsonRecord.getTranscriptId() + "-" + vue.getVariant(), vue);
                 }
             }
         }
@@ -282,11 +282,12 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setSiftScore(transcriptConsequence.getSiftScore());
 
             // If transcript id and variant id match one of the record in vuesMap, replace variantClassification, hgvspShort and proteinPosition to the value from vuesMap, set isVue to true
-            if (vuesMap.get(transcriptConsequence.getTranscriptId()) != null && vuesMap.get(transcriptConsequence.getTranscriptId()).getVariant().equals(annotation.getVariant()))
+            Vues vue = vuesMap.get(transcriptConsequence.getTranscriptId() + "-" + annotation.getVariant());
+            if (vue != null)
             {
-                summary.setVariantClassification(vuesMap.get(transcriptConsequence.getTranscriptId()).getVariantClassification());
-                summary.setHgvspShort(vuesMap.get(transcriptConsequence.getTranscriptId()).getRevisedProteinEffect());
-                summary.setProteinPosition(this.proteinPositionResolver.extractProteinPos(vuesMap.get(transcriptConsequence.getTranscriptId()).getRevisedProteinEffect()));
+                summary.setVariantClassification(vue.getVariantClassification());
+                summary.setHgvspShort(vue.getRevisedProteinEffect());
+                summary.setProteinPosition(this.proteinPositionResolver.extractProteinPos(vue.getRevisedProteinEffect()));
                 summary.setIsVue(true);
             }
 
