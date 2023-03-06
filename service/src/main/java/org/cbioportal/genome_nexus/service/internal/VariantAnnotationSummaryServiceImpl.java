@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +68,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         VariantClassificationResolver variantClassificationResolver,
         VariantTypeResolver variantTypeResolver,
         ExonResolver exonResolver
-    ) {
+    ) throws IOException {
         this.variantAnnotationService = verifiedHgvsVariantAnnotationService;
         this.ensemblService = ensemblService;
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
