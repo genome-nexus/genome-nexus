@@ -139,8 +139,8 @@ public class VerifiedGenomicLocationAnnotationServiceImpl implements GenomicLoca
         }
         LOG.debug("verifying providedReferenceAllele : '" + providedReferenceAllele + "'");
         String responseReferenceAllele = getReferenceAlleleFromAnnotation(annotation);
-        if (responseReferenceAllele.length() != providedReferenceAllele.length()) {
-            // for altered length Deletion-Insertion responses, recover full reference allele with followup query
+        if (needFollowUpQuery(responseReferenceAllele, providedReferenceAllele)) {
+            // recover full reference allele from follow up query
             String followUpVariant = constructFollowUpQuery(originalQuery);
             if (followUpVariant.length() > 0) {
                 try {
@@ -161,14 +161,31 @@ public class VerifiedGenomicLocationAnnotationServiceImpl implements GenomicLoca
         return createFailedAnnotation(originalVariantQuery, originalVariant);
     }
 
+    private Boolean needFollowUpQuery(String responseReferenceAllele, String providedReferenceAllele)
+    {
+        // for altered length responses, we need to recover full reference allele from follow up query
+        // follow up query gives correct reference allele for referenced genome positions
+        if (responseReferenceAllele.length() != providedReferenceAllele.length()) {
+            // for altered length deletions, e.g. '1,123,124,TC,T': responseReferenceAllele='C', providedReferenceAllele='TC', length not equal
+            // for altered length del-ins, e.g. '1,123,124,TC,TAA': responseReferenceAllele='C', providedReferenceAllele='TC', length not equal
+            // for altered length insertion but > 1 matching alleles, e.g. '1,123,123,TC,TCA': responseReferenceAllele='-', providedReferenceAllele='TC', length not equal
+            return true;
+        }
+        if (responseReferenceAllele.equals("-")) {
+            // for altered length insertion with one matching allele, e.g. '1,123,123,T,TC': responseReferenceAllele='-', providedReferenceAllele='T'
+            // ReferenceAllele lengths are equal but also need follow up query, so need to check if responseReferenceAllele is '-'
+            return true;
+        }
+        return false;
+    }
+
     private String constructFollowUpQuery(String originalQuery)
     {
         // create a deletion variant covering the referenced genome positions
-        // this code should only run for delins variants where part of the TumorSeq allele matches the reference genome
         GenomicLocation followUpQueryGenomicLocation = notationConverter.parseGenomicLocation(originalQuery);
         followUpQueryGenomicLocation.setVariantAllele("-");
         if (followUpQueryGenomicLocation.getReferenceAllele().equals("-")) {
-            return ""; // unexpectantly called constructFollowUpQuery on insertion query -- this annotation will fail
+            return ""; // unexpectantly called constructFollowUpQuery on insertion query that doesn't have matching alleles -- this annotation will fail
         }
         return followUpQueryGenomicLocation.toString();
     }

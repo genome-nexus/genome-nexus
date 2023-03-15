@@ -123,6 +123,8 @@ public class VerifiedGenomicLocationAnnotationServiceTest
             glInsertions.add(new VariantTestCase("5,138163255,138163256,-,T", true, "-/T", "1nt insertion"));
             glInsertions.add(new VariantTestCase("5,138163255,138163256,-,TT", true, "-/TT", "2nt insertion"));
             glInsertions.add(new VariantTestCase("5,138163255,138163256,-,-", true, "-/-", "insertion missing TumorSeqAllele")); // note : different result than ensembl
+            glInsertions.add(new VariantTestCase("5,138163256,138163256,C,CA", true, "-/A", "1nt deletion with RefAllele, 2nt insertion, partial change")); 
+            glInsertions.add(new VariantTestCase("5,138163255,138163256,TC,TCA", true, "-/A", "2nt deletion with RefAllele, 3nt insertion, partial change"));
             glInsertionDeletions = new ArrayList<VariantTestCase>();
             glInsertionDeletions.add(new VariantTestCase("5,138163256,138163256,C,T", true, "C/T", "1nt deletion with RefAllele, 1nt insertion"));
             glInsertionDeletions.add(new VariantTestCase("5,138163256,138163256,A,T", false, null, "1nt deletion with discrepant RefAllele, 1nt insertion"));
@@ -160,6 +162,8 @@ public class VerifiedGenomicLocationAnnotationServiceTest
         setUpQueryToStubMaps("5,138163255,138163256,-,T", true, "-/T");
         setUpQueryToStubMaps("5,138163255,138163256,-,TT", true, "-/TT");
         setUpQueryToStubMaps("5,138163255,138163256,-,-", true, "-/-");
+        setUpQueryToStubMaps("5,138163256,138163256,C,CA", true, "-/A");
+        setUpQueryToStubMaps("5,138163255,138163256,TC,TCA", true, "-/A");
         setUpQueryToStubMaps("5,138163256,138163256,C,TT", true, "C/TT");
         setUpQueryToStubMaps("5,138163256,138163256,A,TT", true, "C/TT");
         setUpQueryToStubMaps("5,138163255,138163256,TC,A", true, "TC/A");
