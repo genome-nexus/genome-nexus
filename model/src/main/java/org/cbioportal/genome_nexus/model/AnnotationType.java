@@ -36,10 +36,4 @@ public enum AnnotationType {
         }
         throw new IllegalArgumentException("Invalid value for AnnotationType: " + value);
     }
-
-    public static String getHumanReadableValues() {
-        return Arrays.stream(AnnotationType.values())
-            .map(AnnotationType::getValue)
-            .collect(Collectors.joining(", "));
-    }
 }

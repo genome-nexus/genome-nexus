@@ -36,8 +36,8 @@ public class AnnotationIntegrationTest
 
     private final static String BASE_URL_GENOMIC_LOCATION = "http://localhost:38896/annotation/genomic/";
 
-    private final static String ALL_ENSEMBL_FIELDS = "fields=" + AnnotationType.ANNOTATION_SUMMARY
-        + "," + AnnotationType.NUCLEOTIDE_CONTEXT;
+    private final static String ALL_ENSEMBL_FIELDS = "fields=" + AnnotationType.ANNOTATION_SUMMARY.getValue()
+        + "," + AnnotationType.NUCLEOTIDE_CONTEXT.getValue();
     private final static String MY_VARIANT_INFO_FIELD = "fields=" + AnnotationType.MY_VARIANT_INFO.getValue();
 
     private RestTemplate restTemplate = new RestTemplate();
