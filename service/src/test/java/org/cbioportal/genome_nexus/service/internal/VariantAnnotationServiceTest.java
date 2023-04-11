@@ -159,8 +159,8 @@ public class VariantAnnotationServiceTest
         this.mockMutationAssessorServiceMethods(variantMockData, maMockData);
         this.mockEnsemblServiceMethods();
 
-        List<String> fields = new ArrayList<>(1);
-        fields.add("mutation_assessor");
+        List<AnnotationType> fields = new ArrayList<>(1);
+        fields.add(AnnotationType.MUTATION_ASSESSOR);
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", null, null, fields);
@@ -187,8 +187,8 @@ public class VariantAnnotationServiceTest
         this.mockMyVariantInfoServiceMethods(variantMockData, mviMockData);
         this.mockEnsemblServiceMethods();
 
-        List<String> fields = new ArrayList<>(1);
-        fields.add("my_variant_info");
+        List<AnnotationType> fields = new ArrayList<>(1);
+        fields.add(AnnotationType.MY_VARIANT_INFO);
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", null, null, fields);
@@ -214,8 +214,8 @@ public class VariantAnnotationServiceTest
         this.mockPtmServiceMethods(ptmMockData);
         this.mockEnsemblServiceMethods();
 
-        List<String> fields = new ArrayList<>(1);
-        fields.add("ptms");
+        List<AnnotationType> fields = new ArrayList<>(1);
+        fields.add(AnnotationType.PTMS);
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", null, null, fields);
@@ -242,8 +242,8 @@ public class VariantAnnotationServiceTest
         this.mockHotspotServiceMethods(hotspotMockData);
         this.mockEnsemblServiceMethods();
 
-        List<String> fields = new ArrayList<>(1);
-        fields.add("hotspots");
+        List<AnnotationType> fields = new ArrayList<>(1);
+        fields.add(AnnotationType.HOTSPOTS);
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", null, null, fields);

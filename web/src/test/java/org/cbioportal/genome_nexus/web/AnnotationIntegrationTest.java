@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.web;
 
+import org.cbioportal.genome_nexus.model.AnnotationType;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,8 +36,9 @@ public class AnnotationIntegrationTest
 
     private final static String BASE_URL_GENOMIC_LOCATION = "http://localhost:38896/annotation/genomic/";
 
-    private final static String ALL_ENSEMBL_FIELDS = "fields=annotation_summary,nucleotide_context";
-    private final static String MY_VARIANT_INFO_FIELD = "fields=my_variant_info";
+    private final static String ALL_ENSEMBL_FIELDS = "fields=" + AnnotationType.ANNOTATION_SUMMARY
+        + "," + AnnotationType.NUCLEOTIDE_CONTEXT;
+    private final static String MY_VARIANT_INFO_FIELD = "fields=" + AnnotationType.MY_VARIANT_INFO.getValue();
 
     private RestTemplate restTemplate = new RestTemplate();
 
