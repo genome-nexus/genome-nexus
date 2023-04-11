@@ -2,9 +2,6 @@ package org.cbioportal.genome_nexus.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 
 public enum AnnotationType {
     ANNOTATION_SUMMARY("annotation_summary"),
