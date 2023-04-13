@@ -3,7 +3,7 @@ package org.cbioportal.genome_nexus.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 
-public enum AnnotationType {
+public enum AnnotationField {
     ANNOTATION_SUMMARY("annotation_summary"),
     CLINVAR("clinvar"),
     HOTSPOTS("hotspots"),
@@ -16,7 +16,7 @@ public enum AnnotationType {
 
     private final String value;
 
-    AnnotationType(String value) {
+    AnnotationField(String value) {
         this.value = value;
     }
 
@@ -25,8 +25,8 @@ public enum AnnotationType {
     }
 
     @JsonCreator
-    public static AnnotationType fromString(String value) {
-        for (AnnotationType field : AnnotationType.values()) {
+    public static AnnotationField fromString(String value) {
+        for (AnnotationField field : AnnotationField.values()) {
             if (field.value.equalsIgnoreCase(value)) {
                 return field;
             }

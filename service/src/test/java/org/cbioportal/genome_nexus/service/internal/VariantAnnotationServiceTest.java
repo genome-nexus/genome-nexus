@@ -2,7 +2,6 @@ package org.cbioportal.genome_nexus.service.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.spy;
 
 import java.io.IOException;
@@ -159,8 +158,8 @@ public class VariantAnnotationServiceTest
         this.mockMutationAssessorServiceMethods(variantMockData, maMockData);
         this.mockEnsemblServiceMethods();
 
-        List<AnnotationType> fields = new ArrayList<>(1);
-        fields.add(AnnotationType.MUTATION_ASSESSOR);
+        List<AnnotationField> fields = new ArrayList<>(1);
+        fields.add(AnnotationField.MUTATION_ASSESSOR);
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", null, null, fields);
@@ -187,8 +186,8 @@ public class VariantAnnotationServiceTest
         this.mockMyVariantInfoServiceMethods(variantMockData, mviMockData);
         this.mockEnsemblServiceMethods();
 
-        List<AnnotationType> fields = new ArrayList<>(1);
-        fields.add(AnnotationType.MY_VARIANT_INFO);
+        List<AnnotationField> fields = new ArrayList<>(1);
+        fields.add(AnnotationField.MY_VARIANT_INFO);
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", null, null, fields);
@@ -214,8 +213,8 @@ public class VariantAnnotationServiceTest
         this.mockPtmServiceMethods(ptmMockData);
         this.mockEnsemblServiceMethods();
 
-        List<AnnotationType> fields = new ArrayList<>(1);
-        fields.add(AnnotationType.PTMS);
+        List<AnnotationField> fields = new ArrayList<>(1);
+        fields.add(AnnotationField.PTMS);
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", null, null, fields);
@@ -242,8 +241,8 @@ public class VariantAnnotationServiceTest
         this.mockHotspotServiceMethods(hotspotMockData);
         this.mockEnsemblServiceMethods();
 
-        List<AnnotationType> fields = new ArrayList<>(1);
-        fields.add(AnnotationType.HOTSPOTS);
+        List<AnnotationField> fields = new ArrayList<>(1);
+        fields.add(AnnotationField.HOTSPOTS);
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", null, null, fields);

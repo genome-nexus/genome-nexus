@@ -135,18 +135,18 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     }
 
     @Override
-    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<AnnotationType> annotationTypeList)
+    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
-        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, annotationTypeList, token);
+        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields, token);
 
         return this.getVariantAnnotation(variant, postEnrichmentService);
     }
 
     @Override
-    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<AnnotationType> annotationTypeList)
+    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
     {
-        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, annotationTypeList, token);
+        EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields, token);
 
         return this.getVariantAnnotations(
             variants,
@@ -276,7 +276,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     }
 
 
-    private EnrichmentService initPostEnrichmentService(String isoformOverrideSource, List<AnnotationType> annotationTypeList, Map<String, String> token)
+    private EnrichmentService initPostEnrichmentService(String isoformOverrideSource, List<AnnotationField> fields, Map<String, String> token)
     {
         // The post enrichment service enriches the annotation after saving
         // the original annotation data to the repository. Any enrichment
@@ -290,53 +290,53 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
             new IsoformAnnotationEnricher(isoformOverrideSource, isoformOverrideSource, ensemblService)
         );
 
-        if (annotationTypeList == null || annotationTypeList.isEmpty()) {
+        if (fields == null || fields.isEmpty()) {
             return postEnrichmentService;
         }
 
-        if (annotationTypeList.contains(AnnotationType.HOTSPOTS))
+        if (fields.contains(AnnotationField.HOTSPOTS))
         {
             postEnrichmentService.registerEnricher(
                 new HotspotAnnotationEnricher("cancerHotspots", hotspotService, true)
             );
         }
 
-        if (annotationTypeList.contains(AnnotationType.MUTATION_ASSESSOR))
+        if (fields.contains(AnnotationField.MUTATION_ASSESSOR))
         {
             postEnrichmentService.registerEnricher(
                 new MutationAssessorAnnotationEnricher("mutation_assessor", mutationAssessorService)
             );
         }
 
-        if (annotationTypeList.contains(AnnotationType.NUCLEOTIDE_CONTEXT))
+        if (fields.contains(AnnotationField.NUCLEOTIDE_CONTEXT))
         {
             postEnrichmentService.registerEnricher(
                 new NucleotideContextAnnotationEnricher("nucleotide_context", nucleotideContextService)
             );
         }
 
-        if (annotationTypeList.contains(AnnotationType.MY_VARIANT_INFO))
+        if (fields.contains(AnnotationField.MY_VARIANT_INFO))
         {
             postEnrichmentService.registerEnricher(
                 new MyVariantInfoAnnotationEnricher("my_variant_info", myVariantInfoService)
             );
         }
 
-        if (annotationTypeList.contains(AnnotationType.PTMS))
+        if (fields.contains(AnnotationField.PTMS))
         {
             postEnrichmentService.registerEnricher(
                 new PostTranslationalModificationEnricher("ptm", postTranslationalModificationService)
             );
         }
 
-        if (annotationTypeList.contains(AnnotationType.SIGNAL))
+        if (fields.contains(AnnotationField.SIGNAL))
         {
             postEnrichmentService.registerEnricher(
                 new SignalAnnotationEnricher("signal", signalMutationService)
             );
         }
 
-        if (annotationTypeList.contains(AnnotationType.ONCOKB))
+        if (fields.contains(AnnotationField.ONCOKB))
         {
             String oncokbToken = null;
             if (token != null && token.containsKey("oncokb")) {
@@ -353,14 +353,14 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
             );
         }
 
-        if (annotationTypeList.contains(AnnotationType.CLINVAR))
+        if (fields.contains(AnnotationField.CLINVAR))
         {
             postEnrichmentService.registerEnricher(
                 new ClinvarVariantAnnotationEnricher("clinvar", clinvarVariantAnnotationService)
             );
         }
 
-        if (annotationTypeList.contains(AnnotationType.ANNOTATION_SUMMARY))
+        if (fields.contains(AnnotationField.ANNOTATION_SUMMARY))
         {
             postEnrichmentService.registerEnricher(
                 new CanonicalTranscriptAnnotationEnricher(

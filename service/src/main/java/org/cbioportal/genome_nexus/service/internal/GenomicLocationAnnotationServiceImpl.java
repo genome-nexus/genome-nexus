@@ -137,7 +137,7 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     public VariantAnnotation getAnnotation(String genomicLocation,
                                            String isoformOverrideSource,
                                            Map<String, String> token,
-                                           List<AnnotationType> fields)
+                                           List<AnnotationField> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(
@@ -153,7 +153,7 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     public List<VariantAnnotation> getAnnotations(List<GenomicLocation> genomicLocations,
                                                   String isoformOverrideSource,
                                                   Map<String, String> token,
-                                                  List<AnnotationType> fields)
+                                                  List<AnnotationField> fields)
     {
         Map<String, Set<String>> convertedVarsToOrigVarQueryMap = mapConvertedVarsToOrigVarQuery(genomicLocations);
         List<VariantAnnotation> variantAnnotations = new ArrayList<>();

@@ -35,7 +35,7 @@ package org.cbioportal.genome_nexus.service.internal;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
-import org.cbioportal.genome_nexus.model.AnnotationType;
+import org.cbioportal.genome_nexus.model.AnnotationField;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.GenomicLocationAnnotationService;
@@ -72,7 +72,7 @@ public class VerifiedGenomicLocationAnnotationServiceTest
     // argument list stubs
     public String mockIsoformOverrideSource = "mockIsoformOverrideSource";
     public Map<String, String> mockTokenMap = new HashMap<String, String>();
-    public List<AnnotationType> mockFields = new ArrayList<>();
+    public List<AnnotationField> mockFields = new ArrayList<>();
 
     class VariantTestCase
     {

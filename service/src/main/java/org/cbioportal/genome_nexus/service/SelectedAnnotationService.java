@@ -32,7 +32,7 @@
 
 package org.cbioportal.genome_nexus.service;
 
-import org.cbioportal.genome_nexus.model.AnnotationType;
+import org.cbioportal.genome_nexus.model.AnnotationField;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationQueryMixedFormatException;
@@ -46,12 +46,12 @@ public interface SelectedAnnotationService {
         String variant,
         String isoformOverrideSource,
         Map<String, String> token,
-        List<AnnotationType> annotationTypeList) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
+        List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
 
     public List<VariantAnnotation> getAnnotations(
         List<String> variants,
         String isoformOverrideSource,
         Map<String, String> token,
-        List<AnnotationType> fields) throws VariantAnnotationNotFoundException, VariantAnnotationQueryMixedFormatException, VariantAnnotationWebServiceException;
+        List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationQueryMixedFormatException, VariantAnnotationWebServiceException;
 
 }

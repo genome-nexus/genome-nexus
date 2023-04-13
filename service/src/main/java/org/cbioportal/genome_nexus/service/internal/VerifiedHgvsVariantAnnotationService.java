@@ -35,7 +35,7 @@ package org.cbioportal.genome_nexus.service.internal;
 import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cbioportal.genome_nexus.model.AnnotationType;
+import org.cbioportal.genome_nexus.model.AnnotationField;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.*;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
@@ -79,18 +79,18 @@ public class VerifiedHgvsVariantAnnotationService implements VariantAnnotationSe
     }
 
     @Override
-    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<AnnotationType> annotationTypeList)
+    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
             throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
-        VariantAnnotation annotation = hgvsVariantAnnotationService.getAnnotation(variant, isoformOverrideSource, token, annotationTypeList);
+        VariantAnnotation annotation = hgvsVariantAnnotationService.getAnnotation(variant, isoformOverrideSource, token, fields);
         VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(annotation);
         return verifiedAnnotation;
     }
 
     @Override
-    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<AnnotationType> annotationTypeList)
+    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
     {
-        List<VariantAnnotation> annotations = hgvsVariantAnnotationService.getAnnotations(variants, isoformOverrideSource, token, annotationTypeList);
+        List<VariantAnnotation> annotations = hgvsVariantAnnotationService.getAnnotations(variants, isoformOverrideSource, token, fields);
         for (int index = 0; index < annotations.size(); index = index + 1) {
             VariantAnnotation annotation = annotations.get(index);
             VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(annotation);
