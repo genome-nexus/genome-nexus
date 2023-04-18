@@ -185,7 +185,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             if (annotationSummary.getTranscriptConsequenceSummary() != null && 
                 annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null && 
                 annotationSummary.getTranscriptConsequenceSummary().getIsVue() == true) {
-                annotationSummary.setVues(this.vuesMap.get(annotationSummary.getTranscriptConsequenceSummary().getTranscriptId()));
+                annotationSummary.setVues(this.vuesMap.get(annotationSummary.getTranscriptConsequenceSummary().getTranscriptId() + "-" + annotationSummary.getVariant()));
             }
         }
 
