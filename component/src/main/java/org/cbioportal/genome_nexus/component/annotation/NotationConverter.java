@@ -221,6 +221,18 @@ public class NotationConverter {
         // Ensembl uses a one-based coordinate system
         if (start < 1) {
             region = null;
+        // If the var allele is "-", then it is a deletion
+        // A ref allele of "-" could be an insertion or deletion, so this check should come first.
+        } else if (var.equals("-") || var.length() == 0) {
+            /*
+            Process Deletion
+            Example deletion: 1 206811015 206811016  AC -
+            Example output:   1:206811015-206811016:1/-
+
+            Example deletion: 11 2133018 2133018 - -
+            Example output: 11:2133018-2133018:1/-
+            */
+            region = chr + ":" + start + "-" + end + ":1/-";
         } else if (ref.equals("-") || ref.length() == 0 || ref.equals("NA") || ref.contains("--")) {
             /*
             Process Insertion
@@ -228,18 +240,13 @@ public class NotationConverter {
             Example output: 17:36002278-36002277:1/A
             */
             try {
+                // We follow the rule for insertions described here: https://useast.ensembl.org/info/docs/tools/vep/vep_formats.html#default
+                // The VEP differentiates between ins and delins by swapping the start and end positions for insertions.
                 region = chr + ":" + String.valueOf(start + 1) + "-" + start  + ":1/" + var;
             }
             catch (NumberFormatException e) {
                 return null;
             }
-        } else if (var.equals("-") || var.length() == 0) {
-            /*
-            Process Deletion
-            Example deletion: 1 206811015 206811016  AC -
-            Example output:   1:206811015-206811016:1/-
-            */
-            region = chr + ":" + start + "-" + end + ":1/-";
         } else if (ref.length() > 1 || var.length() > 1) {
             /*
             Process ONP

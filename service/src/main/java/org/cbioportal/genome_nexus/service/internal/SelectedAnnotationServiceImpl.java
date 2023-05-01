@@ -30,12 +30,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cbioportal.genome_nexus.service;
+package org.cbioportal.genome_nexus.service.internal;
 
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.GenomicLocationAnnotationService;
+import org.cbioportal.genome_nexus.service.SelectedAnnotationService;
+import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationQueryMixedFormatException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -56,7 +58,7 @@ public class SelectedAnnotationServiceImpl implements SelectedAnnotationService 
     private final NotationConverter notationConverter;
     private final Boolean isRegionAnnotationEnabled;
 
-private static final Log LOG = LogFactory.getLog(SelectedAnnotationServiceImpl.class);
+    private static final Log LOG = LogFactory.getLog(SelectedAnnotationServiceImpl.class);
 
     @Autowired
     public SelectedAnnotationServiceImpl(
