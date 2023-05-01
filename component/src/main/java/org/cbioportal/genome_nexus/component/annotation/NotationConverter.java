@@ -240,6 +240,8 @@ public class NotationConverter {
             Example output: 17:36002278-36002277:1/A
             */
             try {
+                // We follow the rule for insertions described here: https://useast.ensembl.org/info/docs/tools/vep/vep_formats.html#default
+                // The VEP differentiates between ins and delins by swapping the start and end positions for insertions.
                 region = chr + ":" + String.valueOf(start + 1) + "-" + start  + ":1/" + var;
             }
             catch (NumberFormatException e) {
