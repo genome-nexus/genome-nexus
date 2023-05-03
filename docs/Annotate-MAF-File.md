@@ -12,7 +12,7 @@ Annotations using the genome-nexus-annotation-pipeline requires the mutation dat
 - Start_Position
 - End_Position
 - Reference_Allele
-- Tumor_Seq_Allele2
+- Tumor_Seq_Allele1 or Tumor_Seq_Alele2
 
 These essential columns provide the necessary information for accurate annotation of MAF files.
 
