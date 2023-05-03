@@ -1,6 +1,6 @@
 package org.cbioportal.genome_nexus.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 
 public enum AnnotationField {
@@ -20,11 +20,7 @@ public enum AnnotationField {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
 
-    @JsonCreator
     public static AnnotationField fromString(String value) {
         for (AnnotationField field : AnnotationField.values()) {
             if (field.value.equalsIgnoreCase(value)) {
@@ -32,5 +28,10 @@ public enum AnnotationField {
             }
         }
         throw new IllegalArgumentException("Invalid value for AnnotationType: " + value);
+    }
+
+    @JsonValue
+    public String getValue() {
+        return value;
     }
 }
