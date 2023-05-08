@@ -32,9 +32,9 @@
 
 package org.cbioportal.genome_nexus.service;
 
+import org.cbioportal.genome_nexus.model.AnnotationField;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
-import org.cbioportal.genome_nexus.service.exception.VariantAnnotationQueryMixedFormatException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 
 import java.util.*;
@@ -47,7 +47,7 @@ public interface VariantAnnotationService
     VariantAnnotation getAnnotation(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException;
     List<VariantAnnotation> getAnnotations(List<String> variants);
-    VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<String> fields)
+    VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException;
-    List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<String> fields);
+    List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields);
 }

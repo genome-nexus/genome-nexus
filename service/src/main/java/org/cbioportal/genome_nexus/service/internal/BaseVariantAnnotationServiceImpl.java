@@ -51,7 +51,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
@@ -136,7 +135,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     }
 
     @Override
-    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<String> fields)
+    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields, token);
@@ -145,7 +144,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     }
 
     @Override
-    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<String> fields)
+    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
     {
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields, token);
 
@@ -165,12 +164,12 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         try {
             // get the annotation from the web service and save it to the DB
             variantAnnotation = Optional.ofNullable(this.resourceFetcher.fetchAndCache(normalizedVariant));
-            
+
             // add new annotation to index db
             variantAnnotation.ifPresent(annotation -> {
                 this.saveToIndexDb(normalizedVariant, annotation);
             });
-    
+
             // include original variant value too
             variantAnnotation.ifPresent(x -> x.setVariant(normalizedVariant));
         }
@@ -277,7 +276,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     }
 
 
-    private EnrichmentService initPostEnrichmentService(String isoformOverrideSource, List<String> fields, Map<String, String> token)
+    private EnrichmentService initPostEnrichmentService(String isoformOverrideSource, List<AnnotationField> fields, Map<String, String> token)
     {
         // The post enrichment service enriches the annotation after saving
         // the original annotation data to the repository. Any enrichment
@@ -291,49 +290,53 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
             new IsoformAnnotationEnricher(isoformOverrideSource, isoformOverrideSource, ensemblService)
         );
 
-        if (fields != null && fields.contains("hotspots"))
+        if (fields == null || fields.isEmpty()) {
+            return postEnrichmentService;
+        }
+
+        if (fields.contains(AnnotationField.HOTSPOTS))
         {
             postEnrichmentService.registerEnricher(
                 new HotspotAnnotationEnricher("cancerHotspots", hotspotService, true)
             );
         }
 
-        if (fields != null && fields.contains("mutation_assessor"))
+        if (fields.contains(AnnotationField.MUTATION_ASSESSOR))
         {
             postEnrichmentService.registerEnricher(
                 new MutationAssessorAnnotationEnricher("mutation_assessor", mutationAssessorService)
             );
         }
 
-        if (fields != null && fields.contains("nucleotide_context"))
+        if (fields.contains(AnnotationField.NUCLEOTIDE_CONTEXT))
         {
             postEnrichmentService.registerEnricher(
                 new NucleotideContextAnnotationEnricher("nucleotide_context", nucleotideContextService)
             );
         }
 
-        if (fields != null && fields.contains("my_variant_info"))
+        if (fields.contains(AnnotationField.MY_VARIANT_INFO))
         {
             postEnrichmentService.registerEnricher(
                 new MyVariantInfoAnnotationEnricher("my_variant_info", myVariantInfoService)
             );
         }
 
-        if (fields != null && fields.contains("ptms"))
+        if (fields.contains(AnnotationField.PTMS))
         {
             postEnrichmentService.registerEnricher(
                 new PostTranslationalModificationEnricher("ptm", postTranslationalModificationService)
             );
         }
 
-        if (fields != null && fields.contains("signal"))
+        if (fields.contains(AnnotationField.SIGNAL))
         {
             postEnrichmentService.registerEnricher(
                 new SignalAnnotationEnricher("signal", signalMutationService)
             );
         }
 
-        if (fields != null && fields.contains("oncokb"))
+        if (fields.contains(AnnotationField.ONCOKB))
         {
             String oncokbToken = null;
             if (token != null && token.containsKey("oncokb")) {
@@ -350,14 +353,14 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
             );
         }
 
-        if (fields != null && fields.contains("clinvar"))
+        if (fields.contains(AnnotationField.CLINVAR))
         {
             postEnrichmentService.registerEnricher(
                 new ClinvarVariantAnnotationEnricher("clinvar", clinvarVariantAnnotationService)
             );
         }
 
-        if (fields != null && fields.contains("annotation_summary"))
+        if (fields.contains(AnnotationField.ANNOTATION_SUMMARY))
         {
             postEnrichmentService.registerEnricher(
                 new CanonicalTranscriptAnnotationEnricher(

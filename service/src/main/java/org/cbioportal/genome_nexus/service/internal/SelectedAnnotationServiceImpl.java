@@ -33,6 +33,7 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.model.AnnotationField;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.GenomicLocationAnnotationService;
@@ -41,7 +42,6 @@ import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationQueryMixedFormatException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
-import org.cbioportal.genome_nexus.service.internal.HgvsVariantAnnotationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -75,10 +75,10 @@ public class SelectedAnnotationServiceImpl implements SelectedAnnotationService 
 
     @Override
     public VariantAnnotation getAnnotation(
-            String variant,
-            String isoformOverrideSource,
-            Map<String, String> token,
-            List<String> fields) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException {
+        String variant,
+        String isoformOverrideSource,
+        Map<String, String> token,
+        List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException {
         if (needToConvertHgvsToRegionForAnnotation(variant)) {
             GenomicLocation variantAsGenomicLocation = notationConverter.hgvsgToGenomicLocation(variant);
             // TODO: we should provide a getAnnotation() call to genomicLocationAnnotationService which accepts GenomicLocation
@@ -91,10 +91,10 @@ public class SelectedAnnotationServiceImpl implements SelectedAnnotationService 
 
     @Override
     public List<VariantAnnotation> getAnnotations(
-            List<String> variants,
-            String isoformOverrideSource,
-            Map<String, String> token,
-            List<String> fields) throws VariantAnnotationNotFoundException, VariantAnnotationQueryMixedFormatException, VariantAnnotationWebServiceException {
+        List<String> variants,
+        String isoformOverrideSource,
+        Map<String, String> token,
+        List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationQueryMixedFormatException, VariantAnnotationWebServiceException {
         if (needToConvertHgvsToRegionForAnnotation(variants)) {
             List<GenomicLocation> variantsAsGenomicLocations = notationConverter.hgvsgToGenomicLocations(variants);
             return genomicLocationAnnotationService.getAnnotations(variantsAsGenomicLocations, isoformOverrideSource, token, fields);
