@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.service.internal;
 
+import org.cbioportal.genome_nexus.model.AnnotationField;
 import org.cbioportal.genome_nexus.model.CuriousCases;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.CuriousCasesService;
@@ -35,7 +36,7 @@ public class CuriousCasesServiceImpl implements CuriousCasesService {
         CuriousCases CuriousCases = null;
 
         try {
-            VariantAnnotation annotation = genomicLocationAnnotationService.getAnnotation(genomicLocation, null, null, Arrays.asList("annotation_summary"));
+            VariantAnnotation annotation = genomicLocationAnnotationService.getAnnotation(genomicLocation, null, null, Arrays.asList(AnnotationField.ANNOTATION_SUMMARY));
             CuriousCases = generateCuriousCases(annotation, genomicLocation);
             if (CuriousCases != null) {
                 CuriousCases.setGenomicLocation(genomicLocation);
@@ -79,7 +80,7 @@ public class CuriousCasesServiceImpl implements CuriousCasesService {
                 comment = "Potential in-frame deletion event at intron10-exon 11 boundary, commmon in Gastrointestinal Stromal Tumors";
                 pubmedIds = new ArrayList<>(Arrays.asList(15507676, 27600498, 32697050));
             }
-            // Potential APC Exon 9 intro of cryptic splice acceptor site 
+            // Potential APC Exon 9 intro of cryptic splice acceptor site
             else if (chr.equals("5") && start == 112151184 && end == 112151184 && variantType.equals(MutationType.SNP) && ref.equals("A") && var.equals("G")) {
                 comment = "Potential introduction of donor splice site, common in colorectal cancers";
                 pubmedIds = new ArrayList<>(Arrays.asList(29316426));

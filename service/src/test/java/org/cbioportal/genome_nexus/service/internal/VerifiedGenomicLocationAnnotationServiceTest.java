@@ -35,6 +35,7 @@ package org.cbioportal.genome_nexus.service.internal;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
+import org.cbioportal.genome_nexus.model.AnnotationField;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.GenomicLocationAnnotationService;
@@ -71,7 +72,7 @@ public class VerifiedGenomicLocationAnnotationServiceTest
     // argument list stubs
     public String mockIsoformOverrideSource = "mockIsoformOverrideSource";
     public Map<String, String> mockTokenMap = new HashMap<String, String>();
-    public List<String> mockFields = new ArrayList<String>();
+    public List<AnnotationField> mockFields = new ArrayList<>();
 
     class VariantTestCase
     {
@@ -123,7 +124,7 @@ public class VerifiedGenomicLocationAnnotationServiceTest
             glInsertions.add(new VariantTestCase("5,138163255,138163256,-,T", true, "-/T", "1nt insertion"));
             glInsertions.add(new VariantTestCase("5,138163255,138163256,-,TT", true, "-/TT", "2nt insertion"));
             glInsertions.add(new VariantTestCase("5,138163255,138163256,-,-", true, "-/-", "insertion missing TumorSeqAllele")); // note : different result than ensembl
-            glInsertions.add(new VariantTestCase("5,138163256,138163256,C,CA", true, "-/A", "1nt deletion with RefAllele, 2nt insertion, partial change")); 
+            glInsertions.add(new VariantTestCase("5,138163256,138163256,C,CA", true, "-/A", "1nt deletion with RefAllele, 2nt insertion, partial change"));
             glInsertions.add(new VariantTestCase("5,138163255,138163256,TC,TCA", true, "-/A", "2nt deletion with RefAllele, 3nt insertion, partial change"));
             glInsertionDeletions = new ArrayList<VariantTestCase>();
             glInsertionDeletions.add(new VariantTestCase("5,138163256,138163256,C,T", true, "C/T", "1nt deletion with RefAllele, 1nt insertion"));

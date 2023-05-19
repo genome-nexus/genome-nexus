@@ -14,7 +14,7 @@
          PROJECT_VERSION env variable (see version.sh) -->
     <version>0-unknown-version-SNAPSHOT</version>
   </parent>
-  
+
   <profiles>
     <profile>
       <id>war</id>
@@ -142,7 +142,7 @@
         <configuration>
           <forkCount>3</forkCount>
           <reuseForks>true</reuseForks>
-          <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+          <argLine>-Xmx1024m</argLine>
           <systemPropertyVariables>
             <projectVersion>1.0</projectVersion>
           </systemPropertyVariables>
