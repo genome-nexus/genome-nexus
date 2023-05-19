@@ -5,16 +5,17 @@ MAF files can be annotated using either the web interface or the command line cl
 
 ## Annotate a MAF file using the command line client
 
-To annotate a specific MAF file using the command line client, we recommend using the [genome-nexus-annotation-pipeline](https://github.com/genome-nexus/genome-nexus-annotation-pipeline). This powerful tool adds annotations to the MAF files quickly and easily, with options for customizing the annotations to suit your specific needs.
+To annotate a specific MAF file using the command line client, we will be using the [genome-nexus-annotation-pipeline](https://github.com/genome-nexus/genome-nexus-annotation-pipeline). This tool provides the options to customize the annotations according to your specific needs.
 
-Annotations using the genome-nexus-annotation-pipeline requires the mutation data files with at least five columns:
+
+To use the genome-nexus-annotation-pipeline for annotations, the mutation data files must have at least five columns:
 - Chromosome
 - Start_Position
 - End_Position
 - Reference_Allele
 - Tumor_Seq_Allele1 or Tumor_Seq_Alele2
 
-These essential columns provide the necessary information for accurate annotation of MAF files.
+These essential columns provide the necessary information for accurate annotation of the variants.
 
 ### Minimal Example
 

@@ -4,9 +4,9 @@ Before annotating a VCF file using Genome Nexus, it must be first converted to a
 
 ## VCF to MAF conversion
 
-To convert a Variant Call Format (VCF) file to Mutation Annotation Format (MAF), we recommend using a simpler and more user-friendly [vcf2maf](https://github.com/genome-nexus/annotation-tools/blob/master/vcf2maf.py) python tool from the [genome-nexus/annotation-tools](https://github.com/genome-nexus/annotation-tools) GitHub repository.
+To convert a Variant Call Format (VCF) file to Mutation Annotation Format (MAF), we recommend using the [vcf2maf Python tool](https://github.com/genome-nexus/annotation-tools/blob/master/vcf2maf.py).
 
-This tool is designed to support the conversion of VCF files from multiple callers to a standardized MAF format that can be easily used for downstream analysis.
+This tool is designed to support the conversion of VCF files from multiple callers to a standardized MAF format that can be easily used for downstream analysis. Note that this Python script is a rewritten version of the [vcf2maf Perl tool](https://github.com/mskcc/vcf2maf).
 
 ### Requirements
 
@@ -37,3 +37,7 @@ This command converts the VCF files in /vcfs folder to MAF format.
 - The `--output-directory` option allows you to specify the directory where the MAF files will be saved. If no output path is provided, the default output directory `vcf2maf_output` will be used in the current working directory.
 - The `--tumor-id` option allows you to specify the ID of the tumor sample used in the genotype columns of the VCF file. If the option is not used, the script will automatically identify the tumor ID from either the `tumor_sample` keyword in the meta data lines or the sample columns from VCF header.
 - The `--normal-id` option allows you to specify the ID of the normal sample used in the genotype columns of the VCF file. If the option is not used, the script will automatically identify the normal ID from either the `normal_sample` keyword in the meta data lines or the sample columns from VCF header.
+
+## Annotate a MAF file:
+
+Once the VCF file has been converted to Mutation Annotation Format (MAF), you can proceed to annotate the MAF files using Genome Nexus. Refer to the [Annotate a MAF File](https://docs.genomenexus.org/annotate-file) section for detailed instructions.
