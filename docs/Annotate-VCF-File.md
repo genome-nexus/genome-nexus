@@ -40,4 +40,4 @@ This command converts the VCF files in /vcfs folder to MAF format.
 
 ## Annotate a MAF file:
 
-Once the VCF file has been converted to Mutation Annotation Format (MAF), you can proceed to annotate the MAF files using Genome Nexus. Refer to the [Annotate a MAF File](https://docs.genomenexus.org/annotate-file) section for detailed instructions.
+Once the VCF file has been converted to Mutation Annotation Format (MAF), you can proceed to annotate the MAF files using Genome Nexus. Refer to the [Annotate a MAF File](https://docs.genomenexus.org/annotate-maf-file) section for detailed instructions.
