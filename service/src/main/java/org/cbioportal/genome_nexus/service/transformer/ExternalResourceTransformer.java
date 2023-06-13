@@ -1,6 +1,9 @@
 package org.cbioportal.genome_nexus.service.transformer;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.mongodb.DBObject;
 import org.cbioportal.genome_nexus.service.ResourceTransformer;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
@@ -50,11 +53,8 @@ public class ExternalResourceTransformer<T> implements ResourceTransformer<T>
     {
         List<T> list = new ArrayList<>();
         ObjectMapper mapper = objectMapper;
-
-        if (mapper == null)
-        {
-            mapper = new ObjectMapper();
-        }
+        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         try {
             for (DBObject dbObject: Transformer.convertToDbObjectList(rawJson))
