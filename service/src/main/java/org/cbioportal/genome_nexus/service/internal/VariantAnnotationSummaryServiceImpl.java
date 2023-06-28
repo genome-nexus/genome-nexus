@@ -13,6 +13,7 @@ import org.cbioportal.genome_nexus.service.annotation.EntrezGeneIdResolver;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.service.remote.RevueDataFetcher;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.cbioportal.genome_nexus.util.JsonReader;
 import org.cbioportal.genome_nexus.model.Vues;
 import org.cbioportal.genome_nexus.model.VuesJsonRecord;
 
@@ -86,7 +86,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         this.variantClassificationResolver = variantClassificationResolver;
         this.variantTypeResolver = variantTypeResolver;
         this.exonResolver = exonResolver;
-        this.vuesMap = this.buildVuesMap(JsonReader.getVuesList());
+        this.vuesMap = this.buildVuesMap(RevueDataFetcher.getRevueData());
     }
 
     @Override
