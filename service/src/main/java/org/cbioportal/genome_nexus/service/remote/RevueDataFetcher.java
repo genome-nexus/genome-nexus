@@ -1,12 +1,10 @@
 package org.cbioportal.genome_nexus.service.remote;
 import org.cbioportal.genome_nexus.model.VuesJsonRecord;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-@Component
 public class RevueDataFetcher {
 
     private static final String revueUrl = "https://raw.githubusercontent.com/knowledgesystems/reVUE-data/main/VUEs_confirmed.json";
