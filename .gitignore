@@ -3,6 +3,7 @@ pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 pom.xml.next
+pom.xml.new-version
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
@@ -12,3 +13,10 @@ application.properties
 *.ipr
 *.iws
 *.DS_Store
+*.woff2
+*.woff
+*.map
+*.chunk.js
+*.chunk.css
+web/src/main/resources/static/*
+.vscode

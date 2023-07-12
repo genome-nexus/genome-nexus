@@ -12,12 +12,8 @@ jobs:
       env:
         ONCOKB_TOKEN: ${{ secrets.ONCOKB_TOKEN }}
       run: |
-        curl -X GET --header 'Accept: application/json' 'https://www.genomenexus.org/annotation/17%3Ag.41242962_41242963insGA?token=$ONCOKB_TOKEN&fields=oncokb' -w ",http_code:%{http_code}" > curl_response.txt
-        SEARCH_HTTP_CODE="http_code:200"
-        SEARCH_ONCOKB="oncokb"
-        FILE="curl_response.txt"
-        if [ `grep -q "$SEARCH_HTTP_CODE" "$FILE"` -a `grep -q "$SEARCH_ONCOKB" "$FILE"` ]
-        then
+        curl_result=$(curl --get --header 'Accept: application/json' --data-urlencode "token=$ONCOKB_TOKEN" --data "fields=oncokb" "https://www.genomenexus.org/annotation/17:g.41242962_41242963insGA" -w ",http_code:%{http_code}")
+        if [[ "${curl_result}" == *"http_code:200"* && "${curl_result}" == *"oncokb"* ]]; then
           echo "Request succeeded"
           exit 0
         else

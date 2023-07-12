@@ -49,14 +49,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-          <groupId>com.github.genome-nexus.oncokb-java-api-client</groupId>
+          <groupId>com.github.oncokb.oncokb-java-api-client</groupId>
           <artifactId>oncokbPublicApiClient</artifactId>
-          <version>d7a38a4215d9bba561e7e2a555b7abc9dad6242b</version>
+          <version>6f86dd344b1d9ad07b59e560d96a02d289c4e5a4</version>
         </dependency>
         <dependency>
-          <groupId>com.github.genome-nexus.oncokb-java-api-client</groupId>
+          <groupId>com.github.oncokb.oncokb-java-api-client</groupId>
           <artifactId>oncokbPrivateApiClient</artifactId>
-          <version>d7a38a4215d9bba561e7e2a555b7abc9dad6242b</version>
+          <version>6f86dd344b1d9ad07b59e560d96a02d289c4e5a4</version>
         </dependency>
     </dependencies>
 
