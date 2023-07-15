@@ -1,7 +1,6 @@
 package org.cbioportal.genome_nexus.service.cached;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import org.apache.commons.logging.Log;
@@ -54,9 +53,7 @@ public class CachedMyVariantInfoFetcher extends BaseCachedExternalResourceFetche
 
         // instantiate a custom object mapper for normalizing purposes
         this.objectMapper = new ExternalResourceObjectMapper();
-        this.objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         this.objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     protected Object buildRequestBody(Set<String> ids)

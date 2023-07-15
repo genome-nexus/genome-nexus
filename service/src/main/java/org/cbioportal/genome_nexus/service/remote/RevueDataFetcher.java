@@ -9,7 +9,7 @@ import com.google.gson.JsonSyntaxException;
 @Component
 public class RevueDataFetcher {
 
-    private static final String revueUrl = "https://raw.githubusercontent.com/knowledgesystems/reVUE-data/main/VUEs_confirmed.json";
+    private static final String revueUrl = "https://raw.githubusercontent.com/knowledgesystems/reVUE-data/main/VUEs.json";
 
     public static VuesJsonRecord[] getRevueData() {
         RestTemplate restTemplate = new RestTemplate();

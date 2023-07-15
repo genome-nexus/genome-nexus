@@ -7,13 +7,17 @@ public class Vues {
     private String genomicLocationDescription;
     private String defaultEffect;
     private String comment;
-    private List<Integer> pubmedIds;
+    private Integer pubmedId;
     private String referenceText;
     private String variant; 
     private String genomicLocation;
     private String transcriptId;
     private String revisedProteinEffect;
-    private String variantClassification;
+    private String revisedVariantClassification;
+    private String context;
+    private String vepPredictedProteinEffect;
+    private String vepPredictedVariantClassification;
+    private Boolean confirmed;
 
     public String getHugoGeneSymbol() {
         return hugoGeneSymbol;
@@ -39,11 +43,11 @@ public class Vues {
     public void setComment(String comment) {
         this.comment = comment;
     }
-    public List<Integer> getPubmedIds() {
-        return pubmedIds;
+    public Integer getPubmedId() {
+        return pubmedId;
     }
-    public void setPubmedIds(List<Integer> pubmedIds) {
-        this.pubmedIds = pubmedIds;
+    public void setPubmedId(Integer pubmedId) {
+        this.pubmedId = pubmedId;
     }
     public String getReferenceText() {
         return referenceText;
@@ -75,11 +79,34 @@ public class Vues {
     public void setRevisedProteinEffect(String revisedProteinEffect) {
         this.revisedProteinEffect = revisedProteinEffect;
     }
-    public String getVariantClassification() {
-        return variantClassification;
+    public String getRevisedVariantClassification() {
+        return revisedVariantClassification;
     }
-    public void setVariantClassification(String variantClassification) {
-        this.variantClassification = variantClassification;
+    public void setRevisedVariantClassification(String revisedVariantClassification) {
+        this.revisedVariantClassification = revisedVariantClassification;
     } 
-
+    public String getContext() {
+        return context;
+    }
+    public void setContext(String context) {
+        this.context = context;
+    }
+    public String getVepPredictedProteinEffect() {
+        return vepPredictedProteinEffect;
+    }
+    public void setVepPredictedProteinEffect(String vepPredictedProteinEffect) {
+        this.vepPredictedProteinEffect = vepPredictedProteinEffect;
+    }
+    public String getVepPredictedVariantClassification() {
+        return vepPredictedVariantClassification;
+    }
+    public void setVepPredictedVariantClassification(String vepPredictedVariantClassification) {
+        this.vepPredictedVariantClassification = vepPredictedVariantClassification;
+    }
+    public Boolean getConfirmed() {
+        return confirmed;
+    }
+    public void setConfirmed(Boolean confirmed) {
+        this.confirmed = confirmed;
+    }
 }

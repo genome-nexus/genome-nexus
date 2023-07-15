@@ -233,17 +233,21 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             if (vueRecord.getRevisedProteinEffects() != null) {
                 for (RevisedProteinEffectJsonRecord revisedProteinEffectJsonRecord: vueRecord.getRevisedProteinEffects()) {
                     Vues vue = new Vues();
-                    vue.setComment(vueRecord.getComment());
-                    vue.setDefaultEffect(vueRecord.getDefaultEffect());
+                    vue.setVariant(revisedProteinEffectJsonRecord.getVariant());
+                    vue.setGenomicLocation(revisedProteinEffectJsonRecord.getGenomicLocation());
                     vue.setGenomicLocationDescription(vueRecord.getGenomicLocationDescription());
                     vue.setHugoGeneSymbol(vueRecord.getHugoGeneSymbol());
-                    vue.setPubmedIds(vueRecord.getPubmedIds());
-                    vue.setReferenceText(vueRecord.getReferenceText());
-                    vue.setGenomicLocation(revisedProteinEffectJsonRecord.getGenomicLocation());
-                    vue.setRevisedProteinEffect(revisedProteinEffectJsonRecord.getRevisedProteinEffect());
                     vue.setTranscriptId(revisedProteinEffectJsonRecord.getTranscriptId());
-                    vue.setVariant(revisedProteinEffectJsonRecord.getVariant());
-                    vue.setVariantClassification(revisedProteinEffectJsonRecord.getVariantClassification());
+                    vue.setDefaultEffect(vueRecord.getDefaultEffect());
+                    vue.setComment(vueRecord.getComment());
+                    vue.setContext(vueRecord.getContext());
+                    vue.setPubmedId(revisedProteinEffectJsonRecord.getPubmedId());
+                    vue.setReferenceText(revisedProteinEffectJsonRecord.getReferenceText());
+                    vue.setRevisedVariantClassification(revisedProteinEffectJsonRecord.getRevisedVariantClassification());
+                    vue.setRevisedProteinEffect(revisedProteinEffectJsonRecord.getRevisedProteinEffect());
+                    vue.setVepPredictedVariantClassification(revisedProteinEffectJsonRecord.getVepPredictedVariantClassification());
+                    vue.setVepPredictedProteinEffect(revisedProteinEffectJsonRecord.getVepPredictedProteinEffect());
+                    vue.setConfirmed(revisedProteinEffectJsonRecord.getConfirmed());
                     vuesMap.put(revisedProteinEffectJsonRecord.getTranscriptId() + "-" + vue.getVariant(), vue);
                 }
             }
@@ -261,7 +265,6 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         if (transcriptConsequence != null)
         {
             summary = new TranscriptConsequenceSummary();
-
             summary.setTranscriptId(this.transcriptIdResolver.resolve(transcriptConsequence));
             summary.setCodonChange(this.codonChangeResolver.resolve(transcriptConsequence));
             summary.setAminoAcids(this.aminoAcidsResolver.resolve(transcriptConsequence));
@@ -282,11 +285,13 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setSiftPrediction(transcriptConsequence.getSiftPrediction());
             summary.setSiftScore(transcriptConsequence.getSiftScore());
 
-            // If transcript id and variant id match one of the record in vuesMap, replace variantClassification, hgvspShort and proteinPosition to the value from vuesMap, set isVue to true
+            // If transcript id and variant id match one of the record in vuesMap
+            // AND it's confirmed VUE
+            // replace variantClassification, hgvspShort and proteinPosition to the value from vuesMap, set isVue to true
             Vues vue = vuesMap.get(transcriptConsequence.getTranscriptId() + "-" + annotation.getVariant());
-            if (vue != null)
+            if (vue != null && vue.getConfirmed() == true)
             {
-                summary.setVariantClassification(vue.getVariantClassification());
+                summary.setVariantClassification(vue.getRevisedVariantClassification());
                 summary.setHgvspShort(vue.getRevisedProteinEffect());
                 summary.setProteinPosition(this.proteinPositionResolver.extractProteinPos(vue.getRevisedProteinEffect()));
                 summary.setIsVue(true);
