@@ -7,14 +7,29 @@
         "comment": "Changes splice donor site, cause inframe deletion in exon 11",
         "context": "Actionable in GIST",
         "pubmedIds": [15507676],
-        "referenceText": "Corless et al, 2004",
+        "referenceText": "Corless et al., 2004",
         "revisedProteinEffects": [ 
             {
                 "variant":"4:g.55593576_55593606del", 
                 "genomicLocation": "4,5,55593576,55593606,CCACAGAAACCCATGTATGAAGTACAGTGGA,-",
                 "transcriptId": "ENST00000288135", 
-                "revisedProteinEffect": "p.549_557del", 
+                "revisedProteinEffect": "p.K550_K558del", 
                 "variantClassification":"In_Frame_Del"
+            },
+            {
+            
+                "variant": "4:g.55593580_55593606del",
+                "genomicLocation": "4,55593580,55593606,AGAAACCCATGTATGAAGTACAGTGGA,-",
+                "transcriptId": "ENST00000288135",
+                "revisedProteinEffect": "p.K550_K558del",
+                "variantClassification": "In_Frame_Del"
+            },
+            {
+                "variant": "4:g.55593578_55593606del",
+                "genomicLocation": "4,55593578,55593606,ACAGAAACCCATGTATGAAGTACAGTGGA,-",
+                "transcriptId": "ENST00000288135",
+                "revisedProteinEffect": "p.K550_K558del",
+                "variantClassification": "In_Frame_Del"
             }
         ]
     },
@@ -26,7 +41,7 @@
         "comment": "Introduces splice acceptor site causing a frameshift",
         "pubmedIds": [29316426],
         "context": "Recurrent alteration in CRC",
-        "referenceText": "Yaeger et al, 2018",
+        "referenceText": "Yaeger et al., 2018",
         "revisedProteinEffects": [
             {
                 "variant": "5:g.112151184A>G",
@@ -44,7 +59,7 @@
         "comment": "Leads to exon 11 skipping",
         "context": "Recurrent and prognostic in kidney cancer",
         "pubmedIds": [33681728],
-        "referenceText": "Niersch et al, 2021"
+        "referenceText": "Niersch et al., 2021"
         
     },
     {
@@ -55,7 +70,7 @@
         "context": "Recurrent in many cancer types",
         "pubmedIds": [31671760],
         "hugoGeneSymbol": "TP53",
-        "referenceText": "Swiatkowska et al, 2019"
+        "referenceText": "Swiatkowska et al., 2019"
        
     },
     {
@@ -66,7 +81,7 @@
         "context": "Recurrent in many cancer types",
         "pubmedIds": [35236983],
         "hugoGeneSymbol": "KRAS",
-        "referenceText": "Kobayashi et al, 2022"
+        "referenceText": "Kobayashi et al., 2022"
         
     },
     {
@@ -77,7 +92,7 @@
         "comment": "Complete exon 3 skip or inframe deletion in exon 3",
         "pubmedIds": [29316426],
         "context": "Recurrent alteration in CRC",
-        "referenceText": "Yaeger et al, 2018",
+        "referenceText": "Yaeger et al., 2018",
         "revisedProteinEffects": [
             {
                 "variant": "3:g.41266086_41266304del",
@@ -208,12 +223,6 @@
             {
                 "variant": "3:g.41266017_41266244del",
                 "transcriptId": "ENST00000349496",
-                "revisedProteinEffect": "p.A5_Q68del",
-                "variantClassification": "In_Frame_Del"
-            },
-            {
-                "variant": "3:g.41266017_41266244del",
-                "transcriptId": "ENST00000349496",
                 "revisedProteinEffect": "p.A5_D81del",
                 "variantClassification": "In_Frame_Del"
             },
@@ -233,7 +242,7 @@
         "comment": "Skipping of exon 14",
         "context": "Actionable in NSCLC",
         "pubmedIds": [27343443],
-        "referenceText": "Schrock et al, 2014"
+        "referenceText": "Schrock et al., 2014"
        
     },
     {
@@ -244,7 +253,7 @@
         "comment": "Skipping of exon 11",
         "context": "Recurrent in breast and uterine cancer",
         "pubmedIds": [25488983],
-        "referenceText": "Lucas et al, 2014"
+        "referenceText": "Lucas et al., 2014"
        
     },
     {
@@ -255,6 +264,6 @@
         "comment": "Internal Tandem Duplication",
         "context": "Recurrent alteration in AML",
         "pubmedIds": [25488983],
-        "referenceText": "Zhang et al, 2020"
+        "referenceText": "Zhang et al., 2020"
     }
 ]
