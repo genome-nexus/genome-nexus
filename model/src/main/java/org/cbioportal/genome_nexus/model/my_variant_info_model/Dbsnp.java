@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Dbsnp
 {
     @Field(value = "_license")
