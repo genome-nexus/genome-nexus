@@ -69,3 +69,7 @@ oncokb.url=https://www.oncokb.org/api/v1/annotate/mutations/byProteinChange?PROT
 # For testing use same embeded mongo version as genome-nexus-importer
 # https://github.com/genome-nexus/genome-nexus-importer/blob/master/Dockerfile#L1
 spring.mongodb.embedded.version=3.6.2
+
+# reVUE data version and setting
+revue.url=https://raw.githubusercontent.com/knowledgesystems/reVUE-data/main/VUEs.json
+overwrite_by_confirmed_revue_only=true
