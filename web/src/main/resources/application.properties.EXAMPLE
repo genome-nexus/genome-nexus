@@ -69,3 +69,11 @@ oncokb.url=https://www.oncokb.org/api/v1/annotate/mutations/byProteinChange?PROT
 # For testing use same embeded mongo version as genome-nexus-importer
 # https://github.com/genome-nexus/genome-nexus-importer/blob/master/Dockerfile#L1
 spring.mongodb.embedded.version=3.6.2
+
+# reVUE data file URL and setting
+revue.url=https://raw.githubusercontent.com/knowledgesystems/reVUE-data/main/VUEs.json
+
+# There is a boolean field in the VUEs.json for each VUE called "confirmed", which represents the validity status of each VUE
+# If overwrite_by_confirmed_revue_only=true, overwrite variant annotation by only confirmed VUE ("confirmed=true")
+# If overwrite_by_confirmed_revue_only=false, overwrite variant annotation by both confirmed and unconfirmed VUE ("confirmed=true" and "confirmed=false")
+overwrite_by_confirmed_revue_only=true

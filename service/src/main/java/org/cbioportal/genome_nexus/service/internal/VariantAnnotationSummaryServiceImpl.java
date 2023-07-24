@@ -13,8 +13,10 @@ import org.cbioportal.genome_nexus.service.annotation.EntrezGeneIdResolver;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.service.remote.RevueDataFetcher;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.cbioportal.genome_nexus.util.JsonReader;
 import org.cbioportal.genome_nexus.model.Vues;
 import org.cbioportal.genome_nexus.model.VuesJsonRecord;
 
@@ -48,6 +49,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final VariantTypeResolver variantTypeResolver;
     private final ExonResolver exonResolver;
     private final Map<String, Vues> vuesMap;
+    private final Boolean overwriteByConfirmedRevueOnly;
 
     @Autowired
     public VariantAnnotationSummaryServiceImpl(
@@ -67,7 +69,9 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         TranscriptIdResolver transcriptIdResolver,
         VariantClassificationResolver variantClassificationResolver,
         VariantTypeResolver variantTypeResolver,
-        ExonResolver exonResolver
+        ExonResolver exonResolver,
+        @Value("${revue.url}") String vuesUrl,
+        @Value("${overwrite_by_confirmed_revue_only}") String overwriteByConfirmedRevueOnlyValue
     ) throws IOException {
         this.variantAnnotationService = verifiedHgvsVariantAnnotationService;
         this.ensemblService = ensemblService;
@@ -86,7 +90,8 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         this.variantClassificationResolver = variantClassificationResolver;
         this.variantTypeResolver = variantTypeResolver;
         this.exonResolver = exonResolver;
-        this.vuesMap = this.buildVuesMap(JsonReader.getVuesList());
+        this.vuesMap = this.buildVuesMap(RevueDataFetcher.getRevueData(vuesUrl));
+        this.overwriteByConfirmedRevueOnly = Boolean.parseBoolean(overwriteByConfirmedRevueOnlyValue);
     }
 
     @Override
@@ -233,17 +238,21 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             if (vueRecord.getRevisedProteinEffects() != null) {
                 for (RevisedProteinEffectJsonRecord revisedProteinEffectJsonRecord: vueRecord.getRevisedProteinEffects()) {
                     Vues vue = new Vues();
-                    vue.setComment(vueRecord.getComment());
-                    vue.setDefaultEffect(vueRecord.getDefaultEffect());
+                    vue.setVariant(revisedProteinEffectJsonRecord.getVariant());
+                    vue.setGenomicLocation(revisedProteinEffectJsonRecord.getGenomicLocation());
                     vue.setGenomicLocationDescription(vueRecord.getGenomicLocationDescription());
                     vue.setHugoGeneSymbol(vueRecord.getHugoGeneSymbol());
-                    vue.setPubmedIds(vueRecord.getPubmedIds());
-                    vue.setReferenceText(vueRecord.getReferenceText());
-                    vue.setGenomicLocation(revisedProteinEffectJsonRecord.getGenomicLocation());
-                    vue.setRevisedProteinEffect(revisedProteinEffectJsonRecord.getRevisedProteinEffect());
                     vue.setTranscriptId(revisedProteinEffectJsonRecord.getTranscriptId());
-                    vue.setVariant(revisedProteinEffectJsonRecord.getVariant());
-                    vue.setVariantClassification(revisedProteinEffectJsonRecord.getVariantClassification());
+                    vue.setDefaultEffect(vueRecord.getDefaultEffect());
+                    vue.setComment(vueRecord.getComment());
+                    vue.setContext(vueRecord.getContext());
+                    vue.setPubmedId(revisedProteinEffectJsonRecord.getPubmedId());
+                    vue.setReferenceText(revisedProteinEffectJsonRecord.getReferenceText());
+                    vue.setRevisedVariantClassification(revisedProteinEffectJsonRecord.getRevisedVariantClassification());
+                    vue.setRevisedProteinEffect(revisedProteinEffectJsonRecord.getRevisedProteinEffect());
+                    vue.setVepPredictedVariantClassification(revisedProteinEffectJsonRecord.getVepPredictedVariantClassification());
+                    vue.setVepPredictedProteinEffect(revisedProteinEffectJsonRecord.getVepPredictedProteinEffect());
+                    vue.setConfirmed(revisedProteinEffectJsonRecord.getConfirmed());
                     vuesMap.put(revisedProteinEffectJsonRecord.getTranscriptId() + "-" + vue.getVariant(), vue);
                 }
             }
@@ -261,7 +270,6 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         if (transcriptConsequence != null)
         {
             summary = new TranscriptConsequenceSummary();
-
             summary.setTranscriptId(this.transcriptIdResolver.resolve(transcriptConsequence));
             summary.setCodonChange(this.codonChangeResolver.resolve(transcriptConsequence));
             summary.setAminoAcids(this.aminoAcidsResolver.resolve(transcriptConsequence));
@@ -282,14 +290,17 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setSiftPrediction(transcriptConsequence.getSiftPrediction());
             summary.setSiftScore(transcriptConsequence.getSiftScore());
 
-            // If transcript id and variant id match one of the record in vuesMap, replace variantClassification, hgvspShort and proteinPosition to the value from vuesMap, set isVue to true
+            // Check if transcript id and variant id match one of the record in vuesMap
+            // If overwriteByConfirmedRevueOnly is true, replace variantClassification, hgvspShort and proteinPosition to the value from vuesMap for confirmed VUE
+            // If overwriteByConfirmedRevueOnly is false, replace variantClassification, hgvspShort and proteinPosition to the value from vuesMap for both confirmed and unconfirmed VUE
             Vues vue = vuesMap.get(transcriptConsequence.getTranscriptId() + "-" + annotation.getVariant());
-            if (vue != null)
-            {
-                summary.setVariantClassification(vue.getVariantClassification());
-                summary.setHgvspShort(vue.getRevisedProteinEffect());
-                summary.setProteinPosition(this.proteinPositionResolver.extractProteinPos(vue.getRevisedProteinEffect()));
-                summary.setIsVue(true);
+            if (vue != null) {
+                if ((overwriteByConfirmedRevueOnly == true && vue.getConfirmed()== true) || overwriteByConfirmedRevueOnly == false) {
+                    summary.setVariantClassification(vue.getRevisedVariantClassification());
+                    summary.setHgvspShort(vue.getRevisedProteinEffect());
+                    summary.setProteinPosition(this.proteinPositionResolver.extractProteinPos(vue.getRevisedProteinEffect()));
+                    summary.setIsVue(true);
+                }
             }
 
             if (transcriptConsequence.getTranscriptId() != null) {

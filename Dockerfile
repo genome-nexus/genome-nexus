@@ -6,5 +6,4 @@ RUN mvn -DskipTests clean install
 
 FROM openjdk:13-slim
 COPY --from=0 /genome-nexus/web/target/*.war /app.war
-COPY --from=0 /genome-nexus/web/src/main/resources/VUEs.json /web/src/main/resources/VUEs.json
 CMD ["java", "-Dspring.data.mongodb.uri=${MONGODB_URI}", "-jar", "/app.war"]

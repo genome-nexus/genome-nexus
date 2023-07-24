@@ -4,8 +4,21 @@ public class RevisedProteinEffectJsonRecord {
     private String variant; 
     private String genomicLocation;
     private String transcriptId;
+    private String vepPredictedProteinEffect;
+    private String vepPredictedVariantClassification;
     private String revisedProteinEffect;
-    private String variantClassification;
+    private String revisedVariantClassification;
+    private Integer pubmedId;
+    private String referenceText;
+    private Boolean confirmed;
+
+    public Boolean getConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(Boolean confirmed) {
+        this.confirmed = confirmed;
+    }
 
     public String getVariant() {
         return variant;
@@ -39,11 +52,45 @@ public class RevisedProteinEffectJsonRecord {
         this.revisedProteinEffect = revisedProteinEffect;
     }
 
-    public String getVariantClassification() {
-        return variantClassification;
+    public String getRevisedVariantClassification() {
+        return revisedVariantClassification;
     }
 
-    public void setVariantClassification(String variantClassification) {
-        this.variantClassification = variantClassification;
+    public void setRevisedVariantClassification(String variantClassification) {
+        this.revisedVariantClassification = variantClassification;
     }
+
+    public String getVepPredictedProteinEffect() {
+        return vepPredictedProteinEffect;
+    }
+
+    public void setVepPredictedProteinEffect(String vepPredictedProteinEffect) {
+        this.vepPredictedProteinEffect = vepPredictedProteinEffect;
+    }
+
+    public String getVepPredictedVariantClassification() {
+        return vepPredictedVariantClassification;
+    }
+
+    public void setVepPredictedVariantClassification(String vepPredictedVariantClassification) {
+        this.vepPredictedVariantClassification = vepPredictedVariantClassification;
+    }
+    
+    public Integer getPubmedId() {
+        return pubmedId;
+    }
+
+    public void setPubmedId(Integer pubmedId) {
+        this.pubmedId = pubmedId;
+    }
+
+    public String getReferenceText() {
+        return referenceText;
+    }
+
+    public void setReferenceText(String referenceText) {
+        this.referenceText = referenceText;
+    }
+
+
 }

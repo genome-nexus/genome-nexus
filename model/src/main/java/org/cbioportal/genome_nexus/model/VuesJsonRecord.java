@@ -3,12 +3,10 @@ package org.cbioportal.genome_nexus.model;
 import java.util.List;
 
 public class VuesJsonRecord {
-
     private String hugoGeneSymbol;
+    private String transcriptId;
     private String genomicLocationDescription;
-    private List<Integer> pubmedIds;     
     private String comment;
-    private String referenceText;
     private String context;
     private String defaultEffect;          
     private List<RevisedProteinEffectJsonRecord> revisedProteinEffects;
@@ -29,14 +27,6 @@ public class VuesJsonRecord {
         this.genomicLocationDescription = genomicLocationDescription;
     }
 
-    public List<Integer> getPubmedIds() {
-        return pubmedIds;
-    }
-
-    public void setPubmedIds(List<Integer> pubmedIds) {
-        this.pubmedIds = pubmedIds;
-    }
-
     public String getContext() {
         return context;
     }
@@ -53,14 +43,6 @@ public class VuesJsonRecord {
         this.comment = comment;
     }
 
-    public String getReferenceText() {
-        return referenceText;
-    }
-
-    public void setReferenceText(String referenceText) {
-        this.referenceText = referenceText;
-    }
-
     public String getDefaultEffect() {
         return defaultEffect;
     }
@@ -75,5 +57,13 @@ public class VuesJsonRecord {
 
     public void setRevisedProteinEffects(List<RevisedProteinEffectJsonRecord> revisedProteinEffects) {
         this.revisedProteinEffects = revisedProteinEffects;
+    }
+
+    public String getTranscriptId() {
+        return transcriptId;
+    }
+
+    public void setTranscriptId(String transcriptId) {
+        this.transcriptId = transcriptId;
     }
 }
