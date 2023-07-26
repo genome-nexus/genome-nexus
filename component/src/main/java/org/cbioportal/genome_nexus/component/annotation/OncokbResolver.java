@@ -24,7 +24,8 @@ public class OncokbResolver
                                             transcriptConsequenceSummary.getProteinPosition() != null ? transcriptConsequenceSummary.getProteinPosition().getStart() : null,
                                             transcriptConsequenceSummary.getProteinPosition() != null ? transcriptConsequenceSummary.getProteinPosition().getEnd() : null,
                                             // TODO tumorType is optional for the query, currently genome nexus doesn't have tumorType data
-                                            null);
+                                            null,
+                                            annotationSummary.getAssemblyName());
             }
         }
 
