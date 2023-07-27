@@ -25,8 +25,12 @@ public class Alteration
     @Field(value = "tumorType")
     private String tumorType;
 
+    @Field(value = "referenceAssembly")
+    private String referenceAssembly;
+
     public Alteration(String hugoSymbol, Integer entrezGeneId, String alteration,
-                        String consequence, Integer proteinStart, Integer proteinEnd, String tumorType)
+                      String consequence, Integer proteinStart, Integer proteinEnd, String tumorType,
+                      String referenceAssembly)
     {
         this.hugoSymbol = hugoSymbol;
         this.entrezGeneId = entrezGeneId;
@@ -35,6 +39,7 @@ public class Alteration
         this.proteinStart = proteinStart;
         this.proteinEnd = proteinEnd;
         this.tumorType = tumorType;
+        this.referenceAssembly = referenceAssembly;
     }
 
     public String getHugoSymbol() {
@@ -91,5 +96,13 @@ public class Alteration
 
     public void setTumorType(String tumorType) {
         this.tumorType = tumorType;
+    }
+
+    public String getReferenceAssembly() {
+        return referenceAssembly;
+    }
+
+    public void setReferenceAssembly(String referenceAssembly) {
+        this.referenceAssembly = referenceAssembly;
     }
 }

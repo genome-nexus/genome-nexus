@@ -36,7 +36,7 @@ public class OncokbServiceImpl implements OncokbService {
 
     public IndicatorQueryResp getOncokbByProteinChange(Alteration alteration, String token) throws OncokbNotFoundException, OncokbWebServiceException {
         Optional<IndicatorQueryResp> oncokb = null;
-        
+
         oncokbDataFetcher.setOncokbToken(token);
         try {
             // get the annotation from the web service
@@ -96,6 +96,8 @@ public class OncokbServiceImpl implements OncokbService {
         if (alteration.getTumorType() != null) {
             query = query + "&tumorType=" + alteration.getTumorType();
         }
+        query = query + "&referenceGenome=" + alteration.getReferenceAssembly();
+
         // TODO tumorType is optional for the query, currently genome nexus doesn't have tumorType data
 
         return query;
