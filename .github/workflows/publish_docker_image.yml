@@ -13,6 +13,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: genomenexus/gn-spring-boot
+          repository: genomenexus/genome-nexus
           tag_with_ref: true
           push: ${{ startsWith(github.ref, 'refs/tags/') }}
