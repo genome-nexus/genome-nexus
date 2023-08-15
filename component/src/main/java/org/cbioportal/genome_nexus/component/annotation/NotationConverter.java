@@ -164,6 +164,10 @@ public class NotationConverter {
                 return null;
             }
         } else if (var.equals("-") || var.length() == 0 || var.equals("NA") || var.contains("--")) {
+            if (end < start) {
+                // If end position is less than start position, change it to correct number
+                end = start + ref.length() - 1;
+            }
             if (ref.length() == 1) {
                 /*
                 Process Deletion (single positon)
@@ -180,6 +184,7 @@ public class NotationConverter {
                 */
                 hgvs = chr + ":g." + start + "_" + end + "del";
             } 
+            
         } else if (ref.length() > 1 && var.length() >= 1) {
             /*
             Process ONP (multiple deletion insertion)
