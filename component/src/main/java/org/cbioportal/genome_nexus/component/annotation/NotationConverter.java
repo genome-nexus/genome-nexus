@@ -135,6 +135,15 @@ public class NotationConverter {
             start = nStart;
             LOG.info("Start position is changed from " + genomicLocation.getStart() + " to " + start + " for genomic location: " + genomicLocation.getChromosome() + "," + genomicLocation.getStart() + "," + genomicLocation.getEnd() + "," + genomicLocation.getReferenceAllele().trim() + "," + genomicLocation.getVariantAllele().trim() + ". Reason: remove common prefix alleles.");
         }
+        end = harmonizeGenomicLocationCoordinate(genomicLocation, chr, start, end, ref, var);
+        normalizedGenomicLocation.setStart(start);
+        normalizedGenomicLocation.setEnd(end);
+        normalizedGenomicLocation.setReferenceAllele(ref);
+        normalizedGenomicLocation.setVariantAllele(var);
+        return normalizedGenomicLocation;
+    }
+
+    public Integer harmonizeGenomicLocationCoordinate(GenomicLocation genomicLocation, String chr, Integer start, Integer end, String ref, String var) {
         if (ref.equals("-") || ref.length() == 0 || ref.equals("NA") || ref.contains("--")) {
             // insertion variants: end = start + 1
             if (end != start + 1) {
@@ -142,39 +151,15 @@ public class NotationConverter {
                 LOG.info("End position is changed from " + genomicLocation.getEnd() + " to " + end + " for genomic location: " + genomicLocation.getChromosome() + "," + genomicLocation.getStart() + "," + genomicLocation.getEnd() + "," + genomicLocation.getReferenceAllele().trim() + "," + genomicLocation.getVariantAllele().trim() + ". Reason: wrong coordinates, insersion variants' end position should be start + 1.");
             }
         }
-        else if (var.equals("-") || var.length() == 0 || var.equals("NA") || var.contains("--")) {
-            // deletion variants: ref.length() = end - start + 1
-            if (ref.length() != end - start + 1) {
-                end = start + ref.length() - 1;
-                LOG.info("End position is changed from " + genomicLocation.getEnd() + " to " + end + " for genomic location: " + genomicLocation.getChromosome() + "," + genomicLocation.getStart() + "," + genomicLocation.getEnd() + "," + genomicLocation.getReferenceAllele().trim() + "," + genomicLocation.getVariantAllele().trim() + ". Reason: wrong coordinates, deletion length should be end - start + 1.");
-            }
-        }
-        else if (ref.length() > 1 && var.length() >= 1) {
-            // delins variants with multiple ref alleles: ref.length() = end - start + 1
-            if (ref.length() != end - start + 1) {
-                end = start + 1;
-                LOG.info("End position is changed from " + genomicLocation.getEnd() + " to " + end + " for genomic location: " + genomicLocation.getChromosome() + "," + genomicLocation.getStart() + "," + genomicLocation.getEnd() + "," + genomicLocation.getReferenceAllele().trim() + "," + genomicLocation.getVariantAllele().trim() + ". Reason: wrong coordinates, delins variants with multiple deleted reference alleles should have end position equals to start + ref.length - 1.");
-            }
-        }
-        else if (ref.length() == 1 && var.length() > 1) {
-            // delins variants with single ref allele: ref.length() = end - start + 1
-            if (!end.equals(start)) {
-                end = start;
-                LOG.info("End position is changed from " + genomicLocation.getEnd() + " to " + end + " for genomic location: " + genomicLocation.getChromosome() + "," + genomicLocation.getStart() + "," + genomicLocation.getEnd() + "," + genomicLocation.getReferenceAllele().trim() + "," + genomicLocation.getVariantAllele().trim() + ". Reason: wrong coordinates, delins variants with single deleted reference allele should have end position equals to start.");
-            }
-        }
         else {
-            // SNV
-            if (!end.equals(start)) {
-                end = start;
-                LOG.info("End position is changed from " + genomicLocation.getEnd() + " to " + end + " for genomic location: " + genomicLocation.getChromosome() + "," +  genomicLocation.getStart() + "," + genomicLocation.getEnd() + "," + genomicLocation.getReferenceAllele().trim() + "," + genomicLocation.getVariantAllele().trim() + ". Reason: wrong coordinates, SNV end position should equal to start.");
+            // all deletion, delins, and SNV
+            // for single allele delins and SNV, ref.length() = 1, so end = start
+            if (end != start + ref.length() - 1) {
+                end = start + ref.length() - 1;
+                LOG.info("End position is changed from " + genomicLocation.getEnd() + " to " + end + " for genomic location: " + genomicLocation.getChromosome() + "," + genomicLocation.getStart() + "," + genomicLocation.getEnd() + "," + genomicLocation.getReferenceAllele().trim() + "," + genomicLocation.getVariantAllele().trim() + ". Reason: wrong coordinates, end position should be the range of nucleotides deleted/affected.");
             }
         }
-        normalizedGenomicLocation.setStart(start);
-        normalizedGenomicLocation.setEnd(end);
-        normalizedGenomicLocation.setReferenceAllele(ref);
-        normalizedGenomicLocation.setVariantAllele(var);
-        return normalizedGenomicLocation;
+        return end;
     }
 
     @Nullable
@@ -205,11 +190,6 @@ public class NotationConverter {
                 return null;
             }
         } else if (var.equals("-") || var.length() == 0 || var.equals("NA") || var.contains("--")) {
-            if (end < start) {
-                // Special case for GENIE
-                // If end position is less than start position, change it to correct number
-                end = start + ref.length() - 1;
-            }
             if (ref.length() == 1) {
                 /*
                 Process Deletion (single positon)
