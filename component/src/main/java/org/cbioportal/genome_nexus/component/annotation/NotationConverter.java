@@ -1,7 +1,5 @@
 package org.cbioportal.genome_nexus.component.annotation;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.util.GenomicVariant;
 import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
@@ -18,7 +16,6 @@ import java.util.Map;
 
 @Component
 public class NotationConverter {
-    private static final Log LOG = LogFactory.getLog(NotationConverter.class);
 
     public static final String DEFAULT_DELIMITER = ",";
 
@@ -133,9 +130,8 @@ public class NotationConverter {
                 nStart -= 1;
             }
             start = nStart;
-            LOG.info("Start position is changed from " + genomicLocation.getStart() + " to " + start + " for genomic location: " + genomicLocation.getChromosome() + "," + genomicLocation.getStart() + "," + genomicLocation.getEnd() + "," + genomicLocation.getReferenceAllele().trim() + "," + genomicLocation.getVariantAllele().trim() + ". Reason: remove common prefix alleles.");
         }
-        end = harmonizeGenomicLocationCoordinate(genomicLocation, chr, start, end, ref, var);
+        end = harmonizeGenomicLocationCoordinate(start, end, ref);
         normalizedGenomicLocation.setStart(start);
         normalizedGenomicLocation.setEnd(end);
         normalizedGenomicLocation.setReferenceAllele(ref);
@@ -143,20 +139,18 @@ public class NotationConverter {
         return normalizedGenomicLocation;
     }
 
-    public Integer harmonizeGenomicLocationCoordinate(GenomicLocation genomicLocation, String chr, Integer start, Integer end, String ref, String var) {
+    public Integer harmonizeGenomicLocationCoordinate(Integer start, Integer end, String ref) {
         if (ref.equals("-") || ref.length() == 0 || ref.equals("NA") || ref.contains("--")) {
             // insertion variants: end = start + 1
             if (end != start + 1) {
                 end = start + 1;
-                LOG.info("End position is changed from " + genomicLocation.getEnd() + " to " + end + " for genomic location: " + genomicLocation.getChromosome() + "," + genomicLocation.getStart() + "," + genomicLocation.getEnd() + "," + genomicLocation.getReferenceAllele().trim() + "," + genomicLocation.getVariantAllele().trim() + ". Reason: wrong coordinates, insersion variants' end position should be start + 1.");
             }
         }
         else {
             // all deletion, delins, and SNV
-            // for single allele delins and SNV, ref.length() = 1, so end = start
+            // for single alleledel, delins and SNV, ref.length() = 1, so end = start
             if (end != start + ref.length() - 1) {
                 end = start + ref.length() - 1;
-                LOG.info("End position is changed from " + genomicLocation.getEnd() + " to " + end + " for genomic location: " + genomicLocation.getChromosome() + "," + genomicLocation.getStart() + "," + genomicLocation.getEnd() + "," + genomicLocation.getReferenceAllele().trim() + "," + genomicLocation.getVariantAllele().trim() + ". Reason: wrong coordinates, end position should be the range of nucleotides deleted/affected.");
             }
         }
         return end;
