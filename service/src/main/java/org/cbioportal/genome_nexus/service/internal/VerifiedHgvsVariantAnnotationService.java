@@ -133,7 +133,7 @@ public class VerifiedHgvsVariantAnnotationService implements VariantAnnotationSe
             return annotation;
         }
         // return annotation failure
-        return createFailedAnnotation(originalVariantQuery, originalVariant);
+        return createFailedAnnotation(originalVariantQuery, originalVariant, annotation.getErrorMessage());
     }
 
     private String constructFollowUpQuery(String originalQuery)
@@ -162,7 +162,7 @@ public class VerifiedHgvsVariantAnnotationService implements VariantAnnotationSe
 
     }
 
-    private VariantAnnotation createFailedAnnotation(String originalVariantQuery, String originalVariant)
+    private VariantAnnotation createFailedAnnotation(String originalVariantQuery, String originalVariant, String errorMessage)
     {
         VariantAnnotation annotation = new VariantAnnotation();
         if (originalVariantQuery != null && originalVariantQuery.length() > 0) {
@@ -172,6 +172,7 @@ public class VerifiedHgvsVariantAnnotationService implements VariantAnnotationSe
             annotation.setVariant(originalVariant);
         }
         annotation.setSuccessfullyAnnotated(false);
+        annotation.setErrorMessage(errorMessage);
         return annotation;
     }
 

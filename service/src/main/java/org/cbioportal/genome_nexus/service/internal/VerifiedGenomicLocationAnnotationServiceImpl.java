@@ -158,7 +158,7 @@ public class VerifiedGenomicLocationAnnotationServiceImpl implements GenomicLoca
             return annotation;
         }
         // return annotation failure
-        return createFailedAnnotation(originalVariantQuery, originalVariant);
+        return createFailedAnnotation(originalVariantQuery, originalVariant, annotation.getErrorMessage());
     }
 
     private Boolean needFollowUpQuery(String responseReferenceAllele, String providedReferenceAllele)
@@ -205,7 +205,7 @@ public class VerifiedGenomicLocationAnnotationServiceImpl implements GenomicLoca
 
     }
 
-    private VariantAnnotation createFailedAnnotation(String originalVariantQuery, String originalVariant)
+    private VariantAnnotation createFailedAnnotation(String originalVariantQuery, String originalVariant, String errorMessage)
     {
         VariantAnnotation annotation = new VariantAnnotation();
         if (originalVariantQuery != null && originalVariantQuery.length() > 0) {
@@ -215,6 +215,7 @@ public class VerifiedGenomicLocationAnnotationServiceImpl implements GenomicLoca
             annotation.setVariant(originalVariant);
         }
         annotation.setSuccessfullyAnnotated(false);
+        annotation.setErrorMessage(errorMessage);
         return annotation;
     }
 }

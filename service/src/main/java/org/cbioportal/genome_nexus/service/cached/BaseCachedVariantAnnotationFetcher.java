@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.service.cached;
 
+import com.google.gson.Gson;
 import com.mongodb.DBObject;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.persistence.VariantAnnotationRepository;
@@ -73,7 +74,13 @@ public abstract class BaseCachedVariantAnnotationFetcher
             } else {
                 variantAnnotation.setSuccessfullyAnnotated(true);
             }
-        } catch (Exception e) {
+        }
+        catch (HttpClientErrorException e) {
+            variantAnnotation = new VariantAnnotation(id);
+            variantAnnotation.setErrorMessage(new Gson().fromJson(e.getResponseBodyAsString(), Map.class).getOrDefault("error", "Error from VEP").toString());
+            return variantAnnotation;
+        }
+        catch (Exception e) {
             return new VariantAnnotation(id);
         }
         return variantAnnotation;
