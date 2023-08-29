@@ -16,7 +16,6 @@ import java.util.Map;
 
 @Component
 public class NotationConverter {
-
     public static final String DEFAULT_DELIMITER = ",";
 
     public String hgvsNormalizer(String hgvs) {
@@ -114,7 +113,6 @@ public class NotationConverter {
         String ref = genomicLocation.getReferenceAllele().trim();
         String var = genomicLocation.getVariantAllele().trim();
 
-
         String prefix = "";
 
         if (!ref.equals(var)) {
@@ -200,7 +198,6 @@ public class NotationConverter {
                 */
                 hgvs = chr + ":g." + start + "_" + end + "del";
             } 
-            
         } else if (ref.length() > 1 && var.length() >= 1) {
             /*
             Process ONP (multiple deletion insertion)
