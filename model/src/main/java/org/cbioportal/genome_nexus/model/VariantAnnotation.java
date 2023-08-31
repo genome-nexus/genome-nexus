@@ -76,6 +76,7 @@ public class VariantAnnotation
     private SignalAnnotation signalAnnotation;
     private String originalVariantQuery;
     private Map<String, Object> dynamicProps;
+    private String genomicLocationExplanation;
 
     public VariantAnnotation()
     {
@@ -353,5 +354,13 @@ public class VariantAnnotation
     public Map<String, Object> getDynamicProps()
     {
         return this.dynamicProps;
+    }
+
+    public String getGenomicLocationExplanation() {
+        return genomicLocationExplanation;
+    }
+
+    public void setGenomicLocationExplanation(String genomicLocationExplanation) {
+        this.genomicLocationExplanation = genomicLocationExplanation;
     }
 }

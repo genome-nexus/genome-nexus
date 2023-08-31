@@ -47,6 +47,7 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnnotationService
@@ -58,7 +59,6 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
     private final VariantAnnotationService variantAnnotationService;
     private final GenomicLocationToVariantFormat genomicLocationToVariantFormat;
     private final GenomicLocationStringToVariantFormat genomicLocationStringToVariantFormat;
-
     private final GenomicLocationsToVariantFormats genomicLocationsToVariantFormats;
 
     @Autowired
@@ -82,7 +82,6 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
             this.genomicLocationToVariantFormat = notationConverter::genomicToHgvs;
             this.genomicLocationStringToVariantFormat = notationConverter::genomicToHgvs;
             this.genomicLocationsToVariantFormats = notationConverter::genomicToHgvs;
-
         }
     }
 
@@ -93,6 +92,7 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
         VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(this.genomicLocationToVariantFormat.convert(genomicLocation));
         genomicLocation.setOriginalInput(genomicLocation.toString());
         variantAnnotation.setOriginalVariantQuery(genomicLocation.getOriginalInput());
+        variantAnnotation.setGenomicLocationExplanation(this.notationConverter.getGenomicLocationExplanation(genomicLocation));
         return variantAnnotation;
     }
 
@@ -130,6 +130,10 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
                 }
             }
         });
+        variantAnnotations.stream().map((VariantAnnotation variantAnnotation) -> {
+            variantAnnotation.setGenomicLocationExplanation(this.notationConverter.getGenomicLocationExplanation(variantAnnotation.getOriginalVariantQuery()));
+            return variantAnnotation;
+        }).collect(Collectors.toList());
         return variantAnnotations;
     }
 
@@ -146,6 +150,7 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
                 token,
                 fields);
         variantAnnotation.setOriginalVariantQuery(genomicLocation);
+        variantAnnotation.setGenomicLocationExplanation(this.notationConverter.getGenomicLocationExplanation(genomicLocation));
         return variantAnnotation;
     }
 
@@ -180,6 +185,10 @@ public class GenomicLocationAnnotationServiceImpl implements GenomicLocationAnno
                 }
             }
         });
+        variantAnnotations.stream().map((VariantAnnotation variantAnnotation) -> {
+            variantAnnotation.setGenomicLocationExplanation(this.notationConverter.getGenomicLocationExplanation(variantAnnotation.getOriginalVariantQuery()));
+            return variantAnnotation;
+        }).collect(Collectors.toList());
         return variantAnnotations;
     }
 
