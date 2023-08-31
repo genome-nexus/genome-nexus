@@ -92,7 +92,7 @@ public class NotationConverter {
      * prefix. (TODO: not sure if this is always a good idea)
      * 2. Normalize chromsome names.
      */
-    public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation) {
+public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation) {
         GenomicLocation normalizedGenomicLocation = new GenomicLocation();
         // if original input is set in the incoming genomic location object then use the same value
         // for the normalized genomic location object returned, otherwise set it to the
@@ -345,5 +345,91 @@ public class NotationConverter {
             }
         }
         return str1;
+    }
+
+    @Nullable
+    public String getGenomicLocationExplanation (GenomicLocation genomicLocation) {
+        if (genomicLocation == null) {
+            return null;
+        }
+
+        StringBuilder explanation = new StringBuilder(); 
+        GenomicLocation normalizedGenomicLocation = normalizeGenomicLocation(genomicLocation);
+
+        Integer start = genomicLocation.getStart();
+        Integer end = genomicLocation.getEnd();
+        String ref = genomicLocation.getReferenceAllele().trim();
+        String var = genomicLocation.getVariantAllele().trim();
+        String commonBases = longestCommonPrefix(ref, var);
+        Integer normalizedStart = normalizedGenomicLocation.getStart();
+        Integer normalizedEnd = normalizedGenomicLocation.getEnd();
+        String normalizedRef = normalizedGenomicLocation.getReferenceAllele().trim();
+        String normalizedVar = normalizedGenomicLocation.getVariantAllele().trim();
+
+        // start
+        if (!start.equals(normalizedStart)) {
+            explanation.append(String.format("Start position changes from %d to %d is attributed to the presence of common bases %s. ", start, normalizedStart, commonBases));
+        }
+
+        // end
+        if (!end.equals(normalizedEnd)) {
+            if (normalizedRef.equals("-") || normalizedRef.length() == 0 || normalizedRef.equals("NA") || normalizedRef.contains("--")) {
+                /*
+                Process Insertion end position
+                Example insertion: 17 36002277 36002278 - A
+                */
+                explanation.append(String.format("End position changes from %d to %d, end position should equal to (start + 1) to indicate the location of insertion. ", end, normalizedEnd));
+            } else if (normalizedVar.equals("-") || normalizedVar.length() == 0 || normalizedVar.equals("NA") || normalizedVar.contains("--")) {
+                if (normalizedRef.length() == 1) {
+                    /*
+                    Process Deletion (single positon) end position
+                    Example deletion: 13 32914438 32914438 T -
+                    */
+                    explanation.append(String.format("End position changes from %d to %d, end position should equal to start position for single nucleotide deletion variants. ", end, normalizedEnd));
+                }
+                else {
+                    /*
+                    Process Deletion (multiple postion) end position
+                    Example deletion: 1 206811015 206811016  AC -
+                    */
+                    explanation.append(String.format("End position changes from %d to %d, end position should be the position of last deleted nucleotide. ", end, normalizedEnd));
+                } 
+            } else if (normalizedRef.length() > 1 && normalizedVar.length() >= 1) {
+                /*
+                Process ONP (multiple deletion insertion) end position
+                Example INDEL   : 2 216809708 216809709 CA T
+                */
+                explanation.append(String.format("End position changes from %d to %d, end position should be the position of last deleted nucleotide. ", end, normalizedEnd));
+            } else if (normalizedRef.length() == 1 && normalizedVar.length() > 1) {
+                /*
+                Process ONP (single deletion insertion) end position
+                Example INDEL   : 17 7579363 7579363 A TTT
+                */
+                explanation.append(String.format("End position changes from %d to %d, end position should be the position of last deleted nucleotide. ", end, normalizedEnd));
+            } else {
+                /*
+                Process SNV end position
+                Example SNP   : 2 216809708 216809708 C T
+                */
+                explanation.append(String.format("End position changes from %d to %d, end position should equal to start position for SNV variants", end, normalizedEnd));
+            }
+        }
+
+        // ref
+        if (!ref.equals(normalizedRef)) {
+            explanation.append(String.format("Reference allele changes from %s to %s is attributed to the presence of common bases %s. ", ref, normalizedRef.length() > 0 ? normalizedRef : "-", commonBases));
+        }
+
+         // var
+         if (!var.equals(normalizedVar)) {
+            explanation.append(String.format("Variant allele changes from %s to %s is attributed to the presence of common bases %s. ", var, normalizedVar.length() > 0 ? normalizedVar : "-", commonBases));
+        }
+
+        return explanation.length() > 0 ? explanation.toString().trim() : null;
+    }
+
+    @Nullable
+    public String getGenomicLocationExplanation (String genomicLocation) {
+        return this.getGenomicLocationExplanation(this.parseGenomicLocation(genomicLocation));
     }
 }
