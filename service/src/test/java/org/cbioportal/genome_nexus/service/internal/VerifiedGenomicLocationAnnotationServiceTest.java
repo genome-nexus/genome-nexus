@@ -80,6 +80,7 @@ public class VerifiedGenomicLocationAnnotationServiceTest
         public boolean expectedGnSuccessfullyAnnotated;
         public String expectedGnAlleleString;
         public String description;
+        public String errorMessage;
         public VariantTestCase(
                 String originalVariantQuery,
                 boolean expectedGnSuccessfullyAnnotated,
@@ -89,6 +90,18 @@ public class VerifiedGenomicLocationAnnotationServiceTest
             this.expectedGnSuccessfullyAnnotated = expectedGnSuccessfullyAnnotated;
             this.expectedGnAlleleString = expectedGnAlleleString;
             this.description = description;
+        }
+        public VariantTestCase(
+                String originalVariantQuery,
+                boolean expectedGnSuccessfullyAnnotated,
+                String expectedGnAlleleString,
+                String description,
+                String errorMessage) {
+            this.originalVariantQuery =  originalVariantQuery;
+            this.expectedGnSuccessfullyAnnotated = expectedGnSuccessfullyAnnotated;
+            this.expectedGnAlleleString = expectedGnAlleleString;
+            this.description = description;
+            this.errorMessage = errorMessage;
         }
     }
 
@@ -113,13 +126,13 @@ public class VerifiedGenomicLocationAnnotationServiceTest
         if (glSubstitutions == null) {
             glSubstitutions = new ArrayList<VariantTestCase>();
             glSubstitutions.add(new VariantTestCase("5,138163256,138163256,C,T", true, "C/T", "valid substitution"));
-            glSubstitutions.add(new VariantTestCase("5,138163256,138163256,A,T", false, null, "discrepant RefAllele"));
+            glSubstitutions.add(new VariantTestCase("5,138163256,138163256,A,T", false, null, "discrepant RefAllele", "Reference allele extracted from response (C) does not match given reference allele (A)"));
             glDeletions = new ArrayList<VariantTestCase>();
             glDeletions.add(new VariantTestCase("5,138163256,138163256,C,-", true, "C/-", "1nt deletion with RefAllele"));
-            glDeletions.add(new VariantTestCase("5,138163256,138163256,A,-", false, null, "1nt deletion with discrepant RefAllele"));
+            glDeletions.add(new VariantTestCase("5,138163256,138163256,A,-", false, null, "1nt deletion with discrepant RefAllele", "Reference allele extracted from response (C) does not match given reference allele (A)"));
             glDeletions.add(new VariantTestCase("5,138163255,138163256,TC,-", true, "TC/-", "2nt deletion with RefAllele"));
-            glDeletions.add(new VariantTestCase("5,138163255,138163256,CC,-", false, null, "2nt deletion with discrepant RefAllele"));
-            glDeletions.add(new VariantTestCase("5,138163255,138163256,CCCC,-", false, null, "2nt deletion with invalid RefAllele"));
+            glDeletions.add(new VariantTestCase("5,138163255,138163256,CC,-", false, null, "2nt deletion with discrepant RefAllele", "Reference allele extracted from response (TC) does not match given reference allele (CC)"));
+            glDeletions.add(new VariantTestCase("5,138163255,138163256,CCCC,-", false, null, "2nt deletion with invalid RefAllele", "Reference allele extracted from response (TC) does not match given reference allele (CCCC)"));
             glInsertions = new ArrayList<VariantTestCase>();
             glInsertions.add(new VariantTestCase("5,138163255,138163256,-,T", true, "-/T", "1nt insertion"));
             glInsertions.add(new VariantTestCase("5,138163255,138163256,-,TT", true, "-/TT", "2nt insertion"));
@@ -128,18 +141,18 @@ public class VerifiedGenomicLocationAnnotationServiceTest
             glInsertions.add(new VariantTestCase("5,138163255,138163256,TC,TCA", true, "-/A", "2nt deletion with RefAllele, 3nt insertion, partial change"));
             glInsertionDeletions = new ArrayList<VariantTestCase>();
             glInsertionDeletions.add(new VariantTestCase("5,138163256,138163256,C,T", true, "C/T", "1nt deletion with RefAllele, 1nt insertion"));
-            glInsertionDeletions.add(new VariantTestCase("5,138163256,138163256,A,T", false, null, "1nt deletion with discrepant RefAllele, 1nt insertion"));
+            glInsertionDeletions.add(new VariantTestCase("5,138163256,138163256,A,T", false, null, "1nt deletion with discrepant RefAllele, 1nt insertion", "Reference allele extracted from response (C) does not match given reference allele (A)"));
             glInsertionDeletions.add(new VariantTestCase("5,138163256,138163256,C,TT", true, "C/TT", "1nt deletion with RefAllele, 2nt insertion"));
-            glInsertionDeletions.add(new VariantTestCase("5,138163256,138163256,A,TT", false, null, "1nt deletion with discrepant RefAllele, 2nt insertion"));
+            glInsertionDeletions.add(new VariantTestCase("5,138163256,138163256,A,TT", false, null, "1nt deletion with discrepant RefAllele, 2nt insertion", "Reference allele extracted from response (C) does not match given reference allele (A)"));
             glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,TC,A", true, "TC/A", "2nt deletion with RefAllele, 1nt insertion"));
-            glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,TA,G", false, null, "2nt deletion with discrepant RefAllele, 1nt insertion"));
+            glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,TA,G", false, null, "2nt deletion with discrepant RefAllele, 1nt insertion", "Reference allele extracted from response (TC) does not match given reference allele (TA)"));
             glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,TC,TC", true, "TC/TC", "2nt deletion with RefAllele, 2nt insertion no change")); // note : different result than ensembl
             glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,TC,TT", true, "C/T", "2nt deletion with RefAllele, 2nt insertion, partial change"));
             glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,TC,GG", true, "TC/GG", "2nt deletion with RefAllele, 2nt insertion, full change"));
-            glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,CC,TC", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion no change")); // note : different result than ensembl
-            glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,CC,TT", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion, partial change"));
-            glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,CC,GG", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion, full change"));
-            glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,CCCC,TT", false, null, "2nt deletion with invalid RefAllele, 2nt insertion"));
+            glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,CC,TC", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion no change", "Reference allele extracted from response (TC) does not match given reference allele (CC)")); // note : different result than ensembl
+            glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,CC,TT", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion, partial change", "Reference allele extracted from response (TC) does not match given reference allele (CC)"));
+            glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,CC,GG", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion, full change", "Reference allele extracted from response (TC) does not match given reference allele (CC)"));
+            glInsertionDeletions.add(new VariantTestCase("5,138163255,138163256,CCCC,TT", false, null, "2nt deletion with invalid RefAllele, 2nt insertion", "Reference allele extracted from response (TC) does not match given reference allele (CCCC)"));
         }
     }
 
@@ -254,6 +267,7 @@ public class VerifiedGenomicLocationAnnotationServiceTest
                 Assert.assertTrue(testCase.originalVariantQuery + " : expected successful annotation", testResponse.isSuccessfullyAnnotated());
             } else {
                 Assert.assertFalse(testCase.originalVariantQuery + " : expected failed annotation", testResponse.isSuccessfullyAnnotated());
+                Assert.assertEquals(testCase.originalVariantQuery + " : expected error message", testCase.errorMessage, testResponse.getErrorMessage());
             }
             if (testResponse.isSuccessfullyAnnotated()) {
                 Assert.assertEquals(testCase.originalVariantQuery + " : Variant Allele comparison", testCase.expectedGnAlleleString, testResponse.getAlleleString());
@@ -273,6 +287,7 @@ public class VerifiedGenomicLocationAnnotationServiceTest
                 Assert.assertTrue(genomicLocation.toString() + " : expected successful annotation", testResponse.isSuccessfullyAnnotated());
             } else {
                 Assert.assertFalse(genomicLocation.toString() + " : expected failed annotation", testResponse.isSuccessfullyAnnotated());
+                Assert.assertEquals(testCase.originalVariantQuery + " : expected error message", testCase.errorMessage, testResponse.getErrorMessage());
             }
             if (testResponse.isSuccessfullyAnnotated()) {
                 Assert.assertEquals(genomicLocation.toString() + " : Variant Allele comparison", testCase.expectedGnAlleleString, testResponse.getAlleleString());
@@ -307,6 +322,7 @@ public class VerifiedGenomicLocationAnnotationServiceTest
                 Assert.assertTrue(testCase.originalVariantQuery + " : expected successful annotation", testResponse.isSuccessfullyAnnotated());
             } else {
                 Assert.assertFalse(testCase.originalVariantQuery + " : expected failed annotation", testResponse.isSuccessfullyAnnotated());
+                Assert.assertEquals(testCase.originalVariantQuery + " : expected error message", testCase.errorMessage, testResponse.getErrorMessage());
             }
             if (testResponse.isSuccessfullyAnnotated()) {
                 Assert.assertEquals(testCase.originalVariantQuery + " : Variant Allele comparison", testCase.expectedGnAlleleString, testResponse.getAlleleString());

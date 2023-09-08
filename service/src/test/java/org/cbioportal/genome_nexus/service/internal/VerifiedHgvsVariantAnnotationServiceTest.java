@@ -76,6 +76,7 @@ public class VerifiedHgvsVariantAnnotationServiceTest
         public boolean expectedGnSuccessfullyAnnotated;
         public String expectedGnAlleleString;
         public String description;
+        public String errorMessage;
         public VariantTestCase(
                 String originalVariantQuery,
                 boolean expectedGnSuccessfullyAnnotated,
@@ -85,6 +86,18 @@ public class VerifiedHgvsVariantAnnotationServiceTest
             this.expectedGnSuccessfullyAnnotated = expectedGnSuccessfullyAnnotated;
             this.expectedGnAlleleString = expectedGnAlleleString;
             this.description = description;
+        }
+        public VariantTestCase(
+                String originalVariantQuery,
+                boolean expectedGnSuccessfullyAnnotated,
+                String expectedGnAlleleString,
+                String description,
+                String errorMessage) {
+            this.originalVariantQuery =  originalVariantQuery;
+            this.expectedGnSuccessfullyAnnotated = expectedGnSuccessfullyAnnotated;
+            this.expectedGnAlleleString = expectedGnAlleleString;
+            this.description = description;
+            this.errorMessage = errorMessage;
         }
     }
 
@@ -109,15 +122,15 @@ public class VerifiedHgvsVariantAnnotationServiceTest
         if (hgvsSubstitutions == null) {
             hgvsSubstitutions = new ArrayList<VariantTestCase>();
             hgvsSubstitutions.add(new VariantTestCase("5:g.138163256C>T", true, "C/T", "valid substitution"));
-            hgvsSubstitutions.add(new VariantTestCase("5:g.138163256A>T", false, null, "discrepant RefAllele"));
-            hgvsSubstitutions.add(new VariantTestCase("5:g.138163256>T", false, null, "missing RefAllele"));
+            hgvsSubstitutions.add(new VariantTestCase("5:g.138163256A>T", false, null, "discrepant RefAllele", "Reference allele extracted from response (-) does not match given reference allele (A)"));
+            hgvsSubstitutions.add(new VariantTestCase("5:g.138163256>T", false, null, "missing RefAllele", "Line 1 skipped (5:g.138163256>T): Invalid allele string / or possible parsing error"));
             hgvsDeletions = new ArrayList<VariantTestCase>();
             hgvsDeletions.add(new VariantTestCase("5:g.138163256delC", true, "C/-", "1nt deletion with RefAllele"));
-            hgvsDeletions.add(new VariantTestCase("5:g.138163256delA", false, null, "1nt deletion with discrepant RefAllele"));
+            hgvsDeletions.add(new VariantTestCase("5:g.138163256delA", false, null, "1nt deletion with discrepant RefAllele", "Reference allele extracted from response (C) does not match given reference allele (A)"));
             hgvsDeletions.add(new VariantTestCase("5:g.138163256del", true, "C/-", "1nt deletion missing RefAllele"));
             hgvsDeletions.add(new VariantTestCase("5:g.138163255_138163256delTC", true, "TC/-", "2nt deletion with RefAllele"));
-            hgvsDeletions.add(new VariantTestCase("5:g.138163255_138163256delCC", false, null, "2nt deletion with discrepant RefAllele"));
-            hgvsDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCCC", false, null, "2nt deletion with invalid RefAllele"));
+            hgvsDeletions.add(new VariantTestCase("5:g.138163255_138163256delCC", false, null, "2nt deletion with discrepant RefAllele", "Reference allele extracted from response (TC) does not match given reference allele (CC)"));
+            hgvsDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCCC", false, null, "2nt deletion with invalid RefAllele", "Reference allele extracted from response (TC) does not match given reference allele (CCCC)"));
             hgvsDeletions.add(new VariantTestCase("5:g.138163255_138163256del", true, "TC/-", "2nt deletion missing RefAllele"));
             hgvsInsertions = new ArrayList<VariantTestCase>();
             hgvsInsertions.add(new VariantTestCase("5:g.138163255_138163256insT", true, "-/T", "1nt insertion"));
@@ -126,24 +139,24 @@ public class VerifiedHgvsVariantAnnotationServiceTest
             hgvsInsertionDeletions = new ArrayList<VariantTestCase>();
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163256delinsT", true, "C/T", "1nt deletion without RefAllele, 1nt insertion"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163256delCinsT", true, "C/T", "1nt deletion with RefAllele, 1nt insertion"));
-            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163256delAinsT", false, null, "1nt deletion with discrepant RefAllele, 1nt insertion"));
-            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163256delinsC", false, null, "1nt deletion without RefAllele, 1nt insertion no change"));
+            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163256delAinsT", false, null, "1nt deletion with discrepant RefAllele, 1nt insertion", "Reference allele extracted from response (C) does not match given reference allele (A)"));
+            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163256delinsC", false, null, "1nt deletion without RefAllele, 1nt insertion no change", "Unable to parse HGVS notation '5:g.138163256delinsC': Reference allele extracted from 5:138163257-138163256 (C) matches alt allele given by HGVS notation 5:g.138163256delinsC (-)"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163256delinsTT", true, "C/TT", "1nt deletion without RefAllele, 2nt insertion"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163256delCinsTT", true, "C/TT", "1nt deletion with RefAllele, 2nt insertion"));
-            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163256delAinsTT", false, null, "1nt deletion with discrepant RefAllele, 2nt insertion"));
+            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163256delAinsTT", false, null, "1nt deletion with discrepant RefAllele, 2nt insertion", "Reference allele extracted from response (C) does not match given reference allele (A)"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delinsG", true, "TC/G", "2nt deletion without RefAllele, 1nt insertion"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delTCinsA", true, "TC/A", "2nt deletion with RefAllele, 1nt insertion"));
-            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delTAinsG", false, null, "2nt deletion with discrepant RefAllele, 1nt insertion"));
-            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delTCinsTC", false, null, "2nt deletion with RefAllele, 2nt insertion no change"));
+            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delTAinsG", false, null, "2nt deletion with discrepant RefAllele, 1nt insertion", "Reference allele extracted from response (TC) does not match given reference allele (TA)"));
+            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delTCinsTC", false, null, "2nt deletion with RefAllele, 2nt insertion no change", "Unable to parse HGVS notation '5:g.138163255_138163256delTCinsTC': Reference allele extracted from 5:138163257-138163256 (TC) matches alt allele given by HGVS notation 5:g.138163255_138163256delTCinsTC (-)"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delTCinsTT", true, "C/T", "2nt deletion with RefAllele, 2nt insertion, partial change"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delTCinsGG", true, "TC/GG", "2nt deletion with RefAllele, 2nt insertion, full change"));
-            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCinsTC", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion no change"));
-            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCinsTT", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion, partial change"));
-            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCinsGG", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion, full change"));
-            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delinsTC", false, null, "2nt deletion without RefAllele, 2nt insertion no change"));
+            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCinsTC", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion no change", "Reference allele extracted from response (TC) does not match given reference allele (CC)"));
+            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCinsTT", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion, partial change", "Reference allele extracted from response (TC) does not match given reference allele (CC)"));
+            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCinsGG", false, null, "2nt deletion with discrepant RefAllele, 2nt insertion, full change", "Reference allele extracted from response (TC) does not match given reference allele (CC)"));
+            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delinsTC", false, null, "2nt deletion without RefAllele, 2nt insertion no change", "Unable to parse HGVS notation '5:g.138163255_138163256delinsTC': Reference allele extracted from 5:138163257-138163256 (TC) matches alt allele given by HGVS notation 5:g.138163255_138163256delinsTC (-)"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delinsTT", true, "C/T", "2nt deletion without RefAllele, 2nt insertion, partial change"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delinsGG", true, "TC/GG", "2nt deletion without RefAllele, 2nt insertion, full change"));
-            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCCCinsTT", false, null, "2nt deletion with invalid RefAllele, 2nt insertion"));
+            hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCCCinsTT", false, null, "2nt deletion with invalid RefAllele, 2nt insertion", "Reference allele extracted from response (TC) does not match given reference allele (CCCC)"));
             hgvsInversions = new ArrayList<VariantTestCase>();
             hgvsInversions.add(new VariantTestCase("5:g.138163255_138163256inv", true, "TC/GA", "inversions not supported - but will run as passthrough"));
             hgvsInversions.add(new VariantTestCase("5:g.138163255_138163256invTC", false, null, "inversion format does not allow specification of RefAllele"));
@@ -271,6 +284,7 @@ public class VerifiedHgvsVariantAnnotationServiceTest
                 Assert.assertTrue(testCase.originalVariantQuery + " : expected successful annotation", testResponse.isSuccessfullyAnnotated());
             } else {
                 Assert.assertFalse(testCase.originalVariantQuery + " : expected failed annotation", testResponse.isSuccessfullyAnnotated());
+                Assert.assertEquals(testCase.originalVariantQuery + " : expected error message", testCase.errorMessage, testResponse.getErrorMessage());
             }
             if (testResponse.isSuccessfullyAnnotated()) {
                 Assert.assertEquals(testCase.originalVariantQuery + " : Variant Allele comparison", testCase.expectedGnAlleleString, testResponse.getAlleleString());
@@ -305,6 +319,7 @@ public class VerifiedHgvsVariantAnnotationServiceTest
                 Assert.assertTrue(testCase.originalVariantQuery + " : expected successful annotation", testResponse.isSuccessfullyAnnotated());
             } else {
                 Assert.assertFalse(testCase.originalVariantQuery + " : expected failed annotation", testResponse.isSuccessfullyAnnotated());
+                Assert.assertEquals(testCase.originalVariantQuery + " : expected error message", testCase.errorMessage, testResponse.getErrorMessage());
             }
             if (testResponse.isSuccessfullyAnnotated()) {
                 Assert.assertEquals(testCase.originalVariantQuery + " : Variant Allele comparison", testCase.expectedGnAlleleString, testResponse.getAlleleString());
