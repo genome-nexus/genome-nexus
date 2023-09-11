@@ -66,6 +66,7 @@ public class VerifiedHgvsVariantAnnotationServiceTest
     // single query stub maps
     public Map<String, Boolean> variantToVepSuccessfullyAnnotated = new HashMap<String, Boolean>();
     public Map<String, String> variantToVepAlleleString = new HashMap<String, String>();
+    public Map<String, String> variantToErrorMessage = new HashMap<String, String>();
     // argument list stubs
     public String mockIsoformOverrideSource = "mockIsoformOverrideSource";
     public Map<String, String> mockTokenMap = new HashMap<String, String>();
@@ -169,13 +170,20 @@ public class VerifiedHgvsVariantAnnotationServiceTest
         variantToVepAlleleString.put(variantQuery, alleleString);
     }
 
+    private void setUpQueryToStubMaps(String variantQuery, boolean successfullyAnnotated, String alleleString, String errorMessage)
+    {
+        variantToVepSuccessfullyAnnotated.put(variantQuery, successfullyAnnotated);
+        variantToVepAlleleString.put(variantQuery, alleleString);
+        variantToErrorMessage.put(variantQuery, errorMessage);
+    }
+
     private void setUpQueryToStubMaps()
     {
         // VEP responses for these test cases are extracted from queries to http://grch37.rest.ensembl.org/vep/human/hgvs/<variant>
         // these contain only the elements neccessary for testing the business logic in VerifiedGenomicLocationAnnotationService
         setUpQueryToStubMaps("5:g.138163256C>T", true, "C/T");
         setUpQueryToStubMaps("5:g.138163256A>T", false, null);
-        setUpQueryToStubMaps("5:g.138163256>T", false, null);
+        setUpQueryToStubMaps("5:g.138163256>T", false, null, "Line 1 skipped (5:g.138163256>T): Invalid allele string / or possible parsing error");
         setUpQueryToStubMaps("5:g.138163256delC", true, "C/-");
         setUpQueryToStubMaps("5:g.138163256delA", true, "C/-");
         setUpQueryToStubMaps("5:g.138163256del", true, "C/-");
@@ -189,20 +197,20 @@ public class VerifiedHgvsVariantAnnotationServiceTest
         setUpQueryToStubMaps("5:g.138163256delinsT", true, "C/T");
         setUpQueryToStubMaps("5:g.138163256delCinsT", true, "C/T");
         setUpQueryToStubMaps("5:g.138163256delAinsT", true, "C/T");
-        setUpQueryToStubMaps("5:g.138163256delinsC", false, null);
+        setUpQueryToStubMaps("5:g.138163256delinsC", false, null, "Unable to parse HGVS notation '5:g.138163256delinsC': Reference allele extracted from 5:138163257-138163256 (C) matches alt allele given by HGVS notation 5:g.138163256delinsC (-)");
         setUpQueryToStubMaps("5:g.138163256delinsTT", true, "C/TT");
         setUpQueryToStubMaps("5:g.138163256delCinsTT", true, "C/TT");
         setUpQueryToStubMaps("5:g.138163256delAinsTT", true, "C/TT");
         setUpQueryToStubMaps("5:g.138163255_138163256delinsG", true, "TC/G");
         setUpQueryToStubMaps("5:g.138163255_138163256delTCinsA", true, "TC/A");
         setUpQueryToStubMaps("5:g.138163255_138163256delTAinsG", true, "TC/G");
-        setUpQueryToStubMaps("5:g.138163255_138163256delTCinsTC", false, null);
+        setUpQueryToStubMaps("5:g.138163255_138163256delTCinsTC", false, null, "Unable to parse HGVS notation '5:g.138163255_138163256delTCinsTC': Reference allele extracted from 5:138163257-138163256 (TC) matches alt allele given by HGVS notation 5:g.138163255_138163256delTCinsTC (-)");
         setUpQueryToStubMaps("5:g.138163255_138163256delTCinsTT", true, "C/T");
         setUpQueryToStubMaps("5:g.138163255_138163256delTCinsGG", true, "TC/GG");
         setUpQueryToStubMaps("5:g.138163255_138163256delCCinsTC", false, null);
         setUpQueryToStubMaps("5:g.138163255_138163256delCCinsTT", true, "C/T");
         setUpQueryToStubMaps("5:g.138163255_138163256delCCinsGG", true, "TC/GG");
-        setUpQueryToStubMaps("5:g.138163255_138163256delinsTC", false, null);
+        setUpQueryToStubMaps("5:g.138163255_138163256delinsTC", false, null, "Unable to parse HGVS notation '5:g.138163255_138163256delinsTC': Reference allele extracted from 5:138163257-138163256 (TC) matches alt allele given by HGVS notation 5:g.138163255_138163256delinsTC (-)");
         setUpQueryToStubMaps("5:g.138163255_138163256delinsTT", true, "C/T");
         setUpQueryToStubMaps("5:g.138163255_138163256delinsGG", true, "TC/GG");
         setUpQueryToStubMaps("5:g.138163255_138163256delCCCCinsTT", true, "C/T");
@@ -210,13 +218,14 @@ public class VerifiedHgvsVariantAnnotationServiceTest
         setUpQueryToStubMaps("5:g.138163255_138163256invTC", false, null);
     }
 
-    private VariantAnnotation stubAnnotation(String originalVariantQuery, String variant, boolean successfullyAnnotated, String alleleString)
+    private VariantAnnotation stubAnnotation(String originalVariantQuery, String variant, boolean successfullyAnnotated, String alleleString, String errorMessage)
     {
         VariantAnnotation stub = new VariantAnnotation();
         stub.setOriginalVariantQuery(originalVariantQuery);
         stub.setVariant(variant);
         stub.setAlleleString(alleleString);
         stub.setSuccessfullyAnnotated(successfullyAnnotated);
+        stub.setErrorMessage(errorMessage);
         return stub;
     }
 
@@ -239,11 +248,13 @@ public class VerifiedHgvsVariantAnnotationServiceTest
                 throw new TestCaseInsufficentlyModeledException("No Vep allele_string stub defined for original_variant_query : " + testCase.originalVariantQuery);
             }
             String alleleStringStub = variantToVepAlleleString.get(testCase.originalVariantQuery); // null is an acceptable stub value for allele_string
+            String errorMessage = variantToErrorMessage.getOrDefault(testCase.originalVariantQuery, null);
             VariantAnnotation response = stubAnnotation(
                     testCase.originalVariantQuery,
                     testCase.originalVariantQuery,
                     successfullyAnnotatedStub,
-                    alleleStringStub);
+                    alleleStringStub,
+                    errorMessage);
             responseList.add(response);
             //response.setAnnotationJSON("{ \"originalVariantQuery\" : \"" + testCase.originalVariantQuery + "\", \"successfullyAnnotated\" : " + successfullyAnnotatedStub + ", \"allele\" : \"" + alleleStringStub + "\" }");
             Mockito.when(hgvsVariantAnnotationService.getAnnotation(testCase.originalVariantQuery)).thenReturn(response);
