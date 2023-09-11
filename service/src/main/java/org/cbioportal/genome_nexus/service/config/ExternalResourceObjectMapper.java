@@ -43,7 +43,7 @@ public class ExternalResourceObjectMapper extends ObjectMapper
         mixinMap.put(Alleles.class, AllelesMixin.class);
         mixinMap.put(Hg19.class, Hg19Mixin.class);
         mixinMap.put(Cosmic.class, CosmicMixin.class);
-        mixinMap.put(ClinVar.class, ClinVarMixin.class);
+        mixinMap.put(MyVariantInfoClinVar.class, MyVariantInfoClinVarMixin.class);
         mixinMap.put(Hg38.class, Hg38Mixin.class);
         mixinMap.put(Mutdb.class, MutdbMixin.class);
         mixinMap.put(Gnomad.class, GnomadMixin.class);

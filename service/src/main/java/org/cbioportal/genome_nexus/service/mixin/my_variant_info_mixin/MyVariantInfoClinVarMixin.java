@@ -14,7 +14,7 @@ import org.cbioportal.genome_nexus.model.my_variant_info_model.Rcv;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
-public class ClinVarMixin
+public class MyVariantInfoClinVarMixin
 {
     @JsonProperty(value = "_license", required = true)
     private String license;
