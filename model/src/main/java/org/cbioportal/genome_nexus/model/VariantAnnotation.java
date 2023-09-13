@@ -64,6 +64,7 @@ public class VariantAnnotation
     private List<IntergenicConsequences> intergenicConsequences;
     private List<TranscriptConsequence> transcriptConsequences;
     private Boolean successfullyAnnotated;
+    private String errorMessage;
 
     private MutationAssessorAnnotation mutationAssessorAnnotation;
     private NucleotideContextAnnotation nucleotideContextAnnotation;
@@ -362,5 +363,13 @@ public class VariantAnnotation
 
     public void setGenomicLocationExplanation(String genomicLocationExplanation) {
         this.genomicLocationExplanation = genomicLocationExplanation;
+    }
+    
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }
