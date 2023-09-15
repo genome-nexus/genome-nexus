@@ -93,6 +93,7 @@ public abstract class BaseCachedVariantAnnotationFetcher
         for (String variantId : variantResponse.keySet()) {
             if (variantResponse.get(variantId) == null) {
                 VariantAnnotation variantAnnotation = new VariantAnnotation(variantId);
+                variantAnnotation.setErrorMessage("Error from VEP for: " + variantId);
                 variantResponse.put(variantId, variantAnnotation);
             } else {
                 variantResponse.get(variantId).setSuccessfullyAnnotated(true);
