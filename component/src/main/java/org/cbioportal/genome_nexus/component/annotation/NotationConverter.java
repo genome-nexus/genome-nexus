@@ -65,8 +65,8 @@ public class NotationConverter {
             }
             location = new GenomicLocation();
             location.setChromosome(chromosomeNormalizer(parts[0]));
-            location.setStart(Integer.parseInt(parts[1]));
-            location.setEnd(Integer.parseInt(parts[2]));
+            location.setStart(parts[1].length() > 0 ? Integer.parseInt(parts[1]) : null);
+            location.setEnd(parts[2].length() > 0 ? Integer.parseInt(parts[2]) : null);
             location.setReferenceAllele(parts[3]);
             location.setVariantAllele(parts[4]);
             location.setOriginalInput(genomicLocation);
@@ -138,6 +138,10 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
     }
 
     public Integer harmonizeGenomicLocationCoordinate(Integer start, Integer end, String ref) {
+        if (end == null) {
+            // if end position is missing, give a default value
+            end = start;
+        }
         if (ref.equals("-") || ref.length() == 0 || ref.equals("NA") || ref.contains("--")) {
             // insertion variants: end = start + 1
             if (end != start + 1) {
@@ -372,49 +376,54 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
         }
 
         // end
-        if (!end.equals(normalizedEnd)) {
-            if (normalizedRef.equals("-") || normalizedRef.length() == 0 || normalizedRef.equals("NA") || normalizedRef.contains("--")) {
-                /*
-                Process Insertion end position
-                Example insertion: 17 36002277 36002278 - A
-                */
-                explanation.append(String.format("End position changes from %d to %d, end position should equal to (start + 1) to indicate the location of insertion. ", end, normalizedEnd));
-            } else if (normalizedVar.equals("-") || normalizedVar.length() == 0 || normalizedVar.equals("NA") || normalizedVar.contains("--")) {
-                if (normalizedRef.length() == 1) {
+        if (end == null) {
+            explanation.append(String.format("End position is missing, end position should be %d. ", normalizedEnd));
+        }
+        else {
+            if (!end.equals(normalizedEnd)) {
+                if (normalizedRef.equals("-") || normalizedRef.length() == 0 || normalizedRef.equals("NA") || normalizedRef.contains("--")) {
                     /*
-                    Process Deletion (single positon) end position
-                    Example deletion: 13 32914438 32914438 T -
+                    Process Insertion end position
+                    Example insertion: 17 36002277 36002278 - A
                     */
-                    explanation.append(String.format("End position changes from %d to %d, end position should equal to start position for single nucleotide deletion variants. ", end, normalizedEnd));
-                }
-                else {
+                    explanation.append(String.format("End position changes from %d to %d, end position should equal to (start + 1) to indicate the location of insertion. ", end, normalizedEnd));
+                } else if (normalizedVar.equals("-") || normalizedVar.length() == 0 || normalizedVar.equals("NA") || normalizedVar.contains("--")) {
+                    if (normalizedRef.length() == 1) {
+                        /*
+                        Process Deletion (single positon) end position
+                        Example deletion: 13 32914438 32914438 T -
+                        */
+                        explanation.append(String.format("End position changes from %d to %d, end position should equal to start position for single nucleotide deletion variants. ", end, normalizedEnd));
+                    }
+                    else {
+                        /*
+                        Process Deletion (multiple postion) end position
+                        Example deletion: 1 206811015 206811016  AC -
+                        */
+                        explanation.append(String.format("End position changes from %d to %d, end position should be the position of last deleted nucleotide. ", end, normalizedEnd));
+                    } 
+                } else if (normalizedRef.length() > 1 && normalizedVar.length() >= 1) {
                     /*
-                    Process Deletion (multiple postion) end position
-                    Example deletion: 1 206811015 206811016  AC -
+                    Process ONP (multiple deletion insertion) end position
+                    Example INDEL   : 2 216809708 216809709 CA T
                     */
                     explanation.append(String.format("End position changes from %d to %d, end position should be the position of last deleted nucleotide. ", end, normalizedEnd));
-                } 
-            } else if (normalizedRef.length() > 1 && normalizedVar.length() >= 1) {
-                /*
-                Process ONP (multiple deletion insertion) end position
-                Example INDEL   : 2 216809708 216809709 CA T
-                */
-                explanation.append(String.format("End position changes from %d to %d, end position should be the position of last deleted nucleotide. ", end, normalizedEnd));
-            } else if (normalizedRef.length() == 1 && normalizedVar.length() > 1) {
-                /*
-                Process ONP (single deletion insertion) end position
-                Example INDEL   : 17 7579363 7579363 A TTT
-                */
-                explanation.append(String.format("End position changes from %d to %d, end position should be the position of last deleted nucleotide. ", end, normalizedEnd));
-            } else {
-                /*
-                Process SNV end position
-                Example SNP   : 2 216809708 216809708 C T
-                */
-                explanation.append(String.format("End position changes from %d to %d, end position should equal to start position for SNV variants", end, normalizedEnd));
+                } else if (normalizedRef.length() == 1 && normalizedVar.length() > 1) {
+                    /*
+                    Process ONP (single deletion insertion) end position
+                    Example INDEL   : 17 7579363 7579363 A TTT
+                    */
+                    explanation.append(String.format("End position changes from %d to %d, end position should be the position of last deleted nucleotide. ", end, normalizedEnd));
+                } else {
+                    /*
+                    Process SNV end position
+                    Example SNP   : 2 216809708 216809708 C T
+                    */
+                    explanation.append(String.format("End position changes from %d to %d, end position should equal to start position for SNV variants", end, normalizedEnd));
+                }
             }
         }
-
+        
         // ref
         if (!ref.equals(normalizedRef)) {
             explanation.append(String.format("Reference allele changes from %s to %s is attributed to the presence of common bases %s. ", ref, normalizedRef.length() > 0 ? normalizedRef : "-", commonBases));

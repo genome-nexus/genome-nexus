@@ -61,7 +61,7 @@ public class GenomicLocation
     }
 
     public String toString() {
-        return this.getChromosome() + "," + this.getStart() + "," + this.getEnd() + "," + this.getReferenceAllele() + "," + this.getVariantAllele();
+        return this.getChromosome() + "," + (this.getStart() != null ? this.getStart() : "") + "," + (this.getEnd() != null ? this.getEnd() : "") + "," + this.getReferenceAllele() + "," + this.getVariantAllele();
     }
 
     @Override
