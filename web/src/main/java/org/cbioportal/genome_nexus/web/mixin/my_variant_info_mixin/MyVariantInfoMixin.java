@@ -2,7 +2,7 @@ package org.cbioportal.genome_nexus.web.mixin.my_variant_info_mixin;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import org.cbioportal.genome_nexus.model.my_variant_info_model.ClinVar;
+import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfoClinVar;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Cosmic;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Dbsnp;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.Gnomad;
@@ -36,7 +36,7 @@ public class MyVariantInfoMixin
     private Cosmic cosmic;
 
     @ApiModelProperty(value = "clinvar", required = false)
-    private ClinVar clinVar;
+    private MyVariantInfoClinVar clinVar;
 
     @ApiModelProperty(value = "gnomad_exome", required = false)
     private Gnomad gnomadExome;

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ClinVar
+public class MyVariantInfoClinVar
 {
     @Field(value = "_license")
     private String license;

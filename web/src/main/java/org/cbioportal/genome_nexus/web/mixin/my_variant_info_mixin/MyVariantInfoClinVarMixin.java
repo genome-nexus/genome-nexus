@@ -11,7 +11,7 @@ import org.cbioportal.genome_nexus.model.my_variant_info_model.Rcv;
 import io.swagger.annotations.ApiModelProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ClinVarMixin
+public class MyVariantInfoClinVarMixin
 {
     @ApiModelProperty(value = "license", required = false)
     private String license;
