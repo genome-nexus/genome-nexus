@@ -39,7 +39,7 @@ public class CachedVariantRegionAnnotationFetcher extends BaseCachedVariantAnnot
         // 17:36002278-36002277:1/A
         //  1:206811015-206811016:1/-
         return (
-            !id.contains("N") && !id.contains("undefined") && !id.contains("g.") &&
+            !id.contains("undefined") && !id.contains("g.") &&
             id.contains("-") &&
             // should have two :
             (id.length() - id.replace(":","").length() == 2) &&
