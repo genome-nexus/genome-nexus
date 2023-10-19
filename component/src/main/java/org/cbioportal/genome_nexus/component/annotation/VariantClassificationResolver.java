@@ -156,6 +156,9 @@ public class VariantClassificationResolver
         variantMap.put("rare_amino_acid_variant",       "Missense_Mutation");
         variantMap.put("transcript_amplification",      "Intron");
         variantMap.put("splice_region_variant",         "Splice_Region");
+        variantMap.put("splice_donor_region_variant",         "Splice_Region");
+        variantMap.put("splice_polypyrimidine_tract_variant",         "Splice_Region");
+        variantMap.put("splice_donor_5th_base_variant",         "Splice_Region");
         variantMap.put("intron_variant",                "Intron");
         variantMap.put("intragenic",                    "Intron");
         variantMap.put("intragenic_variant",            "Intron");
@@ -174,7 +177,10 @@ public class VariantClassificationResolver
         variantMap.put("5_prime_utr_premature_start_codon_gain_variant", "5'UTR");
         variantMap.put("3_prime_utr_variant",           "3'UTR");
         variantMap.put("tf_binding_site_variant",       "IGR");
+        variantMap.put("tfbs_ablation",       "IGR");
+        variantMap.put("tfbs_amplification",       "IGR");
         variantMap.put("regulatory_region_variant",     "IGR");
+        variantMap.put("regulatory_region_amplification",     "IGR");
         variantMap.put("regulatory_region",             "IGR");
         variantMap.put("intergenic_variant",            "IGR");
         variantMap.put("intergenic_region",             "IGR");
