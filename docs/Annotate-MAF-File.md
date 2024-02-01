@@ -30,3 +30,15 @@ docker run -v ${PWD}:/wd genomenexus/gn-annotation-pipeline:master --filename /w
 ```
 
 Output can be found in `output.txt`
+
+
+### Reference Genome
+The Genome Nexus Annotation Pipeline supports two versions of the human genome reference assembly: **GRCh37** and **GRCh38**.
+By default, the pipeline uses **GRCh37**. 
+#### Using GRCh38
+
+If you want to annotate with **GRCh38**, please set the `GENOMENEXUS_BASE` environment variable to `https://grch38.genomenexus.org`. Here's an example of how to do this:
+
+```
+docker run -e GENOMENEXUS_BASE=https://grch38.genomenexus.org -v ${PWD}:/wd genomenexus/gn-annotation-pipeline:latest --filename /wd/input.txt  --output-filename /wd/output.txt --isoform-override uniprot
+```
