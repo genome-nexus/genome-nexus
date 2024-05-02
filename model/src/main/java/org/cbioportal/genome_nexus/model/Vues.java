@@ -12,7 +12,7 @@ public class Vues {
     private String transcriptId;
     private String revisedProteinEffect;
     private String revisedVariantClassification;
-    private String generalRevisedVariantClassification;
+    private String revisedVariantClassificationStandard;
     private String context;
     private String vepPredictedProteinEffect;
     private String vepPredictedVariantClassification;
@@ -105,11 +105,11 @@ public class Vues {
     public void setVepPredictedVariantClassification(String vepPredictedVariantClassification) {
         this.vepPredictedVariantClassification = vepPredictedVariantClassification;
     }
-    public String getGeneralRevisedVariantClassification() {
-        return generalRevisedVariantClassification;
+    public String getRevisedVariantClassificationStandard() {
+        return revisedVariantClassificationStandard;
     }
-    public void setGeneralRevisedVariantClassification(String generalRevisedVariantClassification) {
-        this.generalRevisedVariantClassification = generalRevisedVariantClassification;
+    public void setRevisedVariantClassificationStandard(String revisedVariantClassificationStandard) {
+        this.revisedVariantClassificationStandard = revisedVariantClassificationStandard;
     }
     public Boolean getConfirmed() {
         return confirmed;
