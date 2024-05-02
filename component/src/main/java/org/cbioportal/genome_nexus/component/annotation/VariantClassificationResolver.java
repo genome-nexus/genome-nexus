@@ -132,6 +132,40 @@ public class VariantClassificationResolver
         return VARIANT_MAP.getOrDefault(variant, defaultValue);
     }
 
+    public String resolveRevueVariantClassification(String revueVariantClassification) {
+        if (revueVariantClassification == null) {
+            return null;
+        }
+        switch (revueVariantClassification) {
+            // Spilice exon skip:
+            case "Splice_Exon_Skip_In_Frame":
+                return "In_Frame_Del";
+            case "Splice_Exon_Skip_Out_Of_Frame":
+                return "Frame_Shift_Del";
+            case "Splice_Exon_Skip_Non_Start":
+                return "In_Frame_Del";
+            // Splice exon extension:
+            case "Splice_Exon_Extension_In_Frame":
+                return "In_Frame_Ins";
+            case "Splice_Exon_Extension_Out_Of_Frame":
+                return "Frame_Shift_Ins";
+            case "Splice_Exon_Extension_Nonsense":
+                return "In_Frame_Ins";
+            // Splice exon shortening:
+            case "Splice_Exon_Shortening_In_Frame":
+                return "In_Frame_Del";
+            case "Splice_Exon_Shortening_Out_Of_Frame":
+                return "Frame_Shift_Del";
+            // Splice intron retention:
+            case "Splice_Intron_Retention_In_Frame":
+                return "In_Frame_Ins";
+            case "Splice_Intron_Retention_Out_Of_Frame":
+                return "Frame_Shift_Ins";
+            default:
+                return null;
+        }
+    }
+
     private static Map<String, String> initVariantMap()
     {
         Map<String, String> variantMap = new HashMap<>();

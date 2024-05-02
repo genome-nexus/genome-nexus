@@ -246,8 +246,8 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                     vue.setDefaultEffect(vueRecord.getDefaultEffect());
                     vue.setComment(vueRecord.getComment());
                     vue.setContext(vueRecord.getContext());
-                    vue.setPubmedId(revisedProteinEffectJsonRecord.getPubmedId());
-                    vue.setReferenceText(revisedProteinEffectJsonRecord.getReferenceText());
+                    vue.setReferences(revisedProteinEffectJsonRecord.getReferences());
+                    vue.setGeneralRevisedVariantClassification(this.variantClassificationResolver.resolveRevueVariantClassification(revisedProteinEffectJsonRecord.getRevisedVariantClassification()));
                     vue.setRevisedVariantClassification(revisedProteinEffectJsonRecord.getRevisedVariantClassification());
                     vue.setRevisedProteinEffect(revisedProteinEffectJsonRecord.getRevisedProteinEffect());
                     vue.setVepPredictedVariantClassification(revisedProteinEffectJsonRecord.getVepPredictedVariantClassification());
@@ -296,7 +296,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             Vues vue = vuesMap.get(transcriptConsequence.getTranscriptId() + "-" + annotation.getVariant());
             if (vue != null) {
                 if ((overwriteByConfirmedRevueOnly == true && vue.getConfirmed()== true) || overwriteByConfirmedRevueOnly == false) {
-                    summary.setVariantClassification(vue.getRevisedVariantClassification());
+                    summary.setVariantClassification(vue.getGeneralRevisedVariantClassification());
                     summary.setHgvspShort(vue.getRevisedProteinEffect());
                     summary.setProteinPosition(this.proteinPositionResolver.extractProteinPos(vue.getRevisedProteinEffect()));
                     summary.setIsVue(true);
