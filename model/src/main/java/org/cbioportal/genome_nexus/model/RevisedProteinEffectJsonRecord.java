@@ -1,5 +1,7 @@
 package org.cbioportal.genome_nexus.model;
 
+import java.util.List;
+
 public class RevisedProteinEffectJsonRecord {
     private String variant; 
     private String genomicLocation;
@@ -8,9 +10,17 @@ public class RevisedProteinEffectJsonRecord {
     private String vepPredictedVariantClassification;
     private String revisedProteinEffect;
     private String revisedVariantClassification;
-    private Integer pubmedId;
-    private String referenceText;
     private Boolean confirmed;
+    private String mutationOrigin;
+    private List<VueReference> references;
+
+    public List<VueReference> getReferences() {
+        return references;
+    }
+
+    public void setReferences(List<VueReference> references) {
+        this.references = references;
+    }
 
     public Boolean getConfirmed() {
         return confirmed;
@@ -75,22 +85,12 @@ public class RevisedProteinEffectJsonRecord {
     public void setVepPredictedVariantClassification(String vepPredictedVariantClassification) {
         this.vepPredictedVariantClassification = vepPredictedVariantClassification;
     }
-    
-    public Integer getPubmedId() {
-        return pubmedId;
+
+    public String getMutationOrigin() {
+        return mutationOrigin;
     }
 
-    public void setPubmedId(Integer pubmedId) {
-        this.pubmedId = pubmedId;
+    public void setMutationOrigin(String mutationOrigin) {
+        this.mutationOrigin = mutationOrigin;
     }
-
-    public String getReferenceText() {
-        return referenceText;
-    }
-
-    public void setReferenceText(String referenceText) {
-        this.referenceText = referenceText;
-    }
-
-
 }

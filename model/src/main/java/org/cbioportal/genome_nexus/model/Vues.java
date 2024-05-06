@@ -7,16 +7,30 @@ public class Vues {
     private String genomicLocationDescription;
     private String defaultEffect;
     private String comment;
-    private Integer pubmedId;
-    private String referenceText;
     private String variant; 
     private String genomicLocation;
     private String transcriptId;
     private String revisedProteinEffect;
     private String revisedVariantClassification;
+    private String revisedVariantClassificationStandard;
     private String context;
     private String vepPredictedProteinEffect;
     private String vepPredictedVariantClassification;
+    private String mutationOrigin;
+    private List<VueReference> references;
+    
+    public List<VueReference> getReferences() {
+        return references;
+    }
+    public void setReferences(List<VueReference> references) {
+        this.references = references;
+    }
+    public String getMutationOrigin() {
+        return mutationOrigin;
+    }
+    public void setMutationOrigin(String mutationOrigin) {
+        this.mutationOrigin = mutationOrigin;
+    }
     private Boolean confirmed;
 
     public String getHugoGeneSymbol() {
@@ -42,18 +56,6 @@ public class Vues {
     }
     public void setComment(String comment) {
         this.comment = comment;
-    }
-    public Integer getPubmedId() {
-        return pubmedId;
-    }
-    public void setPubmedId(Integer pubmedId) {
-        this.pubmedId = pubmedId;
-    }
-    public String getReferenceText() {
-        return referenceText;
-    }
-    public void setReferenceText(String referenceText) {
-        this.referenceText = referenceText;
     }
     public String getVariant() {
         return variant;
@@ -102,6 +104,12 @@ public class Vues {
     }
     public void setVepPredictedVariantClassification(String vepPredictedVariantClassification) {
         this.vepPredictedVariantClassification = vepPredictedVariantClassification;
+    }
+    public String getRevisedVariantClassificationStandard() {
+        return revisedVariantClassificationStandard;
+    }
+    public void setRevisedVariantClassificationStandard(String revisedVariantClassificationStandard) {
+        this.revisedVariantClassificationStandard = revisedVariantClassificationStandard;
     }
     public Boolean getConfirmed() {
         return confirmed;
