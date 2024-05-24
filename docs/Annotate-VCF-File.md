@@ -6,31 +6,9 @@ Before annotating a VCF file using Genome Nexus, it must be first converted to a
 
 To convert a Variant Call Format (VCF) file to Mutation Annotation Format (MAF), we recommend using the [vcf2maf-lite Python tool](https://github.com/genome-nexus/vcf2maf-lite). It is a lightweight Python adaptation of the [vcf2maf Perl tool](https://github.com/mskcc/vcf2maf), that converts the VCF to MAF format without adding variant annotations.
 
-### Requirements
-
-```
-python3
-click
-```
-Python `click` module can be installed using `pip install click`.
-### Usage
-
-```
-python3 vcf2maf_lite.py --help
-
-  -i | --input-data             A list of .vcf files or input data directories, separated by commas [required]
-  -o | --output-directory       output data directory [optional]
-  -c | --center                 name of the center (standard MAF field = 'Center') [optional]
-  -s | --sequence-source        Sequencing source (standard MAF field = 'Sequencing_Source'), e.g., WXS or WGS [optional]
-  -t | --tumor-id               The ID of the tumor sample utilized in the genotype columns of the VCF file. [optional]
-  -n | --normal-id              The ID of the normal sample utilized in the genotype columns of the VCF file. [optional]
-  -a | --retain-info            Comma-delimited names of INFO fields to retain as extra columns in MAF [optional]
-  -f | --retain-fmt             Comma-delimited names of FORMAT fields to retain as extra columns in MAF [optional]
-```
-
 ### Minimal Example
 ```
-python3 vcf2maf.py --input-data /data/vcf --output-directory /data/maf/ --center-name CTR --sequence-source WGS --tumor-id Tumor --normal-id Normal --retain-info Custom_filters,AC,AF,AC_nfe_seu,AC_afr,AF_afr --retain-fmt alt_count_raw,ref_count_raw,depth_raw
+python3 vcf2maf.py --input-data /data/vcf --output-directory /data/maf/ --center CTR --sequence-source WGS --tumor-id Tumor --normal-id Normal --retain-info Custom_filters,AC,AF,AC_nfe_seu,AC_afr,AF_afr --retain-fmt alt_count_raw,ref_count_raw,depth_raw
 ```
 
 This command converts the VCF files in /vcf folder to MAF format. 
@@ -40,6 +18,18 @@ This command converts the VCF files in /vcf folder to MAF format.
 - The `--normal-id` option allows you to specify the ID of the normal sample used in the genotype columns of the VCF file. If the option is not used, the script will automatically identify the normal ID from either the `normal_sample` keyword in the meta data lines or the sample columns from VCF header.
 - The `--retain-info` option allows you to specify the INFO fields to be retained as additional columns in the MAF. If the option is not used, standard MAF columns are included by default.
 - The `--retain-fmt` option allows you to specify the FORMAT fields to be retained as additional columns in the MAF. If the option is not used, standard MAF columns are included by default.
+
+### Convert with Docker
+
+vcf2maf-lite is available in DockerHub at https://hub.docker.com/r/genomenexus/vcf2maf-lite
+
+```
+docker pull genomenexus/vcf2maf-lite:main
+docker run -v ${PWD}:/wd genomenexus/vcf2maf-lite:main python3 vcf2maf_lite.py --input-data /wd/test.vcf --output-directory /wd/maf/ --center CTR --sequence-source WGS --tumor-id Tumor --normal-id Normal --retain-info Custom_filters,AC,AF,AC_nfe_seu,AC_afr,AF_afr --retain-fmt alt_count_raw,ref_count_raw,depth_raw
+```
+Output can be found in the /maf directory.
+
+
 
 ## Annotate a MAF file:
 
