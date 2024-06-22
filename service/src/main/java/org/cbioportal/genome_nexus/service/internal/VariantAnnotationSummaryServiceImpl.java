@@ -119,8 +119,8 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             transcriptConsequences.add(annotationSummary.getTranscriptConsequenceSummary());
             annotationSummary.setTranscriptConsequences(transcriptConsequences);
             // if this variant is VUE, add Vues infomation
-            if (annotationSummary.getTranscriptConsequenceSummary() != null && 
-                annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null && 
+            if (annotationSummary.getTranscriptConsequenceSummary() != null &&
+                annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null &&
                 annotationSummary.getTranscriptConsequenceSummary().getIsVue() == true) {
                 annotationSummary.setVues(this.vuesMap.get(annotationSummary.getTranscriptConsequenceSummary().getTranscriptId()));
             }
@@ -187,8 +187,8 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             annotationSummary.setTranscriptConsequences(summaries);
 
             // if this variant is VUE, add Vues infomation
-            if (annotationSummary.getTranscriptConsequenceSummary() != null && 
-                annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null && 
+            if (annotationSummary.getTranscriptConsequenceSummary() != null &&
+                annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null &&
                 annotationSummary.getTranscriptConsequenceSummary().getIsVue() == true) {
                 annotationSummary.setVues(this.vuesMap.get(annotationSummary.getTranscriptConsequenceSummary().getTranscriptId() + "-" + annotationSummary.getVariant()));
             }
@@ -285,6 +285,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setRefSeq(this.refSeqResolver.resolve(transcriptConsequence));
             summary.setVariantClassification(this.variantClassificationResolver.resolve(annotation, transcriptConsequence));
             summary.setExon(this.exonResolver.resolve(transcriptConsequence));
+            summary.setAlphaMissense(transcriptConsequence.getAlphaMissense());
             summary.setPolyphenPrediction(transcriptConsequence.getPolyphenPrediction());
             summary.setPolyphenScore(transcriptConsequence.getPolyphenScore());
             summary.setSiftPrediction(transcriptConsequence.getSiftPrediction());

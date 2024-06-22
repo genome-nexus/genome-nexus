@@ -70,6 +70,17 @@ public class TranscriptConsequence
 
     private Map<String, Object> dynamicProps;
 
+    private AlphaMissense alphaMissense;
+
+    @Field("alphamissense")
+    public AlphaMissense getAlphaMissense() {
+        return alphaMissense;
+    }
+
+    public void setAlphaMissense(AlphaMissense alphaMissense) {
+        this.alphaMissense = alphaMissense;
+    }
+
     public TranscriptConsequence()
     {
         this(null);
@@ -283,7 +294,7 @@ public class TranscriptConsequence
     }
 
     public void setUniprotId(String uniprotId) {
-        this.uniprotId = uniprotId; 
+        this.uniprotId = uniprotId;
     }
 
     @Field(value="refseq_transcript_ids")
