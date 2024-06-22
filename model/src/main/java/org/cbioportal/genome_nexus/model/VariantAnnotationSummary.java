@@ -24,6 +24,16 @@ public class VariantAnnotationSummary
 
     private Vues vues;
 
+    private AlphaMissense alphaMissense;
+
+    public AlphaMissense getAlphaMissense() {
+        return alphaMissense;
+    }
+
+    public void setAlphaMissense(AlphaMissense alphaMissense) {
+        this.alphaMissense = alphaMissense;
+    }
+
     public String getVariant() {
         return variant;
     }
