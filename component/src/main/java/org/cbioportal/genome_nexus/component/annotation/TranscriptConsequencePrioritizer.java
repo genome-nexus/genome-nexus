@@ -105,8 +105,8 @@ public class TranscriptConsequencePrioritizer
         effectPriority.put("disruptive_inframe_deletion", 7); // An inframe decrease in cds length that deletes bases from the coding sequence starting within an existing codon
         effectPriority.put("inframe_insertion", 7); // An inframe non synonymous variant that inserts bases into the coding sequence
         effectPriority.put("inframe_deletion", 7); // An inframe non synonymous variant that deletes bases from the coding sequence
+        effectPriority.put("missense_variant", 8); // A sequence variant, that changes one or more bases, resulting in a different amino acid sequence but where the length is preserved
         effectPriority.put("protein_altering_variant", 8); // A sequence variant which is predicted to change the protein encoded in the coding sequence
-        effectPriority.put("missense_variant", 9); // A sequence variant, that changes one or more bases, resulting in a different amino acid sequence but where the length is preserved
         effectPriority.put("conservative_missense_variant", 9); // A sequence variant whereby at least one base of a codon is changed resulting in a codon that encodes for a different but similar amino acid. These variants may or may not be deleterious
         effectPriority.put("rare_amino_acid_variant", 9); // A sequence variant whereby at least one base of a codon encoding a rare amino acid is changed, resulting in a different encoded amino acid
         // low
@@ -114,10 +114,10 @@ public class TranscriptConsequencePrioritizer
         effectPriority.put("splice_region_variant", 10); // A sequence variant in which a change has occurred within the region of the splice site, either within 1-3 bases of the exon or 3-8 bases of the intron
         effectPriority.put("splice_donor_region_variant", 10); // A sequence variant that falls in the region between the 3rd and 6th base after splice junction (5' end of intron)
         effectPriority.put("splice_polypyrimidine_tract_variant", 10); // A sequence variant that falls in the polypyrimidine tract at 3' end of intron between 17 and 3 bases from the end (acceptor -3 to acceptor -17)
-        effectPriority.put("synonymous_variant", 11); // A sequence variant where there is no resulting change to the encoded amino acid
-        effectPriority.put("start_retained_variant", 11); // A sequence variant where at least one base in the start codon is changed, but the start remains
-        effectPriority.put("stop_retained_variant", 11); // A sequence variant where at least one base in the terminator codon is changed, but the terminator remains
-        effectPriority.put("incomplete_terminal_codon_variant", 12); // A sequence variant where at least one base of the final codon of an incompletely annotated transcript is changed
+        effectPriority.put("incomplete_terminal_codon_variant", 11); // A sequence variant where at least one base of the final codon of an incompletely annotated transcript is changed
+        effectPriority.put("synonymous_variant", 12); // A sequence variant where there is no resulting change to the encoded amino acid
+        effectPriority.put("start_retained_variant", 12); // A sequence variant where at least one base in the start codon is changed, but the start remains
+        effectPriority.put("stop_retained_variant", 12); // A sequence variant where at least one base in the terminator codon is changed, but the terminator remains
         // modifier
         effectPriority.put("coding_sequence_variant", 13); // A sequence variant that changes the coding sequence
         effectPriority.put("mature_mirna_variant", 13); // A transcript variant located with the sequence of the mature miRNA
@@ -125,14 +125,14 @@ public class TranscriptConsequencePrioritizer
         effectPriority.put("5_prime_utr_variant", 14); // A UTR variant of the 5" UTR
         effectPriority.put("5_prime_utr_premature_start_codon_gain_variant", 14); // snpEff-specific effect, creating a start codon in 5" UTR
         effectPriority.put("3_prime_utr_variant", 14); // A UTR variant of the 3" UTR
-        effectPriority.put("non_coding_exon_variant", 15); // A sequence variant that changes non-coding exon sequence
-        effectPriority.put("non_coding_transcript_exon_variant", 15); // snpEff-specific synonym for non_coding_exon_variant
+        effectPriority.put("nmd_transcript_variant", 15); // A variant in a transcript that is the target of NMD
+        effectPriority.put("non_coding_exon_variant", 16); // A sequence variant that changes non-coding exon sequence
+        effectPriority.put("non_coding_transcript_exon_variant", 16); // snpEff-specific synonym for non_coding_exon_variant
         effectPriority.put("non_coding_transcript_variant", 16); // A transcript variant of a non coding RNA gene
         effectPriority.put("nc_transcript_variant", 16); // A transcript variant of a non coding RNA gene (older alias for non_coding_transcript_variant)
-        effectPriority.put("intron_variant", 16); // A transcript variant occurring within an intron
-        effectPriority.put("intragenic_variant", 16); // A variant that occurs within a gene but falls outside of all transcript features. This occurs when alternate transcripts of a gene do not share overlapping sequence
-        effectPriority.put("intragenic", 16); // snpEff-specific synonym of intragenic_variant
-        effectPriority.put("nmd_transcript_variant", 17); // A variant in a transcript that is the target of NMD
+        effectPriority.put("intron_variant", 17); // A transcript variant occurring within an intron
+        effectPriority.put("intragenic_variant", 17); // A variant that occurs within a gene but falls outside of all transcript features. This occurs when alternate transcripts of a gene do not share overlapping sequence
+        effectPriority.put("intragenic", 17); // snpEff-specific synonym of intragenic_variant
         effectPriority.put("coding_transcript_variant", 18); // A transcript variant of a protein coding gene
         effectPriority.put("upstream_gene_variant", 19); // A sequence variant located 5" of a gene
         effectPriority.put("downstream_gene_variant", 19); // A sequence variant located 3" of a gene
