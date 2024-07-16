@@ -21,8 +21,8 @@ public class VariantAnnotationSummary
     // most impactful canonical annotation, when looking to pick a single
     // annotation
     private TranscriptConsequenceSummary transcriptConsequenceSummary;
-
     private Vues vues;
+    private List<IntergenicConsequenceSummary> intergenicConsequenceSummaries;
 
     private AlphaMissense alphaMissense;
 
@@ -112,5 +112,13 @@ public class VariantAnnotationSummary
 
     public void setVues(Vues vues) {
         this.vues = vues;
+    }
+
+    public List<IntergenicConsequenceSummary> getIntergenicConsequenceSummaries() {
+        return intergenicConsequenceSummaries;
+    }
+
+    public void setIntergenicConsequenceSummaries(List<IntergenicConsequenceSummary> intergenicConsequenceSummaries) {
+        this.intergenicConsequenceSummaries = intergenicConsequenceSummaries;
     }
 }
