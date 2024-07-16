@@ -186,9 +186,13 @@ public class VariantClassificationResolver
         variantMap.put("missense_variant",              "Missense_Mutation");
         variantMap.put("protein_altering_variant",      "Missense_Mutation"); // Not always correct, resolveVariantClassification handles the exceptions
         variantMap.put("coding_sequence_variant",       "Missense_Mutation"); // Not always correct, resolveVariantClassification handles the exceptions
+        variantMap.put("coding_transcript_variant",       "Missense_Mutation"); // Not always correct, resolveVariantClassification handles the exceptions
         variantMap.put("conservative_missense_variant", "Missense_Mutation");
         variantMap.put("rare_amino_acid_variant",       "Missense_Mutation");
         variantMap.put("transcript_amplification",      "Intron");
+        variantMap.put("feature_elongation",      "Feature_Mutation");
+        variantMap.put("feature_truncation",      "Feature_Mutation");
+        variantMap.put("sequence_variant",      "Sequence_Mutation");
         variantMap.put("splice_region_variant",         "Splice_Region");
         variantMap.put("splice_donor_region_variant",         "Splice_Region");
         variantMap.put("splice_polypyrimidine_tract_variant",         "Splice_Region");
@@ -216,6 +220,7 @@ public class VariantClassificationResolver
         variantMap.put("regulatory_region_variant",     "IGR");
         variantMap.put("regulatory_region_amplification",     "IGR");
         variantMap.put("regulatory_region",             "IGR");
+        variantMap.put("regulatory_region_ablation",             "IGR");
         variantMap.put("intergenic_variant",            "IGR");
         variantMap.put("intergenic_region",             "IGR");
         variantMap.put("upstream_gene_variant",         "5'Flank");

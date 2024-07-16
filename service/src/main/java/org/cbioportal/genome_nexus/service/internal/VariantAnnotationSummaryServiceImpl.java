@@ -109,20 +109,31 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         VariantAnnotationSummary annotationSummary = this.getVariantAnnotationSummary(annotation);
         TranscriptConsequence canonicalTranscript = this.canonicalTranscriptResolver.resolve(annotation);
 
-        if (annotationSummary != null && canonicalTranscript != null)
-        {
-            annotationSummary.setTranscriptConsequenceSummary(this.getTranscriptSummary(annotation, canonicalTranscript, vuesMap));
-            annotationSummary.setCanonicalTranscriptId(canonicalTranscript.getTranscriptId());
+        if (annotationSummary != null) {
+            if (canonicalTranscript == null) {
+                // Set variantClassification and consequence to "IGR" and "intergenic_variant" when variant is "intergenic_variant".
+                // This is useful for genome nexus annotation pipeline, so when doing curation, those mutations will be filtered out by "IGR" rule, instead of being imported as "MUTATED".
+                if (annotation.getMostSevereConsequence() != null && annotation.getMostSevereConsequence().equals("intergenic_variant")) {
+                    annotationSummary.setTranscriptConsequenceSummary(new TranscriptConsequenceSummary());
+                    annotationSummary.getTranscriptConsequenceSummary().setVariantClassification("IGR");
+                    annotationSummary.getTranscriptConsequenceSummary().setConsequenceTerms("intergenic_variant");
+                }
+            }
+            else {
+                annotationSummary.setTranscriptConsequenceSummary(this.getTranscriptSummary(annotation, canonicalTranscript, vuesMap));
+                annotationSummary.setCanonicalTranscriptId(canonicalTranscript.getTranscriptId());
 
-            // for backwards compatibility set transcriptConsequences
-            List<TranscriptConsequenceSummary> transcriptConsequences = new ArrayList<>(1);
-            transcriptConsequences.add(annotationSummary.getTranscriptConsequenceSummary());
-            annotationSummary.setTranscriptConsequences(transcriptConsequences);
-            // if this variant is VUE, add Vues infomation
-            if (annotationSummary.getTranscriptConsequenceSummary() != null && 
-                annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null && 
-                annotationSummary.getTranscriptConsequenceSummary().getIsVue() == true) {
-                annotationSummary.setVues(this.vuesMap.get(annotationSummary.getTranscriptConsequenceSummary().getTranscriptId()));
+                // for backwards compatibility set transcriptConsequences
+                List<TranscriptConsequenceSummary> transcriptConsequences = new ArrayList<>(1);
+                transcriptConsequences.add(annotationSummary.getTranscriptConsequenceSummary());
+                annotationSummary.setTranscriptConsequences(transcriptConsequences);
+
+                // if this variant is VUE, add Vues information
+                if (annotationSummary.getTranscriptConsequenceSummary() != null && 
+                    annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null && 
+                    annotationSummary.getTranscriptConsequenceSummary().getIsVue()) {
+                    annotationSummary.setVues(this.vuesMap.get(annotationSummary.getTranscriptConsequenceSummary().getTranscriptId()));
+                }
             }
         }
 
