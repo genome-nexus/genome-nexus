@@ -2,21 +2,20 @@ package org.cbioportal.genome_nexus.service.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.persistence.MutationAssessorRepository;
+import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class MutationAssessorServiceImpl implements MutationAssessorService
@@ -25,13 +24,19 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
 
     private final MutationAssessorRepository mutationAssessorRepository;
     private final VariantAnnotationService variantAnnotationService;
+    private final ProteinChangeResolver proteinChangeResolver;
+    private final EnsemblService ensemblService;
 
     @Autowired
     public MutationAssessorServiceImpl(MutationAssessorRepository mutationAssessorRepository,
-                                       VariantAnnotationService verifiedHgvsVariantAnnotationService)
+                                       VariantAnnotationService verifiedHgvsVariantAnnotationService,
+                                       ProteinChangeResolver proteinChangeResolver,
+                                       EnsemblService ensemblService)
     {
         this.mutationAssessorRepository = mutationAssessorRepository;
         this.variantAnnotationService = verifiedHgvsVariantAnnotationService;
+        this.proteinChangeResolver = proteinChangeResolver;
+        this.ensemblService = ensemblService;
     }
 
     /**
@@ -39,11 +44,11 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
      */
     public MutationAssessor getMutationAssessor(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
-        MutationAssessorWebServiceException, MutationAssessorNotFoundException
+        MutationAssessorNotFoundException
     {
-        VariantAnnotation variantAnnotation = this.variantAnnotationService.getAnnotation(variant);
+        VariantAnnotation annotation = this.variantAnnotationService.getAnnotation(variant);
 
-        return this.getMutationAssessorByVariantAnnotation(variantAnnotation);
+        return this.getMutationAssessorByVariantAnnotation(annotation);
     }
 
     /**
@@ -58,10 +63,8 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
         {
             try {
                 mutationAssessors.add(this.getMutationAssessorByVariantAnnotation(variantAnnotation));
-            } catch (MutationAssessorWebServiceException e) {
-                LOG.warn(e.getLocalizedMessage());
             } catch (MutationAssessorNotFoundException e) {
-                // fail silently for this variant
+                LOG.warn(e.getLocalizedMessage());
             }
         }
 
@@ -69,20 +72,22 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
     }
 
     public MutationAssessor getMutationAssessor(VariantAnnotation annotation)
-        throws MutationAssessorNotFoundException, MutationAssessorWebServiceException
+        throws MutationAssessorNotFoundException
     {
-        // checks annotation is SNP
+        // checks annotation is SNP and has transcript consequences
         if (annotation.getStart() == null
             || !annotation.getStart().equals(annotation.getEnd())
-            || !annotation.getAlleleString().matches("[A-Z]/[A-Z]"))
+            || !annotation.getAlleleString().matches("[A-Z]/[A-Z]")
+            || annotation.getTranscriptConsequences() == null
+            || annotation.getTranscriptConsequences().get(0).getTranscriptId() == null)
         {
             throw new MutationAssessorNotFoundException(annotation.getVariant());
         }
+        String hgvsp = proteinChangeResolver.resolveHgvspShort(annotation);
 
-        MutationAssessor mutationAssessor = this.getMutationAssessorByMutationAssessorVariant(buildRequest(annotation));
-
-        // add original hgvs variant value too
-        mutationAssessor.setHgvs(annotation.getVariant());
+        String id = this.ensemblService.getUniprotId(annotation.getTranscriptConsequences().get(0).getTranscriptId()) + ","
+            + hgvsp;
+        MutationAssessor mutationAssessor = this.getMutationAssessorByMutationAssessorVariant(id, annotation);
 
         return mutationAssessor;
     }
@@ -90,40 +95,30 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
     /**
      * @param variant   mutation assessor variant (ex: 7,140453136,A,T)
      */
-    public MutationAssessor getMutationAssessorByMutationAssessorVariant(String variant)
-        throws MutationAssessorNotFoundException, MutationAssessorWebServiceException
+    public MutationAssessor getMutationAssessorByMutationAssessorVariant(String id, VariantAnnotation annotation)
+        throws MutationAssessorNotFoundException
     {
-        Optional<MutationAssessor> mutationAssessor = null;
-        mutationAssessor = mutationAssessorRepository.findById(variant);
+        MutationAssessor mutationAssessor = null;
+        mutationAssessor = mutationAssessorRepository.findById(id).orElse(null);
         try {
-            return mutationAssessor.get();
+            return mutationAssessor;
         } catch (NoSuchElementException e) {
-            throw new MutationAssessorNotFoundException(variant);
+            throw new MutationAssessorNotFoundException(annotation.getVariant());
         }
     }
 
-    private MutationAssessor getMutationAssessorByVariantAnnotation(VariantAnnotation variantAnnotation)
-        throws MutationAssessorWebServiceException, MutationAssessorNotFoundException
+    public MutationAssessor getMutationAssessorByVariantAnnotation(VariantAnnotation annotation)
+        throws MutationAssessorNotFoundException
     {
-        MutationAssessor mutationAssessorObj = this.getMutationAssessor(variantAnnotation);
+        MutationAssessor mutationAssessorObj = this.getMutationAssessor(annotation);
 
-        if (mutationAssessorObj != null &&
-            mutationAssessorObj.getMappingIssue().length() == 0)
+        if (mutationAssessorObj != null)
         {
             return mutationAssessorObj;
         }
         else {
-            throw new MutationAssessorNotFoundException(variantAnnotation.getVariant());
+            throw new MutationAssessorNotFoundException(annotation.getVariant());
         }
-    }
-
-    private String buildRequest(VariantAnnotation annotation)
-    {
-        StringBuilder sb = new StringBuilder(annotation.getSeqRegionName() + ",");
-        sb.append(annotation.getStart() + ",");
-        sb.append(annotation.getAlleleString().replaceAll("/", ","));
-
-        return sb.toString();
     }
 
 }

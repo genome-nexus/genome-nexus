@@ -66,7 +66,7 @@ public class VariantAnnotation
     private Boolean successfullyAnnotated;
     private String errorMessage;
 
-    private MutationAssessorAnnotation mutationAssessorAnnotation;
+    private MutationAssessor mutationAssessor;
     private NucleotideContextAnnotation nucleotideContextAnnotation;
     private MyVariantInfoAnnotation myVariantInfoAnnotation;
     private HotspotAnnotation hotspotAnnotation;
@@ -258,12 +258,12 @@ public class VariantAnnotation
         this.nucleotideContextAnnotation = nucleotideContextAnnotation;
     }
 
-    public MutationAssessorAnnotation getMutationAssessorAnnotation() {
-        return mutationAssessorAnnotation;
+    public MutationAssessor getMutationAssessor() {
+        return mutationAssessor;
     }
 
-    public void setMutationAssessorAnnotation(MutationAssessorAnnotation mutationAssessorAnnotation) {
-        this.mutationAssessorAnnotation = mutationAssessorAnnotation;
+    public void setMutationAssessor(MutationAssessor mutationAssessor) {
+        this.mutationAssessor = mutationAssessor;
     }
 
     public MyVariantInfoAnnotation getMyVariantInfoAnnotation() {

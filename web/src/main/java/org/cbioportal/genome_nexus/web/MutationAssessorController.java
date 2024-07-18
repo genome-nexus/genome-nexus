@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
-import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.web.config.InternalApi;
@@ -31,27 +30,27 @@ public class MutationAssessorController
     }
 
     @ApiOperation(value = "Retrieves mutation assessor information for the provided list of variants",
-        nickname = "fetchMutationAssessorAnnotationGET")
+        nickname = "fetchMutationAssessorGET")
     @RequestMapping(value = "/mutation_assessor/{variant:.+}",
         method = RequestMethod.GET,
         produces = "application/json")
-    public MutationAssessor fetchMutationAssessorAnnotationGET(
+    public MutationAssessor fetchMutationAssessorGET(
         @ApiParam(value="A variant. For example 7:g.140453136A>T",
             required = true,
             allowMultiple = true)
         @PathVariable String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
-        MutationAssessorWebServiceException, MutationAssessorNotFoundException
+        MutationAssessorNotFoundException
     {
         return this.mutationAssessorService.getMutationAssessor(variant);
     }
 
     @ApiOperation(value = "Retrieves mutation assessor information for the provided list of variants",
-        nickname = "postMutationAssessorAnnotation")
+        nickname = "postMutationAssessor")
     @RequestMapping(value = "/mutation_assessor",
         method = RequestMethod.POST,
         produces = "application/json")
-    public List<MutationAssessor> fetchMutationAssessorAnnotationPOST(
+    public List<MutationAssessor> fetchMutationAssessorPOST(
         @ApiParam(value="List of variants. For example [\"7:g.140453136A>T\",\"12:g.25398285C>A\"]",
             required = true,
             allowMultiple = true)

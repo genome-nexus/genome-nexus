@@ -30,7 +30,6 @@ public class ExternalResourceObjectMapper extends ObjectMapper
         Map<Class<?>, Class<?>> mixinMap = new HashMap<>();
 
         mixinMap.put(GeneXref.class, GeneXrefMixin.class);
-        mixinMap.put(MutationAssessor.class, MutationAssessorMixin.class);
         mixinMap.put(NucleotideContext.class, NucleotideContextMixin.class);
         mixinMap.put(TranscriptConsequence.class, TranscriptConsequenceMixin.class);
         mixinMap.put(AlphaMissense.class,AlphaMissenseMixin.class);

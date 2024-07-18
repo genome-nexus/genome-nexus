@@ -304,7 +304,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         if (fields.contains(AnnotationField.MUTATION_ASSESSOR))
         {
             postEnrichmentService.registerEnricher(
-                new MutationAssessorAnnotationEnricher("mutation_assessor", mutationAssessorService)
+                new MutationAssessorEnricher("mutation_assessor", mutationAssessorService)
             );
         }
 

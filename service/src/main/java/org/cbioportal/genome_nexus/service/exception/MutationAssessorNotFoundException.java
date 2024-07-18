@@ -19,6 +19,6 @@ public class MutationAssessorNotFoundException extends Exception
 
     @Override
     public String getMessage() {
-        return "Mutation Assessor annotation not found for variant: " + this.getVariant();
+        return "Mutation Assessor not found for variant: " + this.getVariant();
     }
 }
