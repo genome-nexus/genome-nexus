@@ -1,5 +1,4 @@
 package org.cbioportal.genome_nexus.model;
-
 public class TranscriptConsequenceSummary
 {
     private String transcriptId;
@@ -23,6 +22,15 @@ public class TranscriptConsequenceSummary
     private String siftPrediction;
     private String uniprotId;
     private Boolean isVue;
+    private AlphaMissense alphaMissense;
+
+    public AlphaMissense getAlphaMissense() {
+        return alphaMissense;
+    }
+
+    public void setAlphaMissense(AlphaMissense alphaMissense) {
+        this.alphaMissense = alphaMissense;
+    }
 
     public String getTranscriptId() {
         return transcriptId;
@@ -149,7 +157,7 @@ public class TranscriptConsequenceSummary
     }
 
     public void setPolyphenScore(Double polyphenScore) {
-        this.polyphenScore = polyphenScore; 
+        this.polyphenScore = polyphenScore;
     }
 
     public String getPolyphenPrediction() {
@@ -157,7 +165,7 @@ public class TranscriptConsequenceSummary
     }
 
     public void setPolyphenPrediction(String polyphenPrediction) {
-        this.polyphenPrediction = polyphenPrediction; 
+        this.polyphenPrediction = polyphenPrediction;
     }
 
     public Double getSiftScore() {
@@ -165,7 +173,7 @@ public class TranscriptConsequenceSummary
     }
 
     public void setSiftScore(Double siftScore) {
-        this.siftScore = siftScore; 
+        this.siftScore = siftScore;
     }
 
     public String getSiftPrediction() {
@@ -173,7 +181,7 @@ public class TranscriptConsequenceSummary
     }
 
     public void setSiftPrediction(String siftPrediction) {
-        this.siftPrediction = siftPrediction; 
+        this.siftPrediction = siftPrediction;
     }
 
     public String getUniprotId() {
@@ -181,7 +189,7 @@ public class TranscriptConsequenceSummary
     }
 
     public void setUniprotId(String uniprotId) {
-        this.uniprotId = uniprotId; 
+        this.uniprotId = uniprotId;
     }
 
     public Boolean getIsVue() {

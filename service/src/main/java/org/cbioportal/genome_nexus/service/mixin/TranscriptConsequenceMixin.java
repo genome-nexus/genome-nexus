@@ -1,7 +1,6 @@
 package org.cbioportal.genome_nexus.service.mixin;
 
 import com.fasterxml.jackson.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 
