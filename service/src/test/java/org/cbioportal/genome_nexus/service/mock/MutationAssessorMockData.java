@@ -19,8 +19,8 @@ public class MutationAssessorMockData implements MockData<MutationAssessor>
         mutationAssessor = new MutationAssessor();
         mutationAssessor.setHgvspShort("p.V600E");
         mutationAssessor.setUniprotId("P15056");
-        mutationAssessor.setF_score(7.110925419276407);
-        mutationAssessor.setF_impact("high");
+        mutationAssessor.setFunctionalImpactScore(7.110925419276407);
+        mutationAssessor.setFunctionalImpactPrediction("high");
         mutationAssessor.setMsa("P15056.4_full_b0.6_rg0.3");
         mutationAssessor.setMav(4);
         mutationAssessor.setSv(4);
@@ -30,8 +30,8 @@ public class MutationAssessorMockData implements MockData<MutationAssessor>
         mutationAssessor = new MutationAssessor();
         mutationAssessor.setHgvspShort("p.G12C");
         mutationAssessor.setUniprotId("P01116");
-        mutationAssessor.setF_score(5.8627536904542215);
-        mutationAssessor.setF_impact("medium");
+        mutationAssessor.setFunctionalImpactScore(5.8627536904542215);
+        mutationAssessor.setFunctionalImpactPrediction("medium");
         mutationAssessor.setMsa("P01116.1_full_b1.0_rg0.3");
         mutationAssessor.setMav(4);
         mutationAssessor.setSv(1);
@@ -41,8 +41,8 @@ public class MutationAssessorMockData implements MockData<MutationAssessor>
         mutationAssessor = new MutationAssessor();
         mutationAssessor.setHgvspShort("p.L25V");
         mutationAssessor.setUniprotId("P00519");
-        mutationAssessor.setF_score(2.554887124363546);
-        mutationAssessor.setF_impact("neutral");
+        mutationAssessor.setFunctionalImpactScore(2.554887124363546);
+        mutationAssessor.setFunctionalImpactPrediction("neutral");
         mutationAssessor.setMsa("P00519.4_full_b0.6_rg0.3");
         mutationAssessor.setMav(4);
         mutationAssessor.setSv(4);
@@ -52,8 +52,8 @@ public class MutationAssessorMockData implements MockData<MutationAssessor>
         mutationAssessor = new MutationAssessor();
         mutationAssessor.setHgvspShort(null);
         mutationAssessor.setUniprotId(null);
-        mutationAssessor.setF_score(null);
-        mutationAssessor.setF_impact(null);
+        mutationAssessor.setFunctionalImpactScore(null);
+        mutationAssessor.setFunctionalImpactPrediction(null);
         mutationAssessor.setMsa(null);
         mutationAssessor.setMav(null);
         mutationAssessor.setSv(null);

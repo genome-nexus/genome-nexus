@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.model;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "mutation_assessor.annotation")
 public class MutationAssessor
@@ -34,24 +35,26 @@ public class MutationAssessor
         this.hgvspShort = hgvspShort;
     }
     
-    private Double f_score;
+    @Field("f_score")
+    private Double functionalImpactScore;
     
-    public Double getF_score() {
-        return f_score;
+    public Double getFunctionalImpactScore() {
+        return functionalImpactScore;
     }
     
-    public void setF_score(Double f_score) {
-        this.f_score = f_score;
+    public void setFunctionalImpactScore(Double functionalImpactScore) {
+        this.functionalImpactScore = functionalImpactScore;
+    }
+
+    @Field("f_impact")
+    private String functionalImpactPrediction;
+    
+    public String getFunctionalImpactPrediction() {
+        return functionalImpactPrediction;
     }
     
-    private String f_impact;
-    
-    public String getF_impact() {
-        return f_impact;
-    }
-    
-    public void setF_impact(String f_impact) {
-        this.f_impact = f_impact;
+    public void setFunctionalImpactPrediction(String functionalImpactPrediction) {
+        this.functionalImpactPrediction = functionalImpactPrediction;
     }
    
     private String msa;

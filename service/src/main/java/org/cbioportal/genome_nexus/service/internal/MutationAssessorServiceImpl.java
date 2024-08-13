@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class MutationAssessorServiceImpl implements MutationAssessorService
@@ -85,8 +85,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
         }
         String hgvsp = proteinChangeResolver.resolveHgvspShort(annotation);
 
-        String id = this.ensemblService.getUniprotId(annotation.getTranscriptConsequences().get(0).getTranscriptId()) + ","
-            + hgvsp;
+        String id = this.ensemblService.getUniprotId(annotation.getTranscriptConsequences().get(0).getTranscriptId()) + "," + hgvsp;
         MutationAssessor mutationAssessor = this.getMutationAssessorByMutationAssessorVariant(id, annotation);
 
         return mutationAssessor;
@@ -96,29 +95,19 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
      * @param variant   mutation assessor variant (ex: 7,140453136,A,T)
      */
     public MutationAssessor getMutationAssessorByMutationAssessorVariant(String id, VariantAnnotation annotation)
-        throws MutationAssessorNotFoundException
+    throws MutationAssessorNotFoundException
     {
-        MutationAssessor mutationAssessor = null;
-        mutationAssessor = mutationAssessorRepository.findById(id).orElse(null);
-        try {
-            return mutationAssessor;
-        } catch (NoSuchElementException e) {
-            throw new MutationAssessorNotFoundException(annotation.getVariant());
-        }
+        return Optional.ofNullable(mutationAssessorRepository.findById(id)).get()
+                .orElseThrow(() -> new MutationAssessorNotFoundException(annotation.getVariant()));
     }
 
     public MutationAssessor getMutationAssessorByVariantAnnotation(VariantAnnotation annotation)
         throws MutationAssessorNotFoundException
     {
-        MutationAssessor mutationAssessorObj = this.getMutationAssessor(annotation);
-
-        if (mutationAssessorObj != null)
-        {
-            return mutationAssessorObj;
-        }
-        else {
-            throw new MutationAssessorNotFoundException(annotation.getVariant());
+        try {
+            return this.getMutationAssessor(annotation);
+        } catch (MutationAssessorNotFoundException e) {
+            throw e;
         }
     }
-
 }
