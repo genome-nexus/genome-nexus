@@ -3,6 +3,8 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.component.annotation.*;
 import org.cbioportal.genome_nexus.model.TranscriptConsequenceSummary;
 import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
+import org.cbioportal.genome_nexus.model.IntergenicConsequenceSummary;
+import org.cbioportal.genome_nexus.model.IntergenicConsequences;
 import org.cbioportal.genome_nexus.model.RevisedProteinEffectJsonRecord;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,20 +112,35 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         VariantAnnotationSummary annotationSummary = this.getVariantAnnotationSummary(annotation);
         TranscriptConsequence canonicalTranscript = this.canonicalTranscriptResolver.resolve(annotation);
 
-        if (annotationSummary != null && canonicalTranscript != null)
-        {
-            annotationSummary.setTranscriptConsequenceSummary(this.getTranscriptSummary(annotation, canonicalTranscript, vuesMap));
-            annotationSummary.setCanonicalTranscriptId(canonicalTranscript.getTranscriptId());
+        if (annotationSummary != null) {
+            if (canonicalTranscript == null && annotation.getIntergenicConsequences() != null && !annotation.getIntergenicConsequences().isEmpty()) {
+                // Set intergenicConsequenceSummaries when variant is "intergenic_variant", add variant classification based on consequence terms.
+                // This is useful for genome nexus annotation pipeline, so when doing curation, those mutations will be filtered out by "IGR" rule, instead of being imported as "MUTATED".
+                List<IntergenicConsequenceSummary> intergenicConsequenceSummaries = new ArrayList<>();
+                for (IntergenicConsequences intergenicConsequence : annotation.getIntergenicConsequences()) {
+                    IntergenicConsequenceSummary intergenicConsequenceSummary = new IntergenicConsequenceSummary();
+                    intergenicConsequenceSummary.setVariantClassification(this.variantClassificationResolver.resolve(annotation, canonicalTranscript));
+                    intergenicConsequenceSummary.setImpact(intergenicConsequence.getImpact());
+                    intergenicConsequenceSummary.setVariantAllele(intergenicConsequence.getVariantAllele());
+                    intergenicConsequenceSummary.setConsequenceTerms(intergenicConsequence.getConsequenceTerms());
+                    intergenicConsequenceSummaries.add(intergenicConsequenceSummary);
+                }
+                annotationSummary.setIntergenicConsequenceSummaries(intergenicConsequenceSummaries);
+            }
+            else {
+                annotationSummary.setTranscriptConsequenceSummary(this.getTranscriptSummary(annotation, canonicalTranscript, vuesMap));
+                annotationSummary.setCanonicalTranscriptId(canonicalTranscript.getTranscriptId());
+                // for backwards compatibility set transcriptConsequences
+                List<TranscriptConsequenceSummary> transcriptConsequences = new ArrayList<>(1);
+                transcriptConsequences.add(annotationSummary.getTranscriptConsequenceSummary());
+                annotationSummary.setTranscriptConsequences(transcriptConsequences);
 
-            // for backwards compatibility set transcriptConsequences
-            List<TranscriptConsequenceSummary> transcriptConsequences = new ArrayList<>(1);
-            transcriptConsequences.add(annotationSummary.getTranscriptConsequenceSummary());
-            annotationSummary.setTranscriptConsequences(transcriptConsequences);
-            // if this variant is VUE, add Vues infomation
-            if (annotationSummary.getTranscriptConsequenceSummary() != null &&
-                annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null &&
-                annotationSummary.getTranscriptConsequenceSummary().getIsVue() == true) {
-                annotationSummary.setVues(this.vuesMap.get(annotationSummary.getTranscriptConsequenceSummary().getTranscriptId()));
+                // if this variant is VUE, add Vues information
+                if (annotationSummary.getTranscriptConsequenceSummary() != null && 
+                    annotationSummary.getTranscriptConsequenceSummary().getIsVue() != null && 
+                    annotationSummary.getTranscriptConsequenceSummary().getIsVue()) {
+                    annotationSummary.setVues(this.vuesMap.get(annotationSummary.getTranscriptConsequenceSummary().getTranscriptId()));
+                }
             }
         }
 
