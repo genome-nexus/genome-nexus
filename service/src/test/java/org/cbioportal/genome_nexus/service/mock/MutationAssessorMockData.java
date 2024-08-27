@@ -15,47 +15,49 @@ public class MutationAssessorMockData implements MockData<MutationAssessor>
 
         MutationAssessor mutationAssessor;
 
-        // mock data for variant: 17,7578479,G,A
-        
+        // mock data for variant: P15056,p.V600E
         mutationAssessor = new MutationAssessor();
-        mutationAssessor.setHugoSymbol("TP53");
-        mutationAssessor.setHgvs("17:g.7578479G>A");
-        mutationAssessor.setMappingIssue("");
+        mutationAssessor.setHgvspShort("p.V600E");
+        mutationAssessor.setUniprotId("P15056");
+        mutationAssessor.setFunctionalImpactScore(7.110925419276407);
+        mutationAssessor.setFunctionalImpactPrediction("high");
+        mutationAssessor.setMsa("P15056.4_full_b0.6_rg0.3");
+        mutationAssessor.setMav(4);
+        mutationAssessor.setSv(4);
+        mockData.put("P15056,p.V600E", mutationAssessor);
 
-        mockData.put("17,7578479,G,A", mutationAssessor);
-
-        // mock data for variant: 17,7578416,C,A
+        // mock data for variant: P01116,p.G12C
         mutationAssessor = new MutationAssessor();
-        mutationAssessor.setHugoSymbol("TP53");
-        mutationAssessor.setHgvs("17:g.7578416C>A");
-        mutationAssessor.setMappingIssue("");
+        mutationAssessor.setHgvspShort("p.G12C");
+        mutationAssessor.setUniprotId("P01116");
+        mutationAssessor.setFunctionalImpactScore(5.8627536904542215);
+        mutationAssessor.setFunctionalImpactPrediction("medium");
+        mutationAssessor.setMsa("P01116.1_full_b1.0_rg0.3");
+        mutationAssessor.setMav(4);
+        mutationAssessor.setSv(1);
+        mockData.put("P01116,p.G12C", mutationAssessor);
 
-        mockData.put("17,7578416,C,A", mutationAssessor);
-
-        // mock data for variant: 7,140453136,A,T
+        // mock data for variant: p.S601F, P00519
         mutationAssessor = new MutationAssessor();
-        mutationAssessor.setHugoSymbol("BRAF");
-        mutationAssessor.setHgvs("7:g.140453136A>T");
-        mutationAssessor.setMappingIssue("");
-
-        mockData.put("7,140453136,A,T", mutationAssessor);
-
-        // mock data for variant: 12,25398285,C,A
-        mutationAssessor = new MutationAssessor();
-        mutationAssessor.setHugoSymbol("KRAS");
-        mutationAssessor.setHgvs("12:g.25398285C>A");
-        mutationAssessor.setMappingIssue("");
-
-        mockData.put("12,25398285,C,A", mutationAssessor);
+        mutationAssessor.setHgvspShort("p.L25V");
+        mutationAssessor.setUniprotId("P00519");
+        mutationAssessor.setFunctionalImpactScore(2.554887124363546);
+        mutationAssessor.setFunctionalImpactPrediction("neutral");
+        mutationAssessor.setMsa("P00519.4_full_b0.6_rg0.3");
+        mutationAssessor.setMav(4);
+        mutationAssessor.setSv(4);
+        mockData.put("P00519,p.L25V", mutationAssessor);
 
         // mock data for variant: INVALID
         mutationAssessor = new MutationAssessor();
-        mutationAssessor.setHugoSymbol(null);
-        mutationAssessor.setHgvs(null);
-        mutationAssessor.setMappingIssue("Issue!");
-
-        mockData.put("INVALID", mutationAssessor);
-
+        mutationAssessor.setHgvspShort(null);
+        mutationAssessor.setUniprotId(null);
+        mutationAssessor.setFunctionalImpactScore(null);
+        mutationAssessor.setFunctionalImpactPrediction(null);
+        mutationAssessor.setMsa(null);
+        mutationAssessor.setMav(null);
+        mutationAssessor.setSv(null);
+        mockData.put("INVALID,INVALID", mutationAssessor);
         return mockData;
     }
 }

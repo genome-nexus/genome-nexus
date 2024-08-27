@@ -25,7 +25,6 @@ import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetch
 import org.cbioportal.genome_nexus.service.cached.CachedVariantRegionAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
-import org.cbioportal.genome_nexus.service.exception.MutationAssessorWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
@@ -148,7 +147,7 @@ public class VariantAnnotationServiceTest
     @Test
     public void getMutationAssessorEnrichedAnnotationByVariantString()
         throws ResourceMappingException, VariantAnnotationWebServiceException, VariantAnnotationNotFoundException,
-        MutationAssessorWebServiceException, MutationAssessorNotFoundException,
+        MutationAssessorNotFoundException,
         IOException, MyVariantInfoWebServiceException, MyVariantInfoNotFoundException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
@@ -164,14 +163,14 @@ public class VariantAnnotationServiceTest
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", null, null, fields);
 
-        assertEquals(maMockData.get("7,140453136,A,T"),
-            annotation1.getMutationAssessorAnnotation().getAnnotation());
+        assertEquals(maMockData.get("P15056,p.V600E"),
+            annotation1.getMutationAssessor());
 
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
             "12:g.25398285C>A", null, null, fields);
 
-        assertEquals(maMockData.get("12,25398285,C,A"),
-            annotation2.getMutationAssessorAnnotation().getAnnotation());
+        assertEquals(maMockData.get("P01116,p.G12C"),
+            annotation2.getMutationAssessor());
     }
 
     @Test
@@ -309,12 +308,12 @@ public class VariantAnnotationServiceTest
 
     private void mockMutationAssessorServiceMethods(Map<String, VariantAnnotation> variantMockData,
                                                     Map<String, MutationAssessor> maMockData)
-        throws MutationAssessorWebServiceException, MutationAssessorNotFoundException
+        throws MutationAssessorNotFoundException
     {
         Mockito.when(this.mutationAssessorService.getMutationAssessor(
-            variantMockData.get("7:g.140453136A>T"))).thenReturn(maMockData.get("7,140453136,A,T"));
+            variantMockData.get("7:g.140453136A>T"))).thenReturn(maMockData.get("P15056,p.V600E"));
         Mockito.when(this.mutationAssessorService.getMutationAssessor(
-            variantMockData.get("12:g.25398285C>A"))).thenReturn(maMockData.get("12,25398285,C,A"));
+            variantMockData.get("12:g.25398285C>A"))).thenReturn(maMockData.get("P01116,p.G12C"));
     }
 
     private void mockMyVariantInfoServiceMethods(Map<String, VariantAnnotation> variantMockData,

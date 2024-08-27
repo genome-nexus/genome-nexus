@@ -1,261 +1,79 @@
 package org.cbioportal.genome_nexus.model;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "mutation_assessor.annotation")
 public class MutationAssessor
 {
-    @Id
-    @Indexed
-    private String input;
-
-    private String hgvs;
-
-    private String hugoSymbol;
-
-    private String referenceGenomeVariant;
-    private String referenceGenomeVariantType;
-
-    private String functionalImpact;
-    private Double functionalImpactScore;
-
-    private String msaLink;
-    private String pdbLink;
-
-    private Double variantConservationScore;
-    private Double variantSpecificityScore;
-
-    private String mappingIssue;
-    private String variant;
     private String uniprotId;
-    private String refseqId;
-
-    private Double msaGaps;
-    private Integer msaHeight;
-
-    private String codonStartPosition;
-    private Integer uniprotPosition;
-    private String uniprotResidue;
-    private Integer refseqPosition;
-    private String refseqResidue;
-
-    private Integer cosmicCount;
-    private Integer snpCount;
-
-    public String getInput() {
-        return input;
+    
+    public String getUniprotId() {
+        return uniprotId;
     }
-
-    public void setInput(String input) {
-        this.input = input;
+    
+    public void setUniprotId(String uniprotId) {
+        this.uniprotId = uniprotId;
     }
-
-    public String getHgvs() {
-        return hgvs;
+    
+    private Integer sv;
+    
+    public Integer getSv() {
+        return sv;
     }
-
-    public void setHgvs(String hgvs) {
-        this.hgvs = hgvs;
+    
+    public void setSv(Integer sv) {
+        this.sv = sv;
     }
-
-    @Field("gene")
-    public String getHugoSymbol() {
-        return hugoSymbol;
+    
+    private String hgvspShort;
+    
+    public String getHgvspShort() {
+        return hgvspShort;
     }
-
-    public void setHugoSymbol(String hugoSymbol) {
-        this.hugoSymbol = hugoSymbol;
+    
+    public void setHgvspShort(String hgvspShort) {
+        this.hgvspShort = hgvspShort;
     }
-
-    @Field("rgaa")
-    public String getReferenceGenomeVariant() {
-        return referenceGenomeVariant;
-    }
-
-    public void setReferenceGenomeVariant(String referenceGenomeVariant) {
-        this.referenceGenomeVariant = referenceGenomeVariant;
-    }
-
-    @Field("rgvt")
-    public String getReferenceGenomeVariantType() {
-        return referenceGenomeVariantType;
-    }
-
-    public void setReferenceGenomeVariantType(String referenceGenomeVariantType) {
-        this.referenceGenomeVariantType = referenceGenomeVariantType;
-    }
-
-    @Field("F_impact")
-    public String getFunctionalImpact() {
-        return functionalImpact;
-    }
-
-    public void setFunctionalImpact(String functionalImpact) {
-        this.functionalImpact = functionalImpact;
-    }
-
-    @Field("F_score")
+    
+    @Field("f_score")
+    private Double functionalImpactScore;
+    
     public Double getFunctionalImpactScore() {
         return functionalImpactScore;
     }
-
+    
     public void setFunctionalImpactScore(Double functionalImpactScore) {
         this.functionalImpactScore = functionalImpactScore;
     }
 
-    @Field("msa")
-    public String getMsaLink() {
-        return msaLink;
+    @Field("f_impact")
+    private String functionalImpactPrediction;
+    
+    public String getFunctionalImpactPrediction() {
+        return functionalImpactPrediction;
     }
-
-    public void setMsaLink(String msaLink) {
-        this.msaLink = msaLink;
+    
+    public void setFunctionalImpactPrediction(String functionalImpactPrediction) {
+        this.functionalImpactPrediction = functionalImpactPrediction;
     }
-
-    @Field("pdb")
-    public String getPdbLink() {
-        return pdbLink;
+   
+    private String msa;
+    
+    public String getMsa() {
+        return msa;
     }
-
-    public void setPdbLink(String pdbLink) {
-        this.pdbLink = pdbLink;
+    
+    public void setMsa(String msa) {
+        this.msa = msa;
     }
-
-    @Field("vc_score")
-    public Double getVariantConservationScore() {
-        return variantConservationScore;
+   
+    private Integer mav;
+  
+    public Integer getMav() {
+        return mav;
     }
-
-    public void setVariantConservationScore(Double variantConservationScore) {
-        this.variantConservationScore = variantConservationScore;
-    }
-
-    @Field("vs_score")
-    public Double getVariantSpecificityScore() {
-        return variantSpecificityScore;
-    }
-
-    public void setVariantSpecificityScore(Double variantSpecificityScore) {
-        this.variantSpecificityScore = variantSpecificityScore;
-    }
-
-    @Field("info")
-    public String getMappingIssue() {
-        return mappingIssue;
-    }
-
-    public void setMappingIssue(String mappingIssue) {
-        this.mappingIssue = mappingIssue;
-    }
-
-    @Field("var")
-    public String getVariant() {
-        return variant;
-    }
-
-    public void setVariant(String variant) {
-        this.variant = variant;
-    }
-
-    @Field("uprot")
-    public String getUniprotId() {
-        return uniprotId;
-    }
-
-    public void setUniprotId(String uniprotId) {
-        this.uniprotId = uniprotId;
-    }
-
-    @Field("rsprot")
-    public String getRefseqId() {
-        return refseqId;
-    }
-
-    public void setRefseqId(String refseqId) {
-        this.refseqId = refseqId;
-    }
-
-    @Field("gaps")
-    public Double getMsaGaps() {
-        return msaGaps;
-    }
-
-    public void setMsaGaps(Double msaGaps) {
-        this.msaGaps = msaGaps;
-    }
-
-    @Field("msa_height")
-    public Integer getMsaHeight() {
-        return msaHeight;
-    }
-
-    public void setMsaHeight(Integer msaHeight) {
-        this.msaHeight = msaHeight;
-    }
-
-    @Field("chr")
-    public String getCodonStartPosition() {
-        return codonStartPosition;
-    }
-
-    public void setCodonStartPosition(String codonStartPosition) {
-        this.codonStartPosition = codonStartPosition;
-    }
-
-    @Field("up_pos")
-    public Integer getUniprotPosition() {
-        return uniprotPosition;
-    }
-
-    public void setUniprotPosition(Integer uniprotPosition) {
-        this.uniprotPosition = uniprotPosition;
-    }
-
-    @Field("up_res")
-    public String getUniprotResidue() {
-        return uniprotResidue;
-    }
-
-    public void setUniprotResidue(String uniprotResidue) {
-        this.uniprotResidue = uniprotResidue;
-    }
-
-    @Field("rs_pos")
-    public Integer getRefseqPosition() {
-        return refseqPosition;
-    }
-
-    public void setRefseqPosition(Integer refseqPosition) {
-        this.refseqPosition = refseqPosition;
-    }
-
-    @Field("rs_res")
-    public String getRefseqResidue() {
-        return refseqResidue;
-    }
-
-    public void setRefseqResidue(String refseqResidue) {
-        this.refseqResidue = refseqResidue;
-    }
-
-    @Field("cnt_cosmic")
-    public Integer getCosmicCount() {
-        return cosmicCount;
-    }
-
-    public void setCosmicCount(Integer cosmicCount) {
-        this.cosmicCount = cosmicCount;
-    }
-
-    @Field("cnt_snps")
-    public Integer getSnpCount() {
-        return snpCount;
-    }
-
-    public void setSnpCount(Integer snpCount) {
-        this.snpCount = snpCount;
+   
+    public void setMav(Integer mav) {
+        this.mav = mav;
     }
 }
