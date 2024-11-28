@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.*;
 
+import org.cbioportal.genome_nexus.model.VariantType;
 import org.junit.Test;
 
 public class GenomicVariantUtilTest {
@@ -16,7 +17,7 @@ public class GenomicVariantUtilTest {
         assertEquals((Integer) 140453136, variant.getStart());
         assertEquals((Integer) 140453136,variant.getEnd());
         assertEquals("A", variant.getRef());
-        assertEquals(GenomicVariant.Type.SUBSTITUTION, variant.getType());
+        assertEquals(VariantType.SUBSTITUTION, variant.getType());
         assertEquals("T", variant.getAlt());
     }
 
@@ -29,7 +30,7 @@ public class GenomicVariantUtilTest {
         assertEquals((Integer) 32867861, variant.getStart());
         assertEquals((Integer) 32867862, variant.getEnd());
         assertEquals("-", variant.getRef());
-        assertEquals(GenomicVariant.Type.INSERTION, variant.getType());
+        assertEquals(VariantType.INSERTION, variant.getType());
         assertEquals("T", variant.getAlt());
     }
 
@@ -42,7 +43,7 @@ public class GenomicVariantUtilTest {
         assertEquals((Integer) 4849848, variant.getStart());
         assertEquals((Integer) 4849857, variant.getEnd());
         assertEquals("-", variant.getRef());
-        assertEquals(GenomicVariant.Type.DELETION, variant.getType());
+        assertEquals(VariantType.DELETION, variant.getType());
         assertEquals("-", variant.getAlt());
     }
 
@@ -55,7 +56,7 @@ public class GenomicVariantUtilTest {
         assertEquals(89624230, variant.getStart().intValue());
         assertEquals(89624231, variant.getEnd().intValue());
         assertEquals("AC", variant.getRef());
-        assertEquals(GenomicVariant.Type.DELETION, variant.getType());
+        assertEquals(VariantType.DELETION, variant.getType());
         assertEquals("-", variant.getAlt());
     }
 
@@ -68,7 +69,7 @@ public class GenomicVariantUtilTest {
         assertEquals((Integer) 88778, variant.getStart());
         assertEquals((Integer) 88784,variant.getEnd());
         assertEquals("XXXXXXX", variant.getRef());
-        assertEquals(GenomicVariant.Type.INDEL, variant.getType());
+        assertEquals(VariantType.INDEL, variant.getType());
         assertEquals("TAGATAG", variant.getAlt());
     }
 
@@ -126,28 +127,28 @@ public class GenomicVariantUtilTest {
 
     @Test
     public void testGenomicVariantToRegion() {
-        GenomicVariant variant = new GenomicVariant("5", GenomicVariant.RefType.GENOMIC, 140532, 140532, GenomicVariant.Type.SUBSTITUTION, null, "C");
+        GenomicVariant variant = new GenomicVariant("5", GenomicVariant.RefType.GENOMIC, 140532, 140532, VariantType.SUBSTITUTION, null, "C");
 
         assertEquals("5:140532-140532:1/C", GenomicVariantUtil.toRegion(variant));
     }
 
     @Test
     public void testGenomicVariantInsertToRegion() {
-        GenomicVariant variant = new GenomicVariant("5", GenomicVariant.RefType.GENOMIC, 140532, 140533, GenomicVariant.Type.INSERTION, null, "C");
+        GenomicVariant variant = new GenomicVariant("5", GenomicVariant.RefType.GENOMIC, 140532, 140533, VariantType.INSERTION, null, "C");
 
         assertEquals("5:140533-140532:1/C", GenomicVariantUtil.toRegion(variant));
     }
 
     @Test
     public void testGenomicVariantDelToRegion() {
-        GenomicVariant variant = new GenomicVariant("5", GenomicVariant.RefType.GENOMIC, 140532, 140532, GenomicVariant.Type.DELETION, "-", "-");
+        GenomicVariant variant = new GenomicVariant("5", GenomicVariant.RefType.GENOMIC, 140532, 140532, VariantType.DELETION, "-", "-");
 
         assertEquals("5:140532-140532:1/-", GenomicVariantUtil.toRegion(variant));
     }
 
     @Test
     public void testGenomicVariantDelWithRefAlleleToRegion() {
-        GenomicVariant variant = new GenomicVariant("10", GenomicVariant.RefType.GENOMIC, 89624230, 89624231, GenomicVariant.Type.DELETION, "AC", "-");
+        GenomicVariant variant = new GenomicVariant("10", GenomicVariant.RefType.GENOMIC, 89624230, 89624231, VariantType.DELETION, "AC", "-");
 
         assertEquals("10:89624230-89624231:1/-", GenomicVariantUtil.toRegion(variant));
     }

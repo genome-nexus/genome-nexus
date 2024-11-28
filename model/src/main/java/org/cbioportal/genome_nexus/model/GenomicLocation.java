@@ -11,6 +11,8 @@ public class GenomicLocation
     private String variantAllele;
     @JsonIgnore
     private String originalInput;
+    @JsonIgnore
+    private VariantType type;
 
     public String getChromosome() {
         return chromosome;
@@ -62,6 +64,14 @@ public class GenomicLocation
 
     public String toString() {
         return this.getChromosome() + "," + (this.getStart() != null ? this.getStart() : "") + "," + (this.getEnd() != null ? this.getEnd() : "") + "," + this.getReferenceAllele() + "," + this.getVariantAllele();
+    }
+
+    public VariantType getType() {
+        return type;
+    }
+
+    public void setType(VariantType type) {
+        this.type = type;
     }
 
     @Override
