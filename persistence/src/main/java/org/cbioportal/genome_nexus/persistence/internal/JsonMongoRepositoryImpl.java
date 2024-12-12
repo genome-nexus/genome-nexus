@@ -81,6 +81,10 @@ public class JsonMongoRepositoryImpl extends BaseGenericMongoRepository
         dbObject.put("_id", key);
 
         // save the object into the correct repository
-        this.mongoTemplate.save(dbObject, collection);
+        // NOTE: Mongo has a limit of 1023 bytes as its max key size. When g. is cached, c. will be cached as a side effect.
+        // Since the c. representation will be longer, we need to choose a "safe" limit
+        if (key.getBytes().length < 900) {
+            this.mongoTemplate.save(dbObject, collection);
+        }
     }
 }
