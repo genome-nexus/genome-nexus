@@ -127,7 +127,7 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
 
         // duplicate and inversion variants could have ref as "X" respectively, so we don't want to remove the common prefix
         if (!ref.equals(var) && !ref.matches("X+")) { 
-            prefix = longestCommonPrefix(ref, var);
+            prefix = GenomicLocationUtil.longestCommonPrefix(ref, var);
         }
 
         // Remove common prefix and adjust variant position accordingly
@@ -386,21 +386,7 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
         return ensemblRestRegionsList;
     }
 
-    // TODO factor out to a utility class as a static method if needed
-    @NotNull
-    public String longestCommonPrefix(String str1, String str2) {
-        if (str1 == null || str2 == null) {
-            return "";
-        }
-        for (int prefixLen = 0; prefixLen < str1.length(); prefixLen++) {
-            char c = str1.charAt(prefixLen);
-            if (prefixLen >= str2.length() || str2.charAt(prefixLen) != c) {
-                // mismatch found
-                return str2.substring(0, prefixLen);
-            }
-        }
-        return str1;
-    }
+
 
     @Nullable
     public String getGenomicLocationExplanation (GenomicLocation genomicLocation) {
@@ -415,7 +401,7 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
         Integer end = genomicLocation.getEnd();
         String ref = genomicLocation.getReferenceAllele().trim();
         String var = genomicLocation.getVariantAllele().trim();
-        String commonBases = longestCommonPrefix(ref, var);
+        String commonBases = GenomicLocationUtil.longestCommonPrefix(ref, var);
         Integer normalizedStart = normalizedGenomicLocation.getStart();
         Integer normalizedEnd = normalizedGenomicLocation.getEnd();
         String normalizedRef = normalizedGenomicLocation.getReferenceAllele().trim();

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.VariantType;
+import org.jetbrains.annotations.NotNull;
 
 public class GenomicLocationUtil {
     private static final Map<String, String> InversionMap = Map.of(
@@ -14,16 +15,40 @@ public class GenomicLocationUtil {
         "X", "X"
     );
 
+        // TODO factor out to a utility class as a static method if needed
+    @NotNull
+    public static String longestCommonPrefix(String str1, String str2) {
+        if (str1 == null || str2 == null) {
+            return "";
+        }
+        for (int prefixLen = 0; prefixLen < str1.length(); prefixLen++) {
+            char c = str1.charAt(prefixLen);
+            if (prefixLen >= str2.length() || str2.charAt(prefixLen) != c) {
+                // mismatch found
+                return str2.substring(0, prefixLen);
+            }
+        }
+        return str1;
+    }
+
     public static VariantType getTypeFromGenomicLocation(GenomicLocation genomicLocation) {
         String refAllele = genomicLocation.getReferenceAllele();
         String varAllele = genomicLocation.getVariantAllele();
+        String prefix = "";
+        if (!refAllele.equals(varAllele) && !refAllele.matches("X+")) { 
+            prefix = longestCommonPrefix(refAllele, varAllele);
+        }
+        if (prefix.length() > 0) {
+            refAllele = refAllele.substring(prefix.length());
+            varAllele = varAllele.substring(prefix.length());
+        }
         // Determine variant type
-        if (refAllele.equals("-") && !varAllele.equals("-")) {
+        if ((refAllele.equals("-") || refAllele.equals("")) && !varAllele.equals("-")) {
             // Pure insertion
             return VariantType.INSERTION;
         }
 
-        if (!refAllele.equals("-") && varAllele.equals("-")) {
+        if (!refAllele.equals("-") && (varAllele.equals("-") || varAllele.equals(""))) {
             // Pure deletion
             return VariantType.DELETION;
         }
