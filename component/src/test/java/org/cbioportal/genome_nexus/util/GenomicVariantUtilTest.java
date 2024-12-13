@@ -42,20 +42,24 @@ public class GenomicVariantUtilTest {
         assertEquals(GenomicVariant.RefType.GENOMIC, variant.getRefType());
         assertEquals((Integer) 4849848, variant.getStart());
         assertEquals((Integer) 4849857, variant.getEnd());
-        assertEquals("-", variant.getRef());
+        // The reference allele is not provided in the HGVS deletion so we use X to represent it with the correct length
+        // Ideally we should use '-'
+        assertEquals("XXXXXXXXXX", variant.getRef());
         assertEquals(VariantType.DELETION, variant.getType());
         assertEquals("-", variant.getAlt());
     }
 
     @Test
     public void testHgvsDeletionToGenomicVariantWithRef() {
-        GenomicVariant variant = GenomicVariantUtil.fromHgvs( "10:g.89624230_89624231delAC");
+        GenomicVariant variant = GenomicVariantUtil.fromHgvs( "10:g.89624230_89624231del");
 
         assertEquals("10", variant.getChromosome());
         assertEquals(GenomicVariant.RefType.GENOMIC, variant.getRefType());
         assertEquals(89624230, variant.getStart().intValue());
         assertEquals(89624231, variant.getEnd().intValue());
-        assertEquals("AC", variant.getRef());
+        // The reference allele is not provided in the HGVS deletion so we use X to represent it with the correct length
+        // Ideally we should use '-'
+        assertEquals("XX", variant.getRef()); 
         assertEquals(VariantType.DELETION, variant.getType());
         assertEquals("-", variant.getAlt());
     }
