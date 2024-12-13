@@ -44,32 +44,26 @@ public class GenomicLocationUtil {
         }
         // Determine variant type
         if ((refAllele.equals("-") || refAllele.equals("")) && !varAllele.equals("-")) {
-            // Pure insertion
             return VariantType.INSERTION;
         }
 
         if (!refAllele.equals("-") && (varAllele.equals("-") || varAllele.equals(""))) {
-            // Pure deletion
             return VariantType.DELETION;
         }
 
         else if (varAllele.equals(refAllele + refAllele)) {
-            // Duplication 
             return VariantType.DUPLICATION;
         }
 
-        // Inversion check for longer strings
         else if (refAllele.length() > 1 && varAllele.length() > 1 && refAllele.length() == varAllele.length() && isInversion(refAllele, varAllele)) {
             return VariantType.INVERSION;
         }
 
-        // Substitution check for single character
         else if (refAllele.length() == 1 && varAllele.length() == 1 && !refAllele.equals(varAllele)) {
             return VariantType.SUBSTITUTION;
         }
 
         else if (refAllele.length() >= 1 && varAllele.length() >= 1) {
-            // Deletion-insertion if not a simple substitution
             return VariantType.INDEL;
         }
 

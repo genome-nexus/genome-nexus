@@ -55,11 +55,6 @@ public class NotationConverter {
         return parseGenomicLocation(genomicLocation, DEFAULT_DELIMITER);
     }
 
-    // @Nullable
-    // public GenomicLocation parseGenomicLocationString(String genomicLocation) {
-    //     return parseGenomicLocation(genomicLocation, DEFAULT_DELIMITER);
-    // }
-
     @Nullable
     public GenomicLocation parseGenomicLocation(String genomicLocation, String delimiter) {
         if (genomicLocation == null) {
@@ -125,7 +120,7 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
 
         String prefix = "";
 
-        // duplicate and inversion variants could have ref as "X" respectively, so we don't want to remove the common prefix
+        // Duplicate and inversion variants could have ref as "X" respectively, so keep the common prefix "X"
         if (!ref.equals(var) && !ref.matches("X+")) { 
             prefix = GenomicLocationUtil.longestCommonPrefix(ref, var);
         }
