@@ -75,6 +75,17 @@ mvn clean install
 java -jar web/target/web-*.war
 ```
 
+## Examples
+|Type| HGVS |Genomic change| 
+|--|--|--|
+|Substitution| `7:g.140453136A>T`|`7,140453136,140453136,A,T`
+|Deletion| `3:g.52439259del` or `1:g.27105878_27105881del`| `3,52439259,52439259,G,-` or `1,27105878,27105881,AGCT,-`
+|Duplication| `9:g.21970956dup` or `9:g.21970956_21970957dup`| `9,21970956,21970956,C,CC`or`9,21970956,21970957,CG,CGCG`
+|Insertion| `17:g.41242962_41242963insGA`|`17,41242962,41242963,-,GA`
+|Inversion| `17:g.41242962_41242963inv`|`17,41242962,41242963,TG,AC`
+|Deletion-Insertion| `4:g.1803568_1803569delinsG`|`4,1803568,1803569,CC,G`
+
+
 ## Test Status 👷‍♀️
 
 | branch | master | rc |
