@@ -1,12 +1,15 @@
 package org.cbioportal.genome_nexus.component.annotation;
 
 import org.cbioportal.genome_nexus.model.GenomicLocation;
+import org.cbioportal.genome_nexus.model.VariantType;
+import org.cbioportal.genome_nexus.util.GenomicLocationUtil;
 import org.cbioportal.genome_nexus.util.GenomicVariant;
 import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
+
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,6 +38,7 @@ public class NotationConverter {
         gl.setReferenceAllele(gv.getRef());
         gl.setVariantAllele(gv.getAlt());
         gl.setOriginalInput(hgvsg);
+        gl.setType(gv.getType());
         return gl;
     }
 
@@ -70,6 +74,7 @@ public class NotationConverter {
             location.setReferenceAllele(parts[3]);
             location.setVariantAllele(parts[4]);
             location.setOriginalInput(genomicLocation);
+            location.setType(GenomicLocationUtil.getTypeFromGenomicLocation(location));
         }
 
         return location;
@@ -115,46 +120,67 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
 
         String prefix = "";
 
-        if (!ref.equals(var)) {
-            prefix = longestCommonPrefix(ref, var);
+        // Duplicate and inversion variants could have ref as "X" respectively, so keep the common prefix "X"
+        if (!ref.equals(var) && !ref.matches("X+")) { 
+            prefix = GenomicLocationUtil.longestCommonPrefix(ref, var);
         }
 
         // Remove common prefix and adjust variant position accordingly
+        // Don't remove prefix for duplications and inversions because the ref and var could be "X" respectively (see getRefFromHgvs() and getAltFromHgvs())
         if (prefix.length() > 0) {
+            int nStart = start;
+            nStart = start + prefix.length();
             ref = ref.substring(prefix.length());
             var = var.substring(prefix.length());
-            int nStart = start + prefix.length();
             if (ref.length() == 0) {
                 nStart -= 1;
             }
             start = nStart;
         }
-        end = harmonizeGenomicLocationCoordinate(start, end, ref);
-        normalizedGenomicLocation.setStart(start);
-        normalizedGenomicLocation.setEnd(end);
+
         normalizedGenomicLocation.setReferenceAllele(ref);
         normalizedGenomicLocation.setVariantAllele(var);
+        VariantType type = genomicLocation.getType() == null ? GenomicLocationUtil.getTypeFromGenomicLocation(normalizedGenomicLocation) : genomicLocation.getType();
+        normalizedGenomicLocation.setType(type);
+        normalizedGenomicLocation.setStart(start);
+        end = harmonizeGenomicLocationCoordinate(start, end, ref, var, type);
+        normalizedGenomicLocation.setEnd(end);
         return normalizedGenomicLocation;
     }
 
-    public Integer harmonizeGenomicLocationCoordinate(Integer start, Integer end, String ref) {
-        if (end == null) {
-            // if end position is missing, give a default value
+    public Integer harmonizeGenomicLocationCoordinate(Integer start, Integer end, String ref, String var, VariantType type) {
+        if  (type == null) {
+            return end;
+        }
+        if (type.equals(VariantType.INSERTION)) {
+            // insertion
+            end = start + 1;
+        }
+        else if (type.equals(VariantType.DELETION)) {
+            // deletion
+            end = start + ref.length() - 1;
+        }
+        else if (type.equals(VariantType.DUPLICATION)) {
+            // duplication
+            end = start + ref.length() - 1;
+        }
+        else if (type.equals(VariantType.INVERSION)) {
+            // inversion
+            end = start + ref.length() - 1;
+        }
+        else if (type.equals(VariantType.INDEL)) {
+            // delins
+            end = start + ref.length() - 1;
+        }
+        else if (type.equals(VariantType.SUBSTITUTION)) {
+            // substitution
             end = start;
         }
-        if (ref.equals("-") || ref.length() == 0 || ref.equals("NA") || ref.contains("--")) {
-            // insertion variants: end = start + 1
-            if (end != start + 1) {
-                end = start + 1;
-            }
-        }
         else {
-            // all deletion, delins, and SNV
-            // for single alleledel, delins and SNV, ref.length() = 1, so end = start
-            if (end != start + ref.length() - 1) {
-                end = start + ref.length() - 1;
-            }
+            // unknown
+            end = start;
         }
+
         return end;
     }
 
@@ -238,6 +264,7 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
         Integer end = normalizedGenomicLocation.getEnd();
         String ref = normalizedGenomicLocation.getReferenceAllele().trim();
         String var = normalizedGenomicLocation.getVariantAllele().trim();
+        VariantType type = normalizedGenomicLocation.getType();
         String region;
         // cannot convert invalid locations
         // Ensembl uses a one-based coordinate system
@@ -245,7 +272,7 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
             region = null;
         // If the var allele is "-", then it is a deletion
         // A ref allele of "-" could be an insertion or deletion, so this check should come first.
-        } else if (var.equals("-") || var.length() == 0) {
+        } else if (type.equals(VariantType.DELETION)) {
             /*
             Process Deletion
             Example deletion: 1 206811015 206811016  AC -
@@ -255,7 +282,7 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
             Example output: 11:2133018-2133018:1/-
             */
             region = chr + ":" + start + "-" + end + ":1/-";
-        } else if (ref.equals("-") || ref.length() == 0 || ref.equals("NA") || ref.contains("--")) {
+        } else if (type.equals(VariantType.INSERTION)) {
             /*
             Process Insertion
             Example insertion: 17 36002277 36002278 - A
@@ -269,20 +296,39 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
             catch (NumberFormatException e) {
                 return null;
             }
-        } else if (ref.length() > 1 || var.length() > 1) {
+        } else if (type.equals(VariantType.INDEL)) {
             /*
             Process ONP
             Example SNP   : 2 216809708 216809709 CA T
             Example output: 2:216809708-216809709:1/T
             */
             region = chr + ":" + start + "-" + end + ":1/" + var;
-        } else {
+        } else if (type.equals(VariantType.SUBSTITUTION)) {
             /*
             Process SNV
             Example SNP   : 2 216809708 216809708 C T
             Example output: 2:216809708-216809708:1/T
             */
             region = chr + ":" + start + "-" + start + ":1/" + var;
+        }
+        else if (type.equals(VariantType.DUPLICATION)) {
+            /*
+            Process Duplication
+            Example duplication: 2 216809708 216809709 CA CACA
+            Example output: 2:216809708-216809709:1/DUP
+            */
+            region = chr + ":" + start + "-" + end + ":1/DUP";
+        }
+        else if (type.equals(VariantType.INVERSION)) {
+            /*
+            Process Inversion
+            Example inversion: 2 216809708 216809709 CA TG
+            Example output: 2:216809708-216809709:1/TG
+            */
+            region = chr + ":" + start + "-" + end + ":1/INV";
+        }
+        else {
+            region = null;
         }
         return region;
     }
@@ -335,21 +381,7 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
         return ensemblRestRegionsList;
     }
 
-    // TODO factor out to a utility class as a static method if needed
-    @NotNull
-    public String longestCommonPrefix(String str1, String str2) {
-        if (str1 == null || str2 == null) {
-            return "";
-        }
-        for (int prefixLen = 0; prefixLen < str1.length(); prefixLen++) {
-            char c = str1.charAt(prefixLen);
-            if (prefixLen >= str2.length() || str2.charAt(prefixLen) != c) {
-                // mismatch found
-                return str2.substring(0, prefixLen);
-            }
-        }
-        return str1;
-    }
+
 
     @Nullable
     public String getGenomicLocationExplanation (GenomicLocation genomicLocation) {
@@ -364,7 +396,7 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
         Integer end = genomicLocation.getEnd();
         String ref = genomicLocation.getReferenceAllele().trim();
         String var = genomicLocation.getVariantAllele().trim();
-        String commonBases = longestCommonPrefix(ref, var);
+        String commonBases = GenomicLocationUtil.longestCommonPrefix(ref, var);
         Integer normalizedStart = normalizedGenomicLocation.getStart();
         Integer normalizedEnd = normalizedGenomicLocation.getEnd();
         String normalizedRef = normalizedGenomicLocation.getReferenceAllele().trim();

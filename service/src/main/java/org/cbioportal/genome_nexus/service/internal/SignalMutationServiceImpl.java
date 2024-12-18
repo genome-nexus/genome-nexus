@@ -3,6 +3,7 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.SignalMutation;
+import org.cbioportal.genome_nexus.model.VariantType;
 import org.cbioportal.genome_nexus.persistence.SignalMutationRepository;
 import org.cbioportal.genome_nexus.service.SignalMutationService;
 import org.cbioportal.genome_nexus.util.GenomicVariant;
@@ -54,7 +55,7 @@ public class SignalMutationServiceImpl implements SignalMutationService
         if (genomicLocation == null) {
             return Collections.emptyList();
         }
-        if (gv.getType() == GenomicVariant.Type.INDEL || gv.getType() == GenomicVariant.Type.DELETION) {
+        if (gv.getType() == VariantType.INDEL || gv.getType() == VariantType.DELETION) {
             return this.signalMutationRepository.findByChromosomeAndStartPositionAndEndPositionAndVariantAllele(	
                 genomicLocation.getChromosome(),	
                 genomicLocation.getStart().longValue(),	

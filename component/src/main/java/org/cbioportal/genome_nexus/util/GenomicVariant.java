@@ -1,14 +1,8 @@
 package org.cbioportal.genome_nexus.util;
 
-public class GenomicVariant {
+import org.cbioportal.genome_nexus.model.VariantType;
 
-    public enum Type {
-        SUBSTITUTION,
-        INSERTION,
-        DELETION,
-        INDEL
-        // hgvs DUPLICATION is not supported in this model
-    }
+public class GenomicVariant {
 
     static enum RefType {
         GENOMIC,
@@ -19,7 +13,7 @@ public class GenomicVariant {
     private RefType refType;
     private Integer start;
     private Integer end;
-    private Type type;
+    private VariantType type;
     private String ref;
     private String alt;
 
@@ -33,7 +27,7 @@ public class GenomicVariant {
         this.alt = null;
     }
 
-    public GenomicVariant (String chromosome, RefType refType, Integer start, Integer end, Type type, String ref, String alt) {
+    public GenomicVariant (String chromosome, RefType refType, Integer start, Integer end, VariantType type, String ref, String alt) {
         this.chromosome = chromosome;
         this.refType = refType;
         this.start = start;
@@ -67,11 +61,11 @@ public class GenomicVariant {
         this.start = start;
     }
 
-    public Type getType() {
+    public VariantType getType() {
         return this.type;
     }
 
-    public void setType(Type type) {
+    public void setType(VariantType type) {
         this.type = type;
     }
 

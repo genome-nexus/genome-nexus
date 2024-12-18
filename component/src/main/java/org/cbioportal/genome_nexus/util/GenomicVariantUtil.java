@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.regex.*;
 
+import org.cbioportal.genome_nexus.model.VariantType;
 import org.cbioportal.genome_nexus.util.exception.InvalidHgvsException;
 import org.cbioportal.genome_nexus.util.exception.RefTypeNotSupportedException;
 import org.cbioportal.genome_nexus.util.exception.TypeNotSupportedException;
@@ -16,12 +17,13 @@ public class GenomicVariantUtil {
         String chr = getChrFromHgvs(hgvs);
         Integer start = getStartFromHgvs(hgvs);
         Integer end = getEndFromHgvs(hgvs, start);
-        GenomicVariant.Type type = getTypeFromHgvs(hgvs);
-        if (type == GenomicVariant.Type.INSERTION && end != start + 1) {
+        VariantType type = getTypeFromHgvs(hgvs);
+        if (type == VariantType.INSERTION && end != start + 1) {
             throw new InvalidHgvsException("insertion encountered where end position did not equal start position plus 1");
         }
         String ref = getRefFromHgvs(hgvs, type);
         String alt = getAltFromHgvs(hgvs, type);
+
         return new GenomicVariant(chr, refType, start, end, type, ref, alt);
     }
 
@@ -48,7 +50,7 @@ public class GenomicVariantUtil {
         String chr = getPattern("^\\d{1,2}(?=:)", region);
         Integer start = Integer.parseInt(getPattern("(?<=:)\\d+(?=-)", region));
         Integer end = Integer.parseInt(getPattern("(?<=-)\\d+(?=:)", region));
-        GenomicVariant.Type type = null; // WARNING : type must be determined in order for other utility functions to work correctly
+        VariantType type = null; // WARNING : type must be determined in order for other utility functions to work correctly
         String ref = null;
         String alt = getPattern("(?<=:-?1/)[ATCG]+|-$", region);
         return new GenomicVariant(chr, refType, start, end, type, ref, alt);
@@ -223,7 +225,7 @@ public class GenomicVariantUtil {
     }
 
     private static Integer getStartFromHgvs(String hgvs) {
-        String startString = getPattern("(?<=\\.)\\d+(?=[_ATGC]|del)", hgvs);
+        String startString = getPattern("(?<=\\.)\\d+(?=[_ATGC]|del|dup|inv)", hgvs);
         if (startString == null || startString.trim().length() == 0) {
             throw new InvalidHgvsException("Start position could not be parsed");
         }
@@ -248,20 +250,24 @@ public class GenomicVariantUtil {
         }
     }
 
-    private static GenomicVariant.Type getTypeFromHgvs(String hgvs) {
+    private static VariantType getTypeFromHgvs(String hgvs) {
         String type = getPattern("(?<=\\d+[ATGC]?)[a-z>]+(?=[ATCG]*)", hgvs);
         if (type == null || type.trim().length() == 0) {
             throw new InvalidHgvsException("variant type could not be parsed");
         }
         switch(type) {
             case ">":
-                return GenomicVariant.Type.SUBSTITUTION;
+                return VariantType.SUBSTITUTION;
             case "ins":
-                return GenomicVariant.Type.INSERTION;
+                return VariantType.INSERTION;
             case "del":
-                return GenomicVariant.Type.DELETION;
+                return VariantType.DELETION;
             case "delins":
-                return GenomicVariant.Type.INDEL;
+                return VariantType.INDEL;
+            case "dup":
+                return VariantType.DUPLICATION;
+            case "inv":
+                return VariantType.INVERSION;
         }
         throw new TypeNotSupportedException();
     }
@@ -273,7 +279,7 @@ public class GenomicVariantUtil {
         return String.join("", Collections.nCopies(s.trim().length(), "X"));
     }
 
-    private static String getRefFromHgvs(String hgvs, GenomicVariant.Type type) {
+    private static String getRefFromHgvs(String hgvs, VariantType type) {
         String s;
         switch(type) {
             case SUBSTITUTION:
@@ -285,34 +291,73 @@ public class GenomicVariantUtil {
             case INSERTION:
                 return "-";
             case DELETION:
-                s = getPattern("(?<=[a-z+>])[ATCG]*$", hgvs);
-                if (s == null || s.trim().length() == 0) {
-                    return "-";
-                }
-                return s.trim();
             case INDEL:
-                // use a string of "X" equal to length of alt allele
-                // TODO : check if this is used anywhere and drop this if not .. also check if this is needed above for DELETION
-                s = getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
-                return sameLengthUnknownNucleotideString(s);
+                if (hgvs.indexOf('_') == -1) {
+                    return "X";
+                }
+                else {
+                    int refLength = Integer.parseInt(hgvs.substring(hgvs.indexOf('_') + 1, hgvs.indexOf("del"))) - Integer.parseInt(hgvs.substring(hgvs.indexOf('.') + 1, hgvs.indexOf("_"))); 
+                    return "X".repeat(refLength + 1);
+                }
+            case INVERSION:
+                if (hgvs.indexOf('_') == -1) {
+                    return "X";
+                }
+                else {
+                    int refLength = Integer.parseInt(hgvs.substring(hgvs.indexOf('_') + 1, hgvs.indexOf("inv"))) - Integer.parseInt(hgvs.substring(hgvs.indexOf('.') + 1, hgvs.indexOf("_"))); 
+                    return "X".repeat(refLength + 1);
+                }
+            case DUPLICATION:
+                if (hgvs.indexOf('_') == -1) {
+                    return "X";
+                }
+                else {
+                    int refLength = Integer.parseInt(hgvs.substring(hgvs.indexOf('_') + 1, hgvs.indexOf("dup"))) - Integer.parseInt(hgvs.substring(hgvs.indexOf('.') + 1, hgvs.indexOf("_"))); 
+                    return "X".repeat(refLength + 1);
+                }
             default:
                 throw new InvalidHgvsException(); // Never reached
         }
     }
 
-    private static String getAltFromHgvs(String hgvs, GenomicVariant.Type type) {
+    private static String getAltFromHgvs(String hgvs, VariantType type) {
         String s;
         switch(type) {
             case SUBSTITUTION:
+                s  = getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
+                if (s == null || s.trim().length() == 0) {
+                    return "-";
+                }
+                return s.trim();
             case INSERTION:
             case INDEL:
-                s  = getPattern("(?<=[a-z+>])[ATCG]+$", hgvs);
+                s  = getPattern("(?<=(ins|delins))[ATCG]+$", hgvs);
                 if (s == null || s.trim().length() == 0) {
                     return "-";
                 }
                 return s.trim();
             case DELETION:
                 return "-";
+            case INVERSION:
+                if (hgvs.indexOf('_') == -1) {
+                    return "X";
+                }
+                else {
+                    int altLength = Integer.parseInt(hgvs.substring(hgvs.indexOf('_') + 1, hgvs.indexOf("inv"))) - Integer.parseInt(hgvs.substring(hgvs.indexOf('.') + 1, hgvs.indexOf("_"))); 
+                    return "X".repeat(altLength + 1);
+                }
+                // s = getPattern("(?<=[a-z+>])[ATCG]*$", hgvs);
+                // return sameLengthUnknownNucleotideString(s);
+            case DUPLICATION:
+                if (hgvs.indexOf('_') == -1) {
+                    return "XX";
+                }
+                else {
+                    int altLength = Integer.parseInt(hgvs.substring(hgvs.indexOf('_') + 1, hgvs.indexOf("dup"))) - Integer.parseInt(hgvs.substring(hgvs.indexOf('.') + 1, hgvs.indexOf("_"))); 
+                    return "X".repeat((altLength + 1) * 2);
+                }
+                // s = getPattern("(?<=[a-z+>])[ATCG]*$", hgvs);
+                // return sameLengthUnknownNucleotideString(s) + sameLengthUnknownNucleotideString(s);
             default:
                 throw new InvalidHgvsException(); // Never reached
         }
