@@ -75,6 +75,21 @@ mvn clean install
 java -jar web/target/web-*.war
 ```
 
+## Examples
+The Genome Nexus website's variant page uses the HGVS format to describe variants. The Genome Nexus API supports multiple input formats.
+- HGVS: For `GET /annotation/{variant}` and `POST /annotation` endpoint, Genome Nexus follows [HGVS](https://hgvs-nomenclature.org/stable/recommendations/general/) format.
+- Genomic change: For `GET /annotation/genomic/{genomicLocation}` and  `POST /annotation/genomic` endpoint, Genome Nexus uses a comma separated version of [MAF](https://docs.gdc.cancer.gov/Encyclopedia/pages/Mutation_Annotation_Format_TCGAv2/) from TCGA (chromosome, start_postion, end_postion, reference_allle, variant_allele).
+
+|Type| HGVS |Genomic change|API response|Variant page|
+|--|--|--|--|--|
+|Substitution| `7:g.140453136A>T`|`7,140453136,140453136,A,T`|[7:g.140453136A>T](https://www.genomenexus.org/annotation/7:g.140453136A%3ET?fields=hotspots,annotation_summary,my_variant_info,clinvar,signal,mutation_assessor)|[7:g.140453136A>T](https://www.genomenexus.org/variant/7:g.140453136A%3ET)
+|Deletion| `3:g.52439259del` or `1:g.27105878_27105881del`| `3,52439259,52439259,G,-` or `1,27105878,27105881,AGCT,-`|[3:g.52439259del](https://www.genomenexus.org/variant/3:g.52439259del), [1:g.27105878_27105881del](https://www.genomenexus.org/variant/1:g.27105878_27105881del)|[3:g.52439259del](https://www.genomenexus.org/annotation/3:g.52439259del?fields=hotspots,annotation_summary,my_variant_info,clinvar,signal,mutation_assessor), [1:g.27105878_27105881del](https://www.genomenexus.org/annotation/1:g.27105878_27105881del?fields=hotspots,annotation_summary,my_variant_info,clinvar,signal,mutation_assessor)
+|Duplication| `9:g.21970956dup` or `9:g.21970956_21970957dup`| `9,21970956,21970956,C,CC`or`9,21970956,21970957,CG,CGCG`|[9:g.21970956dup](https://www.genomenexus.org/variant/9:g.21970956dup), [9:g.21970956_21970957dup](https://www.genomenexus.org/variant/9:g.21970956_21970957dup) | [9:g.21970956dup](https://www.genomenexus.org/annotation/9:g.21970956dup?fields=hotspots,annotation_summary,my_variant_info,clinvar,signal,mutation_assessor), [9:g.21970956_21970957dup](https://www.genomenexus.org/annotation/9:g.21970956_21970957dup?fields=hotspots,annotation_summary,my_variant_info,clinvar,signal,mutation_assessor)
+|Insertion| `17:g.41242962_41242963insGA`|`17,41242962,41242963,-,GA`|[17:g.41242962_41242963insGA](https://www.genomenexus.org/variant/17:g.41242962_41242963insGA) | [17:g.41242962_41242963insGA](https://www.genomenexus.org/annotation/17:g.41242962_41242963insGA?fields=hotspots,annotation_summary,my_variant_info,clinvar,signal,mutation_assessor)
+|Inversion| `X:g.66937331_66937332inv`|`X,66937331,66937332,TT,AA`| [X:g.66937331_66937332inv](https://www.genomenexus.org/variant/X:g.66937331_66937332inv)|[X:g.66937331_66937332inv](https://www.genomenexus.org/annotation/X:g.66937331_66937332inv?fields=hotspots,annotation_summary,my_variant_info,clinvar,signal,mutation_assessor)
+|Deletion-Insertion| `4:g.1803568_1803569delinsG`|`4,1803568,1803569,CC,G`|[4:g.1803568_1803569delinsG](https://www.genomenexus.org/variant/4:g.1803568_1803569delinsG)|[4:g.1803568_1803569delinsG](https://www.genomenexus.org/annotation/4:g.1803568_1803569delinsG?fields=hotspots,annotation_summary,my_variant_info,clinvar,signal,mutation_assessor)
+
+
 ## Test Status 👷‍♀️
 
 | branch | master | rc |
