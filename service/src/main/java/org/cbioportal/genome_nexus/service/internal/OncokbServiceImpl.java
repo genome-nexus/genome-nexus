@@ -1,8 +1,10 @@
 package org.cbioportal.genome_nexus.service.internal;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,11 +29,15 @@ public class OncokbServiceImpl implements OncokbService {
 
     private final OncokbDataFetcher oncokbDataFetcher;
     private final OncokbCancerGenesListRepository oncokbCancerGenesListRepository;
+    private Set<String> oncokbGeneSymbolList = new HashSet();
 
     @Autowired
     public OncokbServiceImpl(OncokbDataFetcher oncokbDataFetcher, OncokbCancerGenesListRepository oncokbCancerGenesListRepository) {
         this.oncokbDataFetcher = oncokbDataFetcher;
         this.oncokbCancerGenesListRepository = oncokbCancerGenesListRepository;
+        LOG.info("Building OncoKB gene list");
+        this.oncokbGeneSymbolList = this.buildList();
+        LOG.info("Finished building OncoKB gene list");
     }
 
     public IndicatorQueryResp getOncokbByProteinChange(Alteration alteration, String token) throws OncokbNotFoundException, OncokbWebServiceException {
@@ -105,5 +111,20 @@ public class OncokbServiceImpl implements OncokbService {
 
     public List<CancerGene> getOncokbCancerGenesList() {
         return this.oncokbCancerGenesListRepository.getOncokbCancerGenesList();
+    }
+
+    private Set<String> buildList() {
+        List<CancerGene> cancerGenes = this.getOncokbCancerGenesList();
+        Set<String> geneSymbolList = new HashSet();
+        for (CancerGene cancerGene : cancerGenes) {
+            geneSymbolList.add(cancerGene.getHugoSymbol());
+        }
+        return geneSymbolList;
+    }
+
+    @Override
+    public Set<String> getOncokbGeneSymbolList()
+    {
+        return this.oncokbGeneSymbolList;
     }
 }
