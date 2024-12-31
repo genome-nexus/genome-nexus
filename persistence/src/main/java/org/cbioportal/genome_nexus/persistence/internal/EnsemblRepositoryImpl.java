@@ -171,9 +171,17 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
         List<EnsemblCanonical> transcripts = mongoTemplate.findAll(
             EnsemblCanonical.class, CANONICAL_TRANSCRIPTS_COLLECTION);
 
-        return transcripts
+        Set<String> canonicalTranscriptIds = transcripts
             .stream()
             .map(t -> t.getCanonicalTranscriptId(isoformOverrideSource))
             .collect(Collectors.toSet());
+
+        // CDKN2A is a special case where it has two canonical transcripts
+        // by default the first canonical transcript ENST00000304494 is returned
+        // if the isoform override source is mskcc then the second canonical transcript ENST00000361445 should be added as well
+        if ("mskcc".equalsIgnoreCase(isoformOverrideSource)) {
+            canonicalTranscriptIds.add("ENST00000361570");
+        }
+        return canonicalTranscriptIds;
     }
 }
