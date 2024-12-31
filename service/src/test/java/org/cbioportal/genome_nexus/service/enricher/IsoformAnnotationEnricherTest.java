@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.EnsemblService;
+import org.cbioportal.genome_nexus.service.OncokbService;
 import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,7 @@ public class IsoformAnnotationEnricherTest
 {
     @Mock
     EnsemblService ensemblService;
+    OncokbService  oncokbService;
 
     private final VariantAnnotationMockData variantAnnotationMockData = new VariantAnnotationMockData();
 
@@ -34,7 +36,7 @@ public class IsoformAnnotationEnricherTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
 
         IsoformAnnotationEnricher enricher = new IsoformAnnotationEnricher(
-            "genome_nexus", "genome_nexus", this.ensemblService
+            "genome_nexus", "genome_nexus", this.ensemblService, null
         );
 
         // override canonical transcripts with no one matching transcript
@@ -69,7 +71,7 @@ public class IsoformAnnotationEnricherTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
 
         IsoformAnnotationEnricher enricher = new IsoformAnnotationEnricher(
-            "uniprot", "uniprot", this.ensemblService
+            "uniprot", "uniprot", this.ensemblService, null
         );
 
         // override canonical transcripts with just one matching transcript
@@ -105,7 +107,7 @@ public class IsoformAnnotationEnricherTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
 
         IsoformAnnotationEnricher enricher = new IsoformAnnotationEnricher(
-            "mskcc", "mskcc", this.ensemblService
+            "mskcc", "mskcc", this.ensemblService, this.oncokbService
         );
 
         // override canonical transcripts with just one matching transcript

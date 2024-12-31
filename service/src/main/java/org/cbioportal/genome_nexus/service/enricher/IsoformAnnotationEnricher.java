@@ -3,6 +3,7 @@ package org.cbioportal.genome_nexus.service.enricher;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.EnsemblService;
+import org.cbioportal.genome_nexus.service.OncokbService;
 import org.cbioportal.genome_nexus.util.IsoformOverrideSource;
 
 import java.util.Collections;
@@ -15,15 +16,18 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
 {
     String source;
     EnsemblService ensemblService;
+    OncokbService  oncokbService;
 
     public IsoformAnnotationEnricher(
         String id,
         String source,
-        EnsemblService ensemblService
+        EnsemblService ensemblService,
+        OncokbService  oncokbService
     ) {
         super(id);
         this.source = source;
         this.ensemblService = ensemblService;
+        this.oncokbService = oncokbService;
     }
 
     @Override
@@ -45,6 +49,11 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
             predefinedCanonicalTranscriptIds
         );
 
+        List<TranscriptConsequence> canonicalTranscriptCandidatesFilteredByOncokb = canonicalTranscriptCandidates
+            .stream()
+            .filter(t -> oncokbService.getOncokbGeneSymbolList().contains(t.getGeneSymbol()))
+            .collect(Collectors.toList());
+
         // if at least one canonical transcript candidate is found
         // then mark all transcripts as non-canonical.
         //
@@ -54,6 +63,12 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
             for (TranscriptConsequence transcript: annotation.getTranscriptConsequences()) {
                 transcript.setCanonical(null);
             }
+        }
+        // if there are multiple canonical transcript candidates, we filter by if there are oncokb genes
+        // and if only one transcript is oncokb gene, we set it as canonical, and set the rest as non-canonical
+        // if there are more than one oncokb gene, we keep them as candidates and set other transcripts as non-canonical
+        if (canonicalTranscriptCandidates.size() > 1 && canonicalTranscriptCandidatesFilteredByOncokb.size() > 0) {
+            canonicalTranscriptCandidates = canonicalTranscriptCandidatesFilteredByOncokb;
         }
 
         // override the canonical field for all the candidates
