@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
+
+import com.mongodb.BasicDBList;
+import com.mongodb.DBObject;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,15 @@ public class VEPDataFetcher extends BaseExternalResourceFetcher<VariantAnnotatio
     {
         super(vepUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
         this.transformer = externalResourceTransformer;
+    }
+
+    @Override
+    protected DBObject postForObject(String uri, Object requestBody)
+    {
+        RestTemplate restTemplate = new RestTemplate();
+        uri = uri.replace("/" + PLACEHOLDER, "");
+
+        return restTemplate.postForObject(uri, requestBody, BasicDBList.class);
     }
 
     @Override
