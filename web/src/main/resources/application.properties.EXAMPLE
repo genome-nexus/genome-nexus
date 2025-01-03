@@ -65,7 +65,7 @@ oncokb.url=https://www.oncokb.org/api/v1/annotate/mutations/byProteinChange?PROT
 spring.mongodb.embedded.version=3.6.2
 
 # reVUE data file URL and setting
-revue.url=https://raw.githubusercontent.com/knowledgesystems/reVUE-data/main/VUEs.json
+revue.url=https://raw.githubusercontent.com/knowledgesystems/reVUE-data/refs/heads/main/generated/VUEs.json
 
 # There is a boolean field in the VUEs.json for each VUE called "confirmed", which represents the validity status of each VUE
 # If overwrite_by_confirmed_revue_only=true, overwrite variant annotation by only confirmed VUE ("confirmed=true")
