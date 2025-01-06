@@ -26,6 +26,7 @@ public class IsoformAnnotationEnricherTest
 {
     @Mock
     EnsemblService ensemblService;
+    @Mock
     OncokbService  oncokbService;
 
     private final VariantAnnotationMockData variantAnnotationMockData = new VariantAnnotationMockData();
@@ -69,9 +70,9 @@ public class IsoformAnnotationEnricherTest
     public void enrichAnnotationWithSingleOverride() throws IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
-
+        this.mockOncokbServiceMethods();
         IsoformAnnotationEnricher enricher = new IsoformAnnotationEnricher(
-            "uniprot", "uniprot", this.ensemblService, null
+            "uniprot", "uniprot", this.ensemblService, this.oncokbService
         );
 
         // override canonical transcripts with just one matching transcript
@@ -105,7 +106,7 @@ public class IsoformAnnotationEnricherTest
     public void enrichAnnotationWithMultipleOverride() throws IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
-
+        this.mockOncokbServiceMethods();
         IsoformAnnotationEnricher enricher = new IsoformAnnotationEnricher(
             "mskcc", "mskcc", this.ensemblService, this.oncokbService
         );
@@ -147,5 +148,12 @@ public class IsoformAnnotationEnricherTest
             "ENST00000532924",
             canonicalTranscripts.get(2).getTranscriptId()
         );
+    }
+
+    private void mockOncokbServiceMethods()
+    {
+        Set<String> oncokbGeneSymbolList = new HashSet<>();
+        oncokbGeneSymbolList.add("TPRXL");
+        Mockito.when(this.oncokbService.getOncokbGeneSymbolList()).thenReturn(oncokbGeneSymbolList);
     }
 }

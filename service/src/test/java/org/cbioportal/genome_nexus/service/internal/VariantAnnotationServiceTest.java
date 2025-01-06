@@ -17,6 +17,7 @@ import org.cbioportal.genome_nexus.persistence.IndexRepository;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
+import org.cbioportal.genome_nexus.service.OncokbService;
 import org.cbioportal.genome_nexus.component.annotation.HugoGeneSymbolResolver;
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
@@ -79,6 +80,9 @@ public class VariantAnnotationServiceTest
     @Mock
     private MyVariantInfoService myVariantInfoService;
 
+    @Mock
+    private OncokbService oncokbService;
+
     @Spy
     private NotationConverter notationConverter;
 
@@ -117,6 +121,10 @@ public class VariantAnnotationServiceTest
         VariantAnnotation annotation5 = variantAnnotationService.getAnnotation("chr24:g.41242962_41242963insGA");
         assertEquals(variantMockData.get("Y:g.41242962_41242963insGA").getStart(), annotation5.getStart());
         assertEquals(variantMockData.get("Y:g.41242962_41242963insGA").getVariant(), annotation5.getVariant());
+
+        VariantAnnotation annotation6 = variantAnnotationService.getAnnotation("11:g.118392020_118392034delinsTTAC");
+        assertEquals(variantMockData.get("11:g.118392020_118392034delinsTTAC").getStart(), annotation6.getStart());
+        assertEquals(variantMockData.get("11:g.118392020_118392034delinsTTAC").getVariant(), annotation6.getVariant());
     }
 
     @Test
@@ -132,6 +140,7 @@ public class VariantAnnotationServiceTest
         variants.add("12:g.25398285C>A");
         variants.add("chr23:g.41242962_41242963insGA");
         variants.add("chr24:g.41242962_41242963insGA");
+        variants.add("11:g.118392020_118392034delinsTTAC");
 
         List<VariantAnnotation> annotations = variantAnnotationService.getAnnotations(variants);
         assertEquals(variantMockData.get("7:g.140453136A>T").getStart(), annotations.get(0).getStart());
@@ -142,6 +151,8 @@ public class VariantAnnotationServiceTest
         assertEquals(variantMockData.get("X:g.41242962_41242963insGA").getVariant(), annotations.get(2).getVariant());
         assertEquals(variantMockData.get("Y:g.41242962_41242963insGA").getStart(), annotations.get(3).getStart());
         assertEquals(variantMockData.get("Y:g.41242962_41242963insGA").getVariant(), annotations.get(3).getVariant());
+        assertEquals(variantMockData.get("11:g.118392020_118392034delinsTTAC").getStart(), annotations.get(4).getStart());
+        assertEquals(variantMockData.get("11:g.118392020_118392034delinsTTAC").getVariant(), annotations.get(4).getVariant());
     }
 
     @Test
@@ -265,6 +276,7 @@ public class VariantAnnotationServiceTest
 
         this.mockVariantFetcherMethods(variantMockData);
         this.mockEnsemblServiceMethods();
+        this.mockOncokbServiceMethods();
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", "mskcc", null, null);
@@ -279,6 +291,13 @@ public class VariantAnnotationServiceTest
         // second transcript of this annotation should be marked as canonical, the first one should NOT be marked
         assertEquals(null, annotation2.getTranscriptConsequences().get(0).getCanonical());
         assertEquals("1", annotation2.getTranscriptConsequences().get(1).getCanonical());
+
+        // should choose canonical transcript based on oncokb gene symbol list
+        // choose the oncokb gene transcript as cannoical
+        VariantAnnotation annotation3 = variantAnnotationService.getAnnotation(
+            "11:g.118392020_118392034delinsTTAC", "mskcc", null, null);
+        assertEquals("1", annotation3.getTranscriptConsequences().get(0).getCanonical());
+        assertEquals(null, annotation3.getTranscriptConsequences().get(1).getCanonical());
     }
 
     private void mockVariantFetcherMethods(Map<String, VariantAnnotation> variantMockData)
@@ -289,6 +308,7 @@ public class VariantAnnotationServiceTest
         Mockito.when(this.fetcher.fetchAndCache("12:g.25398285C>A")).thenReturn(variantMockData.get("12:g.25398285C>A"));
         Mockito.when(this.fetcher.fetchAndCache("X:g.41242962_41242963insGA")).thenReturn(variantMockData.get("X:g.41242962_41242963insGA"));
         Mockito.when(this.fetcher.fetchAndCache("Y:g.41242962_41242963insGA")).thenReturn(variantMockData.get("Y:g.41242962_41242963insGA"));
+        Mockito.when(this.fetcher.fetchAndCache("11:g.118392020_118392034delinsTTAC")).thenReturn(variantMockData.get("11:g.118392020_118392034delinsTTAC"));
         Mockito.doNothing().when(this.baseVariantAnnotationServiceImpl).saveToIndexDb(any(), any());
 
         List<String> variants = new ArrayList<>(4);
@@ -296,12 +316,14 @@ public class VariantAnnotationServiceTest
         variants.add("12:g.25398285C>A");
         variants.add("X:g.41242962_41242963insGA");
         variants.add("Y:g.41242962_41242963insGA");
+        variants.add("11:g.118392020_118392034delinsTTAC");
 
         List<VariantAnnotation> returnValue = new ArrayList<>(3);
         returnValue.add(variantMockData.get("7:g.140453136A>T"));
         returnValue.add(variantMockData.get("12:g.25398285C>A"));
         returnValue.add(variantMockData.get("X:g.41242962_41242963insGA"));
         returnValue.add(variantMockData.get("Y:g.41242962_41242963insGA"));
+        returnValue.add(variantMockData.get("11:g.118392020_118392034delinsTTAC"));
 
         Mockito.when(this.fetcher.fetchAndCache(variants)).thenReturn(returnValue);
     }
@@ -358,14 +380,28 @@ public class VariantAnnotationServiceTest
 
     private void mockEnsemblServiceMethods()
     {
-        // when called for "mskcc" override, set first transcript "ENST00000288602" as canonical
         Set<String> mskccOverrides = new HashSet<>();
+        // For variant 7:g.140453136A>T
+        // when called for "mskcc" override, set first transcript "ENST00000288602" as canonical
         mskccOverrides.add("ENST00000288602");
+
+        // For variant 11:g.118392020_118392034delinsTTAC, two transcripts need to be added
+        mskccOverrides.add("ENST00000534358");
+        mskccOverrides.add("ENST00000554407");
         Mockito.when(this.ensemblService.getCanonicalTranscriptIdsBySource("mskcc")).thenReturn(mskccOverrides);
 
-        // when called for "uniprot" override, set second transcript "ENST00000479537" as canonical
         Set<String> uniprotOverrides = new HashSet<>();
+        // For variant 7:g.140453136A>T
+        // when called for "uniprot" override, set second transcript "ENST00000479537" as canonical
         uniprotOverrides.add("ENST00000479537");
         Mockito.when(this.ensemblService.getCanonicalTranscriptIdsBySource("uniprot")).thenReturn(uniprotOverrides);
+    }
+
+    private void mockOncokbServiceMethods()
+    {
+        Set<String> oncokbGeneSymbolList = new HashSet<>();
+        oncokbGeneSymbolList.add("BRAF");
+        oncokbGeneSymbolList.add("KMT2A");
+        Mockito.when(this.oncokbService.getOncokbGeneSymbolList()).thenReturn(oncokbGeneSymbolList);
     }
 }
