@@ -10,6 +10,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +61,11 @@ public class VEPRegionDataFetcher extends BaseExternalResourceFetcher<VariantAnn
     protected DBObject getForObject(String uri, Map<String, String> queryParams)
     {
         RestTemplate restTemplate = new RestTemplate();
-        return (DBObject) restTemplate.getForObject(uri + getOptionalQueryString(), BasicDBObject.class);
+        Object object =  restTemplate.getForObject(uri + getOptionalQueryString(), Object.class);
+        if (object instanceof ArrayList) {
+            object = ((ArrayList<?>)object).get(0);
+        }
+        return new BasicDBObject((HashMap<?, ?>) object);
     }
 
     @Override
