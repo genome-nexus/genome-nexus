@@ -287,7 +287,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         // always register an isoform override enricher
         // if the source is invalid we will use the default override source
         postEnrichmentService.registerEnricher(
-            new IsoformAnnotationEnricher(isoformOverrideSource, isoformOverrideSource, ensemblService)
+            new IsoformAnnotationEnricher(isoformOverrideSource, isoformOverrideSource, ensemblService, oncokbService)
         );
 
         if (fields == null || fields.isEmpty()) {

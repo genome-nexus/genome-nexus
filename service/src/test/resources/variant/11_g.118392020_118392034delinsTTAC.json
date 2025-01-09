@@ -1,0 +1,51 @@
+{
+    "variant": "11:g.118392020_118392034delinsTTAC",
+    "originalVariantQuery": "11:g.118392020_118392034delinsTTAC",
+    "hgvsg": "11:g.118392020_118392034delinsTTAC",
+    "id": "11:g.118392020_118392034delinsTTAC",
+    "assembly_name": "GRCh37",
+    "seq_region_name": "11",
+    "start": 118392020,
+    "end": 118392034,
+    "allele_string": "GGGGTCTTTTCTGTA/TTAC",
+    "strand": 1,
+    "most_severe_consequence": "splice_acceptor_variant",
+    "transcript_consequences": [
+      {
+        "exon": "35/36",
+        "transcript_id": "ENST00000534358",
+        "hgvsp": "ENSP00000436786.1:p.Arg3844LeufsTer6",
+        "hgvsc": "ENST00000534358.1:c.11531_11545delinsTTAC",
+        "variant_allele": "TTAC",
+        "codons": "cGGGGTCTTTTCTGTAag/cTTACag",
+        "protein_id": "ENSP00000436786",
+        "protein_start": 3844,
+        "protein_end": 3849,
+        "gene_symbol": "KMT2A",
+        "gene_id": "ENSG00000118058",
+        "amino_acids": "RGLFCK/LTX",
+        "hgnc_id": "7132",
+        "canonical": "1",
+        "refseq_transcript_ids": [
+          "NM_005933.3",
+          "NM_001197104.1"
+        ],
+        "consequence_terms": [
+          "frameshift_variant"
+        ]
+      },
+      {
+        "exon": "2/3",
+        "transcript_id": "ENST00000554407",
+        "hgvsc": "ENST00000554407.1:n.273-5_282delinsGTAA",
+        "variant_allele": "TTAC",
+        "gene_symbol": "RP11-770J1.3",
+        "gene_id": "ENSG00000255435",
+        "consequence_terms": [
+          "splice_acceptor_variant",
+          "non_coding_transcript_exon_variant",
+          "intron_variant"
+        ]
+      }
+    ]
+}
