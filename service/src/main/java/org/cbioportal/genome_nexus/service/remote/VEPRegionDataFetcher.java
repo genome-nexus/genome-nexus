@@ -59,6 +59,7 @@ public class VEPRegionDataFetcher extends BaseExternalResourceFetcher<VariantAnn
     protected DBObject getForObject(String uri, Map<String, String> queryParams)
     {
         RestTemplate restTemplate = new RestTemplate();
+        DBObject test = (DBObject) restTemplate.getForObject(uri + getOptionalQueryString(), BasicDBObject.class);
         return (DBObject) restTemplate.getForObject(uri + getOptionalQueryString(), BasicDBObject.class);
     }
 
