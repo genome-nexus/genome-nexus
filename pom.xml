@@ -62,7 +62,7 @@
 
     <build>
     <plugins>
-        <plugin>
+        <!-- <plugin>
           <groupId>com.github.cbioportal.maven-external-version</groupId>
           <artifactId>maven-external-version-plugin</artifactId>
           <version>f09c2b9608</version>
@@ -72,7 +72,7 @@
               <script>./version.sh</script>
             </strategy>
           </configuration>
-        </plugin>
+        </plugin> -->
         <plugin>
          <groupId>org.jacoco</groupId>
          <artifactId>jacoco-maven-plugin</artifactId>

@@ -3,8 +3,8 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.model.AnnotationField;
 import org.cbioportal.genome_nexus.model.CuriousCases;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.model.VariantType;
 import org.cbioportal.genome_nexus.service.CuriousCasesService;
-import org.cbioportal.genome_nexus.service.GenomicLocationAnnotationService;
 import org.cbioportal.genome_nexus.service.exception.CuriousCasesNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.CuriousCasesWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
@@ -23,11 +23,11 @@ import java.util.*;
  */
 @Service
 public class CuriousCasesServiceImpl implements CuriousCasesService {
-    private final GenomicLocationAnnotationService genomicLocationAnnotationService;
+    private final VerifiedVariantAnnotationService variantAnnotationService;
 
     @Autowired
-    public CuriousCasesServiceImpl(GenomicLocationAnnotationService genomicLocationAnnotationServiceImpl) {
-        this.genomicLocationAnnotationService = genomicLocationAnnotationServiceImpl;
+    public CuriousCasesServiceImpl(VerifiedVariantAnnotationService verifiedVariantAnnotationService) {
+        this.variantAnnotationService = verifiedVariantAnnotationService;
     }
 
     @Override
@@ -36,7 +36,12 @@ public class CuriousCasesServiceImpl implements CuriousCasesService {
         CuriousCases CuriousCases = null;
 
         try {
-            VariantAnnotation annotation = genomicLocationAnnotationService.getAnnotation(genomicLocation, null, null, Arrays.asList(AnnotationField.ANNOTATION_SUMMARY));
+            VariantAnnotation annotation = variantAnnotationService.getAnnotation(
+                genomicLocation,
+                VariantType.GENOMIC_LOCATION,
+                null, 
+                null, 
+                Arrays.asList(AnnotationField.ANNOTATION_SUMMARY));
             CuriousCases = generateCuriousCases(annotation, genomicLocation);
             if (CuriousCases != null) {
                 CuriousCases.setGenomicLocation(genomicLocation);

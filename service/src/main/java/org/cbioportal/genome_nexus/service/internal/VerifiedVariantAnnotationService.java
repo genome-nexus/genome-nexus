@@ -33,11 +33,14 @@
 package org.cbioportal.genome_nexus.service.internal;
 
 import java.util.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.model.AnnotationField;
+import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.cbioportal.genome_nexus.service.*;
+import org.cbioportal.genome_nexus.model.VariantType;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
@@ -45,82 +48,96 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class VerifiedHgvsVariantAnnotationService implements VariantAnnotationService
+public class VerifiedVariantAnnotationService
 {
-    private static final Log LOG = LogFactory.getLog(VerifiedHgvsVariantAnnotationService.class);
-    private final HgvsVariantAnnotationService hgvsVariantAnnotationService;
-
+    private static final Log LOG = LogFactory.getLog(VerifiedVariantAnnotationService.class);
+    private final VariantAnnotationService variantAnnotationService;
+    private final NotationConverter notationConverter;
+    
     @Autowired
-    public VerifiedHgvsVariantAnnotationService(
-        HgvsVariantAnnotationService hgvsVariantAnnotationService)
+    public VerifiedVariantAnnotationService(VariantAnnotationService hgvsVariantAnnotationService, NotationConverter notationConverter)
     {
-        this.hgvsVariantAnnotationService = hgvsVariantAnnotationService;
+        this.variantAnnotationService = hgvsVariantAnnotationService;
+        this.notationConverter = notationConverter;
     }
 
-    @Override
-    public VariantAnnotation getAnnotation(String variant)
+    public VariantAnnotation getAnnotation(String variant, VariantType variantType)
             throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        VariantAnnotation annotation = hgvsVariantAnnotationService.getAnnotation(variant);
-        VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(annotation);
+        VariantAnnotation annotation = variantAnnotationService.getAnnotation(variant, variantType);
+        VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(
+            annotation,
+            variantType
+        );
         return verifiedAnnotation;
     }
 
-    @Override
-    public List<VariantAnnotation> getAnnotations(List<String> variants)
+    
+    public List<VariantAnnotation> getAnnotations(List<String> variants, VariantType variantType)
     {
-        List<VariantAnnotation> annotations = hgvsVariantAnnotationService.getAnnotations(variants);
+        List<VariantAnnotation> annotations = variantAnnotationService.getAnnotations(variants, variantType);
         for (int index = 0; index < annotations.size(); index = index + 1) {
             VariantAnnotation annotation = annotations.get(index);
-            VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(annotation);
+            VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(
+                annotation,
+                variantType
+            );
             annotations.set(index, verifiedAnnotation);
         }
         return annotations;
     }
 
-    @Override
-    public VariantAnnotation getAnnotation(String variant, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
+    
+    public VariantAnnotation getAnnotation(String variant, VariantType variantType, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
             throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
-        VariantAnnotation annotation = hgvsVariantAnnotationService.getAnnotation(variant, isoformOverrideSource, token, fields);
-        VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(annotation);
+        VariantAnnotation annotation = variantAnnotationService.getAnnotation(variant, variantType, isoformOverrideSource, token, fields);
+        VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(
+            annotation,
+            variantType
+        );
         return verifiedAnnotation;
     }
 
-    @Override
-    public List<VariantAnnotation> getAnnotations(List<String> variants, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
+    
+    public List<VariantAnnotation> getAnnotations(List<String> variants, VariantType variantType, String isoformOverrideSource, Map<String, String> token, List<AnnotationField> fields)
     {
-        List<VariantAnnotation> annotations = hgvsVariantAnnotationService.getAnnotations(variants, isoformOverrideSource, token, fields);
+        List<VariantAnnotation> annotations = variantAnnotationService.getAnnotations(variants, variantType, isoformOverrideSource, token, fields);
         for (int index = 0; index < annotations.size(); index = index + 1) {
             VariantAnnotation annotation = annotations.get(index);
-            VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(annotation);
+            VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(
+                annotation,
+                variantType
+            );
             annotations.set(index, verifiedAnnotation);
         }
         return annotations;
     }
 
-    private VariantAnnotation verifyOrFailAnnotation(VariantAnnotation annotation)
+    private VariantAnnotation verifyOrFailAnnotation(VariantAnnotation annotation, VariantType variantType)
     {
-        String originalVariantQuery = annotation.getOriginalVariantQuery(); // save for failed response
-        String originalVariant = annotation.getVariant(); // save for failed response
-        String originalQuery = originalVariantQuery;
-        if (originalVariantQuery == null || originalVariantQuery.length() == 0) {
-            originalQuery = originalVariant;
+        String ref = "";
+        if (variantType == VariantType.HGVS) {
+            ref = GenomicVariantUtil.providedReferenceAlleleFromHgvs(annotation.getOriginalVariantQuery());
+        } else if (variantType == VariantType.GENOMIC_LOCATION) {
+            ref = notationConverter.parseGenomicLocation(annotation.getOriginalVariantQuery()).getReferenceAllele();
         }
-        String providedReferenceAllele = GenomicVariantUtil.providedReferenceAlleleFromHgvs(originalQuery);
-        if (providedReferenceAllele.length() == 0) {
+
+        if (ref.length() == 0) {
             // no comparison possible : allele not specified in query
             return annotation;
         }
-        LOG.debug("verifying providedReferenceAllele : '" + providedReferenceAllele + "'");
+        LOG.debug("verifying providedReferenceAllele : '" + ref + "'");
         String responseReferenceAllele = getReferenceAlleleFromAnnotation(annotation);
-        if (responseReferenceAllele.length() != providedReferenceAllele.length()) {
+        if (responseReferenceAllele.length() != ref.length() ||
+         (variantType == VariantType.GENOMIC_LOCATION && responseReferenceAllele.equals("-"))) {
             // for altered length Deletion-Insertion responses, recover full reference allele with followup query
-            String followUpVariant = constructFollowUpQuery(originalQuery);
+            String followUpVariant = constructFollowUpQuery(annotation.getOriginalVariantQuery(), variantType);
+
             if (followUpVariant.length() > 0) {
                 try {
-                    LOG.debug("performing followup annotation request to get VEP genome assembly sequence : '" + providedReferenceAllele + "'");
-                    VariantAnnotation followUpAnnotation = hgvsVariantAnnotationService.getAnnotation(followUpVariant);
+                    LOG.debug("performing followup annotation request to get VEP genome assembly sequence : '" + ref + "'");
+                    VariantAnnotation followUpAnnotation = variantAnnotationService.getAnnotation(followUpVariant, variantType);
                     responseReferenceAllele = getReferenceAlleleFromAnnotation(followUpAnnotation);
                 } catch (VariantAnnotationNotFoundException|VariantAnnotationWebServiceException vae) {
                     // followup validation failed - could not verify provided allele, so accept failure
@@ -128,26 +145,35 @@ public class VerifiedHgvsVariantAnnotationService implements VariantAnnotationSe
                 }
             }
         }
-        if (providedReferenceAllele.equals(responseReferenceAllele)) {
+        if (ref.equals(responseReferenceAllele)) {
             // validation complete
             return annotation;
         }
         // return annotation failure
         if (annotation.getErrorMessage() == null) {
-            annotation.setErrorMessage( String.format("Reference allele extracted from response (%s) does not match given reference allele (%s)", responseReferenceAllele.length() == 0 ? "-" : responseReferenceAllele, providedReferenceAllele.length() == 0 ? "-" : providedReferenceAllele));
+            annotation.setErrorMessage( String.format("Reference allele extracted from response (%s) does not match given reference allele (%s)", responseReferenceAllele.length() == 0 ? "-" : responseReferenceAllele, ref.length() == 0 ? "-" : ref));
         }
-        return createFailedAnnotation(originalVariantQuery, originalVariant, annotation.getErrorMessage());
+        return createFailedAnnotation(annotation.getOriginalVariantQuery(), annotation.getVariant(), annotation.getErrorMessage());
     }
 
-    private String constructFollowUpQuery(String originalQuery)
+    private String constructFollowUpQuery(String originalQuery, VariantType variantType)
     {
-        // create a deletion variant covering the referenced genome positions
-        // this code should only run for delins variants where part of the TumorSeq allele matches the reference genome
-        String followUpQuery = originalQuery.replaceFirst("ins.*|del.*","");
-        if (followUpQuery.length() == originalQuery.length()) {
-            return ""; // unexpectantly called constructFollowUpQuery on non-delins hgvs query -- this annotation will fail
+        String followUpQuery = "";
+        if (variantType == VariantType.HGVS) {
+            followUpQuery = originalQuery.replaceFirst("ins.*|del.*|[A|T|C|G]>[A|T|C|G]","");
+            if (followUpQuery.length() == originalQuery.length()) {
+                return "";
+            }
+            followUpQuery += "del";
+        } else if (variantType == VariantType.GENOMIC_LOCATION) {
+            GenomicLocation genomicLocation = notationConverter.parseGenomicLocation(originalQuery);
+            genomicLocation.setVariantAllele("-");
+            if (genomicLocation.getReferenceAllele().equals( "-")) {
+                return "";
+            }
+            followUpQuery = genomicLocation.toString();
         }
-        return followUpQuery + "del";
+        return followUpQuery;
     }
 
     private String getReferenceAlleleFromAnnotation(VariantAnnotation annotation)
@@ -178,5 +204,4 @@ public class VerifiedHgvsVariantAnnotationService implements VariantAnnotationSe
         annotation.setErrorMessage(errorMessage);
         return annotation;
     }
-
 }

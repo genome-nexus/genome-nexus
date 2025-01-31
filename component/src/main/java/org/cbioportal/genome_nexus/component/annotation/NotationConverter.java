@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -309,6 +310,10 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
             }
         }
         return hgvsList;
+    }
+
+    public List<String> genomicToString(List<GenomicLocation> genomicLocations) {
+        return genomicLocations.stream().map(genomicLocation -> genomicLocation.toString()).collect(Collectors.toList());
     }
 
     @NotNull
