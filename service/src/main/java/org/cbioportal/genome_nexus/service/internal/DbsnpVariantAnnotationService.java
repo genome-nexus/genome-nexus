@@ -40,6 +40,7 @@ import org.cbioportal.genome_nexus.persistence.IndexRepository;
 import org.cbioportal.genome_nexus.service.*;
 
 import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
+import org.cbioportal.genome_nexus.service.factory.IsoformAnnotationEnricherFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
@@ -66,7 +67,8 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
         @Lazy ClinvarVariantAnnotationService clinvarVariantAnnotationService,
         IndexRepository indexRepository,
         ProteinChangeResolver proteinChangeResolver,
-        HugoGeneSymbolResolver hugoGeneSymbolResolver
+        HugoGeneSymbolResolver hugoGeneSymbolResolver,
+        IsoformAnnotationEnricherFactory isoformAnnotationEnricherFactory
     ) {
         super(
             cachedVariantIdAnnotationFetcher,
@@ -82,7 +84,8 @@ public class DbsnpVariantAnnotationService extends BaseVariantAnnotationServiceI
             clinvarVariantAnnotationService,
             indexRepository,
             proteinChangeResolver,
-            hugoGeneSymbolResolver
+            hugoGeneSymbolResolver,
+            isoformAnnotationEnricherFactory
         );
     }
 }

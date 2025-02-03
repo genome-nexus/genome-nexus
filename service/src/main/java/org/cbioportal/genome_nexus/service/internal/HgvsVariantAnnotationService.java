@@ -40,6 +40,7 @@ import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
 import org.cbioportal.genome_nexus.persistence.IndexRepository;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
+import org.cbioportal.genome_nexus.service.factory.IsoformAnnotationEnricherFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
@@ -68,7 +69,8 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
         @Lazy ClinvarVariantAnnotationService clinvarVariantAnnotationService,
         IndexRepository indexRepository,
         ProteinChangeResolver proteinChangeResolver,
-        HugoGeneSymbolResolver hugoGeneSymbolResolver
+        HugoGeneSymbolResolver hugoGeneSymbolResolver,
+        IsoformAnnotationEnricherFactory isoformAnnotationEnricherFactory
     ) {
         super(
             cachedVariantAnnotationFetcher,
@@ -84,7 +86,8 @@ public class HgvsVariantAnnotationService extends BaseVariantAnnotationServiceIm
             clinvarVariantAnnotationService,
             indexRepository,
             proteinChangeResolver,
-            hugoGeneSymbolResolver
+            hugoGeneSymbolResolver,
+            isoformAnnotationEnricherFactory
         );
 
         this.notationConverter = notationConverter;

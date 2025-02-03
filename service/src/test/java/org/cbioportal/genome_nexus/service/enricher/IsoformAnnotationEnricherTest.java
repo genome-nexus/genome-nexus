@@ -37,7 +37,7 @@ public class IsoformAnnotationEnricherTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
 
         IsoformAnnotationEnricher enricher = new IsoformAnnotationEnricher(
-            "genome_nexus", "genome_nexus", this.ensemblService, null
+            "genome_nexus", "genome_nexus", this.ensemblService, null, "yes"
         );
 
         // override canonical transcripts with no one matching transcript
@@ -72,7 +72,7 @@ public class IsoformAnnotationEnricherTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         this.mockOncokbServiceMethods();
         IsoformAnnotationEnricher enricher = new IsoformAnnotationEnricher(
-            "uniprot", "uniprot", this.ensemblService, this.oncokbService
+            "uniprot", "uniprot", this.ensemblService, this.oncokbService, "true"
         );
 
         // override canonical transcripts with just one matching transcript
@@ -108,7 +108,7 @@ public class IsoformAnnotationEnricherTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         this.mockOncokbServiceMethods();
         IsoformAnnotationEnricher enricher = new IsoformAnnotationEnricher(
-            "mskcc", "mskcc", this.ensemblService, this.oncokbService
+            "mskcc", "mskcc", this.ensemblService, this.oncokbService, "true"
         );
 
         // override canonical transcripts with just one matching transcript
