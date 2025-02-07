@@ -71,7 +71,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
     public T fetchAndCache(String id) throws ResourceMappingException
     {
 
-        // If caching is disabled, always fetch directly from the external resource
+        // If caching is disabled, always fetch directly from the web service
          if (!cacheEnabled) {
             try {
                 DBObject rawValue = this.fetcher.fetchRawValue(id);
@@ -146,7 +146,6 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         Set<String> uniqueIds = new LinkedHashSet<>(ids);
         Map<String, T> idToInstance = initIdToInstanceMap(uniqueIds);
         Set<String> alreadyCached = new LinkedHashSet<>();
-        // Only try to load from the cache if caching is enabled.
         if (cacheEnabled) {
             try {
                 for (T instance: this.repository.findAllById(uniqueIds)) {
