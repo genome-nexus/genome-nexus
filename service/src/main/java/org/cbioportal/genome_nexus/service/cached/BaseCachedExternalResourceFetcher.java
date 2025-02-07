@@ -9,6 +9,7 @@ import org.cbioportal.genome_nexus.service.ExternalResourceFetcher;
 import org.cbioportal.genome_nexus.service.ResourceTransformer;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.util.NaturalOrderComparator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -30,6 +31,8 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
     protected ExternalResourceFetcher<T> fetcher;
     protected ResourceTransformer<T> transformer;
     protected Integer maxPageSize;
+    @Value("${cache.enabled:true}")
+    protected boolean cacheEnabled;
 
     public BaseCachedExternalResourceFetcher(String collection,
                                              R repository,
@@ -67,6 +70,22 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
 
     public T fetchAndCache(String id) throws ResourceMappingException
     {
+
+        // If caching is disabled, always fetch directly from the external resource
+         if (!cacheEnabled) {
+            try {
+                DBObject rawValue = this.fetcher.fetchRawValue(id);
+                rawValue = this.normalizeResponse(rawValue);
+                List<T> list = this.transformer.transform(rawValue, this.type);
+                if (!list.isEmpty()) {
+                    return list.get(0);
+                }
+            } catch (Exception e) {
+                LOG.error("Error fetching external resource for id " + id, e);
+            }
+            return null;
+        }
+
         boolean saveRawValue = true;
         Optional<T> instance = null;
 
@@ -123,26 +142,27 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
 
     public Map<String, T> constructFetchedMap(List<String> ids) throws ResourceMappingException
     {
-        boolean saveValues = true;
+        boolean saveValues = cacheEnabled;
         Set<String> uniqueIds = new LinkedHashSet<>(ids);
         Map<String, T> idToInstance = initIdToInstanceMap(uniqueIds);
         Set<String> alreadyCached = new LinkedHashSet<>();
-
-        try {
-            // add everything already cached into the map
-            for (T instance: this.repository.findAllById(uniqueIds))
-            {
-                String id = this.extractId(instance);
-                idToInstance.put(id, instance);
-                alreadyCached.add(id);
+        // Only try to load from the cache if caching is enabled.
+        if (cacheEnabled) {
+            try {
+                for (T instance: this.repository.findAllById(uniqueIds)) {
+                    String id = this.extractId(instance);
+                    idToInstance.put(id, instance);
+                    alreadyCached.add(id);
+                }
+            }
+            catch (DataAccessResourceFailureException e) {
+                LOG.warn("Failed to read from Mongo database - falling back on the external web service. " +
+                    "Will not attempt to store variant in Mongo database.");
+                saveValues = false;
             }
         }
-        catch (DataAccessResourceFailureException e) {
-            LOG.warn("Failed to read from Mongo database - falling back on the external web service. " +
-                "Will not attempt to store variant in Mongo database.");
-            saveValues = false;
-        }
-
+        
+        // Remove already cached ids so that they are not fetched from the external service
         Set<String> needToFetch = new LinkedHashSet<>(uniqueIds);
 
         // remove already cached ids from the set, so that we don't query again
