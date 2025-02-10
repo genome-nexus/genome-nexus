@@ -73,17 +73,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
 
         // If caching is disabled, always fetch directly from the web service
          if (!cacheEnabled) {
-            try {
-                DBObject rawValue = this.fetcher.fetchRawValue(id);
-                rawValue = this.normalizeResponse(rawValue);
-                List<T> list = this.transformer.transform(rawValue, this.type);
-                if (!list.isEmpty()) {
-                    return list.get(0);
-                }
-            } catch (Exception e) {
-                LOG.error("Error fetching external resource for id " + id, e);
-            }
-            return null;
+            return fetchFromWebAndSave(id, false).orElse(null);
         }
 
         boolean saveRawValue = true;
@@ -100,39 +90,13 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
             LOG.warn("Failed to read from Mongo database - falling back on the external web service. " +
                 "Will not attempt to store variant in Mongo database.");
             saveRawValue = false;
+            instance = Optional.empty();
         }
         if (!instance.isPresent())
         {
             // get the annotation from the web service and save it to the DB
-            try {
-                // get the raw annotation string from the web service
-                DBObject rawValue = this.fetcher.fetchRawValue(id);
-                // construct an instance to return:
-                // this does not contain all the information obtained from the web service
-                // only the fields mapped to the VariantAnnotation model will be returned
-                rawValue = this.normalizeResponse(rawValue);
-                List<T> list = this.transformer.transform(rawValue, this.type);
-
-                if (list.size() > 0) {
-                    instance = Optional.ofNullable(list.get(0));
-                }
-
-                // save everything to the cache as a properly parsed JSON
-                if (saveRawValue) {
-                    this.repository.saveDBObject(this.collection, id, rawValue);
-                }
-            }
-            catch (DataIntegrityViolationException e) {
-                // in case of data integrity violation exception, do not bloat the logs
-                // this is thrown when the annotationJSON can't be stored by mongo
-                // due to the variant annotation key being too large to index
-                LOG.info(e.getLocalizedMessage());
-            } catch (HttpServerErrorException e) {
-                // failure fetching external resource
-                LOG.error("Failure fetching external resource: " + e.getLocalizedMessage());
-            }
+            instance = fetchFromWebAndSave(id, saveRawValue);
         }
-
         try {
             return instance.get();
         } catch (NoSuchElementException e) {
@@ -226,6 +190,27 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 }
             }
         }
+    }
+
+    private Optional<T> fetchFromWebAndSave(String id, boolean saveRawValue) {
+        try {
+            DBObject rawValue = this.fetcher.fetchRawValue(id);
+            rawValue = this.normalizeResponse(rawValue);
+            List<T> list = this.transformer.transform(rawValue, this.type);
+            Optional<T> instance = list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
+
+            if (saveRawValue) {
+                this.repository.saveDBObject(this.collection, id, rawValue);
+            }
+            return instance;
+        } catch (DataIntegrityViolationException e) {
+            LOG.info(e.getLocalizedMessage());
+        } catch (HttpServerErrorException e) {
+            LOG.error("Failure fetching external resource: " + e.getLocalizedMessage());
+        } catch (Exception e) {
+            LOG.error("Error fetching external resource for id " + id, e);
+        }
+        return Optional.empty();
     }
 
     protected List<LinkedHashSet<String>> generateChunks(Set<String> needToFetch)
