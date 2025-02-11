@@ -47,6 +47,7 @@ import org.cbioportal.genome_nexus.service.enricher.*;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -74,6 +75,8 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     private final IndexRepository indexRepository;
     private final ProteinChangeResolver proteinChangeResolver;
     private final HugoGeneSymbolResolver hugoGeneSymbolResolver;
+    @Value("${cache.enabled:true}")
+    private boolean cacheEnabled;
 
     public BaseVariantAnnotationServiceImpl(
         BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher,
@@ -165,10 +168,12 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
             // get the annotation from the web service and save it to the DB
             variantAnnotation = Optional.ofNullable(this.resourceFetcher.fetchAndCache(normalizedVariant));
 
-            // add new annotation to index db
-            variantAnnotation.ifPresent(annotation -> {
-                this.saveToIndexDb(normalizedVariant, annotation);
-            });
+            // if caching is enabled, add to the index DB 
+            if (cacheEnabled) {
+                variantAnnotation.ifPresent(annotation -> {
+                    this.saveToIndexDb(normalizedVariant, annotation);
+                });
+            }
 
             // include original variant value too
             variantAnnotation.ifPresent(x -> x.setVariant(normalizedVariant));
@@ -207,8 +212,10 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
             // get the annotations from the web service and save it to the DB
             variantAnnotations = this.resourceFetcher.fetchAndCache(new ArrayList(normVarToOrigVarQueryMap.keySet()));
             for (VariantAnnotation variantAnnotation : variantAnnotations) {
-                // add new annotation to index db
-                this.saveToIndexDb(normVarToOrigVarQueryMap.get(variantAnnotation.getVariant()), variantAnnotation);
+                // if caching is enabled, add to the index DB 
+                if (cacheEnabled) {
+                    this.saveToIndexDb(normVarToOrigVarQueryMap.get(variantAnnotation.getVariant()), variantAnnotation);
+                }
                 variantAnnotation.setOriginalVariantQuery(normVarToOrigVarQueryMap.get(variantAnnotation.getVariant()));
             }
         } catch (HttpClientErrorException e) {

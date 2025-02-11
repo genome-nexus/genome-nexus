@@ -9,6 +9,7 @@ import org.cbioportal.genome_nexus.service.ExternalResourceFetcher;
 import org.cbioportal.genome_nexus.service.ResourceTransformer;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.util.NaturalOrderComparator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -30,6 +31,8 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
     protected ExternalResourceFetcher<T> fetcher;
     protected ResourceTransformer<T> transformer;
     protected Integer maxPageSize;
+    @Value("${cache.enabled:true}")
+    protected boolean cacheEnabled;
 
     public BaseCachedExternalResourceFetcher(String collection,
                                              R repository,
@@ -67,6 +70,12 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
 
     public T fetchAndCache(String id) throws ResourceMappingException
     {
+
+        // If caching is disabled, always fetch directly from the web service
+         if (!cacheEnabled) {
+            return fetchFromWebAndSave(id, false).orElse(null);
+        }
+
         boolean saveRawValue = true;
         Optional<T> instance = null;
 
@@ -81,39 +90,13 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
             LOG.warn("Failed to read from Mongo database - falling back on the external web service. " +
                 "Will not attempt to store variant in Mongo database.");
             saveRawValue = false;
+            instance = Optional.empty();
         }
         if (!instance.isPresent())
         {
             // get the annotation from the web service and save it to the DB
-            try {
-                // get the raw annotation string from the web service
-                DBObject rawValue = this.fetcher.fetchRawValue(id);
-                // construct an instance to return:
-                // this does not contain all the information obtained from the web service
-                // only the fields mapped to the VariantAnnotation model will be returned
-                rawValue = this.normalizeResponse(rawValue);
-                List<T> list = this.transformer.transform(rawValue, this.type);
-
-                if (list.size() > 0) {
-                    instance = Optional.ofNullable(list.get(0));
-                }
-
-                // save everything to the cache as a properly parsed JSON
-                if (saveRawValue) {
-                    this.repository.saveDBObject(this.collection, id, rawValue);
-                }
-            }
-            catch (DataIntegrityViolationException e) {
-                // in case of data integrity violation exception, do not bloat the logs
-                // this is thrown when the annotationJSON can't be stored by mongo
-                // due to the variant annotation key being too large to index
-                LOG.info(e.getLocalizedMessage());
-            } catch (HttpServerErrorException e) {
-                // failure fetching external resource
-                LOG.error("Failure fetching external resource: " + e.getLocalizedMessage());
-            }
+            instance = fetchFromWebAndSave(id, saveRawValue);
         }
-
         try {
             return instance.get();
         } catch (NoSuchElementException e) {
@@ -123,26 +106,26 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
 
     public Map<String, T> constructFetchedMap(List<String> ids) throws ResourceMappingException
     {
-        boolean saveValues = true;
+        boolean saveValues = cacheEnabled;
         Set<String> uniqueIds = new LinkedHashSet<>(ids);
         Map<String, T> idToInstance = initIdToInstanceMap(uniqueIds);
         Set<String> alreadyCached = new LinkedHashSet<>();
-
-        try {
-            // add everything already cached into the map
-            for (T instance: this.repository.findAllById(uniqueIds))
-            {
-                String id = this.extractId(instance);
-                idToInstance.put(id, instance);
-                alreadyCached.add(id);
+        if (cacheEnabled) {
+            try {
+                for (T instance: this.repository.findAllById(uniqueIds)) {
+                    String id = this.extractId(instance);
+                    idToInstance.put(id, instance);
+                    alreadyCached.add(id);
+                }
+            }
+            catch (DataAccessResourceFailureException e) {
+                LOG.warn("Failed to read from Mongo database - falling back on the external web service. " +
+                    "Will not attempt to store variant in Mongo database.");
+                saveValues = false;
             }
         }
-        catch (DataAccessResourceFailureException e) {
-            LOG.warn("Failed to read from Mongo database - falling back on the external web service. " +
-                "Will not attempt to store variant in Mongo database.");
-            saveValues = false;
-        }
-
+        
+        // Remove already cached ids so that they are not fetched from the external service
         Set<String> needToFetch = new LinkedHashSet<>(uniqueIds);
 
         // remove already cached ids from the set, so that we don't query again
@@ -207,6 +190,27 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
                 }
             }
         }
+    }
+
+    private Optional<T> fetchFromWebAndSave(String id, boolean saveRawValue) {
+        try {
+            DBObject rawValue = this.fetcher.fetchRawValue(id);
+            rawValue = this.normalizeResponse(rawValue);
+            List<T> list = this.transformer.transform(rawValue, this.type);
+            Optional<T> instance = list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
+
+            if (saveRawValue) {
+                this.repository.saveDBObject(this.collection, id, rawValue);
+            }
+            return instance;
+        } catch (DataIntegrityViolationException e) {
+            LOG.info(e.getLocalizedMessage());
+        } catch (HttpServerErrorException e) {
+            LOG.error("Failure fetching external resource: " + e.getLocalizedMessage());
+        } catch (Exception e) {
+            LOG.error("Error fetching external resource for id " + id, e);
+        }
+        return Optional.empty();
     }
 
     protected List<LinkedHashSet<String>> generateChunks(Set<String> needToFetch)
