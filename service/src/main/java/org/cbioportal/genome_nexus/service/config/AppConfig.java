@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppConfig {
 
-    @Value("${prioritize_oncokb_gene_transcripts:false}")
+    @Value("${prioritize_cancer_gene_transcripts:true}")
     private String prioritizeOncokbGeneTranscripts;
 
     public String getPrioritizeOncokbGeneTranscripts() {

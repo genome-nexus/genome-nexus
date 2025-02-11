@@ -37,7 +37,7 @@ public class IsoformAnnotationEnricherTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
 
         IsoformAnnotationEnricher enricher = new IsoformAnnotationEnricher(
-            "genome_nexus", "genome_nexus", this.ensemblService, null, "yes"
+            "genome_nexus", "genome_nexus", this.ensemblService, null, "true"
         );
 
         // override canonical transcripts with no one matching transcript
