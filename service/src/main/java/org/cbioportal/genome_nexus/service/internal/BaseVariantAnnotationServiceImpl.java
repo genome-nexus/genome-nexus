@@ -48,6 +48,7 @@ import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.springframework.beans.factory.annotation.Value;
+import org.cbioportal.genome_nexus.service.factory.IsoformAnnotationEnricherFactory;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -77,6 +78,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
     private final HugoGeneSymbolResolver hugoGeneSymbolResolver;
     @Value("${cache.enabled:true}")
     private boolean cacheEnabled;
+    private final IsoformAnnotationEnricherFactory enricherFactory;
 
     public BaseVariantAnnotationServiceImpl(
         BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository> resourceFetcher,
@@ -92,7 +94,8 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         ClinvarVariantAnnotationService clinvarVariantAnnotationService,
         IndexRepository indexRepository,
         ProteinChangeResolver proteinChangeResolver,
-        HugoGeneSymbolResolver hugoGeneSymbolResolver
+        HugoGeneSymbolResolver hugoGeneSymbolResolver,
+        IsoformAnnotationEnricherFactory enricherFactory
     ) {
         this.resourceFetcher = resourceFetcher;
         this.ensemblService = ensemblService;
@@ -108,6 +111,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         this.indexRepository = indexRepository;
         this.proteinChangeResolver = proteinChangeResolver;
         this.hugoGeneSymbolResolver = hugoGeneSymbolResolver;
+        this.enricherFactory = enricherFactory;
     }
 
     // Needs to be overridden to support normalizing variants
@@ -294,7 +298,7 @@ public abstract class BaseVariantAnnotationServiceImpl implements VariantAnnotat
         // always register an isoform override enricher
         // if the source is invalid we will use the default override source
         postEnrichmentService.registerEnricher(
-            new IsoformAnnotationEnricher(isoformOverrideSource, isoformOverrideSource, ensemblService, oncokbService)
+            enricherFactory.create(isoformOverrideSource)
         );
 
         if (fields == null || fields.isEmpty()) {

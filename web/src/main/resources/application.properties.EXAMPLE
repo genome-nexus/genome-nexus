@@ -72,6 +72,10 @@ revue.url=https://raw.githubusercontent.com/knowledgesystems/reVUE-data/refs/hea
 # If overwrite_by_confirmed_revue_only=false, overwrite variant annotation by both confirmed and unconfirmed VUE ("confirmed=true" and "confirmed=false")
 overwrite_by_confirmed_revue_only=true
 
+
+# prioritize cancer gene transcripts (oncokb gene transcripts) when selecting canonical transcript
+prioritize_cancer_gene_transcripts=true
+
 # cache.enabled - Enables or disables caching for annotation sources such as vep.annotation, index, my_variant_info.annotation.
 # Default: true
 # When set to false, queries bypass the cache and make direct calls to the web service, not saving any data to the database.

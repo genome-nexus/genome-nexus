@@ -11,23 +11,25 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
 {
     String source;
     EnsemblService ensemblService;
     OncokbService  oncokbService;
+    private final String prioritizeOncokbGeneTranscriptsConfig;
 
     public IsoformAnnotationEnricher(
         String id,
         String source,
         EnsemblService ensemblService,
-        OncokbService  oncokbService
+        OncokbService  oncokbService,
+        String prioritizeOncokbGeneTranscriptsConfig
     ) {
         super(id);
         this.source = source;
         this.ensemblService = ensemblService;
         this.oncokbService = oncokbService;
+        this.prioritizeOncokbGeneTranscriptsConfig = prioritizeOncokbGeneTranscriptsConfig;
     }
 
     @Override
@@ -49,11 +51,6 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
             predefinedCanonicalTranscriptIds
         );
 
-        List<TranscriptConsequence> canonicalTranscriptCandidatesFilteredByOncokb = canonicalTranscriptCandidates
-            .stream()
-            .filter(t -> oncokbService.getOncokbGeneSymbolList().contains(t.getGeneSymbol()))
-            .collect(Collectors.toList());
-
         // if at least one canonical transcript candidate is found
         // then mark all transcripts as non-canonical.
         //
@@ -67,8 +64,14 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
         // if there are multiple canonical transcript candidates, we filter by if there are oncokb genes
         // and if only one transcript is oncokb gene, we set it as canonical, and set the rest as non-canonical
         // if there are more than one oncokb gene, we keep them as candidates and set other transcripts as non-canonical
-        if (canonicalTranscriptCandidates.size() > 1 && canonicalTranscriptCandidatesFilteredByOncokb.size() > 0) {
-            canonicalTranscriptCandidates = canonicalTranscriptCandidatesFilteredByOncokb;
+        if (canonicalTranscriptCandidates.size() > 1 && Boolean.parseBoolean(prioritizeOncokbGeneTranscriptsConfig)) {
+            List<TranscriptConsequence> canonicalTranscriptCandidatesFilteredByOncokb = canonicalTranscriptCandidates
+            .stream()
+            .filter(t -> oncokbService.getOncokbGeneSymbolList().contains(t.getGeneSymbol()))
+            .collect(Collectors.toList());
+            if (canonicalTranscriptCandidatesFilteredByOncokb.size() > 0) {
+                canonicalTranscriptCandidates = canonicalTranscriptCandidatesFilteredByOncokb;
+            }
         }
 
         // override the canonical field for all the candidates
