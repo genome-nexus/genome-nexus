@@ -48,6 +48,8 @@ import org.cbioportal.genome_nexus.service.enricher.*;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.service.factory.IsoformAnnotationEnricherFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -67,7 +69,6 @@ public class VariantAnnotationService
 
     private final CachedVariantAnnotationFetcher hgvsAndGenomicLocationFetcher;
     private final CachedVariantIdAnnotationFetcher dbsnpFetcher;
-    private final EnsemblService ensemblService;
     private final CancerHotspotService hotspotService;
     private final MutationAssessorService mutationAssessorService;
     private final VariantAnnotationSummaryService variantAnnotationSummaryService;
@@ -81,11 +82,13 @@ public class VariantAnnotationService
     private final ProteinChangeResolver proteinChangeResolver;
     private final HugoGeneSymbolResolver hugoGeneSymbolResolver;
     private final NotationConverter notationConverter;
+    private final IsoformAnnotationEnricherFactory enricherFactory;
+    @Value("${cache.enabled:true}")
+    private boolean cacheEnabled;
 
     public VariantAnnotationService(
         CachedVariantAnnotationFetcher cachedVariantAnnotationFetcher,
         CachedVariantIdAnnotationFetcher cachedVariantIdAnnotationFetcher,
-        EnsemblService ensemblService,
         @Lazy CancerHotspotService hotspotService,
         @Lazy MutationAssessorService mutationAssessorService,
         MyVariantInfoService myVariantInfoService,
@@ -98,11 +101,11 @@ public class VariantAnnotationService
         IndexRepository indexRepository,
         ProteinChangeResolver proteinChangeResolver,
         HugoGeneSymbolResolver hugoGeneSymbolResolver,
-        NotationConverter notationConverter
+        NotationConverter notationConverter,
+        IsoformAnnotationEnricherFactory enricherFactory
     ) {
         this.hgvsAndGenomicLocationFetcher = cachedVariantAnnotationFetcher;
         this.dbsnpFetcher = cachedVariantIdAnnotationFetcher;
-        this.ensemblService = ensemblService;
         this.hotspotService = hotspotService;
         this.mutationAssessorService = mutationAssessorService;
         this.nucleotideContextService = nucleotideContextService;
@@ -116,6 +119,7 @@ public class VariantAnnotationService
         this.proteinChangeResolver = proteinChangeResolver;
         this.hugoGeneSymbolResolver = hugoGeneSymbolResolver;
         this.notationConverter = notationConverter;
+        this.enricherFactory = enricherFactory;
     }
 
     public Index buildIndex(VariantAnnotation variantAnnotation) {
@@ -185,9 +189,12 @@ public class VariantAnnotationService
             }
 
             // add new annotation to index db
-            variantAnnotation.ifPresent(annotation -> {
-                this.saveToIndexDb(normalizedVariant, annotation);
-            });
+            // if caching is enabled, add to the index DB 
+            if (cacheEnabled) {
+                variantAnnotation.ifPresent(annotation -> {
+                    this.saveToIndexDb(normalizedVariant, annotation);
+                });
+            }
 
             // include original variant value too
             variantAnnotation.ifPresent(x -> x.setVariant(normalizedVariant));
@@ -241,7 +248,9 @@ public class VariantAnnotationService
                     .filter((normVar) -> normVar.get(0).equals(variantAnnotation.getVariant()))
                     .findFirst();
                 if (normVarToOrigVarQuery.isPresent()) {
-                    this.saveToIndexDb(normVarToOrigVarQuery.get().get(0), variantAnnotation);
+                    if (cacheEnabled) {
+                        this.saveToIndexDb(normVarToOrigVarQuery.get().get(0), variantAnnotation);
+                    }
                     variantAnnotation.setOriginalVariantQuery(normVarToOrigVarQuery.get().get(1));
                 }
             }
@@ -283,7 +292,7 @@ public class VariantAnnotationService
         // always register an isoform override enricher
         // if the source is invalid we will use the default override source
         postEnrichmentService.registerEnricher(
-            new IsoformAnnotationEnricher(isoformOverrideSource, isoformOverrideSource, ensemblService, oncokbService)
+            enricherFactory.create(isoformOverrideSource)
         );
 
         if (fields == null || fields.isEmpty()) {

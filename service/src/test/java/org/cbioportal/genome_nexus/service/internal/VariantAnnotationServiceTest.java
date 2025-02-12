@@ -22,6 +22,7 @@ import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
+import org.cbioportal.genome_nexus.service.config.AppConfig;
 import org.cbioportal.genome_nexus.service.exception.CancerHotspotsWebServiceException;
 import org.cbioportal.genome_nexus.service.exception.MutationAssessorNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.MyVariantInfoNotFoundException;
@@ -29,10 +30,11 @@ import org.cbioportal.genome_nexus.service.exception.MyVariantInfoWebServiceExce
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.service.factory.IsoformAnnotationEnricherFactory;
 import org.cbioportal.genome_nexus.service.mock.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
@@ -41,14 +43,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class VariantAnnotationServiceTest
 {
-    @InjectMocks
-    @Spy
     private VariantAnnotationService variantAnnotationService;
 
     @Mock
     private ProteinChangeResolver proteinChangeResolver;
+
     @Mock
     private HugoGeneSymbolResolver hugoGeneSymbolResolver;
+
     @Mock
     private IndexRepository indexRepository;
 
@@ -76,6 +78,9 @@ public class VariantAnnotationServiceTest
     @Mock
     private OncokbService oncokbService;
 
+    @Mock
+    AppConfig appConfig;
+
     @Spy
     private NotationConverter notationConverter;
 
@@ -85,6 +90,28 @@ public class VariantAnnotationServiceTest
     private CancerHotspotMockData cancerHotspotMockData = new CancerHotspotMockData();
     private MyVariantInfoMockData myVariantInfoMockData = new MyVariantInfoMockData();
     private PtmMockData ptmMockData = new PtmMockData();
+
+    @Before
+    public void setUp() {
+        variantAnnotationService = Mockito.spy(new VariantAnnotationService(
+            fetcher,
+            idFetcher,
+            cancerHotspotService, 
+            mutationAssessorService,
+            myVariantInfoService,
+            null,
+            null, 
+            postTranslationalModificationService, 
+            null, 
+            oncokbService, 
+            null, 
+            indexRepository, 
+            proteinChangeResolver, 
+            hugoGeneSymbolResolver, 
+            notationConverter, 
+            new IsoformAnnotationEnricherFactory(ensemblService, oncokbService, appConfig)    
+        ));
+    }
 
     @Test
     public void getAnnotationByVariantString()
@@ -270,6 +297,7 @@ public class VariantAnnotationServiceTest
         this.mockVariantFetcherMethods(variantMockData);
         this.mockEnsemblServiceMethods();
         this.mockOncokbServiceMethods();
+        Mockito.when(this.appConfig.getPrioritizeOncokbGeneTranscripts()).thenReturn("true");
 
         VariantAnnotation annotation1 = variantAnnotationService.getAnnotation(
             "7:g.140453136A>T", VariantType.HGVS, "mskcc", null, null);
