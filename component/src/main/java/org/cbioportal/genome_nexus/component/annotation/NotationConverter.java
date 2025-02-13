@@ -28,15 +28,15 @@ public class NotationConverter {
     }
 
     public GenomicLocation hgvsgToGenomicLocation(String hgvsg) {
-        GenomicLocation gl = new GenomicLocation();
         GenomicVariant gv = GenomicVariantUtil.fromHgvs(hgvsg);
-        gl.setChromosome(gv.getChromosome());
-        gl.setStart(gv.getStart());
-        gl.setEnd(gv.getEnd());
-        gl.setReferenceAllele(gv.getRef());
-        gl.setVariantAllele(gv.getAlt());
-        gl.setOriginalInput(hgvsg);
-        return gl;
+        return new GenomicLocation(
+            gv.getChromosome(),
+            gv.getStart(),
+            gv.getEnd(),
+            gv.getRef(),
+            gv.getAlt(),
+            hgvsg
+        );
     }
 
     public List<GenomicLocation> hgvsgToGenomicLocations(List<String> hgvsgs) {
@@ -64,13 +64,14 @@ public class NotationConverter {
             for (int i = 0; i < parts.length; i++) {
                 parts[i] = parts[i].trim();
             }
-            location = new GenomicLocation();
-            location.setChromosome(chromosomeNormalizer(parts[0]));
-            location.setStart(parts[1].length() > 0 ? Integer.parseInt(parts[1]) : null);
-            location.setEnd(parts[2].length() > 0 ? Integer.parseInt(parts[2]) : null);
-            location.setReferenceAllele(parts[3]);
-            location.setVariantAllele(parts[4]);
-            location.setOriginalInput(genomicLocation);
+            location = new GenomicLocation(
+                chromosomeNormalizer(parts[0]),
+                parts[1].length() > 0 ? Integer.parseInt(parts[1]) : null,
+                parts[2].length() > 0 ? Integer.parseInt(parts[2]) : null,
+                parts[3],
+                parts[4],
+                genomicLocation
+            );
         }
 
         return location;
@@ -94,19 +95,16 @@ public class NotationConverter {
      * 2. Normalize chromsome names.
      */
 public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation) {
-        GenomicLocation normalizedGenomicLocation = new GenomicLocation();
         // if original input is set in the incoming genomic location object then use the same value
         // for the normalized genomic location object returned, otherwise set it to the
         // string representation of the incoming genomic location object
+        String originalInput = genomicLocation.toString();
         if (genomicLocation.getOriginalInput() != null && !genomicLocation.getOriginalInput().isEmpty()) {
-            normalizedGenomicLocation.setOriginalInput(genomicLocation.getOriginalInput());
-        } else {
-            normalizedGenomicLocation.setOriginalInput(genomicLocation.toString());
+            originalInput = genomicLocation.getOriginalInput();
         }
 
         // normalize chromosome name
         String chr = chromosomeNormalizer(genomicLocation.getChromosome().trim());
-        normalizedGenomicLocation.setChromosome(chr);
 
         // convert vcf style start,end,ref,alt to MAF style
         Integer start = genomicLocation.getStart();
@@ -131,11 +129,15 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
             start = nStart;
         }
         end = harmonizeGenomicLocationCoordinate(start, end, ref);
-        normalizedGenomicLocation.setStart(start);
-        normalizedGenomicLocation.setEnd(end);
-        normalizedGenomicLocation.setReferenceAllele(ref);
-        normalizedGenomicLocation.setVariantAllele(var);
-        return normalizedGenomicLocation;
+
+        return new GenomicLocation(
+            chr,
+            start, 
+            end, 
+            ref, 
+            var,
+            originalInput
+        );
     }
 
     public Integer harmonizeGenomicLocationCoordinate(Integer start, Integer end, String ref) {

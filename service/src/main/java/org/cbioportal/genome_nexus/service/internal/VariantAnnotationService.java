@@ -225,12 +225,17 @@ public class VariantAnnotationService
             throws VariantAnnotationWebServiceException {
         List<VariantAnnotation> variantAnnotations = null;
         List<List<String>> normVarToOrigVarQueries = new ArrayList<>();
-        variants.forEach((variant) -> {
+        for (String variant : variants) {
+            String normalizedVariant = this.normalizeVariant(variant, variantType);
+            if (normalizedVariant == null) {
+                continue;
+            }
+
             List<String> normVarToOrigVarQuery = new ArrayList<>();
-            normVarToOrigVarQuery.add(this.normalizeVariant(variant, variantType));
+            normVarToOrigVarQuery.add(normalizedVariant);
             normVarToOrigVarQuery.add(variant);
             normVarToOrigVarQueries.add(normVarToOrigVarQuery);
-        });
+        }
 
         try {
             // get the annotations from the web service and save it to the DB
@@ -382,8 +387,9 @@ public class VariantAnnotationService
     {
         if (variantType == VariantType.DBSNP) {
             return id;
-        } else if (variantType == VariantType.GENOMIC_LOCATION) {
-            id = this.notationConverter.genomicToHgvs(id);
+        }
+        if (variantType == VariantType.GENOMIC_LOCATION && (id = this.notationConverter.genomicToHgvs(id)) == null) {
+            return null;
         } 
         return this.notationConverter.hgvsNormalizer(id);
     }

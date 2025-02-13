@@ -316,14 +316,14 @@ public class AnnotationIntegrationTest
     }
 
     private GenomicLocation genomicLocationStringToGenomicLocation(String genomicLocation) {
-        return new GenomicLocation() {{
-            setChromosome(genomicLocation.split(",")[0]);
-            setStart(Integer.parseInt(genomicLocation.split(",")[1]));
-            setEnd(Integer.parseInt(genomicLocation.split(",")[2]));
-            setReferenceAllele(genomicLocation.split(",")[3]);
-            setVariantAllele(genomicLocation.split(",")[4]);
-            setOriginalInput(genomicLocation);
-        }};
+        return new GenomicLocation(
+            genomicLocation.split(",")[0],
+            Integer.parseInt(genomicLocation.split(",")[1]),
+            Integer.parseInt(genomicLocation.split(",")[2]),
+            genomicLocation.split(",")[3],
+            genomicLocation.split(",")[4],
+            genomicLocation
+        );
     }
 
     @Test

@@ -1,6 +1,8 @@
 package org.cbioportal.genome_nexus.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GenomicLocation
 {
@@ -11,6 +13,37 @@ public class GenomicLocation
     private String variantAllele;
     @JsonIgnore
     private String originalInput;
+
+    public GenomicLocation(
+        @JsonProperty("chromosome") String chromosome,
+        @JsonProperty("start") Integer start,
+        @JsonProperty("end") Integer end,
+        @JsonProperty("referenceAllele") String referenceAllele,
+        @JsonProperty("variantAllele") String variantAllele
+    ) {
+        this.chromosome = chromosome;
+        this.start = start;
+        this.end = end;
+        this.referenceAllele = referenceAllele;
+        this.variantAllele = variantAllele;
+        this.originalInput = this.toString();
+    }
+
+    public GenomicLocation(
+        String chromosome,
+        Integer start,
+        Integer end,
+        String referenceAllele,
+        String variantAllele,
+        String originalInput
+    ) {
+        this.chromosome = chromosome;
+        this.start = start;
+        this.end = end;
+        this.referenceAllele = referenceAllele;
+        this.variantAllele = variantAllele;
+        this.originalInput = originalInput;
+    }
 
     public String getChromosome() {
         return chromosome;
