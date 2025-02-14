@@ -214,7 +214,7 @@ public class VariantAnnotationService
 
         try {
             VariantAnnotation returnValue = variantAnnotation.get();
-            returnValue.setOriginalVariantQuery(variant);
+            this.addAdditionalInformation(returnValue, variantType, variant);
             return returnValue;
         } catch (NoSuchElementException e) {
             throw new VariantAnnotationNotFoundException(normalizedVariant);
@@ -256,7 +256,8 @@ public class VariantAnnotationService
                     if (cacheEnabled) {
                         this.saveToIndexDb(normVarToOrigVarQuery.get().get(0), variantAnnotation);
                     }
-                    variantAnnotation.setOriginalVariantQuery(normVarToOrigVarQuery.get().get(1));
+                    String originalVariantQuery = normVarToOrigVarQuery.get().get(1);
+                    this.addAdditionalInformation(variantAnnotation, variantType, originalVariantQuery);
                 }
             }
         } catch (HttpClientErrorException e) {
@@ -392,5 +393,12 @@ public class VariantAnnotationService
             return null;
         } 
         return this.notationConverter.hgvsNormalizer(id);
+    }
+
+    private void addAdditionalInformation(VariantAnnotation variantAnnotation, VariantType variantType, String originalVariantQuery) {
+        variantAnnotation.setOriginalVariantQuery(originalVariantQuery);
+        if (variantType == VariantType.GENOMIC_LOCATION) {
+            variantAnnotation.setGenomicLocationExplanation(this.notationConverter.getGenomicLocationExplanation(originalVariantQuery));
+        }
     }
 }
