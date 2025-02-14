@@ -30,7 +30,7 @@ They are similar in terms of feature completeness
 - annotation_summary:
 This field is essential for most annotation processes. **Canonical transcript** is returned in `annotation_summary`.
 - my_variant_info
-Provide **gnomAD** and other annotations from [MyVariant.Info](https://myvariant.info/).
+Provides **gnomAD** and other annotations from [MyVariant.Info](https://myvariant.info/).
 - clinvar
 - hotspots
 - polyphen
@@ -40,7 +40,7 @@ Provide **gnomAD** and other annotations from [MyVariant.Info](https://myvariant
 - nucleotide_context
 - ptm
 - signal:
-Provide annotation from [signalDB](https://www.signaldb.org/).
+Provides annotation from [signalDB](https://www.signaldb.org/).
 - oncokb:
 `oncokb` provides annotations of the biological consequences and clinical implications from OncoKB website. OncoKB token is required (see more information from: https://www.oncokb.org/apiAccess). Please also provide your token in -Doncokb.token=abc123 command line parameter, or directly add oncokb.token=abc123in the application.properties. No OncoKB annotation columns will be added if no valid token is provided.
 
