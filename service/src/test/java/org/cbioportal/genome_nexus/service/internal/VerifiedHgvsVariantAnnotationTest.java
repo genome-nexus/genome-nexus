@@ -63,7 +63,7 @@ public class VerifiedHgvsVariantAnnotationTest
     public List<VariantTestCase> hgvsDeletions = null;
     public List<VariantTestCase> hgvsInsertions = null;
     public List<VariantTestCase> hgvsInsertionDeletions = null;
-    
+    public List<VariantTestCase> hgvsDuplications = null;
     public List<VariantTestCase> hgvsInversions = null; // test results of an unsupported format query
     // other types (duplications, no-change, methylation, specified alleles) are not handled by genome nexus and are not tested
     // single query stub maps
@@ -161,6 +161,9 @@ public class VerifiedHgvsVariantAnnotationTest
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delinsTT", true, "C/T", "2nt deletion without RefAllele, 2nt insertion, partial change"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delinsGG", true, "TC/GG", "2nt deletion without RefAllele, 2nt insertion, full change"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCCCinsTT", false, null, "2nt deletion with invalid RefAllele, 2nt insertion", "Reference allele extracted from response (TC) does not match given reference allele (CCCC)"));
+            hgvsDuplications = new ArrayList<VariantTestCase>();
+            hgvsDuplications.add(new VariantTestCase("5:g.138163255_138163256dupT", true, "-/T", "1nt duplication"));
+            hgvsDuplications.add(new VariantTestCase("5:g.138163255_138163256dupTC", true, "-/TC", "2nt duplication"));
             hgvsInversions = new ArrayList<VariantTestCase>();
             hgvsInversions.add(new VariantTestCase("5:g.138163255_138163256inv", true, "TC/GA", "inversions not supported - but will run as passthrough"));
             hgvsInversions.add(new VariantTestCase("5:g.138163255_138163256invTC", false, null, "inversion format does not allow specification of RefAllele"));
@@ -217,6 +220,8 @@ public class VerifiedHgvsVariantAnnotationTest
         setUpQueryToStubMaps("5:g.138163255_138163256delinsTT", true, "C/T");
         setUpQueryToStubMaps("5:g.138163255_138163256delinsGG", true, "TC/GG");
         setUpQueryToStubMaps("5:g.138163255_138163256delCCCCinsTT", true, "C/T");
+        setUpQueryToStubMaps("5:g.138163255_138163256dupT", true, "-/T");
+        setUpQueryToStubMaps("5:g.138163255_138163256dupTC", true, "-/TC");
         setUpQueryToStubMaps("5:g.138163255_138163256inv", true, "TC/GA");
         setUpQueryToStubMaps("5:g.138163255_138163256invTC", false, null);
     }
@@ -294,10 +299,11 @@ public class VerifiedHgvsVariantAnnotationTest
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException, TestCaseInsufficentlyModeledException
     {
         setUpQueryToStubMaps();
-        // stubHgvsVariantAnnotationServiceMethodsForType(hgvsSubstitutions);
-        // stubHgvsVariantAnnotationServiceMethodsForType(hgvsDeletions);
-        // stubHgvsVariantAnnotationServiceMethodsForType(hgvsInsertions);
-        // stubHgvsVariantAnnotationServiceMethodsForType(hgvsInsertionDeletions);
+        stubHgvsVariantAnnotationServiceMethodsForType(hgvsSubstitutions);
+        stubHgvsVariantAnnotationServiceMethodsForType(hgvsDeletions);
+        stubHgvsVariantAnnotationServiceMethodsForType(hgvsInsertions);
+        stubHgvsVariantAnnotationServiceMethodsForType(hgvsInsertionDeletions);
+        stubHgvsVariantAnnotationServiceMethodsForType(hgvsDuplications);
         stubHgvsVariantAnnotationServiceMethodsForType(hgvsInversions);
     }
 
