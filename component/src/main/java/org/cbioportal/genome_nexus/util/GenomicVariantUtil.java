@@ -160,7 +160,7 @@ public class GenomicVariantUtil {
         // An example showing a specified deletion is mentioned here : http://varnomen.hgvs.org/recommendations/DNA/variant/alleles/
         // 1g.123456_123457delAA (chromosome 1, genomic positions 123456-123457, reference sequence AA deleted)
         // recommended representation omits the deleted nucleotides "1g.123456_123457del"
-        match = getPattern("del[ATGC]*", hgvs);
+        match = getPattern("(del|dup)[ATGC]+", hgvs);
         if (match != null && match.trim().length() > 0) {
             return match.trim().substring(3);
         }

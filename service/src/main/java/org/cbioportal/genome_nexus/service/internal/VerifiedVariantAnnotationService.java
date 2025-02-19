@@ -168,7 +168,7 @@ public class VerifiedVariantAnnotationService
         } else if (variantType == VariantType.GENOMIC_LOCATION) {
             GenomicLocation genomicLocation = notationConverter.parseGenomicLocation(originalQuery);
             genomicLocation.setVariantAllele("-");
-            if (genomicLocation.getReferenceAllele().equals( "-")) {
+            if (genomicLocation.getReferenceAllele().equals("-")) {
                 return "";
             }
             followUpQuery = genomicLocation.toString();
@@ -186,6 +186,10 @@ public class VerifiedVariantAnnotationService
         int slashPosition = alleleString.indexOf('/');
         if (slashPosition == -1 || slashPosition == 0) {
             return "";
+        }
+
+        if (annotation.getOriginalVariantQuery().contains("dup")) {
+            return alleleString.substring(slashPosition + 1);
         }
         return alleleString.substring(0,slashPosition);
 

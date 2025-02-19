@@ -25,14 +25,9 @@ If you want to setup Genome Nexus for mouse, also set the `SPECIES` variable to 
 export SPECIES=mus_musculus
 ```
 
-If you would like to do local VEP annotations instead of using the public Ensembl API, please uncomment `# gn_vep.region.url=http://localhost:6060/vep/human/region/VARIANT` in your `application.properties`. This will require you to download the VEP cache files for the preferred Ensembl Release and Reference genome, see our documentation on [downloading the Genome Nexus VEP Cache](https://github.com/genome-nexus/genome-nexus-vep/blob/master/README.md#create-vep-cache). This will take several hours.
-```
-# Set local cache dir
-export VEP_CACHE=<local_vep_cache>
+If you would like to do local VEP annotations instead of using the public Ensembl API, please change `vep.url` in your `application.properties` to point to a local instance of the VEP command line tool REST wrapper. For more details on setting up this wrapper, see the Genome Nexus VEP [documentation](https://github.com/genome-nexus/genome-nexus-vep). Additionally, prebuilt Genome Nexus VEP images are available on [Docker Hub](https://hub.docker.com/r/genomenexus/genome-nexus-vep). Please note that Genome Nexus versions greater than 2.0.0 are only supported by Genome Nexus VEP versions greater than 2.0.0 (or the public Ensembl API). 
 
-# GRCh38 or GRCh37
-export VEP_ASSEMBLY=GRCh38
-```
+**IMPORTANT:** As of version 2.0.0 of Genome Nexus VEP, dbSNP annotations are not supported. If you plan to use Genome Nexus's dbSNP annotation endpoints, please use the public Ensembl API.
 
 Run docker-compose to create images and containers:
 ```
