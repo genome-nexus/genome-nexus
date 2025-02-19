@@ -87,7 +87,7 @@ public class AnnotationController
                     required = true, allowMultiple = true)
             List<String> variants,
             @RequestParam(required = false)
-            @ApiParam(value="Isoform override source. For example uniprot", required = false)
+            @ApiParam(value="Isoform override source. For example mskcc", required = false)
             String isoformOverrideSource,
             @RequestParam(required = false)
             @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}",
@@ -113,7 +113,7 @@ public class AnnotationController
                     required = true, allowMultiple = true)
             List<String> variants,
             @RequestParam(required = false)
-            @ApiParam(value="Isoform override source. For example uniprot", required = false)
+            @ApiParam(value="Isoform override source. For example mskcc", required = false)
             String isoformOverrideSource,
             @RequestParam(required = false)
             @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}", required = false)
@@ -135,7 +135,7 @@ public class AnnotationController
                     "\"1:g.1385015_1387562del\"] (GRCh38)", required = true)
             @RequestBody
             List<String> variants,
-            @ApiParam(value="Isoform override source. For example uniprot", required = false)
+            @ApiParam(value="Isoform override source. For example mskcc", required = false)
             @RequestParam(required = false)
             String isoformOverrideSource,
             @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}", required = false)
@@ -156,7 +156,7 @@ public class AnnotationController
             @ApiParam(value="Variant. For example 17:g.41242962_41242963insGA", required = true)
             @PathVariable
             String variant,
-            @ApiParam(value="Isoform override source. For example uniprot", required = false)
+            @ApiParam(value="Isoform override source. For example mskcc", required = false)
             @RequestParam(required = false)
             String isoformOverrideSource,
             @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}", required = false)
@@ -177,7 +177,7 @@ public class AnnotationController
             @ApiParam(value="List of Genomic Locations", required = true)
             @RequestBody
             List<GenomicLocation> genomicLocations,
-            @ApiParam(value="Isoform override source. For example uniprot", required = false)
+            @ApiParam(value="Isoform override source. For example mskcc", required = false)
             @RequestParam(required = false)
             String isoformOverrideSource,
             @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}", required = false)
@@ -199,7 +199,7 @@ public class AnnotationController
             @ApiParam(value="A genomic location. For example 7,140453136,140453136,A,T", required = true)
             @PathVariable
             String genomicLocation,
-            @ApiParam(value="Isoform override source. For example uniprot", required = false)
+            @ApiParam(value="Isoform override source. For example mskcc", required = false)
             @RequestParam(required = false)
             String isoformOverrideSource,
             @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}", required = false)
@@ -220,7 +220,7 @@ public class AnnotationController
             @ApiParam(value="List of variant IDs. For example [\"rs116035550\"]", required = true)
             @RequestBody
             List<String> variantIds,
-            @ApiParam(value="Isoform override source. For example uniprot", required = false)
+            @ApiParam(value="Isoform override source. For example mskcc", required = false)
             @RequestParam(required = false)
             String isoformOverrideSource,
             @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}", required = false)
@@ -241,7 +241,7 @@ public class AnnotationController
             @ApiParam(value="dbSNP id. For example rs116035550.", required = true)
             @PathVariable
             String variantId,
-            @ApiParam(value="Isoform override source. For example uniprot", required = false)
+            @ApiParam(value="Isoform override source. For example mskcc", required = false)
             @RequestParam(required = false)
             String isoformOverrideSource,
             @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}", required = false)
