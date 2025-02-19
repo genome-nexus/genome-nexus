@@ -67,8 +67,6 @@ import java.util.HashSet;
 @EnableSwagger2 // enable swagger2 documentation
 public class GenomeNexusAnnotation extends SpringBootServletInitializer implements ErrorController
 {
-    // static { System.setProperty("os.arch", "i686_64"); }
-
     public static void main(String[] args)
     {
         SpringApplication.run(GenomeNexusAnnotation.class, args);
