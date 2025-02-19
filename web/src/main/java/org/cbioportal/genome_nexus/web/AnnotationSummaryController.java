@@ -38,7 +38,7 @@ public class AnnotationSummaryController
             "\"1:g.1385015_1387562del\"] (GRCh38)",
             required = true)
         @RequestBody List<String> variants,
-        @ApiParam(value="Isoform override source. For example uniprot")
+        @ApiParam(value="Isoform override source. For example mskcc")
         @RequestParam(required = false) String isoformOverrideSource,
         @ApiParam(value="Indicates whether to return summary for all transcripts or only for canonical transcript")
         @RequestParam(defaultValue = "ALL") TranscriptSummaryProjection projection)
@@ -60,7 +60,7 @@ public class AnnotationSummaryController
         @ApiParam(value="Variant. For example 17:g.41242962_41242963insGA",
             required = true)
         @PathVariable String variant,
-        @ApiParam(value="Isoform override source. For example uniprot")
+        @ApiParam(value="Isoform override source. For example mskcc")
         @RequestParam(required = false) String isoformOverrideSource,
         @ApiParam(value="Indicates whether to return summary for all transcripts or only for canonical transcript")
         @RequestParam(defaultValue = "ALL") TranscriptSummaryProjection projection)
