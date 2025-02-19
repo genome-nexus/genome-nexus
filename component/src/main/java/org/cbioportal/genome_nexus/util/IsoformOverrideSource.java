@@ -8,12 +8,12 @@ public class IsoformOverrideSource {
 
     public static String getOrDefault(String isoformOverrideSource) {
         String normalizedSource = isoformOverrideSource == null ?
-            UNIPROT : isoformOverrideSource.trim().toLowerCase();
+            MSKCC : isoformOverrideSource.trim().toLowerCase();
 
         return (
             normalizedSource.equals(ENSEMBL) ||
             normalizedSource.equals(GENOME_NEXUS) ||
-            normalizedSource.equals(MSKCC)
-        ) ? normalizedSource : UNIPROT;
+            normalizedSource.equals(UNIPROT)
+        ) ? normalizedSource : MSKCC;
     }
 }

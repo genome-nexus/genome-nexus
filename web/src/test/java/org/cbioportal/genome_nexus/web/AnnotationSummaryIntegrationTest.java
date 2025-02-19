@@ -1,11 +1,15 @@
 package org.cbioportal.genome_nexus.web;
 
-import com.mongodb.DBObject;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import org.cbioportal.genome_nexus.web.mock.JsonToObjectMapper;
 import org.cbioportal.genome_nexus.web.persistence.BiomartTranscriptsRepository;
 import org.cbioportal.genome_nexus.web.persistence.BiomartTranscriptsRepositoryImpl;
 import org.cbioportal.genome_nexus.web.persistence.CanonicalTranscriptPerHgncRepository;
 import org.cbioportal.genome_nexus.web.persistence.CanonicalTranscriptPerHgncRepositoryImpl;
-import org.cbioportal.genome_nexus.web.mock.JsonToObjectMapper;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,11 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
+import com.mongodb.DBObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(
@@ -88,9 +88,10 @@ public class AnnotationSummaryIntegrationTest
 
     @Test
     public void testCanonicalOverride()
+
     {
         String[] variants = {
-            "9:g.21994291C>T",
+            "7:g.55249071C>T"
         };
 
         //////////////////
@@ -98,8 +99,8 @@ public class AnnotationSummaryIntegrationTest
         //////////////////
 
         String canonicalTranscript = this.fetchAnnotationSummaryGET(variants[0]).get("canonicalTranscriptId").toString();
-        // VEP canonical (ENST00000404796) should be overridden with uniprot canonical (ENST00000428597)
-        assertEquals("ENST00000428597", canonicalTranscript);
+        // VEP canonical should be overridden with mskcc canonical (ENST00000275493)
+        assertEquals("ENST00000275493", canonicalTranscript);
 
         //////////////////
         // POST request //
@@ -109,7 +110,7 @@ public class AnnotationSummaryIntegrationTest
         assertEquals(variants.length, this.fetchAnnotationSummaryPOST(variants).size());
 
         String canonicalTranscript0 = this.fetchAnnotationSummaryPOST(variants).get(0).get("canonicalTranscriptId").toString();
-        // VEP canonical (ENST00000404796) should be overridden with uniprot canonical (ENST00000428597)
-        assertEquals("ENST00000428597", canonicalTranscript0);
+        // VEP canonical should be overridden with mskcc canonical (ENST00000275493)
+        assertEquals("ENST00000275493", canonicalTranscript0);
     }
 }
