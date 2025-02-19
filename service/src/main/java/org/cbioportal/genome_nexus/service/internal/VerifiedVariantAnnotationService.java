@@ -160,7 +160,7 @@ public class VerifiedVariantAnnotationService
     {
         String followUpQuery = "";
         if (variantType == VariantType.HGVS) {
-            followUpQuery = originalQuery.replaceFirst("ins.*|del.*|[A|T|C|G]>[A|T|C|G]","");
+            followUpQuery = originalQuery.replaceFirst("ins.*|del.*|dup.*|[A|T|C|G]>[A|T|C|G]","");
             if (followUpQuery.length() == originalQuery.length()) {
                 return "";
             }
