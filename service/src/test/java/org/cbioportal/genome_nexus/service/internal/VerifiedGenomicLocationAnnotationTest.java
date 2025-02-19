@@ -50,7 +50,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class GenomicLocationAnnotationTest
+public class VerifiedGenomicLocationAnnotationTest
 {
     // Tested Class
     private VerifiedVariantAnnotationService verifiedVariantAnnotationService;
@@ -165,7 +165,7 @@ public class GenomicLocationAnnotationTest
     private void setUpQueryToStubMaps()
     {
         // VEP responses for these test cases were extracted from queries to http://genie.genomenexus.org/annotation/genomic/<variant>
-        // these contain only the elements neccessary for testing the business logic in VerifiedGenomicLocationAnnotationService
+        // these contain only the elements neccessary for testing the business logic in VerifiedAnnotationService
         setUpQueryToStubMaps("5,138163256,138163256,C,T", true, "C/T");
         setUpQueryToStubMaps("5,138163256,138163256,A,T", false, null);
         setUpQueryToStubMaps("5,138163256,138163256,C,-", true, "C/-");

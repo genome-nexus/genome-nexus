@@ -50,7 +50,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class HgvsVariantAnnotationTest
+public class VerifiedHgvsVariantAnnotationTest
 {
     // Tested Class
     private VerifiedVariantAnnotationService verifiedVariantAnnotationService;
@@ -63,6 +63,7 @@ public class HgvsVariantAnnotationTest
     public List<VariantTestCase> hgvsDeletions = null;
     public List<VariantTestCase> hgvsInsertions = null;
     public List<VariantTestCase> hgvsInsertionDeletions = null;
+    
     public List<VariantTestCase> hgvsInversions = null; // test results of an unsupported format query
     // other types (duplications, no-change, methylation, specified alleles) are not handled by genome nexus and are not tested
     // single query stub maps
@@ -182,7 +183,7 @@ public class HgvsVariantAnnotationTest
     private void setUpQueryToStubMaps()
     {
         // VEP responses for these test cases are extracted from queries to http://grch37.rest.ensembl.org/vep/human/hgvs/<variant>
-        // these contain only the elements neccessary for testing the business logic in VerifiedGenomicLocationAnnotationService
+        // these contain only the elements neccessary for testing the business logic in VerifiedAnnotationService
         setUpQueryToStubMaps("5:g.138163256C>T", true, "C/T");
         setUpQueryToStubMaps("5:g.138163256A>T", false, null);
         setUpQueryToStubMaps("5:g.138163256>T", false, null, "Line 1 skipped (5:g.138163256>T): Invalid allele string / or possible parsing error");
@@ -293,10 +294,10 @@ public class HgvsVariantAnnotationTest
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException, TestCaseInsufficentlyModeledException
     {
         setUpQueryToStubMaps();
-        stubHgvsVariantAnnotationServiceMethodsForType(hgvsSubstitutions);
-        stubHgvsVariantAnnotationServiceMethodsForType(hgvsDeletions);
-        stubHgvsVariantAnnotationServiceMethodsForType(hgvsInsertions);
-        stubHgvsVariantAnnotationServiceMethodsForType(hgvsInsertionDeletions);
+        // stubHgvsVariantAnnotationServiceMethodsForType(hgvsSubstitutions);
+        // stubHgvsVariantAnnotationServiceMethodsForType(hgvsDeletions);
+        // stubHgvsVariantAnnotationServiceMethodsForType(hgvsInsertions);
+        // stubHgvsVariantAnnotationServiceMethodsForType(hgvsInsertionDeletions);
         stubHgvsVariantAnnotationServiceMethodsForType(hgvsInversions);
     }
 
