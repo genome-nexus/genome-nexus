@@ -98,7 +98,7 @@ public class AnnotationSummaryIntegrationTest
         //////////////////
 
         String canonicalTranscript = this.fetchAnnotationSummaryGET(variants[0]).get("canonicalTranscriptId").toString();
-        // VEP canonical (ENST00000404796) should be overridden with uniprot canonical (ENST00000428597)
+        // VEP canonical (ENST00000404796) should be overridden with mskcc canonical (ENST00000428597)
         assertEquals("ENST00000428597", canonicalTranscript);
 
         //////////////////
@@ -109,7 +109,7 @@ public class AnnotationSummaryIntegrationTest
         assertEquals(variants.length, this.fetchAnnotationSummaryPOST(variants).size());
 
         String canonicalTranscript0 = this.fetchAnnotationSummaryPOST(variants).get(0).get("canonicalTranscriptId").toString();
-        // VEP canonical (ENST00000404796) should be overridden with uniprot canonical (ENST00000428597)
+        // VEP canonical (ENST00000404796) should be overridden with mskcc canonical (ENST00000428597)
         assertEquals("ENST00000428597", canonicalTranscript0);
     }
 }
