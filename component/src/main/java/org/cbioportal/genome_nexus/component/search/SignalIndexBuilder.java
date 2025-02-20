@@ -101,15 +101,14 @@ public class SignalIndexBuilder
     }
 
     public GenomicLocation generateGenomicLocation(SignalMutation mutation) {
-        GenomicLocation gl = new GenomicLocation();
-
-        gl.setChromosome(mutation.getChromosome());
-        gl.setStart(mutation.getStartPosition().intValue());
-        gl.setEnd(mutation.getEndPosition().intValue());
-        gl.setReferenceAllele(mutation.getReferenceAllele());
-        gl.setVariantAllele(mutation.getVariantAllele());
-
-        return gl;
+        return new GenomicLocation(
+            mutation.getChromosome(),
+            mutation.getStartPosition().intValue(),
+            mutation.getEndPosition().intValue(),
+            mutation.getReferenceAllele(),
+            mutation.getVariantAllele(),
+            null
+        );
     }
 
     private String normalizeAlteration(String proteinChange) {

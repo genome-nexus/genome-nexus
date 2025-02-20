@@ -245,7 +245,16 @@ public class GenomicVariantUtilTest {
         testCases.put("1g.1_2del", NONE);
         testCases.put("1g.1_2delA", "A");
         testCases.put("1g.1delAA", "AA");
-        // if supported, duplication cases would have the same rules / test cases as deletion
+        // Duplication cases
+        testCases.put("1g.1dup", NONE);
+        testCases.put("1g.1dup ", NONE);
+        testCases.put("1g.1dupA", "A");
+        testCases.put("1g.1dupA ", "A");
+        testCases.put("1g.1_2dupAA", "AA");
+        testCases.put("1g.1_3dupAAA", "AAA");
+        testCases.put("1g.1_2dup", NONE);
+        testCases.put("1g.1_2dupA", "A");
+        testCases.put("1g.1dupAA", "AA");
         testCases.forEach((hgvs, expectedValue) -> assertEquals("for test case " + hgvs, expectedValue, GenomicVariantUtil.providedReferenceAlleleFromHgvs(hgvs)));
     }
 

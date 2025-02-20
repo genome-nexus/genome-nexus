@@ -35,15 +35,16 @@ package org.cbioportal.genome_nexus.web;
 import io.swagger.annotations.*;
 import java.util.*;
 
+import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.model.AnnotationField;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.cbioportal.genome_nexus.service.GenomicLocationAnnotationService;
-import org.cbioportal.genome_nexus.service.SelectedAnnotationService;
-import org.cbioportal.genome_nexus.service.VariantAnnotationService;
+import org.cbioportal.genome_nexus.model.VariantType;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationQueryMixedFormatException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.service.internal.VariantAnnotationService;
+import org.cbioportal.genome_nexus.service.internal.VerifiedVariantAnnotationService;
 import org.cbioportal.genome_nexus.util.TokenMapConverter;
 import org.cbioportal.genome_nexus.web.config.PublicApi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,18 +62,18 @@ import org.springframework.web.bind.annotation.*;
 public class AnnotationController
 {
     private final VariantAnnotationService dbsnpAnnotationService;
-    private final GenomicLocationAnnotationService verifiedGenomicLocationAnnotationService;
-    private final SelectedAnnotationService selectedAnnotationService;
+    private final VerifiedVariantAnnotationService verifiedVariantAnnotationService;
+    private final NotationConverter notationConverter;
     private final TokenMapConverter tokenMapConverter;
 
     @Autowired
     public AnnotationController(VariantAnnotationService dbsnpVariantAnnotationService,
-                                GenomicLocationAnnotationService verifiedGenomicLocationAnnotationServiceImpl,
-                                SelectedAnnotationService selectedAnnotationService)
+                               VerifiedVariantAnnotationService verifiedHgvsVariantAnnotationService,
+                               NotationConverter notationConverter)
     {
         this.dbsnpAnnotationService = dbsnpVariantAnnotationService;
-        this.verifiedGenomicLocationAnnotationService = verifiedGenomicLocationAnnotationServiceImpl;
-        this.selectedAnnotationService = selectedAnnotationService;
+        this.verifiedVariantAnnotationService = verifiedHgvsVariantAnnotationService;
+        this.notationConverter = notationConverter;
         this.tokenMapConverter = new TokenMapConverter();
     }
 
@@ -147,7 +148,13 @@ public class AnnotationController
             @RequestParam(required = false)
             List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationQueryMixedFormatException, VariantAnnotationWebServiceException
     {
-        return this.selectedAnnotationService.getAnnotations(variants, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
+        return this.verifiedVariantAnnotationService.getAnnotations(
+            variants, 
+            VariantType.HGVS,
+            isoformOverrideSource, 
+            tokenMapConverter.convertToMap(token), 
+            fields
+        );
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided variant", nickname = "fetchVariantAnnotationGET")
@@ -168,7 +175,13 @@ public class AnnotationController
             @RequestParam(required = false)
             List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.selectedAnnotationService.getAnnotation(variant, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
+        return this.verifiedVariantAnnotationService.getAnnotation(
+            variant, 
+            VariantType.HGVS,
+            isoformOverrideSource, 
+            tokenMapConverter.convertToMap(token), 
+            fields
+        );
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of genomic locations", nickname = "fetchVariantAnnotationByGenomicLocationPOST")
@@ -189,8 +202,13 @@ public class AnnotationController
             @RequestParam(required = false)
             List<AnnotationField> fields)
     {
-        return this.verifiedGenomicLocationAnnotationService.getAnnotations(
-            genomicLocations, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
+        return this.verifiedVariantAnnotationService.getAnnotations(
+            notationConverter.genomicToString(genomicLocations),
+            VariantType.GENOMIC_LOCATION,
+            isoformOverrideSource,
+            tokenMapConverter.convertToMap(token),
+            fields
+        );
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided genomic location", nickname = "fetchVariantAnnotationByGenomicLocationGET")
@@ -211,7 +229,13 @@ public class AnnotationController
             @RequestParam(required = false)
             List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.verifiedGenomicLocationAnnotationService.getAnnotation(genomicLocation, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
+        return this.verifiedVariantAnnotationService.getAnnotation(
+            genomicLocation, 
+            VariantType.GENOMIC_LOCATION,
+            isoformOverrideSource, 
+            tokenMapConverter.convertToMap(token), 
+            fields
+        );
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the provided list of dbSNP ids", nickname = "fetchVariantAnnotationByIdPOST")
@@ -232,7 +256,7 @@ public class AnnotationController
             @RequestParam(required = false)
             List<AnnotationField> fields)
     {
-        return this.dbsnpAnnotationService.getAnnotations(variantIds, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
+        return this.dbsnpAnnotationService.getAnnotations(variantIds, VariantType.DBSNP, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
     }
 
     @ApiOperation(value = "Retrieves VEP annotation for the give dbSNP id", nickname = "fetchVariantAnnotationByIdGET")
@@ -253,7 +277,7 @@ public class AnnotationController
             @RequestParam(required = false)
             List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.dbsnpAnnotationService.getAnnotation(variantId, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
+        return this.dbsnpAnnotationService.getAnnotation(variantId, VariantType.DBSNP, isoformOverrideSource, tokenMapConverter.convertToMap(token), fields);
     }
 
 }

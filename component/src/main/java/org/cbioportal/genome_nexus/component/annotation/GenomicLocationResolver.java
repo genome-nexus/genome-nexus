@@ -12,15 +12,13 @@ public class GenomicLocationResolver
     @NotNull
     public GenomicLocation resolve(VariantAnnotation variantAnnotation)
     {
-        GenomicLocation genomicLocation = new GenomicLocation();
-
-        genomicLocation.setChromosome(this.resolveChromosome(variantAnnotation));
-        genomicLocation.setStart(this.resolveStart(variantAnnotation));
-        genomicLocation.setEnd(this.resolveEnd(variantAnnotation));
-        genomicLocation.setReferenceAllele(this.resolveReferenceAllele(variantAnnotation));
-        genomicLocation.setVariantAllele(this.resolveVariantAllele(variantAnnotation));
-
-        return genomicLocation;
+        return new GenomicLocation(
+            this.resolveChromosome(variantAnnotation),
+            this.resolveStart(variantAnnotation),
+            this.resolveEnd(variantAnnotation),
+            this.resolveReferenceAllele(variantAnnotation),
+            this.resolveVariantAllele(variantAnnotation)
+        );
     }
 
     @Nullable

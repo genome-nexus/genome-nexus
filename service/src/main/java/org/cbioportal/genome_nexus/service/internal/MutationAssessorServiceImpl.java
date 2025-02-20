@@ -5,10 +5,10 @@ import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
 import org.cbioportal.genome_nexus.model.MutationAssessor;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.model.VariantType;
 import org.cbioportal.genome_nexus.persistence.MutationAssessorRepository;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
-import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,18 +23,18 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
     private static final Log LOG = LogFactory.getLog(MutationAssessorServiceImpl.class);
 
     private final MutationAssessorRepository mutationAssessorRepository;
-    private final VariantAnnotationService variantAnnotationService;
+    private final VerifiedVariantAnnotationService variantAnnotationService;
     private final ProteinChangeResolver proteinChangeResolver;
     private final EnsemblService ensemblService;
 
     @Autowired
     public MutationAssessorServiceImpl(MutationAssessorRepository mutationAssessorRepository,
-                                       VariantAnnotationService verifiedHgvsVariantAnnotationService,
+                                       VerifiedVariantAnnotationService verifiedVariantAnnotationService,
                                        ProteinChangeResolver proteinChangeResolver,
                                        EnsemblService ensemblService)
     {
         this.mutationAssessorRepository = mutationAssessorRepository;
-        this.variantAnnotationService = verifiedHgvsVariantAnnotationService;
+        this.variantAnnotationService = verifiedVariantAnnotationService;
         this.proteinChangeResolver = proteinChangeResolver;
         this.ensemblService = ensemblService;
     }
@@ -46,7 +46,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         MutationAssessorNotFoundException
     {
-        VariantAnnotation annotation = this.variantAnnotationService.getAnnotation(variant);
+        VariantAnnotation annotation = this.variantAnnotationService.getAnnotation(variant, VariantType.HGVS);
 
         return this.getMutationAssessorByVariantAnnotation(annotation);
     }
@@ -57,7 +57,7 @@ public class MutationAssessorServiceImpl implements MutationAssessorService
     public List<MutationAssessor> getMutationAssessor(List<String> variants)
     {
         List<MutationAssessor> mutationAssessors = new ArrayList<>();
-        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants);
+        List<VariantAnnotation> variantAnnotations = this.variantAnnotationService.getAnnotations(variants, VariantType.HGVS);
 
         for (VariantAnnotation variantAnnotation : variantAnnotations)
         {

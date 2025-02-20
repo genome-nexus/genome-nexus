@@ -3,13 +3,13 @@ package org.cbioportal.genome_nexus.service.internal;
 import org.cbioportal.genome_nexus.component.annotation.*;
 import org.cbioportal.genome_nexus.model.TranscriptConsequenceSummary;
 import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
+import org.cbioportal.genome_nexus.model.VariantType;
 import org.cbioportal.genome_nexus.model.IntergenicConsequenceSummary;
 import org.cbioportal.genome_nexus.model.IntergenicConsequences;
 import org.cbioportal.genome_nexus.model.RevisedProteinEffectJsonRecord;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.EnsemblService;
-import org.cbioportal.genome_nexus.service.VariantAnnotationService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationSummaryService;
 import org.cbioportal.genome_nexus.service.annotation.EntrezGeneIdResolver;
 import org.cbioportal.genome_nexus.service.exception.EnsemblWebServiceException;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,7 @@ import org.cbioportal.genome_nexus.model.VuesJsonRecord;
 @Service
 public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSummaryService
 {
-    private final VariantAnnotationService variantAnnotationService;
+    private final VerifiedVariantAnnotationService variantAnnotationService;
     private final EnsemblService ensemblService;
     private final CanonicalTranscriptResolver canonicalTranscriptResolver;
     private final CodonChangeResolver codonChangeResolver;
@@ -56,7 +55,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
 
     @Autowired
     public VariantAnnotationSummaryServiceImpl(
-        VariantAnnotationService verifiedHgvsVariantAnnotationService,
+        VerifiedVariantAnnotationService verifiedVariantAnnotationService,
         EnsemblService ensemblService,
         CanonicalTranscriptResolver canonicalTranscriptResolver,
         AminoAcidsResolver aminoAcidsResolver,
@@ -76,7 +75,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         @Value("${revue.url}") String vuesUrl,
         @Value("${overwrite_by_confirmed_revue_only}") String overwriteByConfirmedRevueOnlyValue
     ) throws IOException {
-        this.variantAnnotationService = verifiedHgvsVariantAnnotationService;
+        this.variantAnnotationService = verifiedVariantAnnotationService;
         this.ensemblService = ensemblService;
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
         this.codonChangeResolver = codonChangeResolver;
@@ -102,7 +101,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         return this.getAnnotationSummaryForCanonical(
-            this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, null, null)
+            this.variantAnnotationService.getAnnotation(variant, VariantType.HGVS, isoformOverrideSource, null, null)
         );
     }
 
@@ -152,7 +151,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         return this.getAnnotationSummary(
-            this.variantAnnotationService.getAnnotation(variant, isoformOverrideSource, null, null)
+            this.variantAnnotationService.getAnnotation(variant, VariantType.HGVS, isoformOverrideSource, null, null)
         );
     }
 
@@ -161,7 +160,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         List<VariantAnnotationSummary> summaries = new ArrayList<>();
 
         List<VariantAnnotation> annotations =
-            this.variantAnnotationService.getAnnotations(variants, isoformOverrideSource, null, null);
+            this.variantAnnotationService.getAnnotations(variants, VariantType.HGVS, isoformOverrideSource, null, null);
 
         for (VariantAnnotation annotation: annotations) {
             summaries.add(this.getAnnotationSummary(annotation));
@@ -178,7 +177,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         List<VariantAnnotationSummary> summaries = new ArrayList<>();
 
         List<VariantAnnotation> annotations =
-            this.variantAnnotationService.getAnnotations(variants, isoformOverrideSource, null, null);
+            this.variantAnnotationService.getAnnotations(variants, VariantType.HGVS, isoformOverrideSource, null, null);
 
         for (VariantAnnotation annotation: annotations) {
             summaries.add(this.getAnnotationSummaryForCanonical(annotation));

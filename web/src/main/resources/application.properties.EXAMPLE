@@ -1,6 +1,9 @@
 # VEP web API URL with additional parameters. Note that "VARIANT" field will be replaced with
 # the actual variant value before each VEP request.
-vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1&AlphaMissense=1
+vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1&AlphaMissense=1RIANT
+
+## A boolean flag indicating whether the VEP version used is static. If using local VEP, this should be true. If using ENSEBML API, this should be false
+vep.static = false
 
 # 200 is the max page size allowed by the public VEP service, it might be possible to increase this for a private instance
 vep.max_page_size=200
@@ -9,17 +12,6 @@ vep.max_page_size=200
 # should only be turned on when pointing to own VEP
 # 300 seconds is recommended with vep.max_page_size set to 5000
 # gn_vep.timeout.seconds=300
-
-# it is possible to use your own VEP instance by running https://github.com/genome-nexus/genome-nexus-vep
-# This is only the VEP part of the Ensembl REST API.
-# e.g. when running on port 6060:
-# gn_vep.region.url=http://localhost:6060/vep/human/region/VARIANT
-# gn_vep.cache.version=
-# gn_vep.server.version=
-# Note that this overrides vep.url
-# To get the full advantage of running your own VEP, several optimizations are
-# required, please read documentation in
-# https://github.com/genome-nexus/genome-nexus-vep
 
 # the gene external references URL
 genexrefs.url=http://grch37.rest.ensembl.org/xrefs/id/ACCESSION?content-type=application/json

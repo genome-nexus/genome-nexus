@@ -192,7 +192,7 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
         }
     }
 
-    private Optional<T> fetchFromWebAndSave(String id, boolean saveRawValue) {
+    private Optional<T> fetchFromWebAndSave(String id, boolean saveRawValue) throws ResourceMappingException {
         try {
             DBObject rawValue = this.fetcher.fetchRawValue(id);
             rawValue = this.normalizeResponse(rawValue);
@@ -207,8 +207,6 @@ public abstract class BaseCachedExternalResourceFetcher<T, R extends MongoReposi
             LOG.info(e.getLocalizedMessage());
         } catch (HttpServerErrorException e) {
             LOG.error("Failure fetching external resource: " + e.getLocalizedMessage());
-        } catch (Exception e) {
-            LOG.error("Error fetching external resource for id " + id, e);
         }
         return Optional.empty();
     }

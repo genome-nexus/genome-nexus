@@ -35,8 +35,10 @@ package org.cbioportal.genome_nexus.service.internal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.model.AnnotationField;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.model.VariantType;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.junit.Assert;
@@ -48,19 +50,20 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class VerifiedHgvsVariantAnnotationServiceTest
+public class VerifiedHgvsVariantAnnotationTest
 {
     // Tested Class
-    private VerifiedHgvsVariantAnnotationService verifiedHgvsVariantAnnotationService;
+    private VerifiedVariantAnnotationService verifiedVariantAnnotationService;
 
     @Mock
-    private HgvsVariantAnnotationService hgvsVariantAnnotationService;
+    private VariantAnnotationService variantAnnotationService;
 
     // test cases
     public List<VariantTestCase> hgvsSubstitutions = null;
     public List<VariantTestCase> hgvsDeletions = null;
     public List<VariantTestCase> hgvsInsertions = null;
     public List<VariantTestCase> hgvsInsertionDeletions = null;
+    public List<VariantTestCase> hgvsDuplications = null;
     public List<VariantTestCase> hgvsInversions = null; // test results of an unsupported format query
     // other types (duplications, no-change, methylation, specified alleles) are not handled by genome nexus and are not tested
     // single query stub maps
@@ -113,7 +116,7 @@ public class VerifiedHgvsVariantAnnotationServiceTest
     public void setUp()
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException, TestCaseInsufficentlyModeledException
     {
-        verifiedHgvsVariantAnnotationService = new VerifiedHgvsVariantAnnotationService(hgvsVariantAnnotationService);
+        verifiedVariantAnnotationService = new VerifiedVariantAnnotationService(variantAnnotationService, new NotationConverter());
         initializeTestCaseLists();
         setUpServiceStubs(); // these are based on the test case lists
     }
@@ -123,7 +126,7 @@ public class VerifiedHgvsVariantAnnotationServiceTest
         if (hgvsSubstitutions == null) {
             hgvsSubstitutions = new ArrayList<VariantTestCase>();
             hgvsSubstitutions.add(new VariantTestCase("5:g.138163256C>T", true, "C/T", "valid substitution"));
-            hgvsSubstitutions.add(new VariantTestCase("5:g.138163256A>T", false, null, "discrepant RefAllele", "Reference allele extracted from response (-) does not match given reference allele (A)"));
+            hgvsSubstitutions.add(new VariantTestCase("5:g.138163256A>T", false, null, "discrepant RefAllele", "Reference allele extracted from response (C) does not match given reference allele (A)"));
             hgvsSubstitutions.add(new VariantTestCase("5:g.138163256>T", false, null, "missing RefAllele", "Line 1 skipped (5:g.138163256>T): Invalid allele string / or possible parsing error"));
             hgvsDeletions = new ArrayList<VariantTestCase>();
             hgvsDeletions.add(new VariantTestCase("5:g.138163256delC", true, "C/-", "1nt deletion with RefAllele"));
@@ -158,6 +161,9 @@ public class VerifiedHgvsVariantAnnotationServiceTest
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delinsTT", true, "C/T", "2nt deletion without RefAllele, 2nt insertion, partial change"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delinsGG", true, "TC/GG", "2nt deletion without RefAllele, 2nt insertion, full change"));
             hgvsInsertionDeletions.add(new VariantTestCase("5:g.138163255_138163256delCCCCinsTT", false, null, "2nt deletion with invalid RefAllele, 2nt insertion", "Reference allele extracted from response (TC) does not match given reference allele (CCCC)"));
+            hgvsDuplications = new ArrayList<VariantTestCase>();
+            hgvsDuplications.add(new VariantTestCase("5:g.138163255_138163256dupT", true, "-/T", "1nt duplication"));
+            hgvsDuplications.add(new VariantTestCase("5:g.138163255_138163256dupTC", true, "-/TC", "2nt duplication"));
             hgvsInversions = new ArrayList<VariantTestCase>();
             hgvsInversions.add(new VariantTestCase("5:g.138163255_138163256inv", true, "TC/GA", "inversions not supported - but will run as passthrough"));
             hgvsInversions.add(new VariantTestCase("5:g.138163255_138163256invTC", false, null, "inversion format does not allow specification of RefAllele"));
@@ -180,7 +186,7 @@ public class VerifiedHgvsVariantAnnotationServiceTest
     private void setUpQueryToStubMaps()
     {
         // VEP responses for these test cases are extracted from queries to http://grch37.rest.ensembl.org/vep/human/hgvs/<variant>
-        // these contain only the elements neccessary for testing the business logic in VerifiedGenomicLocationAnnotationService
+        // these contain only the elements neccessary for testing the business logic in VerifiedAnnotationService
         setUpQueryToStubMaps("5:g.138163256C>T", true, "C/T");
         setUpQueryToStubMaps("5:g.138163256A>T", false, null);
         setUpQueryToStubMaps("5:g.138163256>T", false, null, "Line 1 skipped (5:g.138163256>T): Invalid allele string / or possible parsing error");
@@ -214,6 +220,8 @@ public class VerifiedHgvsVariantAnnotationServiceTest
         setUpQueryToStubMaps("5:g.138163255_138163256delinsTT", true, "C/T");
         setUpQueryToStubMaps("5:g.138163255_138163256delinsGG", true, "TC/GG");
         setUpQueryToStubMaps("5:g.138163255_138163256delCCCCinsTT", true, "C/T");
+        setUpQueryToStubMaps("5:g.138163255_138163256dupT", true, "-/T");
+        setUpQueryToStubMaps("5:g.138163255_138163256dupTC", true, "-/TC");
         setUpQueryToStubMaps("5:g.138163255_138163256inv", true, "TC/GA");
         setUpQueryToStubMaps("5:g.138163255_138163256invTC", false, null);
     }
@@ -257,15 +265,33 @@ public class VerifiedHgvsVariantAnnotationServiceTest
                     errorMessage);
             responseList.add(response);
             //response.setAnnotationJSON("{ \"originalVariantQuery\" : \"" + testCase.originalVariantQuery + "\", \"successfullyAnnotated\" : " + successfullyAnnotatedStub + ", \"allele\" : \"" + alleleStringStub + "\" }");
-            Mockito.when(hgvsVariantAnnotationService.getAnnotation(testCase.originalVariantQuery)).thenReturn(response);
-            Mockito.when(hgvsVariantAnnotationService.getAnnotation(testCase.originalVariantQuery, mockIsoformOverrideSource, mockTokenMap, mockFields)).thenReturn(response);
+            Mockito.when(variantAnnotationService.getAnnotation(
+                testCase.originalVariantQuery,
+                VariantType.HGVS)
+            ).thenReturn(response);
+            Mockito.when(variantAnnotationService.getAnnotation(
+                testCase.originalVariantQuery,
+                VariantType.HGVS,
+                mockIsoformOverrideSource, 
+                mockTokenMap, 
+                mockFields)
+            ).thenReturn(response);
         }
         // create stubs for multi variant queries from built lists .. after jittering order
         // order of response not guaranteed to match order of query - business logic should handle this properly
         VariantAnnotation movedItem = responseList.remove(0);
         responseList.add(movedItem); // first element is now last
-        Mockito.when(hgvsVariantAnnotationService.getAnnotations(queryStringList)).thenReturn(responseList);
-        Mockito.when(hgvsVariantAnnotationService.getAnnotations(queryStringList, mockIsoformOverrideSource, mockTokenMap, mockFields)).thenReturn(responseList);
+        Mockito.when(variantAnnotationService.getAnnotations(
+            queryStringList,
+            VariantType.HGVS)
+        ).thenReturn(responseList);
+        Mockito.when(variantAnnotationService.getAnnotations(
+            queryStringList, 
+            VariantType.HGVS,
+            mockIsoformOverrideSource,
+            mockTokenMap, 
+            mockFields)
+        ).thenReturn(responseList);
 
     }
 
@@ -277,6 +303,7 @@ public class VerifiedHgvsVariantAnnotationServiceTest
         stubHgvsVariantAnnotationServiceMethodsForType(hgvsDeletions);
         stubHgvsVariantAnnotationServiceMethodsForType(hgvsInsertions);
         stubHgvsVariantAnnotationServiceMethodsForType(hgvsInsertionDeletions);
+        stubHgvsVariantAnnotationServiceMethodsForType(hgvsDuplications);
         stubHgvsVariantAnnotationServiceMethodsForType(hgvsInversions);
     }
 
@@ -286,9 +313,15 @@ public class VerifiedHgvsVariantAnnotationServiceTest
         for (VariantTestCase testCase : variantTestCaseList) {
             VariantAnnotation testResponse = null;
             if (supplyOtherParameters) {
-                testResponse = verifiedHgvsVariantAnnotationService.getAnnotation(testCase.originalVariantQuery, mockIsoformOverrideSource, mockTokenMap, mockFields);
+                testResponse = verifiedVariantAnnotationService.getAnnotation(
+                    testCase.originalVariantQuery,
+                    VariantType.HGVS,
+                    mockIsoformOverrideSource, 
+                    mockTokenMap, 
+                    mockFields
+                );
             } else {
-                testResponse = verifiedHgvsVariantAnnotationService.getAnnotation(testCase.originalVariantQuery);
+                testResponse = verifiedVariantAnnotationService.getAnnotation(testCase.originalVariantQuery, VariantType.HGVS);
             }
             Assert.assertEquals(testCase.originalVariantQuery + " : response query field does not match request query string", testCase.originalVariantQuery, testResponse.getOriginalVariantQuery());
             if (testCase.expectedGnSuccessfullyAnnotated) {
@@ -310,9 +343,14 @@ public class VerifiedHgvsVariantAnnotationServiceTest
         List<String> queryHgvsList = variantTestCaseList.stream().map(t -> t.originalVariantQuery).collect(Collectors.toList());
         List<VariantAnnotation> variantResponse = null;
         if (supplyOtherParameters) {
-            variantResponse = verifiedHgvsVariantAnnotationService.getAnnotations(queryHgvsList, mockIsoformOverrideSource, mockTokenMap, mockFields);
+                variantResponse = verifiedVariantAnnotationService.getAnnotations(queryHgvsList,
+                VariantType.HGVS,
+                mockIsoformOverrideSource, 
+                mockTokenMap, 
+                mockFields
+            );
         } else {
-            variantResponse = verifiedHgvsVariantAnnotationService.getAnnotations(queryHgvsList);
+            variantResponse = verifiedVariantAnnotationService.getAnnotations(queryHgvsList, VariantType.HGVS);
         }
         // check each element of response against expectations
         HashMap<String, VariantAnnotation> queryToResponse = new HashMap<String, VariantAnnotation>();
