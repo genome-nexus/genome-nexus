@@ -20,6 +20,7 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
     private Map<String, String> hugoSymbolToEntrezGeneIdMap = new HashMap<>();
     private Map<String, String> entrezGeneIdToHugoSymbolMap = new HashMap<>();
     private Map<String, List<String>> geneAliasToEntrezGeneIdMap = new HashMap<>();
+    private Map<String, String> previousGeneSymbolToOfficialHugoSymbolMap = new HashMap<>();
 
     @Autowired
     public EnsemblRepositoryImpl(MongoTemplate mongoTemplate)
@@ -121,7 +122,8 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
             hugoSymbolToEntrezGeneIdMap.put(transcript.getHugoSymbol(), transcript.getEntrezGeneId());
             entrezGeneIdToHugoSymbolMap.put(transcript.getEntrezGeneId(), transcript.getHugoSymbol());
 
-            // treat previous symbols as an alias for current entrez id
+            // 1. treat previous symbols as an alias for current entrez id
+            // 2. add previous symbol to new symbol mapping
             if (previousSymbols != null) {
                 for (String previousSymbol : previousSymbols) {
                     List<String> aliases = geneAliasToEntrezGeneIdMap.getOrDefault(previousSymbol, new ArrayList<>());
@@ -129,6 +131,7 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
                         aliases.add(transcript.getEntrezGeneId());
                     }
                     geneAliasToEntrezGeneIdMap.put(previousSymbol, aliases);
+                    previousGeneSymbolToOfficialHugoSymbolMap.put(previousSymbol, transcript.getHugoSymbol());
                 }
             }
             // add current entrez id to each of its aliases set of ids
@@ -142,6 +145,11 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
                 }
             }
         }
+    }
+
+    @Override
+    public String getOfficialHugoSymbol(String hugoSymbol) {
+        return previousGeneSymbolToOfficialHugoSymbolMap.get(hugoSymbol) != null ? previousGeneSymbolToOfficialHugoSymbolMap.get(hugoSymbol) : hugoSymbol;
     }
 
     @Override
