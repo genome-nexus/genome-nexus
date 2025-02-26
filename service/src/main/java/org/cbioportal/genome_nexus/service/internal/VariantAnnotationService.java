@@ -257,6 +257,7 @@ public class VariantAnnotationService
                         this.saveToIndexDb(normVarToOrigVarQuery.get().get(0), variantAnnotation);
                     }
                     String originalVariantQuery = normVarToOrigVarQuery.get().get(1);
+                    normVarToOrigVarQueries.remove(normVarToOrigVarQuery.get());
                     this.addAdditionalInformation(variantAnnotation, variantType, originalVariantQuery);
                 }
             }
