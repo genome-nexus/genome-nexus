@@ -330,7 +330,7 @@ public class VariantAnnotationServiceTest
         Mockito.when(this.fetcher.fetchAndCache("X:g.41242962_41242963insGA")).thenReturn(variantMockData.get("X:g.41242962_41242963insGA"));
         Mockito.when(this.fetcher.fetchAndCache("Y:g.41242962_41242963insGA")).thenReturn(variantMockData.get("Y:g.41242962_41242963insGA"));
         Mockito.when(this.fetcher.fetchAndCache("11:g.118392020_118392034delinsTTAC")).thenReturn(variantMockData.get("11:g.118392020_118392034delinsTTAC"));
-        Mockito.doNothing().when(this.variantAnnotationService).saveToIndexDb(any(), any());
+        Mockito.doNothing().when(this.variantAnnotationService).saveToIndexDb(any());
 
         List<String> variants = new ArrayList<>(4);
         variants.add("7:g.140453136A>T");
