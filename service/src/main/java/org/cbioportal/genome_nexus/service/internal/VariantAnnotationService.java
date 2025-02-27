@@ -192,7 +192,7 @@ public class VariantAnnotationService
             // if caching is enabled, add to the index DB 
             if (cacheEnabled) {
                 variantAnnotation.ifPresent(annotation -> {
-                    this.saveToIndexDb(normalizedVariant, annotation);
+                    this.saveToIndexDb(annotation);
                 });
             }
 
@@ -254,7 +254,7 @@ public class VariantAnnotationService
                     .findFirst();
                 if (normVarToOrigVarQuery.isPresent()) {
                     if (cacheEnabled) {
-                        this.saveToIndexDb(normVarToOrigVarQuery.get().get(0), variantAnnotation);
+                        this.saveToIndexDb(variantAnnotation);
                     }
                     String originalVariantQuery = normVarToOrigVarQuery.get().get(1);
                     this.addAdditionalInformation(variantAnnotation, variantType, originalVariantQuery);
@@ -280,10 +280,12 @@ public class VariantAnnotationService
         return variantAnnotations;
     }
 
-    public void saveToIndexDb(String normalizedVariant, VariantAnnotation annotation) {
-        Gson gson = new Gson();
-        DBObject dbObject = BasicDBObject.parse(gson.toJson(this.buildIndex(annotation)));
-        this.indexRepository.saveDBObject("index", normalizedVariant, dbObject);
+    public void saveToIndexDb(VariantAnnotation annotation) {
+        if (annotation.getHgvsg() != null) {
+            Gson gson = new Gson();
+            DBObject dbObject = BasicDBObject.parse(gson.toJson(this.buildIndex(annotation)));
+            this.indexRepository.saveDBObject("index", annotation.getHgvsg(), dbObject);
+        }
     }
 
 
