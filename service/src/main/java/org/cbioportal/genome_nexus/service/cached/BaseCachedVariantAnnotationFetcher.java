@@ -103,7 +103,9 @@ public abstract class BaseCachedVariantAnnotationFetcher
         // need to pass in a list representing indexes of original request
         List<VariantAnnotation> values = new ArrayList();
         for (String id : ids) {
-           values.add(variantResponse.get(id));
+            // Copy constructor only necessary due to constructFetchedMap.
+            // Should refactor to use lists instead of maps so duplicate keys can have their own annotation
+            values.add(new VariantAnnotation(variantResponse.get(id)));
         } 
         return values;
     }

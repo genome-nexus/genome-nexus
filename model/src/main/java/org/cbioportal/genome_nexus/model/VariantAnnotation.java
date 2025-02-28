@@ -97,6 +97,36 @@ public class VariantAnnotation
         this.successfullyAnnotated = !(annotationJSON == null);
     }
 
+    public VariantAnnotation(VariantAnnotation other) {
+        this.variant = other.variant;
+        this.annotationJSON = other.annotationJSON;
+        this.variantId = other.variantId;
+        this.assemblyName = other.assemblyName;
+        this.seqRegionName = other.seqRegionName;
+        this.start = other.start;
+        this.end = other.end;
+        this.alleleString = other.alleleString;
+        this.strand = other.strand;
+        this.mostSevereConsequence = other.mostSevereConsequence;
+        this.colocatedVariants = other.colocatedVariants;
+        this.intergenicConsequences = other.intergenicConsequences;
+        this.transcriptConsequences = other.transcriptConsequences;
+        this.successfullyAnnotated = other.successfullyAnnotated;
+        this.errorMessage = other.errorMessage;
+        this.mutationAssessor = other.mutationAssessor;
+        this.nucleotideContextAnnotation = other.nucleotideContextAnnotation;
+        this.myVariantInfoAnnotation = other.myVariantInfoAnnotation;
+        this.hotspotAnnotation = other.hotspotAnnotation;
+        this.ptmAnnotation = other.ptmAnnotation;
+        this.oncokbAnnotation = other.oncokbAnnotation;
+        this.clinvarAnnotation = other.clinvarAnnotation;
+        this.annotationSummary = other.annotationSummary;
+        this.signalAnnotation = other.signalAnnotation;
+        this.originalVariantQuery = other.originalVariantQuery;
+        this.dynamicProps = other.dynamicProps;
+        this.genomicLocationExplanation = other.genomicLocationExplanation;
+    }
+
     public String getVariant()
     {
         return variant;
