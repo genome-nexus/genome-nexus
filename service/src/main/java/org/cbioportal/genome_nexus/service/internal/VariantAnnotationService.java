@@ -224,23 +224,20 @@ public class VariantAnnotationService
     private List<VariantAnnotation> fetchAnnotationsExternally(List<String> variants, VariantType variantType)
             throws VariantAnnotationWebServiceException {
         List<VariantAnnotation> variantAnnotations = null;
-        List<List<String>> normVarToOrigVarQueries = new ArrayList<>();
+        List<String[]> normalizedVariantToOriginalVariant = new ArrayList<>();
         for (String variant : variants) {
             String normalizedVariant = this.normalizeVariant(variant, variantType);
             if (normalizedVariant == null) {
                 continue;
             }
 
-            List<String> normVarToOrigVarQuery = new ArrayList<>();
-            normVarToOrigVarQuery.add(normalizedVariant);
-            normVarToOrigVarQuery.add(variant);
-            normVarToOrigVarQueries.add(normVarToOrigVarQuery);
+            normalizedVariantToOriginalVariant.add(new String[]{normalizedVariant, variant});
         }
 
         try {
             // get the annotations from the web service and save it to the DB
 
-            List<String> normalizedVariants = normVarToOrigVarQueries.stream().map((normVar) -> normVar.get(0)).collect(Collectors.toList());
+            List<String> normalizedVariants = normalizedVariantToOriginalVariant.stream().map((normalizedToOriginal) -> normalizedToOriginal[0]).collect(Collectors.toList());
             if (variantType == VariantType.HGVS || variantType == VariantType.GENOMIC_LOCATION) {
                 variantAnnotations = this.hgvsAndGenomicLocationFetcher.fetchAndCache(normalizedVariants);
             } else if (variantType == VariantType.DBSNP) {
@@ -248,16 +245,17 @@ public class VariantAnnotationService
             }
             for (VariantAnnotation variantAnnotation : variantAnnotations) {
                 // add new annotation to index 
-                Optional<List<String>> normVarToOrigVarQuery = normVarToOrigVarQueries
+                Optional<String[]> normalizedToOriginal = normalizedVariantToOriginalVariant
                     .stream()
-                    .filter((normVar) -> normVar.get(0).equals(variantAnnotation.getVariant()))
+                    .filter((normToOrig) -> normToOrig[0].equals(variantAnnotation.getVariant()))
                     .findFirst();
-                if (normVarToOrigVarQuery.isPresent()) {
+                if (normalizedToOriginal.isPresent()) {
                     if (cacheEnabled) {
-                        this.saveToIndexDb(normVarToOrigVarQuery.get().get(0), variantAnnotation);
+                        this.saveToIndexDb(normalizedToOriginal.get()[0], variantAnnotation);
                     }
-                    String originalVariantQuery = normVarToOrigVarQuery.get().get(1);
-                    normVarToOrigVarQueries.remove(normVarToOrigVarQuery.get());
+                    String originalVariantQuery = normalizedToOriginal.get()[1];
+                    // Multiple variants may normalize to same HGVS, remove so isn't used multiple times
+                    normalizedVariantToOriginalVariant.remove(normalizedToOriginal.get());
                     this.addAdditionalInformation(variantAnnotation, variantType, originalVariantQuery);
                 }
             }
@@ -265,13 +263,13 @@ public class VariantAnnotationService
             // in case of web service error, throw an exception to indicate that there is a
             // problem with the service.
             throw new VariantAnnotationWebServiceException(
-                normVarToOrigVarQueries.stream().map((normVar) -> normVar.get(0)).collect(Collectors.toList()).toString(),
+                normalizedVariantToOriginalVariant.stream().map((normalizedToOriginal) -> normalizedToOriginal[0]).collect(Collectors.toList()).toString(),
                 e.getResponseBodyAsString(),
                 e.getStatusCode()
             );
         } catch (ResourceAccessException e) {
             throw new VariantAnnotationWebServiceException(
-                normVarToOrigVarQueries.stream().map((normVar) -> normVar.get(0)).collect(Collectors.toList()).toString(),
+                normalizedVariantToOriginalVariant.stream().map((normalizedToOriginal) -> normalizedToOriginal[0]).collect(Collectors.toList()).toString(),
                 e.getMessage()
             );
         } catch (ResourceMappingException e) {
