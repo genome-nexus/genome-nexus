@@ -149,7 +149,7 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
 
     @Override
     public String getOfficialHugoSymbol(String hugoSymbol) {
-        return previousGeneSymbolToOfficialHugoSymbolMap.get(hugoSymbol) != null ? previousGeneSymbolToOfficialHugoSymbolMap.get(hugoSymbol) : hugoSymbol;
+        return previousGeneSymbolToOfficialHugoSymbolMap.getOrDefault(hugoSymbol, hugoSymbol);
     }
 
     @Override
