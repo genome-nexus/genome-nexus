@@ -251,7 +251,7 @@ public class VariantAnnotationService
                     .findFirst();
                 if (normalizedToOriginal.isPresent()) {
                     if (cacheEnabled) {
-                        this.saveToIndexDb(normalizedToOriginal.get()[0], variantAnnotation);
+                        this.saveToIndexDb(variantAnnotation);
                     }
                     String originalVariantQuery = normalizedToOriginal.get()[1];
                     // Multiple variants may normalize to same HGVS, remove so isn't used multiple times
