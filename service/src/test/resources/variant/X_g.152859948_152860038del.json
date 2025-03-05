@@ -1,0 +1,29 @@
+{
+    "variant": "X:g.152859948_152860038del",
+    "originalVariantQuery": "X:g.152859948_152860038del",
+    "hgvsg": "X:g.152859948_152860038del",
+    "id": "X:g.152859948_152860038del",
+    "assembly_name": "GRCh37",
+    "seq_region_name": "X",
+    "start": 152859948,
+    "end": 152860038,
+    "allele_string": "AGAACAGAGACCATGGCTTGAGCCTCTCCAAACAGGCACCAGTTCCCCAGTATGTACCTTGTGTGGATGCTGGAAGGAGACCTGGAAGCGC/-",
+    "strand": 1,
+    "most_severe_consequence": "splice_donor_variant",
+    "transcript_consequences": [
+      {
+        "exon": "3/5",
+        "transcript_id": "ENST00000276345",
+        "hgvsc": "ENST00000276345.7:n.434_467+57del",
+        "variant_allele": "-",
+        "gene_symbol": "FAM58A",
+        "gene_id": "ENSG00000147382",
+        "hgnc_id": "28434",
+        "consequence_terms": [
+          "splice_donor_variant",
+          "non_coding_transcript_exon_variant",
+          "intron_variant"
+        ]
+      }
+    ]
+}
