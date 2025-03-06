@@ -13,12 +13,19 @@ jobs:
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     docker:
       - image: cimg/openjdk:11.0
+      - image: genomenexus/gn-mongo:0.30
+        ports: 
+          - 27017:27017
+
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       # Checkout the code as the first step.
       - checkout
       # Use mvn clean and package as the standard maven build phase
+      - run:
+          name: Wait for Mongo to be ready
+          command: dockerize -wait tcp://localhost:27017 -timeout 1m
       - run:
           name: Build
           command: mvn -DskipTests clean install
