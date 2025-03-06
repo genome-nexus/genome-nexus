@@ -39,7 +39,7 @@ import com.mongodb.BasicDBList;
     properties = {
         "spring.data.mongodb.uri=mongodb://127.0.0.1:27017/annotator",
         "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration",
-        "server.port=38896",
+        "server.port=38897",
         "cache.enabled=false",
         "vep.url=http://fake/VARIANT"
     }
@@ -57,7 +57,7 @@ public class AnnotationApiTest {
     @MockBean
     private SignalQueryServiceImpl signalQueryServiceImpl;
 
-    private final String BASE_URL = "http://localhost:38896";
+    private final String BASE_URL = "http://localhost:38897";
     private final String GENOME_NEXUS_RESPONSE_DIRECTORY = "api/expected-gn-output";
     private final String VEP_MOCKS_DIRECTORY = "api/vep-mocks";
 
