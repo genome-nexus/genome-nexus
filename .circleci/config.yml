@@ -14,9 +14,6 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
       - image: genomenexus/gn-mongo:0.30
-        ports: 
-          - 27017:27017
-
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
