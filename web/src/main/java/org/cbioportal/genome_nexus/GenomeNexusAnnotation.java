@@ -46,6 +46,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -104,6 +105,11 @@ public class GenomeNexusAnnotation extends SpringBootServletInitializer implemen
     @Bean
     public MappingJackson2HttpMessageConverter messageConverter() {
         return new MappingJackson2HttpMessageConverter(new ApiObjectMapper());
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     private ApiInfo apiInfo() {

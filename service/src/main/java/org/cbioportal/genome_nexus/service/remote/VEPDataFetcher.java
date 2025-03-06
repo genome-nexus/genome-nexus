@@ -26,16 +26,16 @@ public class VEPDataFetcher extends BaseExternalResourceFetcher<VariantAnnotatio
 
     @Autowired
     public VEPDataFetcher(ExternalResourceTransformer<VariantAnnotation> externalResourceTransformer,
-                          @Value("${vep.url}") String vepUrl)
+                          @Value("${vep.url}") String vepUrl, 
+                          RestTemplate restTemplate)
     {
-        super(vepUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
+        super(vepUrl, MAIN_QUERY_PARAM, PLACEHOLDER, restTemplate);
         this.transformer = externalResourceTransformer;
     }
 
     @Override
     protected DBObject postForObject(String uri, Object requestBody)
     {
-        RestTemplate restTemplate = new RestTemplate();
         uri = uri.replace("/" + PLACEHOLDER, "");
 
         return restTemplate.postForObject(uri, requestBody, BasicDBList.class);

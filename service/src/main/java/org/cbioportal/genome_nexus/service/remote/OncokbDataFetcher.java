@@ -31,9 +31,10 @@ public class OncokbDataFetcher extends BaseExternalResourceFetcher<IndicatorQuer
 
     @Autowired
     public OncokbDataFetcher(ExternalResourceTransformer<IndicatorQueryResp> transformer,
-                                       @Value("${oncokb.url:https://www.oncokb.org/api/v1/annotate/mutations/byProteinChange?PROTEINCHANGE}") String oncokbUrl)
+                                       @Value("${oncokb.url:https://www.oncokb.org/api/v1/annotate/mutations/byProteinChange?PROTEINCHANGE}") String oncokbUrl,
+                                       RestTemplate restTemplate)
     {
-        super(oncokbUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
+        super(oncokbUrl, MAIN_QUERY_PARAM, PLACEHOLDER, restTemplate);
         this.transformer = transformer;
     }
 
@@ -89,7 +90,6 @@ public class OncokbDataFetcher extends BaseExternalResourceFetcher<IndicatorQuer
         httpHeaders.add("Authorization", "Bearer " + this.oncokbToken);
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<String> entity = new HttpEntity<String>(queryParams.toString(), httpHeaders);
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<BasicDBObject> response = restTemplate.exchange(
             uri, HttpMethod.GET, entity, BasicDBObject.class);
         return response.getBody();
@@ -107,7 +107,6 @@ public class OncokbDataFetcher extends BaseExternalResourceFetcher<IndicatorQuer
         httpHeaders.add("Authorization", "Bearer " + this.oncokbToken);
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);      
         
-        RestTemplate restTemplate = new RestTemplate();
         HttpEntity<String> request = new HttpEntity<String>(requestBody.toString(), httpHeaders);
         return restTemplate.postForObject(uri, request, BasicDBObject.class);
     }
