@@ -27,9 +27,10 @@ public class NucleotideContextDataFetcher extends BaseExternalResourceFetcher<Nu
 
     @Autowired
     public NucleotideContextDataFetcher(ExternalResourceTransformer<NucleotideContext> transformer,
-                               @Value("${ensembl.sequence.url:https://grch37.rest.ensembl.org/sequence/region/human/QUERY?content-type=application/json'}") String ensemblSequenceUrl)
+                               @Value("${ensembl.sequence.url:https://grch37.rest.ensembl.org/sequence/region/human/QUERY?content-type=application/json'}") String ensemblSequenceUrl,
+                               RestTemplate restTemplate)
     {
-        super(ensemblSequenceUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
+        super(ensemblSequenceUrl, MAIN_QUERY_PARAM, PLACEHOLDER, restTemplate);
         this.transformer = transformer;
     }
 
@@ -49,8 +50,6 @@ public class NucleotideContextDataFetcher extends BaseExternalResourceFetcher<Nu
 
     @Override
     protected DBObject getForObject(String uri, Map<String, String> queryParams) {
-        RestTemplate restTemplate = new RestTemplate();
-
         return restTemplate.getForObject(uri, BasicDBObject.class);
     }
 
