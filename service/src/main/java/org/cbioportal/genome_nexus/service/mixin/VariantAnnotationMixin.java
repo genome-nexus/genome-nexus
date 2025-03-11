@@ -12,9 +12,6 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VariantAnnotationMixin
 {
-    @JsonProperty(value="input", required = true)
-    private String variant;
-
     @JsonProperty(value="original_variant_query", required = true)
     private String originalVariantQuery;
 
