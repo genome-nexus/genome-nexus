@@ -398,7 +398,6 @@ public class VariantAnnotationService
 
     private void addAdditionalInformation(VariantAnnotation variantAnnotation, VariantType variantType, String originalVariantQuery) {
         variantAnnotation.setOriginalVariantQuery(originalVariantQuery);
-        variantAnnotation.setVariant(variantAnnotation.getHgvsg());
         if (variantType == VariantType.GENOMIC_LOCATION) {
             variantAnnotation.setGenomicLocationExplanation(this.notationConverter.getGenomicLocationExplanation(originalVariantQuery));
         }
