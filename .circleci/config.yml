@@ -25,8 +25,11 @@ jobs:
       - run:
           name: Test
           command: mvn test
+      - run: 
+          name: Compress Artifacts
+          command: tar -cvzf api-test-diffs.tar ./web/src/test/api-test-diffs
       - store_artifacts:
-          path: ./web/src/test/api-test-diffs
+          path: api-test-diffs.tar
 
 
 # Invoke jobs via workflows
