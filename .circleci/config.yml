@@ -26,7 +26,7 @@ jobs:
           name: Test
           command: mvn test
       - store_test_results:
-          path: web/src/test/diffs
+          path: web/src/test/api-test-diffs
 
 
 # Invoke jobs via workflows
