@@ -18,7 +18,7 @@ jobs:
       - checkout
       - run:
           name: Show diffs folder
-          command: find / -name api-test-diffs
+          command: find . -name api-test-diffs
       - run:
           name: Wait for Mongo to be ready
           command: dockerize -wait tcp://localhost:27017 -timeout 1m
