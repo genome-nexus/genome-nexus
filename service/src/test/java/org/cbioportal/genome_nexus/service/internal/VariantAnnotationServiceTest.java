@@ -145,6 +145,9 @@ public class VariantAnnotationServiceTest
         VariantAnnotation annotation6 = variantAnnotationService.getAnnotation("11:g.118392020_118392034delinsTTAC", VariantType.HGVS);
         assertEquals(variantMockData.get("11:g.118392020_118392034delinsTTAC").getStart(), annotation6.getStart());
         assertEquals(variantMockData.get("11:g.118392020_118392034delinsTTAC").getVariant(), annotation6.getVariant());
+
+        VariantAnnotation annotation7 = variantAnnotationService.getAnnotation("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT", VariantType.HGVS);
+        assertEquals(annotation7.getHgvsg(), "4:g.55593707_55593708insGGTCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTT");
     }
 
     @Test
@@ -330,6 +333,10 @@ public class VariantAnnotationServiceTest
         Mockito.when(this.fetcher.fetchAndCache("X:g.41242962_41242963insGA")).thenReturn(variantMockData.get("X:g.41242962_41242963insGA"));
         Mockito.when(this.fetcher.fetchAndCache("Y:g.41242962_41242963insGA")).thenReturn(variantMockData.get("Y:g.41242962_41242963insGA"));
         Mockito.when(this.fetcher.fetchAndCache("11:g.118392020_118392034delinsTTAC")).thenReturn(variantMockData.get("11:g.118392020_118392034delinsTTAC"));
+        Mockito.when(
+            this.fetcher.fetchAndCache("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT")
+        )
+        .thenReturn(variantMockData.get("4:g.55593656_55593657insCAACTTCCTTATGATCACAAATGGGAGTTTCCCAGAAACAGGCTGAGTTTTGGT"));
         Mockito.doNothing().when(this.variantAnnotationService).saveToIndexDb(any());
 
         List<String> variants = new ArrayList<>(4);
