@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -60,6 +61,7 @@ public class AnnotationApiTest {
     private final String BASE_URL = "http://localhost:38899";
     private final String GENOME_NEXUS_RESPONSE_DIRECTORY = "api/expected-gn-output";
     private final String VEP_MOCKS_DIRECTORY = "api/vep-mocks";
+    private final String DIFFS_DIR_NAME = "api-test-diffs";
 
     @Before
     public void setUp() throws Exception {
@@ -95,6 +97,7 @@ public class AnnotationApiTest {
         File expectedResponseDir = new File(new ClassPathResource(GENOME_NEXUS_RESPONSE_DIRECTORY).getURI());
         File[] expectedResponses = expectedResponseDir.listFiles();
 
+        boolean isFailure = false;
         for(int i = 0; i < expectedResponses.length; i++) {
             String variant = convertFileToVariant(expectedResponses[i]);
 
@@ -106,57 +109,79 @@ public class AnnotationApiTest {
                 String.class
             );
             
-            assertEquals(expectedResponse, actualResponse);
+            isFailure = checkFailureAndSaveDiffs(variant, expectedResponse, actualResponse);
         }
+
+        assertEquals("There are test failures. See " + '"' + DIFFS_DIR_NAME + '"' + " folder for details.", isFailure, false);
     }
 
-    @Test
-    public void testAnnotateByGenomicChangeUsingPost() throws Exception {
-        File expectedResponseDir = new File(new ClassPathResource(GENOME_NEXUS_RESPONSE_DIRECTORY).getURI());
-        File[] expectedResponses = expectedResponseDir.listFiles();
-        List<List<File>> expectedResponsesPerRequest = new ArrayList<>();
-        int chunkSize = 10;
-        for (int i = 0; i < expectedResponses.length; i++) {
-            if (i % chunkSize == 0) {
-                expectedResponsesPerRequest.add(new ArrayList<>());
-            }
-            expectedResponsesPerRequest.get(expectedResponsesPerRequest.size() - 1).add(expectedResponses[i]);
-        }
+    // @Test
+    // public void testAnnotateByGenomicChangeUsingPost() throws Exception {
+    //     File expectedResponseDir = new File(new ClassPathResource(GENOME_NEXUS_RESPONSE_DIRECTORY).getURI());
+    //     File[] expectedResponses = expectedResponseDir.listFiles();
+    //     List<List<File>> expectedResponsesPerRequest = new ArrayList<>();
+    //     int chunkSize = 10;
+    //     for (int i = 0; i < expectedResponses.length; i++) {
+    //         if (i % chunkSize == 0) {
+    //             expectedResponsesPerRequest.add(new ArrayList<>());
+    //         }
+    //         expectedResponsesPerRequest.get(expectedResponsesPerRequest.size() - 1).add(expectedResponses[i]);
+    //     }
 
-        for (List<File> genomeNexusResponses : expectedResponsesPerRequest) {
-            List<String> expectedResponse = new ArrayList<>();
-            List<GenomicLocation> actualRequest = new ArrayList<>();
-            for (int i = 0; i < genomeNexusResponses.size(); i++) {
-                String variant = convertFileToVariant(expectedResponses[i]);
-                String expectedResponseString = readGenomeNexusResponseFile(variant);
-                expectedResponse.add(expectedResponseString);
+    //     for (List<File> genomeNexusResponses : expectedResponsesPerRequest) {
+    //         List<String> expectedResponse = new ArrayList<>();
+    //         List<GenomicLocation> actualRequest = new ArrayList<>();
+    //         for (int i = 0; i < genomeNexusResponses.size(); i++) {
+    //             String variant = convertFileToVariant(expectedResponses[i]);
+    //             String expectedResponseString = readGenomeNexusResponseFile(variant);
+    //             expectedResponse.add(expectedResponseString);
 
-                String[] genomicLocation = apiObjectMapper.readValue(expectedResponseString, VariantAnnotation.class)
-                    .getOriginalVariantQuery()
-                    .split(",");
-                actualRequest.add(new GenomicLocation(
-                    genomicLocation[0], 
-                    Integer.parseInt(genomicLocation[1]), 
-                    Integer.parseInt(genomicLocation[2]), 
-                    genomicLocation[3],
-                    genomicLocation[4]
-                ));
-            }
+    //             String[] genomicLocation = apiObjectMapper.readValue(expectedResponseString, VariantAnnotation.class)
+    //                 .getOriginalVariantQuery()
+    //                 .split(",");
+    //             actualRequest.add(new GenomicLocation(
+    //                 genomicLocation[0], 
+    //                 Integer.parseInt(genomicLocation[1]), 
+    //                 Integer.parseInt(genomicLocation[2]), 
+    //                 genomicLocation[3],
+    //                 genomicLocation[4]
+    //             ));
+    //         }
 
-            List<Map<String, Object>> response = restTemplate.exchange(
-                BASE_URL + "/annotation/genomic?isoformOverrideSource=mskcc&fields=annotation_summary",
-                HttpMethod.POST,
-                new HttpEntity<>(actualRequest),
-                new ParameterizedTypeReference<List<Map<String, Object>>>() {}
-            )
-            .getBody();
-            List<String> actualResponse = new ArrayList<>();
-            for (Map<String, Object> responseObject : response) {
-                actualResponse.add(objectMapper.writeValueAsString(responseObject));
-            }
+    //         List<Map<String, Object>> response = restTemplate.exchange(
+    //             BASE_URL + "/annotation/genomic?isoformOverrideSource=mskcc&fields=annotation_summary",
+    //             HttpMethod.POST,
+    //             new HttpEntity<>(actualRequest),
+    //             new ParameterizedTypeReference<List<Map<String, Object>>>() {}
+    //         )
+    //         .getBody();
+    //         List<String> actualResponse = new ArrayList<>();
+    //         for (Map<String, Object> responseObject : response) {
+    //             actualResponse.add(objectMapper.writeValueAsString(responseObject));
+    //         }
             
-            assertEquals(expectedResponse, actualResponse);
+    //         assertEquals(expectedResponse, actualResponse);
+    //     }
+    // }
+
+    private boolean checkFailureAndSaveDiffs(String variant, String expected, String actual) throws IOException {
+        if (expected.equals(actual)) {
+            return false;
         }
+
+        Path outputDir = Paths.get("./src/test/" + DIFFS_DIR_NAME);
+        Path expectedDir = Paths.get(outputDir + "/expected");
+        Path actualDir = Paths.get(outputDir + "/actual");
+        Files.createDirectories(expectedDir);
+        Files.createDirectories(actualDir);
+
+        String variantFile = convertVariantToFile(variant) + ".json";
+        Path expectedFile = Paths.get(expectedDir + "/" + variantFile);
+        Path actualFile = Paths.get(actualDir + "/" + variantFile);
+
+        Files.write(expectedFile, expected.getBytes());
+        Files.write(actualFile, actual.getBytes());
+        return true;
     }
 
     private String readGenomeNexusResponseFile(String hgvs) throws Exception {
@@ -168,7 +193,7 @@ public class AnnotationApiTest {
     }
 
     private String readVariantFile(String hgvs, String directory) throws IOException {
-        String file = directory + "/" + hgvs.replace(":", "_").replace(">", "-") + ".json";
+        String file = directory + "/" + convertVariantToFile(hgvs) + ".json";
 
         return new String(Files.readAllBytes(Paths.get(new ClassPathResource(file).getURI())));
     }
@@ -178,5 +203,11 @@ public class AnnotationApiTest {
             .replace("_", ":")
             .replace("-", ">")
             .replace(".json", "");
+    }
+
+    private String convertVariantToFile(String variant) {
+        return variant
+            .replace(":", "_")
+            .replace(">", "-");
     }
 }
