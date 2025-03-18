@@ -317,16 +317,19 @@ public class VariantAnnotation
     }
 
     public String getHgvsg() {
-        if (this.transcriptConsequences == null && (this.getVariant() == null || !this.getVariantId().contains("g."))) {
-            return null;
-        }
-
-        for (TranscriptConsequence ts : this.getTranscriptConsequences()) {
-            if (ts.getHgvsg() != null && !ts.getHgvsg().isEmpty()) {
-                return ts.getHgvsg();
+        if (this.getTranscriptConsequences() != null) {
+            for (TranscriptConsequence ts : this.getTranscriptConsequences()) {
+                if (ts.getHgvsg() != null && !ts.getHgvsg().isEmpty()) {
+                    return ts.getHgvsg();
+                }
             }
         }
-        return this.getVariantId();
+
+        if (this.getVariantId() != null && this.getVariantId().contains("g.")) {
+            return this.getVariantId();
+        }
+
+        return null;
     }
 
     public void setPtmAnnotation(PtmAnnotation ptmAnnotation) {
