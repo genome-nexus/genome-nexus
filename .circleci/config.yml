@@ -17,6 +17,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Show diffs folder
+          command: find / -name api-test-diffs
+      - run:
           name: Wait for Mongo to be ready
           command: dockerize -wait tcp://localhost:27017 -timeout 1m
       - run:
@@ -25,7 +28,7 @@ jobs:
       - run:
           name: Test
           command: mvn test
-      - store_test_results:
+      - store_artifacts:
           path: /web/src/test/api-test-diffs
 
 
