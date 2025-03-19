@@ -28,11 +28,10 @@ jobs:
       - run: 
           name: Compress Artifacts
           command: tar -cvzf api-test-diffs.tar -C ./web/src/test api-test-diffs
-      - run:
-          name: find tar file
-          command: find / -name api-test-diffs.tar
+          when: on_fail
       - store_artifacts:
-          path: api-test-diffs.tar
+          path: ./api-test-diffs.tar
+          when: on_fail
 
 
 # Invoke jobs via workflows
