@@ -109,7 +109,9 @@ public class AnnotationApiTest {
                 String.class
             );
             
-            isFailure = checkFailureAndSaveDiffs(variant, expectedResponse, actualResponse);
+            if (checkFailureAndSaveDiffs(variant, expectedResponse, actualResponse)) {
+                isFailure = true;
+            }
         }
 
         assertEquals("There are test failures. See " + '"' + DIFFS_DIR_NAME + '"' + " folder for details.", isFailure, false);

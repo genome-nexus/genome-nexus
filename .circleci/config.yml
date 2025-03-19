@@ -27,7 +27,7 @@ jobs:
           command: mvn test
       - run: 
           name: Compress Artifacts
-          command: tar -cvzf api-test-diffs.tar ./web/src/test/api-test-diffs
+          command: tar -cvzf api-test-diffs.tar -C ./web/src/test api-test-diffs
       - store_artifacts:
           path: ./api-test-diffs.tar
 
