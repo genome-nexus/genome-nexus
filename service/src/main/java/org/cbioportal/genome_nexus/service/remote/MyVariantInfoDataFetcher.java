@@ -30,9 +30,10 @@ public class MyVariantInfoDataFetcher extends BaseExternalResourceFetcher<MyVari
 
     @Autowired
     public MyVariantInfoDataFetcher(ExternalResourceTransformer<MyVariantInfo> transformer,
-                                       @Value("${myvariantinfo.url:https://myvariant.info/v1/variant/VARIANT}") String myVariantInfoUrl)
+                                       @Value("${myvariantinfo.url:https://myvariant.info/v1/variant/VARIANT}") String myVariantInfoUrl,
+                                       RestTemplate restTemplate)
     {
-        super(myVariantInfoUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
+        super(myVariantInfoUrl, MAIN_QUERY_PARAM, PLACEHOLDER, restTemplate);
         this.transformer = transformer;
     }
 
@@ -56,8 +57,6 @@ public class MyVariantInfoDataFetcher extends BaseExternalResourceFetcher<MyVari
      */
     @Override
     protected DBObject getForObject(String uri, Map<String, String> queryParams) {
-        RestTemplate restTemplate = new RestTemplate();
-
         return restTemplate.getForObject(uri, BasicDBObject.class);
     }
 
@@ -67,7 +66,6 @@ public class MyVariantInfoDataFetcher extends BaseExternalResourceFetcher<MyVari
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        RestTemplate restTemplate = new RestTemplate();
         HttpEntity<Object> request = new HttpEntity<>(requestBody, httpHeaders);
 
         return restTemplate.postForObject(uri, request, BasicDBList.class);

@@ -23,12 +23,14 @@ public abstract class BaseExternalResourceFetcher<T> implements ExternalResource
     protected String URI;
     protected String mainQueryParam;
     protected String placeholder;
+    protected RestTemplate restTemplate;
 
-    public BaseExternalResourceFetcher(String URI, String mainQueryParam, String placeholder)
+    public BaseExternalResourceFetcher(String URI, String mainQueryParam, String placeholder, RestTemplate restTemplate)
     {
         this.URI = URI;
         this.mainQueryParam = mainQueryParam;
         this.placeholder = placeholder;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -88,8 +90,6 @@ public abstract class BaseExternalResourceFetcher<T> implements ExternalResource
      */
     protected DBObject getForObject(String uri, Map<String, String> queryParams)
     {
-        RestTemplate restTemplate = new RestTemplate();
-
         return restTemplate.getForObject(uri, BasicDBList.class);
     }
 
@@ -98,8 +98,6 @@ public abstract class BaseExternalResourceFetcher<T> implements ExternalResource
      */
     protected DBObject postForObject(String uri, Object requestBody)
     {
-        RestTemplate restTemplate = new RestTemplate();
-
         return restTemplate.postForObject(uri, requestBody, BasicDBList.class);
     }
 }

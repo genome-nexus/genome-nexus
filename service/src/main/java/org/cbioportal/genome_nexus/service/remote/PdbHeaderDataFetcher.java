@@ -25,11 +25,12 @@ public class PdbHeaderDataFetcher extends BaseExternalResourceFetcher<PdbHeader>
 
     @Autowired
     public PdbHeaderDataFetcher(PdbHeaderTransformer transformer,
-                                @Value("${pdb.header_service_url}") String headerServiceUrl)
+                                @Value("${pdb.header_service_url}") String headerServiceUrl,
+                                RestTemplate restTemplate)
     {
         //http://www.rcsb.org/pdb/files/PDB_ID.pdb?headerOnly=YES
         //http://files.rcsb.org/header/PDB_ID.pdb
-        super(headerServiceUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
+        super(headerServiceUrl, MAIN_QUERY_PARAM, PLACEHOLDER, restTemplate);
         this.transformer = transformer;
     }
 
@@ -55,8 +56,6 @@ public class PdbHeaderDataFetcher extends BaseExternalResourceFetcher<PdbHeader>
     @Override
     protected DBObject getForObject(String uri, Map<String, String> queryParams)
     {
-        RestTemplate restTemplate = new RestTemplate();
-
         // read to string as plain text
         String response = restTemplate.getForObject(uri, String.class);
         String pdbId = queryParams.get(MAIN_QUERY_PARAM);

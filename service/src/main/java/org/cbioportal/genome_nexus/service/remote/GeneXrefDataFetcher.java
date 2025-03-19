@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -22,9 +23,9 @@ public class GeneXrefDataFetcher extends BaseExternalResourceFetcher<GeneXref>
 
     @Autowired
     public GeneXrefDataFetcher(ExternalResourceTransformer<GeneXref> transformer,
-                               @Value("${genexrefs.url}") String geneXrefsUrl)
+                               @Value("${genexrefs.url}") String geneXrefsUrl, RestTemplate restTemplate)
     {
-        super(geneXrefsUrl, MAIN_QUERY_PARAM, PLACEHOLDER);
+        super(geneXrefsUrl, MAIN_QUERY_PARAM, PLACEHOLDER, restTemplate);
         this.transformer = transformer;
     }
 
