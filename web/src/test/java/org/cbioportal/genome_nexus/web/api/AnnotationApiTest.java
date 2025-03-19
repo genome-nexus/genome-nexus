@@ -115,54 +115,54 @@ public class AnnotationApiTest {
         assertEquals("There are test failures. See " + '"' + DIFFS_DIR_NAME + '"' + " folder for details.", isFailure, false);
     }
 
-    // @Test
-    // public void testAnnotateByGenomicChangeUsingPost() throws Exception {
-    //     File expectedResponseDir = new File(new ClassPathResource(GENOME_NEXUS_RESPONSE_DIRECTORY).getURI());
-    //     File[] expectedResponses = expectedResponseDir.listFiles();
-    //     List<List<File>> expectedResponsesPerRequest = new ArrayList<>();
-    //     int chunkSize = 10;
-    //     for (int i = 0; i < expectedResponses.length; i++) {
-    //         if (i % chunkSize == 0) {
-    //             expectedResponsesPerRequest.add(new ArrayList<>());
-    //         }
-    //         expectedResponsesPerRequest.get(expectedResponsesPerRequest.size() - 1).add(expectedResponses[i]);
-    //     }
+    @Test
+    public void testAnnotateByGenomicChangeUsingPost() throws Exception {
+        File expectedResponseDir = new File(new ClassPathResource(GENOME_NEXUS_RESPONSE_DIRECTORY).getURI());
+        File[] expectedResponses = expectedResponseDir.listFiles();
+        List<List<File>> expectedResponsesPerRequest = new ArrayList<>();
+        int chunkSize = 10;
+        for (int i = 0; i < expectedResponses.length; i++) {
+            if (i % chunkSize == 0) {
+                expectedResponsesPerRequest.add(new ArrayList<>());
+            }
+            expectedResponsesPerRequest.get(expectedResponsesPerRequest.size() - 1).add(expectedResponses[i]);
+        }
 
-    //     for (List<File> genomeNexusResponses : expectedResponsesPerRequest) {
-    //         List<String> expectedResponse = new ArrayList<>();
-    //         List<GenomicLocation> actualRequest = new ArrayList<>();
-    //         for (int i = 0; i < genomeNexusResponses.size(); i++) {
-    //             String variant = convertFileToVariant(expectedResponses[i]);
-    //             String expectedResponseString = readGenomeNexusResponseFile(variant);
-    //             expectedResponse.add(expectedResponseString);
+        for (List<File> genomeNexusResponses : expectedResponsesPerRequest) {
+            List<String> expectedResponse = new ArrayList<>();
+            List<GenomicLocation> actualRequest = new ArrayList<>();
+            for (int i = 0; i < genomeNexusResponses.size(); i++) {
+                String variant = convertFileToVariant(expectedResponses[i]);
+                String expectedResponseString = readGenomeNexusResponseFile(variant);
+                expectedResponse.add(expectedResponseString);
 
-    //             String[] genomicLocation = apiObjectMapper.readValue(expectedResponseString, VariantAnnotation.class)
-    //                 .getOriginalVariantQuery()
-    //                 .split(",");
-    //             actualRequest.add(new GenomicLocation(
-    //                 genomicLocation[0], 
-    //                 Integer.parseInt(genomicLocation[1]), 
-    //                 Integer.parseInt(genomicLocation[2]), 
-    //                 genomicLocation[3],
-    //                 genomicLocation[4]
-    //             ));
-    //         }
+                String[] genomicLocation = apiObjectMapper.readValue(expectedResponseString, VariantAnnotation.class)
+                    .getOriginalVariantQuery()
+                    .split(",");
+                actualRequest.add(new GenomicLocation(
+                    genomicLocation[0], 
+                    Integer.parseInt(genomicLocation[1]), 
+                    Integer.parseInt(genomicLocation[2]), 
+                    genomicLocation[3],
+                    genomicLocation[4]
+                ));
+            }
 
-    //         List<Map<String, Object>> response = restTemplate.exchange(
-    //             BASE_URL + "/annotation/genomic?isoformOverrideSource=mskcc&fields=annotation_summary",
-    //             HttpMethod.POST,
-    //             new HttpEntity<>(actualRequest),
-    //             new ParameterizedTypeReference<List<Map<String, Object>>>() {}
-    //         )
-    //         .getBody();
-    //         List<String> actualResponse = new ArrayList<>();
-    //         for (Map<String, Object> responseObject : response) {
-    //             actualResponse.add(objectMapper.writeValueAsString(responseObject));
-    //         }
+            List<Map<String, Object>> response = restTemplate.exchange(
+                BASE_URL + "/annotation/genomic?isoformOverrideSource=mskcc&fields=annotation_summary",
+                HttpMethod.POST,
+                new HttpEntity<>(actualRequest),
+                new ParameterizedTypeReference<List<Map<String, Object>>>() {}
+            )
+            .getBody();
+            List<String> actualResponse = new ArrayList<>();
+            for (Map<String, Object> responseObject : response) {
+                actualResponse.add(objectMapper.writeValueAsString(responseObject));
+            }
             
-    //         assertEquals(expectedResponse, actualResponse);
-    //     }
-    // }
+            assertEquals(expectedResponse, actualResponse);
+        }
+    }
 
     private boolean checkFailureAndSaveDiffs(String variant, String expected, String actual) throws IOException {
         if (expected.equals(actual)) {

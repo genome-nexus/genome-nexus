@@ -29,7 +29,7 @@ jobs:
           name: Compress Artifacts
           command: tar -cvzf api-test-diffs.tar ./web/src/test/api-test-diffs
       - store_artifacts:
-          path: api-test-diffs.tar
+          path: ./api-test-diffs.tar
 
 
 # Invoke jobs via workflows
