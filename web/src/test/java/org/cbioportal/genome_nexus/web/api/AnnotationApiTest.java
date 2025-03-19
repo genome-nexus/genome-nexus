@@ -134,7 +134,7 @@ public class AnnotationApiTest {
             List<String> expectedResponse = new ArrayList<>();
             List<GenomicLocation> actualRequest = new ArrayList<>();
             for (int i = 0; i < genomeNexusResponses.size(); i++) {
-                String variant = convertFileToVariant(expectedResponses[i]);
+                String variant = convertFileToVariant(genomeNexusResponses.get(i));
                 String expectedResponseString = readGenomeNexusResponseFile(variant);
                 expectedResponse.add(expectedResponseString);
 
