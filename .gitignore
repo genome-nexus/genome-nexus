@@ -19,4 +19,5 @@ application.properties
 *.chunk.js
 *.chunk.css
 web/src/main/resources/static/*
+web/src/test/api-test-diffs
 .vscode

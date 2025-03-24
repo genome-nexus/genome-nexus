@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -22,9 +23,10 @@ public class VEPIdDataFetcher extends BaseExternalResourceFetcher<VariantAnnotat
 
     @Autowired
     public VEPIdDataFetcher(ExternalResourceTransformer<VariantAnnotation> externalResourceTransformer,
-                          @Value("${vep.url}") String vepUrl)
+                          @Value("${vep.url}") String vepUrl,
+                          RestTemplate restTemplate)
     {
-        super(vepUrl.replace("human/hgvs/", "/human/id/"), MAIN_QUERY_PARAM, PLACEHOLDER);
+        super(vepUrl.replace("human/hgvs/", "/human/id/"), MAIN_QUERY_PARAM, PLACEHOLDER, restTemplate);
         this.transformer = externalResourceTransformer;
     }
 
