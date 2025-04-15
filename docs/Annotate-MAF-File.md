@@ -26,7 +26,7 @@ Create a MAF file:
 
 Run the annotator using docker:
 ```
-docker run -v ${PWD}:/wd genomenexus/gn-annotation-pipeline:master --filename /wd/input.txt  --output-filename /wd/output.txt --isoform-override uniprot
+docker run -v ${PWD}:/wd genomenexus/gn-annotation-pipeline:master --filename /wd/input.txt  --output-filename /wd/output.txt --isoform-override mskcc
 ```
 
 Output can be found in `output.txt`
@@ -40,5 +40,5 @@ By default, the pipeline uses **GRCh37**.
 If you want to annotate with **GRCh38**, please set the `GENOMENEXUS_BASE` environment variable to `https://grch38.genomenexus.org`. Here's an example of how to do this:
 
 ```
-docker run -e GENOMENEXUS_BASE=https://grch38.genomenexus.org -v ${PWD}:/wd genomenexus/gn-annotation-pipeline:latest --filename /wd/input.txt  --output-filename /wd/output.txt --isoform-override uniprot
+docker run -e GENOMENEXUS_BASE=https://grch38.genomenexus.org -v ${PWD}:/wd genomenexus/gn-annotation-pipeline:latest --filename /wd/input.txt  --output-filename /wd/output.txt --isoform-override mskcc
 ```

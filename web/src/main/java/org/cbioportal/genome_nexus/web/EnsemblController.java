@@ -146,8 +146,8 @@ public class EnsemblController
         @ApiParam(value = "List of Hugo Symbols. For example [\"TP53\",\"PIK3CA\",\"BRCA1\"]",
             required = true)
         @RequestBody List<String> hugoSymbols,
-        @ApiParam(value="Isoform override source. For example uniprot",
-            defaultValue="uniprot",
+        @ApiParam(value="Isoform override source. For example mskcc",
+            defaultValue="mskcc",
             required = false)
         @RequestParam(required = false) String isoformOverrideSource)
     {
@@ -163,8 +163,8 @@ public class EnsemblController
         @ApiParam(value = "A Hugo Symbol. For example TP53",
             required = true)
         @PathVariable String hugoSymbol,
-        @ApiParam(value="Isoform override source. For example uniprot",
-            defaultValue="uniprot",
+        @ApiParam(value="Isoform override source. For example mskcc",
+            defaultValue="mskcc",
             required = false)
         @RequestParam(required = false) String isoformOverrideSource) throws EnsemblTranscriptNotFoundException
     {
