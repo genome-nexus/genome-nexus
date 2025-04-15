@@ -3,6 +3,7 @@ package org.cbioportal.genome_nexus.service.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.model.Index;
@@ -77,7 +78,7 @@ public class IndexSearchServiceImpl implements IndexSearchService{
     private List<IndexSearch> searchByVariant(
         String queryString
     ) {
-        Index index = this.indexRepository.findByVariant(queryString);
+        Index index = this.indexRepository.findFirstByVariant(queryString);
         IndexSearch query = new IndexSearch();
         query.setQueryType(IndexSearchType.HGVSG);
         query.setResults(Arrays.asList(index));
