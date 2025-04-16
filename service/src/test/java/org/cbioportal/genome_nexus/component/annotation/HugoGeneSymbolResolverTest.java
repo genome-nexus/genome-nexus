@@ -1,12 +1,15 @@
 package org.cbioportal.genome_nexus.component.annotation;
 
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.persistence.internal.EnsemblRepositoryCustom;
 import org.cbioportal.genome_nexus.service.mock.CanonicalTranscriptResolverMocker;
 import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -20,17 +23,30 @@ public class HugoGeneSymbolResolverTest
     @InjectMocks
     private HugoGeneSymbolResolver hugoGeneSymbolResolver;
 
+    @Spy
+    private EnsemblRepositoryCustom ensemblRepository;
+
     @Mock
     private CanonicalTranscriptResolver canonicalTranscriptResolver;
 
     private final VariantAnnotationMockData variantAnnotationMockData = new VariantAnnotationMockData();
     private final CanonicalTranscriptResolverMocker canonicalTranscriptResolverMocker = new CanonicalTranscriptResolverMocker();
 
+    private void mockEnsemblRepositoryCustomMethods()
+    {
+        // mock getOfficialHugoSymbol method for all gene symbols without previous gene symbol
+        Mockito.when(ensemblRepository.getOfficialHugoSymbol(Mockito.any())).thenAnswer(invocation -> invocation.getArgument(0));
+        // mock getOfficialHugoSymbol method for gene symbol with previous gene symbol
+        // FAM58A is the previous gene symbol of CCNQ
+        Mockito.when(ensemblRepository.getOfficialHugoSymbol("FAM58A")).thenReturn("CCNQ");
+    }
+
     @Test
     public void resolveHugoGeneSymbolForCanonical() throws IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         this.canonicalTranscriptResolverMocker.mockMethods(variantMockData, this.canonicalTranscriptResolver);
+        this.mockEnsemblRepositoryCustomMethods();
 
         assertEquals(
             "JAK1",
@@ -132,6 +148,7 @@ public class HugoGeneSymbolResolverTest
     public void resolveHugoGeneSymbol() throws IOException
     {
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
+        this.mockEnsemblRepositoryCustomMethods();
 
         assertEquals(
             "BRF2",
@@ -151,6 +168,15 @@ public class HugoGeneSymbolResolverTest
             "MIR330",
             this.hugoGeneSymbolResolver.resolve(
                 variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(1)
+            )
+        );
+
+        // FAM58A is the previous gene symbol of CCNQ
+        // FAM58A should be mapped to CCNQ
+        assertEquals(
+            "CCNQ",
+            this.hugoGeneSymbolResolver.resolve(
+                variantMockData.get("X:g.152859948_152860038del").getTranscriptConsequences().get(0)
             )
         );
     }

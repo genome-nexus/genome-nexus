@@ -44,6 +44,7 @@ public interface EnsemblRepositoryCustom
     String findEntrezGeneIdByHugoSymbol(String hugoSymbol);
     List<String> findEntrezGeneIdByHugoSymbol(String hugoSymbol, Boolean searchInAliases);
     String findHugoSymbolByEntrezGeneId(String entrezGeneId);
+    String getOfficialHugoSymbol(String hugoSymbol);
 
     @Cacheable("canonicalTranscriptIdsBySource")
     Set<String> findCanonicalTranscriptIdsBySource(String isoformOverrideSource);
