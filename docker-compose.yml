@@ -14,9 +14,9 @@ services:
 
   db:
     build: https://github.com/genome-nexus/genome-nexus-importer.git
-    environment:
-      - REF_ENSEMBL_VERSION=${REF_ENSEMBL_VERSION}
-      - SPECIES=${SPECIES}
+      args:
+        - REF_ENSEMBL_VERSION=${REF_ENSEMBL_VERSION:-grch37_ensembl92}
+        - SPECIES=${SPECIES:-homo_sapiens}
     restart: always
 
   vep:
