@@ -78,6 +78,9 @@ public class VerifiedVariantAnnotationService
         List<VariantAnnotation> annotations = variantAnnotationService.getAnnotations(variants, variantType);
         for (int index = 0; index < annotations.size(); index = index + 1) {
             VariantAnnotation annotation = annotations.get(index);
+            if (annotation.getAnnotationSummary()!= null && annotation.getAnnotationSummary().getGenomicLocation() != null) {
+                annotation.setHgvsg(notationConverter.genomicToHgvs(annotation.getAnnotationSummary().getGenomicLocation()));
+            }
             VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(
                 annotation,
                 variantType
@@ -92,6 +95,9 @@ public class VerifiedVariantAnnotationService
             throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         VariantAnnotation annotation = variantAnnotationService.getAnnotation(variant, variantType, isoformOverrideSource, token, fields);
+        if (annotation.getAnnotationSummary()!= null && annotation.getAnnotationSummary().getGenomicLocation() != null) {
+            annotation.setHgvsg(notationConverter.genomicToHgvs(annotation.getAnnotationSummary().getGenomicLocation()));
+        }
         VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(
             annotation,
             variantType

@@ -36,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfoAnnotation;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -55,6 +56,7 @@ public class VariantAnnotation
     private String variantId;     // variant id
     private String assemblyName;  // NCBI build number
     private String seqRegionName; // chromosome
+    private String hgvsg;
     private Integer start;         // start position
     private Integer end;           // end position
     private String alleleString;  // reference allele & variant allele
@@ -316,7 +318,15 @@ public class VariantAnnotation
         return ptmAnnotation;
     }
 
+    public void setHgvsg(String hgvsg) {
+        this.hgvsg = hgvsg;
+    }
+
     public String getHgvsg() {
+        if (!StringUtils.isEmpty(this.hgvsg)) {
+            return this.hgvsg;
+        }
+
         if (this.getTranscriptConsequences() != null) {
             for (TranscriptConsequence ts : this.getTranscriptConsequences()) {
                 if (ts.getHgvsg() != null && !ts.getHgvsg().isEmpty()) {
