@@ -78,9 +78,7 @@ public class VerifiedVariantAnnotationService
         List<VariantAnnotation> annotations = variantAnnotationService.getAnnotations(variants, variantType);
         for (int index = 0; index < annotations.size(); index = index + 1) {
             VariantAnnotation annotation = annotations.get(index);
-            if (annotation.getAnnotationSummary()!= null && annotation.getAnnotationSummary().getGenomicLocation() != null) {
-                annotation.setHgvsg(notationConverter.genomicToHgvs(annotation.getAnnotationSummary().getGenomicLocation()));
-            }
+            setHgvsTo3PrimeNormalizedForCDNA(annotation);
             VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(
                 annotation,
                 variantType
@@ -95,9 +93,7 @@ public class VerifiedVariantAnnotationService
             throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         VariantAnnotation annotation = variantAnnotationService.getAnnotation(variant, variantType, isoformOverrideSource, token, fields);
-        if (annotation.getAnnotationSummary()!= null && annotation.getAnnotationSummary().getGenomicLocation() != null) {
-            annotation.setHgvsg(notationConverter.genomicToHgvs(annotation.getAnnotationSummary().getGenomicLocation()));
-        }
+        setHgvsTo3PrimeNormalizedForCDNA(annotation);
         VariantAnnotation verifiedAnnotation = verifyOrFailAnnotation(
             annotation,
             variantType
@@ -213,5 +209,12 @@ public class VerifiedVariantAnnotationService
         annotation.setSuccessfullyAnnotated(false);
         annotation.setErrorMessage(errorMessage);
         return annotation;
+    }
+
+    // vep seems to only apply 3' rule for cDNA changes
+    private void setHgvsTo3PrimeNormalizedForCDNA(VariantAnnotation annotation) {
+        if (annotation.getVariantId().contains("c.") && annotation.getAnnotationSummary()!= null && annotation.getAnnotationSummary().getGenomicLocation() != null) {
+            annotation.setHgvsg(notationConverter.genomicToHgvs(annotation.getAnnotationSummary().getGenomicLocation()));
+        }
     }
 }
