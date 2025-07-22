@@ -28,4 +28,20 @@ public class GenomicLocationUtil {
         }
 
     }
+
+    public static String getReverseStrandAllele(String allele) {
+        if (allele.equals("A")) {
+            return "T";
+        }
+        if (allele.equals("T")) {
+            return "A";
+        } 
+        if (allele.equals("C")) {
+            return "G";
+        }
+        if (allele.equals("G")) {
+            return "C";
+        }
+        return allele;
+    }
 }
