@@ -30,18 +30,21 @@ public class GenomicLocationUtil {
     }
 
     public static String getReverseStrandAllele(String allele) {
-        if (allele.equals("A")) {
-            return "T";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < allele.length(); i++) {
+            char nucleotide = allele.charAt(i);
+            if (nucleotide == 'A') {
+                sb.append('T');
+            } else if (nucleotide == 'T') {
+                sb.append('A');
+            } else if (nucleotide == 'C') {
+                sb.append('G');
+            } else if (nucleotide == 'G') {
+                sb.append('C');
+            } else {
+                sb.append(nucleotide);
+            } 
         }
-        if (allele.equals("T")) {
-            return "A";
-        } 
-        if (allele.equals("C")) {
-            return "G";
-        }
-        if (allele.equals("G")) {
-            return "C";
-        }
-        return allele;
+        return sb.toString();
     }
 }
