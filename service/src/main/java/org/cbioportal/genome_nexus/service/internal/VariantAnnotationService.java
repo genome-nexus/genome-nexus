@@ -49,6 +49,7 @@ import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.service.factory.IsoformAnnotationEnricherFactory;
+import org.cbioportal.genome_nexus.util.GenomicLocationUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -130,13 +131,17 @@ public class VariantAnnotationService
     public VariantAnnotation getAnnotation(String variant, VariantType variantType)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
-        return this.fetchAnnotationExternally(variant, variantType);
+        VariantAnnotation annotation = this.fetchAnnotationExternally(variant, variantType);
+        normalizeStrand(annotation);
+        return annotation;
     }
 
     public List<VariantAnnotation> getAnnotations(List<String> variants, VariantType variantType)
     {
         try {
-            return this.fetchAnnotationsExternally(variants, variantType);
+            List<VariantAnnotation> annotations = this.fetchAnnotationsExternally(variants, variantType);
+            normalizeStrands(annotations);
+            return annotations;
         } catch (VariantAnnotationWebServiceException e) {
             LOG.warn(e.getLocalizedMessage());
             return Collections.emptyList();
@@ -147,6 +152,8 @@ public class VariantAnnotationService
         throws VariantAnnotationWebServiceException, VariantAnnotationNotFoundException
     {
         VariantAnnotation annotation = this.fetchAnnotationExternally(variant, variantType);
+        normalizeStrand(annotation);
+
         EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields, token);
 
         if (annotation != null &&
@@ -162,6 +169,7 @@ public class VariantAnnotationService
     {
         try {
             List<VariantAnnotation> variantAnnotations = this.fetchAnnotationsExternally(variants, variantType);
+            normalizeStrands(variantAnnotations);
             EnrichmentService postEnrichmentService = this.initPostEnrichmentService(isoformOverrideSource, fields, token);
             if (postEnrichmentService != null) {
                 postEnrichmentService.enrichAnnotations(variantAnnotations);
@@ -400,6 +408,19 @@ public class VariantAnnotationService
         variantAnnotation.setOriginalVariantQuery(originalVariantQuery);
         if (variantType == VariantType.GENOMIC_LOCATION) {
             variantAnnotation.setGenomicLocationExplanation(this.notationConverter.getGenomicLocationExplanation(originalVariantQuery));
+        }
+    }
+
+    private void normalizeStrand(VariantAnnotation variantAnnotation) {
+        if (variantAnnotation.getStrand() == -1) {
+            variantAnnotation.setAlleleString(GenomicLocationUtil.getReverseStrandAllele(variantAnnotation.getAlleleString()));
+            variantAnnotation.setStrand(1);
+        }
+    }
+
+    private void normalizeStrands(List<VariantAnnotation> variantAnnotations) {
+        for (VariantAnnotation annotation : variantAnnotations) {
+            normalizeStrand(annotation);
         }
     }
 }
