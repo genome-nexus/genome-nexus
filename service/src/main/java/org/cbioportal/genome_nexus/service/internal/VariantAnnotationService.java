@@ -414,7 +414,6 @@ public class VariantAnnotationService
     private void normalizeStrand(VariantAnnotation variantAnnotation) {
         if (variantAnnotation.getStrand() == -1) {
             variantAnnotation.setAlleleString(GenomicLocationUtil.getReverseStrandAllele(variantAnnotation.getAlleleString()));
-            variantAnnotation.setStrand(1);
         }
     }
 

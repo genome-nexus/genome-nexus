@@ -43,6 +43,7 @@ import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.model.VariantType;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
+import org.cbioportal.genome_nexus.util.GenomicLocationUtil;
 import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Service;
@@ -121,6 +122,11 @@ public class VerifiedVariantAnnotationService
             ref = GenomicVariantUtil.providedReferenceAlleleFromHgvs(annotation.getOriginalVariantQuery());
         } else if (variantType == VariantType.GENOMIC_LOCATION) {
             ref = notationConverter.parseGenomicLocation(annotation.getOriginalVariantQuery()).getReferenceAllele();
+        }
+       
+        if (annotation.getStrand() == -1) {
+            ref = GenomicLocationUtil.getReverseStrandAllele(ref);
+            annotation.setStrand(1);
         }
 
         if (ref.length() == 0) {
