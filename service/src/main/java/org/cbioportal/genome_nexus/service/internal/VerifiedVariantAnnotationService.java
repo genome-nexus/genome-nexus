@@ -32,7 +32,8 @@
 
 package org.cbioportal.genome_nexus.service.internal;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,7 +46,7 @@ import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundEx
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
 import org.cbioportal.genome_nexus.util.GenomicLocationUtil;
 import org.cbioportal.genome_nexus.util.GenomicVariantUtil;
-import org.springframework.beans.factory.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -123,8 +124,8 @@ public class VerifiedVariantAnnotationService
         } else if (variantType == VariantType.GENOMIC_LOCATION) {
             ref = notationConverter.parseGenomicLocation(annotation.getOriginalVariantQuery()).getReferenceAllele();
         }
-       
-        if (annotation.getStrand() == -1) {
+
+        if (annotation.getStrand() != null && annotation.getStrand() == -1) {
             ref = GenomicLocationUtil.getReverseStrandAllele(ref);
             annotation.setStrand(1);
         }

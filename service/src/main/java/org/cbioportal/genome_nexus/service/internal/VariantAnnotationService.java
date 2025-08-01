@@ -32,19 +32,46 @@
 
 package org.cbioportal.genome_nexus.service.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.component.annotation.HugoGeneSymbolResolver;
 import org.cbioportal.genome_nexus.component.annotation.IndexBuilder;
 import org.cbioportal.genome_nexus.component.annotation.NotationConverter;
 import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
-import org.cbioportal.genome_nexus.model.*;
+import org.cbioportal.genome_nexus.model.AnnotationField;
+import org.cbioportal.genome_nexus.model.Index;
+import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.model.VariantType;
 import org.cbioportal.genome_nexus.persistence.IndexRepository;
-import org.cbioportal.genome_nexus.service.*;
-
+import org.cbioportal.genome_nexus.service.CancerHotspotService;
+import org.cbioportal.genome_nexus.service.ClinvarVariantAnnotationService;
+import org.cbioportal.genome_nexus.service.EnrichmentService;
+import org.cbioportal.genome_nexus.service.MutationAssessorService;
+import org.cbioportal.genome_nexus.service.MyVariantInfoService;
+import org.cbioportal.genome_nexus.service.NucleotideContextService;
+import org.cbioportal.genome_nexus.service.OncokbService;
+import org.cbioportal.genome_nexus.service.PostTranslationalModificationService;
+import org.cbioportal.genome_nexus.service.SignalMutationService;
+import org.cbioportal.genome_nexus.service.VariantAnnotationSummaryService;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantAnnotationFetcher;
 import org.cbioportal.genome_nexus.service.cached.CachedVariantIdAnnotationFetcher;
-import org.cbioportal.genome_nexus.service.enricher.*;
+import org.cbioportal.genome_nexus.service.enricher.CanonicalTranscriptAnnotationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.ClinvarVariantAnnotationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.HotspotAnnotationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.MutationAssessorEnricher;
+import org.cbioportal.genome_nexus.service.enricher.MyVariantInfoAnnotationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.NucleotideContextAnnotationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.OncokbAnnotationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.PostTranslationalModificationEnricher;
+import org.cbioportal.genome_nexus.service.enricher.SignalAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationNotFoundException;
 import org.cbioportal.genome_nexus.service.exception.VariantAnnotationWebServiceException;
@@ -55,9 +82,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
@@ -412,7 +436,7 @@ public class VariantAnnotationService
     }
 
     private void normalizeStrand(VariantAnnotation variantAnnotation) {
-        if (variantAnnotation.getStrand() == -1) {
+        if (variantAnnotation.getStrand() != null && variantAnnotation.getStrand() == -1) {
             variantAnnotation.setAlleleString(GenomicLocationUtil.getReverseStrandAllele(variantAnnotation.getAlleleString()));
         }
     }
