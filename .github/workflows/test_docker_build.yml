@@ -21,16 +21,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2     
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-      - name: Install root POM
-        run: mvn install -N -DskipTests
-      - name: Build Maven Project
-        run: mvn clean install -DskipTests
+        uses: docker/setup-buildx-action@v2
       - name: Build Docker Image
         uses: docker/build-push-action@v3
         with:

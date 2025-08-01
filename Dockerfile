@@ -1,7 +1,9 @@
 FROM maven:3-eclipse-temurin-21
 RUN mkdir /genome-nexus
-COPY . /genome-nexus
+ADD . /genome-nexus
 WORKDIR /genome-nexus
+# Build the parent project first
+# This is necessary to ensure that the parent POM is built before the child modules.
 RUN mvn install -N -DskipTests
 RUN mvn -DskipTests clean install
 
