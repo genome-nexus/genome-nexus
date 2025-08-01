@@ -1,6 +1,6 @@
 FROM maven:3-eclipse-temurin-21
 RUN mkdir /genome-nexus
-ADD . /genome-nexus
+COPY . /genome-nexus
 WORKDIR /genome-nexus
 RUN mvn -DskipTests clean install
 
