@@ -12,13 +12,16 @@ jobs:
     # Be sure to update the Docker image tag below to openjdk version of your application.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     docker:
-      - image: cimg/openjdk:11.0
+      - image: cimg/openjdk:21.0
       - image: genomenexus/gn-mongo:0.30
     steps:
       - checkout
       - run:
           name: Wait for Mongo to be ready
           command: dockerize -wait tcp://localhost:27017 -timeout 1m
+      - run:
+          name: Build parent project
+          command: mvn install -N -DskipTests
       - run:
           name: Build
           command: mvn -DskipTests clean install
