@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.persistence.internal.EnsemblRepositoryCustom;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.cbioportal.genome_nexus.persistence.internal.EnsemblRepositoryCustom;
 import org.springframework.stereotype.Component;
 
 
@@ -31,7 +31,7 @@ public class HugoGeneSymbolResolver
             transcriptConsequence.getGeneSymbol() != null &&
             !transcriptConsequence.getGeneSymbol().trim().isEmpty())
         {
-            hugoSymbol = ensemblRepository.getOfficialHugoSymbol(transcriptConsequence.getGeneSymbol());
+            hugoSymbol = ensemblRepository.getOfficialHugoSymbol(transcriptConsequence.getGeneSymbol(), transcriptConsequence.getHgncId());
         }
         
         return hugoSymbol;
@@ -49,7 +49,7 @@ public class HugoGeneSymbolResolver
             Set<String> hugoSymbolSet = new HashSet<>();
             for (TranscriptConsequence transcriptConsequence : variantAnnotation.getTranscriptConsequences()) {
                 if (transcriptConsequence.getGeneSymbol() != null) {
-                    hugoSymbolSet.add(ensemblRepository.getOfficialHugoSymbol(transcriptConsequence.getGeneSymbol()));
+                    hugoSymbolSet.add(ensemblRepository.getOfficialHugoSymbol(transcriptConsequence.getGeneSymbol(), transcriptConsequence.getHgncId()));
                 }
             }
             hugoSymbol = hugoSymbolSet.stream().collect(Collectors.toList());

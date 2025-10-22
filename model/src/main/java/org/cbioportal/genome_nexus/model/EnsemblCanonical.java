@@ -127,4 +127,15 @@ public class EnsemblCanonical
     public void setEntrezGeneId(String entrezGeneId) {
         this.entrezGeneId = entrezGeneId;
     }
+
+    public String getHgncId() {
+        if (this.hgncId != null && this.hgncId.startsWith("HGNC:")) {
+            return this.hgncId.substring(5);
+        }
+        return this.hgncId;
+    }
+
+    public void setHgncId(String hgncId) {
+        this.hgncId = hgncId;
+    }
 }

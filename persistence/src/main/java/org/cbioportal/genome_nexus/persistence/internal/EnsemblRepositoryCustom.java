@@ -31,7 +31,9 @@
 
 package org.cbioportal.genome_nexus.persistence.internal;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+
 import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
 import org.springframework.cache.annotation.Cacheable;
@@ -45,6 +47,7 @@ public interface EnsemblRepositoryCustom
     List<String> findEntrezGeneIdByHugoSymbol(String hugoSymbol, Boolean searchInAliases);
     String findHugoSymbolByEntrezGeneId(String entrezGeneId);
     String getOfficialHugoSymbol(String hugoSymbol);
+    String getOfficialHugoSymbol(String hugoSymbol, String hgncId);
 
     @Cacheable("canonicalTranscriptIdsBySource")
     Set<String> findCanonicalTranscriptIdsBySource(String isoformOverrideSource);
