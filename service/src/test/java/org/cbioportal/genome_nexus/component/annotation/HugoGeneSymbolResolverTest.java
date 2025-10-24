@@ -55,7 +55,7 @@ public class HugoGeneSymbolResolverTest
             ))
             .thenAnswer(invocation -> {
                 String prevSymbol = invocation.getArgument(0, String.class);
-                String hgncId     = invocation.getArgument(1, String.class);
+                String hgncId = invocation.getArgument(1, String.class);
 
                 Map<String, String> byHgnc = geneNameMap.get(prevSymbol);
                 if (byHgnc != null) {
