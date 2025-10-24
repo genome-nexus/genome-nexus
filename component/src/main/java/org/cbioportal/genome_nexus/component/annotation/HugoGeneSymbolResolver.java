@@ -26,15 +26,22 @@ public class HugoGeneSymbolResolver
     @Nullable
     public String resolve(TranscriptConsequence transcriptConsequence)
     {
-        String hugoSymbol = null;
-        if (transcriptConsequence != null &&
-            transcriptConsequence.getGeneSymbol() != null &&
-            !transcriptConsequence.getGeneSymbol().trim().isEmpty())
-        {
-            hugoSymbol = ensemblRepository.getOfficialHugoSymbol(transcriptConsequence.getGeneSymbol(), transcriptConsequence.getHgncId());
+        if (transcriptConsequence == null) {
+            return null;
+        }
+
+        String symbol = transcriptConsequence.getGeneSymbol();
+        if (symbol == null || symbol.trim().isEmpty()) {
+            return null;
+        }
+
+        String hgncId = transcriptConsequence.getHgncId();
+        if (hgncId != null && !hgncId.trim().isEmpty()) {
+            String mapped = ensemblRepository.getOfficialHugoSymbol(symbol, hgncId);
+            return mapped;
         }
         
-        return hugoSymbol;
+        return ensemblRepository.getOfficialHugoSymbol(symbol);
     }
 
     @Nullable
