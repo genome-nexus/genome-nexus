@@ -131,11 +131,11 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
             .collect(Collectors.toSet());
 
         for (EnsemblCanonical transcript : transcripts) {
-            String officialSymbol   = transcript.getHugoSymbol();
-            String entrezId        = transcript.getEntrezGeneId();
-            String hgncId          = transcript.getHgncId();
+            String officialSymbol = transcript.getHugoSymbol();
+            String entrezId = transcript.getEntrezGeneId();
+            String hgncId = transcript.getHgncId();
             String[] previousSymbols = transcript.getPreviousSymbols();
-            String[] synonyms        = transcript.getSynonyms();
+            String[] synonyms = transcript.getSynonyms();
 
             hugoSymbolToEntrezGeneIdMap.put(officialSymbol, entrezId);
             entrezGeneIdToHugoSymbolMap.put(entrezId, officialSymbol);
