@@ -32,7 +32,7 @@ public class IndexBuilder {
     {
         Index index = new Index();
         index.setVariant(this.resolveVariant(variantAnnotation));
-          List<String> hugoSymbols;
+        List<String> hugoSymbols;
         if (Boolean.TRUE.equals(this.replaceOldGeneSymbol)) {
             hugoSymbols = this.hugoGeneSymbolResolver.resolveAllHugoGeneSymbols(variantAnnotation);
         } else {
@@ -74,7 +74,7 @@ public class IndexBuilder {
         Set<String> hugoSymbolSet = new HashSet<>();
 
         for (TranscriptConsequence tc : variantAnnotation.getTranscriptConsequences()) {
-            if (tc.getGeneSymbol() != null && !tc.getGeneSymbol().trim().isEmpty()) {
+            if (tc.getGeneSymbol() != null && !tc.getGeneSymbol().isEmpty()) {
                 hugoSymbolSet.add(tc.getGeneSymbol());
             }
         }
