@@ -215,21 +215,21 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
 
     @Override
     public List<String> findEntrezGeneIdByHugoSymbol(String hugoSymbol, Boolean searchInAliases) {
-        List<String> results = new ArrayList<>();
-        String direct = hugoSymbolToEntrezGeneIdMap.get(hugoSymbol);
-        if (direct != null && !results.contains(direct)) {
-            results.add(direct);
+        List<String> entrezGeneIds = new ArrayList<>();
+        String entrezGeneId = hugoSymbolToEntrezGeneIdMap.get(hugoSymbol);
+        if (entrezGeneId != null && !entrezGeneIds.contains(entrezGeneId)) {
+            entrezGeneIds.add(entrezGeneId);
         }
 
         if (Boolean.TRUE.equals(searchInAliases)) {
             List<String> aliasMatches = geneAliasToEntrezGeneIdMap.get(hugoSymbol);
             if (aliasMatches != null) {
                 for (String id : aliasMatches) {
-                    if (id != null && !results.contains(id)) results.add(id);
+                    if (id != null && !entrezGeneIds.contains(id)) entrezGeneIds.add(id);
                 }
             }
         }
-        return results;
+        return entrezGeneIds;
     }
 
     @Override
