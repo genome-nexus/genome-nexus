@@ -110,6 +110,8 @@ public class VariantAnnotationService
     private final IsoformAnnotationEnricherFactory enricherFactory;
     @Value("${cache.enabled:true}")
     private boolean cacheEnabled;
+    @Value("${replace_old_hgnc_gene_symbol:true}")
+    private String replaceOldGeneSymbol;
 
     public VariantAnnotationService(
         CachedVariantAnnotationFetcher cachedVariantAnnotationFetcher,
@@ -148,7 +150,7 @@ public class VariantAnnotationService
     }
 
     public Index buildIndex(VariantAnnotation variantAnnotation) {
-        IndexBuilder builder = new IndexBuilder(this.proteinChangeResolver, this.hugoGeneSymbolResolver);
+        IndexBuilder builder = new IndexBuilder(this.proteinChangeResolver, this.hugoGeneSymbolResolver, this.replaceOldGeneSymbol);
         return builder.buildIndex(variantAnnotation);
     }
 
