@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 public class HugoGeneSymbolResolver
 {
     private final EnsemblRepositoryCustom ensemblRepository;
-
     @Autowired
     public HugoGeneSymbolResolver(EnsemblRepositoryCustom ensemblRepository) {
         this.ensemblRepository = ensemblRepository;
@@ -31,16 +30,14 @@ public class HugoGeneSymbolResolver
         }
 
         String symbol = transcriptConsequence.getGeneSymbol();
-        if (symbol == null || symbol.trim().isEmpty()) {
+        if (symbol == null || symbol.isEmpty()) {
             return null;
         }
 
         String hgncId = transcriptConsequence.getHgncId();
-        if (hgncId != null && !hgncId.trim().isEmpty()) {
-            String mapped = ensemblRepository.getOfficialHugoSymbol(symbol, hgncId);
-            return mapped;
+        if (hgncId != null && !hgncId.isEmpty()) {
+            return ensemblRepository.getOfficialHugoSymbol(symbol, hgncId);
         }
-        
         return ensemblRepository.getOfficialHugoSymbol(symbol);
     }
 
