@@ -1,6 +1,9 @@
 name: Publish Docker Image on Tag
 on:
   push:
+    branches:
+      - release-*
+      - demo-*
     tags: '*'
 jobs:
   build_and_publish:
