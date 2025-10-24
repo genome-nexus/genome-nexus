@@ -1,5 +1,14 @@
 package org.cbioportal.genome_nexus.persistence.internal;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.cbioportal.genome_nexus.model.EnsemblCanonical;
 import org.cbioportal.genome_nexus.model.EnsemblGene;
 import org.cbioportal.genome_nexus.model.EnsemblTranscript;
@@ -7,10 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,6 +26,8 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
     private Map<String, String> entrezGeneIdToHugoSymbolMap = new HashMap<>();
     private Map<String, List<String>> geneAliasToEntrezGeneIdMap = new HashMap<>();
     private Map<String, String> previousGeneSymbolToOfficialHugoSymbolMap = new HashMap<>();
+    private Map<String, Map<String, String>> previousSymbolAndHgncToOfficial = new HashMap<>();
+    private Map<String, Set<String>> previousSymbolToOfficialCandidates = new HashMap<>();
 
     @Autowired
     public EnsemblRepositoryImpl(MongoTemplate mongoTemplate)
@@ -114,42 +121,91 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
     }
 
     private void initHugoSymbolToEntrezGeneIdMap() {
-        List<EnsemblCanonical> transcripts = mongoTemplate.findAll(EnsemblCanonical.class, CANONICAL_TRANSCRIPTS_COLLECTION);
+        List<EnsemblCanonical> transcripts =
+            mongoTemplate.findAll(EnsemblCanonical.class, CANONICAL_TRANSCRIPTS_COLLECTION);
+
+        // collect current approved symbols
+        Set<String> approvedSymbols = transcripts.stream()
+            .map(EnsemblCanonical::getHugoSymbol)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
         for (EnsemblCanonical transcript : transcripts) {
+            String officialSymbol = transcript.getHugoSymbol();
+            String entrezId = transcript.getEntrezGeneId();
+            String hgncId = transcript.getHgncId();
             String[] previousSymbols = transcript.getPreviousSymbols();
             String[] synonyms = transcript.getSynonyms();
 
-            hugoSymbolToEntrezGeneIdMap.put(transcript.getHugoSymbol(), transcript.getEntrezGeneId());
-            entrezGeneIdToHugoSymbolMap.put(transcript.getEntrezGeneId(), transcript.getHugoSymbol());
+            hugoSymbolToEntrezGeneIdMap.put(officialSymbol, entrezId);
+            entrezGeneIdToHugoSymbolMap.put(entrezId, officialSymbol);
 
-            // 1. treat previous symbols as an alias for current entrez id
-            // 2. add previous symbol to new symbol mapping
-            if (previousSymbols != null) {
-                for (String previousSymbol : previousSymbols) {
-                    List<String> aliases = geneAliasToEntrezGeneIdMap.getOrDefault(previousSymbol, new ArrayList<>());
-                    if (!aliases.contains(transcript.getEntrezGeneId())){
-                        aliases.add(transcript.getEntrezGeneId());
-                    }
-                    geneAliasToEntrezGeneIdMap.put(previousSymbol, aliases);
-                    previousGeneSymbolToOfficialHugoSymbolMap.put(previousSymbol, transcript.getHugoSymbol());
-                }
-            }
-            // add current entrez id to each of its aliases set of ids
+            // alias synonyms to entrez id
             if (synonyms != null) {
                 for (String synonym : synonyms) {
-                    List<String> aliases = geneAliasToEntrezGeneIdMap.getOrDefault(synonym, new ArrayList<>());
-                    if (!aliases.contains(transcript.getEntrezGeneId())){
-                        aliases.add(transcript.getEntrezGeneId());
+                    if (synonym == null) continue;
+                    List<String> aliases = geneAliasToEntrezGeneIdMap
+                        .computeIfAbsent(synonym, k -> new ArrayList<>());
+                    if (entrezId != null && !aliases.contains(entrezId)) {
+                        aliases.add(entrezId);
                     }
-                    geneAliasToEntrezGeneIdMap.put(synonym, aliases);
+                }
+            }
+
+            // previous symbols
+            if (previousSymbols != null) {
+                for (String previousSymbol : previousSymbols) {
+                    if (previousSymbol == null) continue;
+
+                    List<String> aliases = geneAliasToEntrezGeneIdMap
+                        .computeIfAbsent(previousSymbol, k -> new ArrayList<>());
+                    if (entrezId != null && !aliases.contains(entrezId)) {
+                        aliases.add(entrezId);
+                    }
+
+                    // only add previous symbols to map if previousSymbol is NOT reused as another current approved symbol
+                    // E.g. ETF1 is the new name for ERF, but ERF now is another gene’s name
+                    if (officialSymbol != null && !approvedSymbols.contains(previousSymbol)) {
+                        previousSymbolToOfficialCandidates
+                            .computeIfAbsent(previousSymbol, k -> new HashSet<>())
+                            .add(officialSymbol);
+
+                        // HGNC id map: (previousSymbol, hgncId) -> official symbol
+                        // Some genes have the same previous symbol (e.g. IRF4 and PWWP3A have the same previous_name)
+                        // This map has previousSymbol as the key, value is map<hgnc_id, officialSymbol>
+                        if (hgncId != null) {
+                            previousSymbolAndHgncToOfficial
+                                .computeIfAbsent(previousSymbol, k -> new HashMap<>())
+                                .put(hgncId, officialSymbol);
+                        }
+                    }
                 }
             }
         }
+
+        // keep only unambiguous previousSymbol to official symbol mappings in the simple map
+        for (Map.Entry<String, Set<String>> e : previousSymbolToOfficialCandidates.entrySet()) {
+            if (e.getValue().size() == 1) {
+                previousGeneSymbolToOfficialHugoSymbolMap.put(
+                    e.getKey(), e.getValue().iterator().next());
+            }
+        }
+    }
+    @Override
+    public String getOfficialHugoSymbol(String symbol) {
+        return previousGeneSymbolToOfficialHugoSymbolMap.getOrDefault(symbol, symbol);
     }
 
     @Override
-    public String getOfficialHugoSymbol(String hugoSymbol) {
-        return previousGeneSymbolToOfficialHugoSymbolMap.getOrDefault(hugoSymbol, hugoSymbol);
+    public String getOfficialHugoSymbol(String previousSymbol, String hgncId) {
+        if (previousSymbol == null || hgncId == null) {
+            return previousSymbol;
+        }
+        Map<String, String> byHgnc = previousSymbolAndHgncToOfficial.get(previousSymbol);
+        if (byHgnc == null) {
+            return previousSymbol;
+        }
+        return byHgnc.getOrDefault(hgncId, previousSymbol);
     }
 
     @Override
@@ -159,14 +215,21 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
 
     @Override
     public List<String> findEntrezGeneIdByHugoSymbol(String hugoSymbol, Boolean searchInAliases) {
-        List<String> entrezGeneIdMatches = Arrays.asList(hugoSymbolToEntrezGeneIdMap.get(hugoSymbol));
-        // if searching in aliases then also return matching entrez ids from alias map
-        if (searchInAliases) {
-            if (geneAliasToEntrezGeneIdMap.containsKey(hugoSymbol)) {
-                entrezGeneIdMatches.addAll(geneAliasToEntrezGeneIdMap.get(hugoSymbol));
+        List<String> entrezGeneIds = new ArrayList<>();
+        String entrezGeneId = hugoSymbolToEntrezGeneIdMap.get(hugoSymbol);
+        if (entrezGeneId != null && !entrezGeneIds.contains(entrezGeneId)) {
+            entrezGeneIds.add(entrezGeneId);
+        }
+
+        if (Boolean.TRUE.equals(searchInAliases)) {
+            List<String> aliasMatches = geneAliasToEntrezGeneIdMap.get(hugoSymbol);
+            if (aliasMatches != null) {
+                for (String id : aliasMatches) {
+                    if (id != null && !entrezGeneIds.contains(id)) entrezGeneIds.add(id);
+                }
             }
         }
-        return entrezGeneIdMatches;
+        return entrezGeneIds;
     }
 
     @Override

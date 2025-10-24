@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.persistence.internal.EnsemblRepositoryCustom;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.cbioportal.genome_nexus.persistence.internal.EnsemblRepositoryCustom;
 import org.springframework.stereotype.Component;
 
 
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 public class HugoGeneSymbolResolver
 {
     private final EnsemblRepositoryCustom ensemblRepository;
-
     @Autowired
     public HugoGeneSymbolResolver(EnsemblRepositoryCustom ensemblRepository) {
         this.ensemblRepository = ensemblRepository;
@@ -26,15 +25,20 @@ public class HugoGeneSymbolResolver
     @Nullable
     public String resolve(TranscriptConsequence transcriptConsequence)
     {
-        String hugoSymbol = null;
-        if (transcriptConsequence != null &&
-            transcriptConsequence.getGeneSymbol() != null &&
-            !transcriptConsequence.getGeneSymbol().trim().isEmpty())
-        {
-            hugoSymbol = ensemblRepository.getOfficialHugoSymbol(transcriptConsequence.getGeneSymbol());
+        if (transcriptConsequence == null) {
+            return null;
         }
-        
-        return hugoSymbol;
+
+        String symbol = transcriptConsequence.getGeneSymbol();
+        if (symbol == null || symbol.isEmpty()) {
+            return null;
+        }
+
+        String hgncId = transcriptConsequence.getHgncId();
+        if (hgncId != null && !hgncId.isEmpty()) {
+            return ensemblRepository.getOfficialHugoSymbol(symbol, hgncId);
+        }
+        return ensemblRepository.getOfficialHugoSymbol(symbol);
     }
 
     @Nullable
@@ -49,7 +53,7 @@ public class HugoGeneSymbolResolver
             Set<String> hugoSymbolSet = new HashSet<>();
             for (TranscriptConsequence transcriptConsequence : variantAnnotation.getTranscriptConsequences()) {
                 if (transcriptConsequence.getGeneSymbol() != null) {
-                    hugoSymbolSet.add(ensemblRepository.getOfficialHugoSymbol(transcriptConsequence.getGeneSymbol()));
+                    hugoSymbolSet.add(ensemblRepository.getOfficialHugoSymbol(transcriptConsequence.getGeneSymbol(), transcriptConsequence.getHgncId()));
                 }
             }
             hugoSymbol = hugoSymbolSet.stream().collect(Collectors.toList());

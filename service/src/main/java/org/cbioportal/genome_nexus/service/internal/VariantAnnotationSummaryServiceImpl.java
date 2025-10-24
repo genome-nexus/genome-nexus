@@ -1,14 +1,35 @@
 package org.cbioportal.genome_nexus.service.internal;
 
-import org.cbioportal.genome_nexus.component.annotation.*;
-import org.cbioportal.genome_nexus.model.TranscriptConsequenceSummary;
-import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
-import org.cbioportal.genome_nexus.model.VariantType;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.cbioportal.genome_nexus.component.annotation.AminoAcidsResolver;
+import org.cbioportal.genome_nexus.component.annotation.CanonicalTranscriptResolver;
+import org.cbioportal.genome_nexus.component.annotation.CodonChangeResolver;
+import org.cbioportal.genome_nexus.component.annotation.ConsequenceTermsResolver;
+import org.cbioportal.genome_nexus.component.annotation.ExonResolver;
+import org.cbioportal.genome_nexus.component.annotation.GenomicLocationResolver;
+import org.cbioportal.genome_nexus.component.annotation.HugoGeneSymbolResolver;
+import org.cbioportal.genome_nexus.component.annotation.ProteinChangeResolver;
+import org.cbioportal.genome_nexus.component.annotation.ProteinPositionResolver;
+import org.cbioportal.genome_nexus.component.annotation.RefSeqResolver;
+import org.cbioportal.genome_nexus.component.annotation.StrandSignResolver;
+import org.cbioportal.genome_nexus.component.annotation.TranscriptIdResolver;
+import org.cbioportal.genome_nexus.component.annotation.VariantClassificationResolver;
+import org.cbioportal.genome_nexus.component.annotation.VariantTypeResolver;
 import org.cbioportal.genome_nexus.model.IntergenicConsequenceSummary;
 import org.cbioportal.genome_nexus.model.IntergenicConsequences;
 import org.cbioportal.genome_nexus.model.RevisedProteinEffectJsonRecord;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
+import org.cbioportal.genome_nexus.model.TranscriptConsequenceSummary;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.model.VariantAnnotationSummary;
+import org.cbioportal.genome_nexus.model.VariantType;
+import org.cbioportal.genome_nexus.model.Vues;
+import org.cbioportal.genome_nexus.model.VuesJsonRecord;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.VariantAnnotationSummaryService;
 import org.cbioportal.genome_nexus.service.annotation.EntrezGeneIdResolver;
@@ -20,15 +41,6 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.cbioportal.genome_nexus.model.Vues;
-import org.cbioportal.genome_nexus.model.VuesJsonRecord;
 
 @Service
 public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSummaryService
@@ -52,6 +64,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     private final ExonResolver exonResolver;
     private final Map<String, Vues> vuesMap;
     private final Boolean overwriteByConfirmedRevueOnly;
+    private final Boolean replaceOldGeneSymbol;
 
     @Autowired
     public VariantAnnotationSummaryServiceImpl(
@@ -73,7 +86,8 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         VariantTypeResolver variantTypeResolver,
         ExonResolver exonResolver,
         @Value("${revue.url}") String vuesUrl,
-        @Value("${overwrite_by_confirmed_revue_only}") String overwriteByConfirmedRevueOnlyValue
+        @Value("${overwrite_by_confirmed_revue_only}") String overwriteByConfirmedRevueOnlyValue,
+        @Value("${replace_old_hgnc_gene_symbol:true}") String replaceOldGeneSymbolValue
     ) throws IOException {
         this.variantAnnotationService = verifiedVariantAnnotationService;
         this.ensemblService = ensemblService;
@@ -94,6 +108,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
         this.exonResolver = exonResolver;
         this.vuesMap = this.buildVuesMap(RevueDataFetcher.getRevueData(vuesUrl));
         this.overwriteByConfirmedRevueOnly = Boolean.parseBoolean(overwriteByConfirmedRevueOnlyValue);
+        this.replaceOldGeneSymbol = Boolean.parseBoolean(replaceOldGeneSymbolValue);
     }
 
     @Override
@@ -294,7 +309,15 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setAminoAcidAlt(this.aminoAcidsResolver.getAltAminoAcid(transcriptConsequence));
             summary.setEntrezGeneId(this.resolveEntrezGeneId(transcriptConsequence));
             summary.setConsequenceTerms(this.consequenceTermsResolver.resolve(transcriptConsequence));
-            summary.setHugoGeneSymbol(this.hugoGeneSymbolResolver.resolve(transcriptConsequence));
+            String hugoSymbolResolved;
+            if (Boolean.TRUE.equals(this.replaceOldGeneSymbol)) {
+                hugoSymbolResolved = this.hugoGeneSymbolResolver.resolve(transcriptConsequence);
+            } else {
+                hugoSymbolResolved = (transcriptConsequence != null)
+                    ? transcriptConsequence.getGeneSymbol()
+                    : null;
+            }
+            summary.setHugoGeneSymbol(hugoSymbolResolved);
             summary.setHgvspShort(this.proteinChangeResolver.resolveHgvspShort(annotation, transcriptConsequence));
             summary.setHgvsp(this.proteinChangeResolver.resolveHgvsp(transcriptConsequence));
             summary.setHgvsc(this.proteinChangeResolver.resolveHgvsc(transcriptConsequence));
