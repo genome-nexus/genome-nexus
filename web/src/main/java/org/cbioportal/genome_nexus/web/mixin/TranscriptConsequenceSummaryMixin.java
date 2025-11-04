@@ -12,6 +12,9 @@ public class TranscriptConsequenceSummaryMixin
     @ApiModelProperty(value = "Transcript id", required = true)
     private String transcriptId;
 
+    @ApiModelProperty(value = "Transcript id version")
+    private String transcriptIdVersion;
+
     @ApiModelProperty(value = "Codon change")
     private String codonChange;
 

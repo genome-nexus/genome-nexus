@@ -2,6 +2,7 @@ package org.cbioportal.genome_nexus.model;
 public class TranscriptConsequenceSummary
 {
     private String transcriptId;
+    private String transcriptIdVersion;
     private String codonChange;
     private String aminoAcids;
     private String aminoAcidRef;
@@ -36,6 +37,18 @@ public class TranscriptConsequenceSummary
         return transcriptId;
     }
 
+    public void setTranscriptId(String transcriptId) {
+        this.transcriptId = transcriptId;
+    }
+
+    public String getTranscriptIdVersion() {
+        return transcriptIdVersion;
+    }
+
+    public void setTranscriptIdVersion(String transcriptIdVersion) {
+        this.transcriptIdVersion = transcriptIdVersion;
+    }
+
     public String getAminoAcidAlt() {
 		return aminoAcidAlt;
 	}
@@ -51,10 +64,6 @@ public class TranscriptConsequenceSummary
 	public void setAminoAcidRef(String aminoAcidRef) {
 		this.aminoAcidRef = aminoAcidRef;
 	}
-
-	public void setTranscriptId(String transcriptId) {
-        this.transcriptId = transcriptId;
-    }
 
     public String getCodonChange() {
         return codonChange;

@@ -12,6 +12,9 @@ public class HotspotMixin
     @JsonProperty(value="transcript_id")
     private String transcriptId;
 
+    @JsonProperty(value="transcript_id_version")
+    private String transcriptIdVersion;
+
     @JsonProperty(value="residue")
     private String residue;
 

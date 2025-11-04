@@ -13,6 +13,10 @@ public class TranscriptConsequenceMixin
     @ApiModelProperty(value = "Ensembl transcript id", required = true)
     private String transcriptId;
 
+    @JsonProperty(value="transcript_id_version", required = true)
+    @ApiModelProperty(value = "Ensembl transcript id version", required = false)
+    private String transcriptIdVersion;
+
     @JsonProperty(value="hgvsp", required = true)
     @ApiModelProperty(value = "HGVSp", required = false)
     private String hgvsp;

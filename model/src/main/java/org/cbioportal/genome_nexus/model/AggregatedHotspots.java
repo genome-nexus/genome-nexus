@@ -7,6 +7,7 @@ public class AggregatedHotspots
     private GenomicLocation genomicLocation;
     private String variant;
     private String transcriptId;
+    private String transcriptIdVersion;
     private ProteinLocation proteinLocation;
     private List<Hotspot> hotspots;
 
@@ -48,5 +49,13 @@ public class AggregatedHotspots
 
     public void setTranscriptId(String transcriptId) {
         this.transcriptId = transcriptId;
+    }
+
+    public String getTranscriptIdVersion() {
+        return transcriptIdVersion;
+    }
+
+    public void setTranscriptIdVersion(String transcriptIdVersion) {
+        this.transcriptIdVersion = transcriptIdVersion;
     }
 }

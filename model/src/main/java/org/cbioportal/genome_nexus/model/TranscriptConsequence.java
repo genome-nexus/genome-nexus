@@ -44,6 +44,7 @@ import java.util.Map;
 public class TranscriptConsequence
 {
     private String transcriptId;
+    private String transcriptIdVersion;
 
     private String hgvsp;
     private String hgvsc;
@@ -101,6 +102,17 @@ public class TranscriptConsequence
     public void setTranscriptId(String transcriptId)
     {
         this.transcriptId = transcriptId;
+    }
+
+    @Field(value="transcript_id_version")
+    public String getTranscriptIdVersion()
+    {
+        return transcriptIdVersion;
+    }
+
+    public void setTranscriptIdVersion(String transcriptIdVersion)
+    {
+        this.transcriptIdVersion = transcriptIdVersion;
     }
 
     @Field(value="hgvsp")

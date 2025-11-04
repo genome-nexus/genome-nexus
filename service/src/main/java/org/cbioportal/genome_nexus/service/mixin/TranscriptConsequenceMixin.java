@@ -12,6 +12,9 @@ public class TranscriptConsequenceMixin
     @JsonProperty(value="transcript_id", required = true)
     private String transcriptId;
 
+    @JsonProperty(value="transcript_id_version", required = true)
+    private String transcriptIdVersion;
+
     @JsonProperty(value="hgvsp", required = true)
     private String hgvsp;
 

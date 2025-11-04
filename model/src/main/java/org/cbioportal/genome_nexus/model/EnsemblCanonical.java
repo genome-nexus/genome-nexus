@@ -23,6 +23,14 @@ public class EnsemblCanonical
     private String uniprotCanonicalTranscriptId;
     @Field(value="mskcc_canonical_transcript")
     private String mskccCanonicalTranscriptId;
+    @Field(value="ensembl_canonical_transcript_version")
+    private String ensemblCanonicalTranscriptVersion;
+    @Field(value="genome_nexus_canonical_transcript_version")
+    private String genomeNexusCanonicalTranscriptVersion;
+    @Field(value="uniprot_canonical_transcript_version")
+    private String uniprotCanonicalTranscriptVersion;
+    @Field(value="mskcc_canonical_transcript_version")
+    private String mskccCanonicalTranscriptVersion;
     @Field(value="hgnc_id")
     private String hgncId;
     @Field(value="approved_name")
@@ -137,5 +145,37 @@ public class EnsemblCanonical
 
     public void setHgncId(String hgncId) {
         this.hgncId = hgncId;
+    }
+
+    public String getEnsemblCanonicalTranscriptVersion() {
+        return this.ensemblCanonicalTranscriptVersion;
+    }
+
+    public void setEnsemblCanonicalTranscriptVersion(String ensemblCanonicalTranscriptVersion) {
+        this.ensemblCanonicalTranscriptVersion = ensemblCanonicalTranscriptVersion;
+    }
+
+    public String getGenomeNexusCanonicalTranscriptVersion() {
+        return this.genomeNexusCanonicalTranscriptVersion;
+    }
+
+    public void setGenomeNexusCanonicalTranscriptVersion(String genomeNexusCanonicalTranscriptVersion) {
+        this.genomeNexusCanonicalTranscriptVersion = genomeNexusCanonicalTranscriptVersion;
+    }
+
+    public String getUniprotCanonicalTranscriptVersion() {
+        return this.uniprotCanonicalTranscriptVersion;
+    }
+
+    public void setUniprotCanonicalTranscriptVersion(String uniprotCanonicalTranscriptVersion) {
+        this.uniprotCanonicalTranscriptVersion = uniprotCanonicalTranscriptVersion;
+    }
+
+    public String getMskccCanonicalTranscriptVersion() {
+        return this.mskccCanonicalTranscriptVersion;
+    }
+
+    public void setMskccCanonicalTranscriptVersion(String mskccCanonicalTranscriptVersion) {
+        this.mskccCanonicalTranscriptVersion = mskccCanonicalTranscriptVersion;
     }
 }

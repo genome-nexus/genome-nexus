@@ -16,6 +16,9 @@ public class HotspotMixin
     @ApiModelProperty(value = "Ensembl Transcript Id")
     private String transcriptId;
 
+    @ApiModelProperty(value = "Ensembl Transcript Id Version")
+    private String transcriptIdVersion;
+
     @ApiModelProperty(value = "Hotspot residue")
     private String residue;
 

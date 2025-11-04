@@ -19,6 +19,9 @@ public class EnsemblTranscript
     @Field(value=EnsemblTranscript.TRANSCRIPT_ID_FIELD_NAME)
     private String transcriptId;
 
+    @Field(value="transcript_id_version")
+    private String transcriptIdVersion;
+
     @Field(value="gene_stable_id")
     private String geneId;
 
@@ -55,6 +58,14 @@ public class EnsemblTranscript
 
     public void setTranscriptId(String transcriptId) {
         this.transcriptId = transcriptId;
+    }
+
+    public String getTranscriptIdVersion() {
+        return transcriptIdVersion;
+    }
+
+    public void setTranscriptIdVersion(String transcriptIdVersion) {
+        this.transcriptIdVersion = transcriptIdVersion;
     }
 
     public String getGeneId() {
