@@ -72,6 +72,3 @@ prioritize_cancer_gene_transcripts=true
 # Default: true
 # When set to false, queries bypass the cache and make direct calls to the web service, not saving any data to the database.
 cache.enabled=true
-
-# replace old HGNC gene symbol to the latest HGNC gene symbol in annotationSummary - transcriptConsequenceSummary
-replace_old_hgnc_gene_symbol=true
