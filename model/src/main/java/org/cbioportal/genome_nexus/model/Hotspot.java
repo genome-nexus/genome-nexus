@@ -52,6 +52,9 @@ public class Hotspot
     @Field(value="transcript_id")
     private String transcriptId;
 
+    @Field(value="transcript_id_version")
+    private String transcriptIdVersion;
+
     @Field(value="residue")
     private String residue;
 
@@ -87,6 +90,14 @@ public class Hotspot
 
     public void setTranscriptId(String transcriptId) {
         this.transcriptId = transcriptId;
+    }
+
+    public String getTranscriptIdVersion() {
+        return this.transcriptIdVersion;
+    }
+
+    public void setTranscriptIdVersion(String transcriptIdVersion) {
+        this.transcriptIdVersion = transcriptIdVersion;
     }
 
     public String getResidue() {
