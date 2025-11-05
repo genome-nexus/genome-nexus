@@ -248,10 +248,12 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
             .collect(Collectors.toSet());
 
         // CDKN2A is a special case where it has two canonical transcripts
-        // by default the first canonical transcript ENST00000304494 is returned
-        // if the isoform override source is mskcc then the second canonical transcript ENST00000361445 should be added as well
+        // by default the first canonical transcript ENST00000579755 is returned
+        // if the isoform override source is mskcc then the second canonical transcript ENST00000304494 should be added as well
+        // ENST00000579755 is MANE plus clinical p14, ENST00000304494 is (p16 MANE). Germline transcript is MANE plus clinical.
+
         if ("mskcc".equalsIgnoreCase(isoformOverrideSource)) {
-            canonicalTranscriptIds.add("ENST00000361570");
+            canonicalTranscriptIds.add("ENST00000304494");
         }
         return canonicalTranscriptIds;
     }
