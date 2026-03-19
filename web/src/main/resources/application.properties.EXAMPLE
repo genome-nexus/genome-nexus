@@ -72,3 +72,11 @@ prioritize_cancer_gene_transcripts=true
 # Default: true
 # When set to false, queries bypass the cache and make direct calls to the web service, not saving any data to the database.
 cache.enabled=true
+
+# vibe-vep subprocess integration
+# Set to true to enable the vibe-vep subprocess for variant annotation
+# vibe_vep.enabled=true
+# Path to the vibe-vep binary (default: vibe-vep)
+# vibe_vep.path=vibe-vep
+# Genome assembly to use (default: GRCh37)
+# vibe_vep.assembly=GRCh37
