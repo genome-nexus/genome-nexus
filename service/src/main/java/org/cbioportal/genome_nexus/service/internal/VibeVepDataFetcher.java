@@ -177,21 +177,118 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
     }
 
     /**
-     * Parse a comma-separated genomic location string.
-     * Format: "chromosome,start,end,referenceAllele,variantAllele"
-     * Example: "7,140753336,140753336,A,T"
+     * Parse a variant string into a GenomicLocation.
+     * Supports two formats:
+     *   - Comma-separated: "7,140753336,140753336,A,T"
+     *   - HGVS-like: "7:g.140753336A>T" or "12:g.25245351C>A"
      */
     private GenomicLocation parseGenomicLocation(String str) {
-        String[] parts = str.split(",");
-        if (parts.length < 5) {
-            throw new IllegalArgumentException("Invalid genomic location: " + str);
+        // Try comma-separated first.
+        if (str.contains(",")) {
+            String[] parts = str.split(",");
+            if (parts.length >= 5) {
+                return new GenomicLocation(
+                    parts[0],
+                    Integer.parseInt(parts[1]),
+                    Integer.parseInt(parts[2]),
+                    parts[3],
+                    parts[4]
+                );
+            }
         }
-        return new GenomicLocation(
-            parts[0],                    // chromosome
-            Integer.parseInt(parts[1]),  // start
-            Integer.parseInt(parts[2]),  // end
-            parts[3],                    // referenceAllele
-            parts[4]                     // variantAllele
-        );
+
+        // Try HGVS genomic notation: "7:g.140753336A>T"
+        if (str.contains(":g.")) {
+            return parseHgvsGenomic(str);
+        }
+
+        throw new IllegalArgumentException("Cannot parse variant: " + str);
+    }
+
+    /**
+     * Parse HGVS genomic notation into a GenomicLocation.
+     * Examples: "7:g.140753336A>T", "12:g.25245351C>A", "1:g.65325832_65325833insG", "3:g.114058003del"
+     */
+    private GenomicLocation parseHgvsGenomic(String hgvs) {
+        int colonIdx = hgvs.indexOf(':');
+        if (colonIdx < 0) {
+            throw new IllegalArgumentException("Invalid HGVS: " + hgvs);
+        }
+        String chrom = hgvs.substring(0, colonIdx);
+        String rest = hgvs.substring(colonIdx + 1);
+
+        // Strip "g." prefix
+        if (rest.startsWith("g.")) {
+            rest = rest.substring(2);
+        }
+
+        // Handle different mutation types (check delins before del since del is a substring)
+        if (rest.contains(">")) {
+            // SNV: 140753336A>T
+            int snvIdx = -1;
+            for (int i = 0; i < rest.length(); i++) {
+                if (!Character.isDigit(rest.charAt(i))) {
+                    snvIdx = i;
+                    break;
+                }
+            }
+            if (snvIdx < 0) {
+                throw new IllegalArgumentException("Invalid HGVS SNV: " + hgvs);
+            }
+            int pos = Integer.parseInt(rest.substring(0, snvIdx));
+            String alleles = rest.substring(snvIdx); // "A>T"
+            int gtIdx = alleles.indexOf('>');
+            String ref = alleles.substring(0, gtIdx);
+            String alt = alleles.substring(gtIdx + 1);
+            return new GenomicLocation(chrom, pos, pos, ref, alt);
+        } else if (rest.contains("ins")) {
+            // Insertion: 65325832_65325833insG
+            int insIdx = rest.indexOf("ins");
+            String posPart = rest.substring(0, insIdx);
+            String alt = rest.substring(insIdx + 3);
+            int start, end;
+            if (posPart.contains("_")) {
+                String[] positions = posPart.split("_");
+                start = Integer.parseInt(positions[0]);
+                end = Integer.parseInt(positions[1]);
+            } else {
+                start = Integer.parseInt(posPart);
+                end = start + 1;
+            }
+            return new GenomicLocation(chrom, start, end, "-", alt);
+        } else if (rest.contains("delins")) {
+            // Delins: 9057113_9057114delinsCTG
+            int delinsIdx = rest.indexOf("delins");
+            String posPart = rest.substring(0, delinsIdx);
+            String alt = rest.substring(delinsIdx + 6);
+            int start, end;
+            if (posPart.contains("_")) {
+                String[] positions = posPart.split("_");
+                start = Integer.parseInt(positions[0]);
+                end = Integer.parseInt(positions[1]);
+            } else {
+                start = Integer.parseInt(posPart);
+                end = start;
+            }
+            return new GenomicLocation(chrom, start, end, "-", alt);
+        } else if (rest.contains("del")) {
+            // Deletion: 114058003del or 114058003_114058005del
+            int delIdx = rest.indexOf("del");
+            String posPart = rest.substring(0, delIdx);
+            String deleted = rest.substring(delIdx + 3); // may be empty or contain deleted bases
+            int start, end;
+            if (posPart.contains("_")) {
+                String[] positions = posPart.split("_");
+                start = Integer.parseInt(positions[0]);
+                end = Integer.parseInt(positions[1]);
+            } else {
+                start = Integer.parseInt(posPart);
+                end = start;
+            }
+            String ref = deleted.isEmpty() ? "-" : deleted;
+            return new GenomicLocation(chrom, start, end, ref, "-");
+        }
+
+        throw new IllegalArgumentException("Unrecognized HGVS pattern: " + hgvs);
     }
 }
