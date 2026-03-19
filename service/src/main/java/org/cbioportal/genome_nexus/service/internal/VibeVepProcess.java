@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 import javax.annotation.PreDestroy;
 
@@ -48,9 +49,15 @@ public class VibeVepProcess {
     public synchronized String annotate(String inputJsonLine) throws IOException {
         ensureRunning();
 
-        processStdin.write(inputJsonLine);
-        processStdin.newLine();
-        processStdin.flush();
+        try {
+            processStdin.write(inputJsonLine);
+            processStdin.newLine();
+            processStdin.flush();
+        } catch (IOException e) {
+            LOG.warn("Failed to write to vibe-vep process, restarting", e);
+            destroyProcess();
+            throw new IOException("vibe-vep write failed; will restart on next call", e);
+        }
 
         String result = processStdout.readLine();
         if (result == null) {
@@ -93,13 +100,13 @@ public class VibeVepProcess {
         pb.redirectErrorStream(false);
 
         process = pb.start();
-        processStdin = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        processStdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        processStdin = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8));
+        processStdout = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
 
         // Start a thread to log stderr
         final Process proc = process;
         Thread stderrThread = new Thread(() -> {
-            try (BufferedReader stderr = new BufferedReader(new InputStreamReader(proc.getErrorStream()))) {
+            try (BufferedReader stderr = new BufferedReader(new InputStreamReader(proc.getErrorStream(), StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = stderr.readLine()) != null) {
                     LOG.warn("[vibe-vep stderr] " + line);
