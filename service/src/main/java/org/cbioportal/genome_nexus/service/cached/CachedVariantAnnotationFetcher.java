@@ -5,8 +5,8 @@ import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.persistence.VariantAnnotationRepository;
 import org.cbioportal.genome_nexus.persistence.internal.VariantAnnotationRepositoryImpl;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
+import org.cbioportal.genome_nexus.service.ExternalResourceFetcher;
 import org.cbioportal.genome_nexus.service.transformer.ExternalResourceTransformer;
-import org.cbioportal.genome_nexus.service.remote.VEPDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class CachedVariantAnnotationFetcher extends BaseCachedVariantAnnotationF
     @Autowired
     public CachedVariantAnnotationFetcher(ExternalResourceTransformer<VariantAnnotation> transformer,
                                           VariantAnnotationRepository repository,
-                                          VEPDataFetcher fetcher,
+                                          ExternalResourceFetcher<VariantAnnotation> fetcher,
                                           @Value("${vep.max_page_size:200}") Integer maxPageSize)
     {
         super(VariantAnnotationRepositoryImpl.COLLECTION,
