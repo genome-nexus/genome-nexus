@@ -119,13 +119,29 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
         return parseAnnotations(raw);
     }
 
+    /**
+     * Convert a variant string to the appropriate input for vibe-vep.
+     * Comma-separated genomic locations → GenomicLocation JSON.
+     * Everything else (HGVS, protein notation) → passed as-is (plain text).
+     * vibe-vep's stream mode auto-detects JSON vs plain text input.
+     */
+    private String toVibeVepInput(String variantStr) throws Exception {
+        if (variantStr.contains(",")) {
+            // Comma-separated genomic location → convert to JSON
+            GenomicLocation gl = parseGenomicLocation(variantStr);
+            return inputMapper.writeValueAsString(gl);
+        }
+        // HGVS, protein notation, genomic coords — send as-is
+        return variantStr;
+    }
+
     private DBObject fetchRawForVariants(List<String> variantStrings) {
         BasicDBList results = new BasicDBList();
         for (String variantStr : variantStrings) {
             try {
-                GenomicLocation gl = parseGenomicLocation(variantStr);
-                String glJson = inputMapper.writeValueAsString(gl);
-                String resultJson = vibeVepProcess.annotate(glJson);
+                String input = toVibeVepInput(variantStr);
+                String resultJson = vibeVepProcess.annotate(input);
+                extractWarnings(resultJson, variantStr);
                 DBObject parsed = (DBObject) JSON.parse(resultJson);
                 results.add(parsed);
             } catch (Exception e) {
@@ -139,15 +155,17 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
         List<VariantAnnotation> results = new ArrayList<>();
         for (String variantStr : variantStrings) {
             try {
-                GenomicLocation gl = parseGenomicLocation(variantStr);
-                String glJson = inputMapper.writeValueAsString(gl);
-                String resultJson = vibeVepProcess.annotate(glJson);
+                String input = toVibeVepInput(variantStr);
+                String resultJson = vibeVepProcess.annotate(input);
                 VariantAnnotation ann = outputMapper.readValue(resultJson, VariantAnnotation.class);
                 ann.setSuccessfullyAnnotated(true);
                 ann.setAnnotationJSON(resultJson);
                 if (ann.getVariant() == null) {
                     ann.setVariant(variantStr);
                 }
+
+                // Check for warnings from vibe-vep (e.g. transcript version mismatch).
+                extractWarnings(resultJson, variantStr);
                 results.add(ann);
             } catch (Exception e) {
                 LOG.warn("Failed to annotate variant: " + variantStr, e);
@@ -174,6 +192,25 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
             }
         }
         return results;
+    }
+
+    /**
+     * Extract and log any warnings from the vibe-vep JSON response.
+     * Warnings indicate non-fatal issues like transcript version mismatches.
+     */
+    @SuppressWarnings("unchecked")
+    private void extractWarnings(String json, String variant) {
+        try {
+            Map<String, Object> parsed = outputMapper.readValue(json, Map.class);
+            Object warnings = parsed.get("warnings");
+            if (warnings instanceof List) {
+                for (Object w : (List<Object>) warnings) {
+                    LOG.warn("vibe-vep warning for " + variant + ": " + w);
+                }
+            }
+        } catch (Exception e) {
+            // ignore parse errors for warning extraction
+        }
     }
 
     /**
