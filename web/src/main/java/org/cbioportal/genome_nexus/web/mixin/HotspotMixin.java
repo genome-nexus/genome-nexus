@@ -39,4 +39,7 @@ public class HotspotMixin
 
     @ApiModelProperty(value="Splice mutation count")
     private Integer spliceCount;
+
+    @ApiModelProperty(value = "Cancer Hotspots data version: 'v2' (legacy) or 'v3'")
+    private String version;
 }

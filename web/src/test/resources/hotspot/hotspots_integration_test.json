@@ -163,5 +163,29 @@
         "truncating_count": 1,
         "inframe_count": 0,
         "splice_count": 0
+    },
+    {
+        "hugo_symbol": "V3_TEST_GENE",
+        "transcript_id": "ENST99999999901",
+        "residue": "R100",
+        "tumor_count": 10,
+        "type": "single residue",
+        "missense_count": 10,
+        "truncating_count": 0,
+        "inframe_count": 0,
+        "splice_count": 0,
+        "version": "v2"
+    },
+    {
+        "hugo_symbol": "V3_TEST_GENE",
+        "transcript_id": "ENST99999999901",
+        "residue": "R200",
+        "tumor_count": 5,
+        "type": "single residue",
+        "missense_count": 5,
+        "truncating_count": 0,
+        "inframe_count": 0,
+        "splice_count": 0,
+        "version": "v3"
     }
 ]

@@ -71,10 +71,25 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         this.notationConverter = notationConverter;
     }
 
+    private List<Hotspot> filterByVersion(List<Hotspot> hotspots, boolean includeV3) {
+        if (includeV3) {
+            return hotspots;
+        }
+        return hotspots.stream()
+            .filter(h -> !"v3".equals(h.getVersion()))
+            .collect(Collectors.toList());
+    }
+
     @Override
     public List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException
     {
-        return this.hotspotRepository.findByTranscriptId(transcriptId);
+        return this.getHotspots(transcriptId, false);
+    }
+
+    @Override
+    public List<Hotspot> getHotspots(String transcriptId, boolean includeV3) throws CancerHotspotsWebServiceException
+    {
+        return this.filterByVersion(this.hotspotRepository.findByTranscriptId(transcriptId), includeV3);
     }
 
     @Override
@@ -212,6 +227,58 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     public List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations)
         throws CancerHotspotsWebServiceException
     {
+        return this.getHotspotAnnotationsByProteinLocations(proteinLocations, false);
+    }
+
+    // --- v3-aware overloads ---
+
+    private List<AggregatedHotspots> filterAggregatedByVersion(List<AggregatedHotspots> aggregated, boolean includeV3) {
+        if (includeV3) {
+            return aggregated;
+        }
+        for (AggregatedHotspots agg : aggregated) {
+            agg.setHotspots(this.filterByVersion(agg.getHotspots(), includeV3));
+        }
+        return aggregated;
+    }
+
+    @Override
+    public List<AggregatedHotspots> getHotspotsByTranscriptIds(List<String> transcriptIds, boolean includeV3) throws CancerHotspotsWebServiceException
+    {
+        return this.filterAggregatedByVersion(this.getHotspotsByTranscriptIds(transcriptIds), includeV3);
+    }
+
+    @Override
+    public List<Hotspot> getHotspotAnnotationsByVariant(String variant, boolean includeV3)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        CancerHotspotsWebServiceException
+    {
+        return this.filterByVersion(this.getHotspotAnnotationsByVariant(variant), includeV3);
+    }
+
+    @Override
+    public List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants, boolean includeV3) throws CancerHotspotsWebServiceException
+    {
+        return this.filterAggregatedByVersion(this.getHotspotAnnotationsByVariants(variants), includeV3);
+    }
+
+    @Override
+    public List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation, boolean includeV3)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        CancerHotspotsWebServiceException
+    {
+        return this.filterByVersion(this.getHotspotAnnotationsByGenomicLocation(genomicLocation), includeV3);
+    }
+
+    @Override
+    public List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations, boolean includeV3) throws CancerHotspotsWebServiceException
+    {
+        return this.filterAggregatedByVersion(this.getHotspotAnnotationsByGenomicLocations(genomicLocations), includeV3);
+    }
+
+    @Override
+    public List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations, boolean includeV3) throws CancerHotspotsWebServiceException
+    {
         List<AggregatedHotspots> hotspots = new ArrayList<>();
         for (ProteinLocation proteinLocation : proteinLocations)
         {
@@ -221,7 +288,7 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
             aggregatedHotspots.setProteinLocation(proteinLocation);
 
             // query hotspots service by protein location
-            aggregatedHotspots.setHotspots(hotspotFilter.proteinLocationHotspotsFilter(this.getHotspots(proteinLocation.getTranscriptId()), proteinLocation));
+            aggregatedHotspots.setHotspots(hotspotFilter.proteinLocationHotspotsFilter(this.getHotspots(proteinLocation.getTranscriptId(), includeV3), proteinLocation));
             hotspots.add(aggregatedHotspots);
         }
 

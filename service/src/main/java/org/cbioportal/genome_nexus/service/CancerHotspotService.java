@@ -55,4 +55,15 @@ public interface CancerHotspotService
     List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
     List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations) throws CancerHotspotsWebServiceException;
+
+    // v3-aware overloads: when includeV3 is true, v3 hotspots are included in results
+    List<Hotspot> getHotspots(String transcriptId, boolean includeV3) throws CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotsByTranscriptIds(List<String> transcriptIds, boolean includeV3) throws CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspotAnnotationsByVariant(String variant, boolean includeV3)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants, boolean includeV3) throws CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation, boolean includeV3)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations, boolean includeV3) throws CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations, boolean includeV3) throws CancerHotspotsWebServiceException;
 }
