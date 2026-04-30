@@ -45,6 +45,6 @@ public class GenomicLocationUtil {
                 sb.append(nucleotide);
             } 
         }
-        return sb.toString();
+        return sb.reverse().toString();
     }
 }

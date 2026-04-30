@@ -439,7 +439,18 @@ public class VariantAnnotationService
 
     private void normalizeStrand(VariantAnnotation variantAnnotation) {
         if (variantAnnotation.getStrand() != null && variantAnnotation.getStrand() == -1) {
-            variantAnnotation.setAlleleString(GenomicLocationUtil.getReverseStrandAllele(variantAnnotation.getAlleleString()));
+            String alleleString = variantAnnotation.getAlleleString();
+            if (alleleString != null) {
+                String[] parts = alleleString.split("/");
+                StringBuilder result = new StringBuilder();
+                for (int i = 0; i < parts.length; i++) {
+                    if (i > 0) {
+                        result.append("/");
+                    }
+                    result.append(GenomicLocationUtil.getReverseStrandAllele(parts[i]));
+                }
+                variantAnnotation.setAlleleString(result.toString());
+            }
         }
     }
 
