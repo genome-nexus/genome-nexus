@@ -26,7 +26,7 @@ The label depends on which consequence term VEP assigns as the **most severe** (
 | `p.*(pos)*` | `splice_polypyrimidine_tract_variant` | Acceptor −3 to acceptor −17 (polypyrimidine tract at 3′ end of intron) | VEP 105 (Dec 2021) |
 | `p.*(pos)*` | `intron_variant` | Deeper intronic, outside all ranges above | VEP early versions |
 
-The diagram below shows exactly which bp positions each term covers, relative to the 5′ donor and 3′ acceptor splice junctions. Positions are numbered starting from ±1 immediately adjacent to the junction — there is no position 0 in HGVS notation. The intron interior is compressed (`···`) since its length varies by gene.
+The diagram below shows bp positions each term covers, relative to the 5′ donor and 3′ acceptor splice junctions.
 
 ![VEP Splice Consequence Terms — Genomic Range](https://github.com/user-attachments/assets/68ac7f45-ab77-45ed-9bf1-e863072d5747)
 
@@ -86,7 +86,7 @@ The intronic offset (the `-5` part) is stripped before this calculation; only th
 - **VEP returns a 4xx error** — for example, a malformed variant string that VEP rejects.
 - **Any unexpected exception** during annotation processing.
 
-When `successfully_annotated: true`, it means VEP responded with HTTP 200 and the result was transformed without error — but note that a true value does **not** guarantee `transcript_consequences` is populated (see below).
+When `successfully_annotated: true`, it means VEP responded with HTTP 200 and the result was transformed without error, but `transcript_consequences` could be null.
 
 > **Note for developers:** The flag is set by `setSuccessfullyAnnotated(true)` only on the path where `super.fetchAndCache(id)` returns a non-null `VariantAnnotation`. All exception paths (`HttpServerErrorException`, `HttpClientErrorException`, and the generic `catch (Exception e)`) create an empty `VariantAnnotation` without calling that setter, leaving the field false. There is no retry logic anywhere in the codebase — on VEP failure, the error is logged at ERROR level under `org.cbioportal.genome_nexus.service.cached.BaseCachedExternalResourceFetcher` and the placeholder is returned immediately.
 
@@ -319,7 +319,7 @@ In `application.properties`, you can configure caching by setting `cache.enabled
 - `cache.enabled=true`: Enables or disables caching for annotation sources such as vep.annotation, index, my_variant_info.annotation. Default value is true.
 - `cache.enabled=false`: Queries bypass the cache and make direct calls to the web service, not saving any data to the database.
 
-Failed VEP calls are never cached. Successful HTTP 200 responses from VEP are always cached, even if `transcript_consequences` is null (e.g. for intergenic variants).
+Failed VEP calls are never cached. Successful HTTP 200 responses from VEP are cached, even if `transcript_consequences` is null (e.g. for intergenic variants).
 
 | Scenario | Cached to MongoDB? |
 |---|---|
