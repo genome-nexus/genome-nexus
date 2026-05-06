@@ -30,11 +30,11 @@ The diagram below shows bp positions each term covers, relative to the 5′ dono
 
 ![VEP Splice Consequence Terms — Genomic Range](https://github.com/user-attachments/assets/68ac7f45-ab77-45ed-9bf1-e863072d5747)
 
-- **RED** (`splice_donor_variant` / `splice_acceptor_variant`) — the 2 bp GT/AG dinucleotides at the intron ends; HIGH impact.
-- **BLUE** (`splice_region_variant`) — appears in four segments: the 3 exon-proximal bases on each side of both junctions, plus intron positions +3 to +8 (donor) and −3 to −8 (acceptor).
-- **ORANGE** (`splice_donor_5th_base_variant`) — exactly the +5 intron position after the donor.
-- **GREEN** (`splice_donor_region_variant`) — intron positions +3 to +6 after the donor, overlapping with `splice_region_variant`; assigned by newer VEP versions.
-- **PURPLE** (`splice_polypyrimidine_tract_variant`) — intron positions −3 to −17 before the acceptor (the polypyrimidine tract), partially overlapping with `splice_region_variant`.
+- **RED** (`splice_donor_variant` / `splice_acceptor_variant`)
+- **BLUE** (`splice_region_variant`)
+- **ORANGE** (`splice_donor_5th_base_variant`)
+- **GREEN** (`splice_donor_region_variant`)
+- **PURPLE** (`splice_polypyrimidine_tract_variant`)
 
 Note that `splice_region_variant` overlaps with both `splice_donor_region_variant` (+3 to +6) and `splice_polypyrimidine_tract_variant` (−3 to −8). The three newer terms were built-in only from **VEP 105 (Dec 2021)** onward — previously they required the SpliceRegion plugin, and positions in the overlap zones were annotated as `splice_region_variant` instead. This means the same variant can produce `X(pos)_splice` on a genome nexus instance backed by VEP ≤104 and `p.*(pos)*` on one backed by VEP 105+.
 
