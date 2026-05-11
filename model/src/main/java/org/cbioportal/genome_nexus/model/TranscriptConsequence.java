@@ -59,6 +59,7 @@ public class TranscriptConsequence
     private String aminoAcids;
     private String hgncId;
     private String canonical;
+    private String biotype;
     private Double polyphenScore;
     private String polyphenPrediction;
     private Double siftScore;
@@ -288,6 +289,17 @@ public class TranscriptConsequence
     public void setCanonical(String canonical)
     {
         this.canonical = canonical;
+    }
+
+    @Field(value="biotype")
+    public String getBiotype()
+    {
+        return biotype;
+    }
+
+    public void setBiotype(String biotype)
+    {
+        this.biotype = biotype;
     }
 
     @Field(value="exon")
