@@ -1,5 +1,214 @@
 # Frequently Asked Questions
 
+## What is Genome Nexus?
+
+Genome Nexus is a variant annotation and interpretation service. It takes a genomic variant as input, queries [VEP (Variant Effect Predictor)](https://www.ensembl.org/info/docs/tools/vep/index.html) for functional consequences, optionally enriches the result with data from external sources (gnomAD, ClinVar, COSMIC, signaldb, Mutation Assessor, etc.), and returns structured JSON containing transcript consequences, protein changes, variant classifications, and more.
+
+---
+
+## What genome builds are supported?
+
+GRCh37 (hg19) and GRCh38 (hg38) are both supported, but as **separate deployments** — each instance is backed by a build-specific VEP endpoint. The build is fixed at deployment time in `application.properties`. There is no runtime parameter to switch builds; you must query the instance that matches your variant coordinates.
+
+---
+
+## What variant input formats are accepted?
+
+Genome Nexus accepts two input formats: **genomic HGVS notation** and **genomic location** (chromosome, start, end, ref, alt).
+
+### Genomic HGVS notation
+
+Used with the `/annotation` endpoints. The string is forwarded directly to VEP.
+
+| Variant type | Example |
+|---|---|
+| SNP | `7:g.140453136A>T` |
+| Insertion | `17:g.41242962_41242963insGA` |
+| Deletion | `22:g.36689419_36689421del` |
+| Deletion-insertion | `19:g.46141892_46141893delinsAA` |
+| Multi-nucleotide | `12:g.25398285_25398286delinsAA` |
+
+### Genomic location
+
+Use the `/annotation/genomic` endpoints. Genome Nexus converts the location to HGVS internally before querying VEP.
+
+**GET — comma-delimited string** (format: `chromosome,start,end,referenceAllele,variantAllele`):
+
+```
+GET /annotation/genomic/7,140453136,140453136,A,T
+```
+
+**POST — JSON array** of genomic location objects:
+
+```json
+[
+  {
+    "chromosome": "7",
+    "start": 140453136,
+    "end": 140453136,
+    "referenceAllele": "A",
+    "variantAllele": "T"
+  }
+]
+```
+
+Alleles must contain only the characters `A`, `C`, `G`, `T`, or `-` (deletion placeholder). Chromosome accepts `1`–`22`, `X`, `Y`, and `MT`.
+
+---
+
+## What is the difference between `/annotation` and `/annotation/summary`?
+
+| Endpoint | Returns |
+|---|---|
+| `GET /annotation/{variant}` | Raw VEP output plus any requested enrichments (my_variant_info, nucleotide context, etc.). All VEP fields are present. |
+| `GET /annotation/summary/{variant}` | A processed summary: resolved `variantClassification`, `HGVSp_Short`, protein position, Hugo symbol, RefSeq IDs, and other derived fields. Raw VEP fields are omitted. |
+
+The summary endpoint calls the annotation endpoint internally and then runs the resolver pipeline on top of the result. Use `/annotation` when you need raw VEP fields; use `/annotation/summary` when you want pre-resolved, MAF-compatible fields.
+
+---
+
+## How do I annotate multiple variants at once?
+
+All annotation endpoints have a batch POST variant. Results are returned in the same order as the input. Variants that fail VEP annotation still appear in the response with `successfully_annotated: false` so array indices stay aligned.
+
+### HGVS notation — array of strings
+
+```
+POST /annotation
+Content-Type: application/json
+
+["7:g.140453136A>T", "17:g.41242962_41242963insGA", "22:g.36689419_36689421del"]
+```
+
+### Genomic location — array of objects
+
+```
+POST /annotation/genomic
+Content-Type: application/json
+
+[
+  {
+    "chromosome": "7",
+    "start": 140453136,
+    "end": 140453136,
+    "referenceAllele": "A",
+    "variantAllele": "T"
+  },
+  {
+    "chromosome": "17",
+    "start": 41242962,
+    "end": 41242963,
+    "referenceAllele": "-",
+    "variantAllele": "GA"
+  }
+]
+```
+
+---
+
+## What does the `fields` parameter do?
+
+`fields` is a comma-separated list of enrichment sources to activate for a request. By default only the raw VEP annotation is returned. Each named field triggers an additional data fetch and merges its result into the response.
+
+All valid values (case-insensitive):
+
+| Field | Data added |
+|---|---|
+| `annotation_summary` | Resolved canonical-transcript summary: `variantClassification`, `HGVSp_Short`, protein position, Hugo symbol, RefSeq transcript IDs, codon change, etc. |
+| `clinvar` | ClinVar clinical significance and review status |
+| `hotspots` | Whether the variant falls on a known cancer hotspot (from cancerhotspots.org) |
+| `mutation_assessor` | Mutation Assessor functional impact score and prediction |
+| `my_variant_info` | Aggregated data from MyVariantInfo: gnomAD allele frequencies, ClinVar, COSMIC IDs, dbSNP rsIDs |
+| `nucleotide_context` | Trinucleotide context around the variant |
+| `oncokb` | OncoKB oncogenicity and therapeutic actionability — **requires a token** (see below) |
+| `ptms` | Post-translational modification sites overlapping the variant position |
+| `signal` | SIGNAL database mutation significance data |
+
+Example: `GET /annotation/7:g.140453136A>T?fields=annotation_summary,my_variant_info,hotspots`
+
+### OncoKB token
+
+OncoKB requires authentication. Pass your token via the `token` query parameter as a JSON map:
+
+```
+token={"oncokb":"YOUR_ONCOKB_TOKEN"}
+```
+
+Without a valid token the OncoKB enricher will be called but the API request to OncoKB will fail, and the `oncokb` field in the response will be empty. Tokens can be obtained from [oncokb.org](https://www.oncokb.org).
+
+---
+
+## How is the canonical transcript selected?
+
+Genome Nexus picks one transcript per variant using this priority order:
+
+1. **Isoform override list** — A curated list of preferred transcript IDs (controlled by the `isoformOverrideSource` query parameter, default `mskcc`). If any of the variant's transcripts appear in that list, only those are considered.
+2. **Cancer gene preference** — If multiple transcripts survived step 1 and the instance has `prioritize_cancer_gene_transcripts=true` (default), transcripts whose gene is in the OncoKB cancer gene list are preferred. If none qualify, all step-1 candidates are kept.
+3. **Most severe consequence** — If multiple transcripts are still tied, the one with the most severe consequence term wins.
+4. **Fallback to VEP canonical** — If no transcript matched the isoform override list at all, Genome Nexus falls back to whichever transcript VEP itself flagged as canonical, again using most-severe-consequence to break any tie.
+
+The selected transcript populates `transcriptConsequenceSummary` in the summary response.
+
+> **Note for developers:** The isoform override step is [`IsoformAnnotationEnricher`](https://github.com/genome-nexus/genome-nexus/blob/master/service/src/main/java/org/cbioportal/genome_nexus/service/enricher/IsoformAnnotationEnricher.java); the final pick is [`CanonicalTranscriptResolver`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/CanonicalTranscriptResolver.java).
+
+---
+
+## What is `most_severe_consequence`, and how does it differ from `variantClassification`?
+
+`most_severe_consequence` is a field returned directly by VEP. It is the single highest-priority consequence term across **all transcripts** for the variant (e.g. `missense_variant`, `stop_gained`). VEP computes it using its own consequence severity ranking.
+
+`variantClassification` is computed by Genome Nexus. It takes the highest-priority consequence term for the **canonical transcript only**, maps it to a MAF-style label (e.g. `Missense_Mutation`, `Nonsense_Mutation`), and optionally overrides it with a reVUE curation. See [How is `variantClassification` resolved?](#how-is-variantclassification-resolved) for the full logic.
+
+The two fields can disagree when the most severe consequence in any transcript differs from the consequence in the canonical transcript.
+
+---
+
+## What is reVUE, and how does it affect annotations?
+
+reVUE (Revised Variant Understander and Evaluator) is a dataset of manually curated variant reclassifications, maintained at [github.com/knowledgesystems/reVUE-data](https://github.com/knowledgesystems/reVUE-data). It captures cases where VEP's predicted consequence is incorrect — most commonly for splice variants whose true functional impact differs from the sequence-based prediction.
+
+At startup, Genome Nexus downloads the reVUE and replaces the VEP-derived `variantClassification`.
+
+Whether unconfirmed reVUE entries are applied is controlled by `overwrite_by_confirmed_revue_only` in `application.properties`:
+- `true` — only entries with `confirmed: true` in the dataset can override VEP.
+- `false` — all reVUE entries override VEP regardless of confirmation status.
+
+---
+
+## What is the difference between `hgvsp` and `HGVSp_Short`?
+
+`hgvsp` is the raw protein notation returned by VEP. It uses three-letter amino acid codes and includes the protein/transcript ID prefix, for example: `ENSP00000288602.6:p.Val600Glu`.
+
+`HGVSp_Short` is Genome Nexus's processed version. It strips the prefix, converts three-letter amino acid codes to single-letter codes, and fills in the notation when VEP did not return an `hgvsp` (e.g. for splice variants or frameshifts). Result: `p.V600E`.
+
+See [How is `HGVSp_Short` resolved?](#how-is-hgvsp_short-resolved) for the full resolution logic.
+
+---
+
+## Why can the same variant return different annotations on different Genome Nexus instances?
+
+Several deployment-level factors affect the annotation:
+
+- **VEP version** — newer VEP versions introduce additional consequence terms (e.g. `splice_donor_5th_base_variant` added in VEP 105), which change `variantClassification` and `HGVSp_Short` for splice-region variants.
+- **Genome build** — GRCh37 and GRCh38 instances use different VEP endpoints and reference sequences. Coordinates and transcripts differ.
+- **reVUE configuration** — `overwrite_by_confirmed_revue_only=true` vs `false` controls whether unconfirmed curations override VEP.
+- **Canonical transcript configuration** — `prioritize_cancer_gene_transcripts=true` can select a different transcript than an instance where it is disabled.
+- **Cache state** — a cached annotation from an older VEP version will differ from a fresh annotation if VEP was upgraded without clearing the MongoDB cache.
+
+---
+
+## How do I force a re-annotation of a cached variant?
+
+Two options:
+
+1. **Disable caching globally** — set `cache.enabled=false` in `application.properties` and restart. All requests will bypass the cache and call VEP directly. Re-enable afterward to resume caching.
+
+2. **Delete the cached document** — connect to the MongoDB instance and delete the document from the `vep.annotation` collection where the `_id` field matches the variant string. The next request for that variant will call VEP fresh and cache the new result.
+
+There is no per-request cache-bypass parameter in the API.
+
+---
+
 ## When is `HGVSp_Short` empty?
 
 `HGVSp_Short` is intentionally left empty in these cases:

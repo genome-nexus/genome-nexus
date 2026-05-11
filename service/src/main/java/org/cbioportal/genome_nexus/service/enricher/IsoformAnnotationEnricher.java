@@ -41,7 +41,7 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
         }
 
         // get transcript overrides for the given isoform override source
-        // if no isoform override source is provided, then the default is uniprot
+        // if no isoform override source is provided, then the default is mskcc
         Set<String> predefinedCanonicalTranscriptIds = this.ensemblService.getCanonicalTranscriptIdsBySource(
             IsoformOverrideSource.getOrDefault(this.source)
         );
