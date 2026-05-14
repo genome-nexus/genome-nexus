@@ -138,18 +138,165 @@ Without a valid token the OncoKB enricher will be called but the API request to 
 
 ---
 
-## How is the canonical transcript selected?
+## How does Genome Nexus pick a transcript for a variant?
 
-Genome Nexus picks one transcript per variant using this priority order:
+When a variant overlaps multiple transcripts, Genome Nexus selects one "canonical" transcript through a multi-step pipeline. VEP's own canonical flag is **reset** before the pipeline runs — it is not used as input.
 
-1. **Isoform override list** — A curated list of preferred transcript IDs (controlled by the `isoformOverrideSource` query parameter, default `mskcc`). If any of the variant's transcripts appear in that list, only those are considered.
-2. **Cancer gene preference** — If multiple transcripts survived step 1 and the instance has `prioritize_cancer_gene_transcripts=true` (default), transcripts whose gene is in the OncoKB cancer gene list are preferred. If none qualify, all step-1 candidates are kept.
-3. **Most severe consequence** — If multiple transcripts are still tied, the one with the most severe consequence term wins.
-4. **Fallback to VEP canonical** — If no transcript matched the isoform override list at all, Genome Nexus falls back to whichever transcript VEP itself flagged as canonical, again using most-severe-consequence to break any tie.
+Each step can only shrink the candidate list (or leave it unchanged when the filter finds no matches).
 
-The selected transcript populates `transcriptConsequenceSummary` in the summary response.
+**Table of Contents**
 
-> **Note for developers:** The isoform override step is [`IsoformAnnotationEnricher`](https://github.com/genome-nexus/genome-nexus/blob/master/service/src/main/java/org/cbioportal/genome_nexus/service/enricher/IsoformAnnotationEnricher.java); the final pick is [`CanonicalTranscriptResolver`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/CanonicalTranscriptResolver.java).
+- [Overview](#overview)
+- [Step 1 — Gene-level biotype filter](#step-1--gene-level-biotype-filter)
+- [Step 2 — OncoKB gene preference](#step-2--oncokb-gene-preference)
+- [Step 3 — Per-transcript biotype filter](#step-3--per-transcript-biotype-filter)
+- [Step 4 — Isoform override](#step-4--isoform-override)
+- [Step 5 — Mark canonical and resolve](#step-5--mark-canonical-and-resolve)
+  - [How the prioritizer picks one transcript](#how-the-prioritizer-picks-one-transcript)
+    - [Pass A — Match most_severe_consequence](#pass-a--match-most_severe_consequence)
+    - [Pass B — Highest-priority consequence term](#pass-b--highest-priority-consequence-term)
+    - [Final tiebreaker — VEP list order](#final-tiebreaker--vep-list-order)
+- [Source code references](#source-code-references)
+
+---
+
+### Overview
+
+```
+VEP transcript_consequences
+  │
+  ▼
+Step 1: Gene-level biotype filter    (keep genes with best biotype)
+  │
+  ▼
+Step 2: OncoKB gene preference       (prefer cancer genes)
+  │
+  ▼
+Step 3: Per-transcript biotype filter (keep transcripts with best biotype)
+  │
+  ▼
+Step 4: Isoform override             (keep transcripts in override set)
+  │
+  ▼
+Step 5: Mark canonical + resolve     (pick exactly one transcript)
+  │
+  ▼
+transcriptConsequenceSummary
+```
+![Flowchart of transcript picking](https://github.com/user-attachments/assets/f8c3ab90-0c99-4ea7-aa89-04bb7224f47f)
+---
+
+### Step 1 — Gene-level biotype filter
+
+Group all transcripts by gene. For each gene, find the best (lowest-number) biotype among its transcripts. Then compare across genes and keep only transcripts from genes whose best biotype equals the global minimum.
+
+This ensures a gene with a `protein_coding` transcript always beats a gene with only `lncRNA` or `pseudogene` transcripts.
+
+**Biotype priority table** (lower number = higher priority):
+
+| Priority | Biotypes |
+|---|---|
+| 1 | `protein_coding` |
+| 2 | `IG_*`, `TR_*` (immunoglobulin / T-cell receptor genes) |
+| 3 | `miRNA`, `snRNA`, `snoRNA`, `lncRNA`, `lincRNA` |
+| 4 | `Mt_tRNA`, `Mt_rRNA`, `vault_RNA`, `rRNA`, `ribozyme` |
+| 5 | `antisense`, `sense_intronic`, `sense_overlapping`, `misc_RNA`, `scRNA` |
+| 6 | `processed_transcript`, `TEC` |
+| 7 | `retained_intron`, `nonsense_mediated_decay`, `non_stop_decay` |
+| 8 | All pseudogene types |
+| 9 | `artifact` |
+| 10 | Anything not in the above list |
+
+---
+
+### Step 2 — OncoKB gene preference
+
+Among surviving genes, check whether any gene symbol appears in the OncoKB cancer gene list. If at least one gene qualifies, keep only transcripts from OncoKB genes and discard the rest. If no gene is in the list, all candidates pass through unchanged.
+
+This runs at the **gene** level so that an isoform override for an incidental bystander gene cannot outrank a cancer gene's transcript.
+
+---
+
+### Step 3 — Per-transcript biotype filter
+
+Within the surviving genes from Step 2, apply the same biotype priority table again, but now at the **individual transcript** level. Keep only transcripts whose biotype has the lowest (best) priority value. For example, if one transcript is `protein_coding` (1) and another is `nonsense_mediated_decay` (7), only the `protein_coding` transcript survives.
+
+---
+
+### Step 4 — Isoform override
+
+Check the configured isoform override set (controlled by the `isoformOverrideSource` query parameter; default `mskcc`). Among the remaining transcripts, keep only those whose transcript ID appears in the override set. If **no** transcript matches the override set (e.g., the curated transcript is too far from the variant to appear in VEP's output), all Step 3 candidates are kept unchanged.
+
+---
+
+### Step 5 — Highest consequence term
+
+For all transcripts that survived Steps 1–4,
+| Scenario | Action |
+|---|---|
+| Exactly **1** transcript marked canonical | Return it immediately — no further logic needed. |
+| **Multiple** transcripts marked canonical | Run the **prioritizer** (described below) on just the survived transcripts. |
+| **0** transcripts marked canonical | Run the **prioritizer** on **all** original transcripts as a fallback. |
+
+#### How the prioritizer picks one transcript
+
+The [`TranscriptConsequencePrioritizer`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/TranscriptConsequencePrioritizer.java) works in two passes to narrow candidates, then uses list position as a final tiebreaker.
+
+##### Pass A — Match `most_severe_consequence`
+
+VEP returns a top-level `most_severe_consequence` string for the whole variant (e.g., `missense_variant`). This is the single most severe consequence term across **all** transcripts, computed by VEP itself.
+
+The prioritizer scans every candidate transcript and collects those whose `consequence_terms` list contains this exact term (case-insensitive match). This narrows the pool to transcripts that actually carry the variant's most impactful effect.
+
+If one transcript matches, all other transcripts are discarded.
+If more than one transcript matches, those transcripts carry forward to Pass B.
+If **no** transcript matches (rare — can happen when VEP's term is not in any transcript's list), all candidates carry forward to Pass B unchanged.
+
+##### Pass B — Highest-priority consequence term
+
+Among the transcripts from Pass A, the prioritizer scans every `consequence_terms` entry and looks up its numeric priority in the `EFFECT_PRIORITY` map. It finds the **single lowest value** (= most severe) across all terms of all candidates.
+
+Then it keeps only transcripts that have at least one term at that best priority level, and discards the rest.
+
+**Effect priority table** (lower number = more severe; selected examples):
+
+| Priority | Consequence terms |
+|---|---|
+| 1 | `transcript_ablation`, `exon_loss_variant` |
+| 2 | `splice_donor_variant`, `splice_acceptor_variant` |
+| 3 | `stop_gained`, `frameshift_variant`, `stop_lost` |
+| 4 | `start_lost`, `initiator_codon_variant` |
+| 5 | `transcript_amplification` |
+| 7 | `inframe_insertion`, `inframe_deletion`, `disruptive_inframe_insertion`, `disruptive_inframe_deletion` |
+| 8 | `protein_altering_variant` |
+| 9 | `missense_variant`, `conservative_missense_variant`, `rare_amino_acid_variant` |
+| 10 | `splice_region_variant`, `splice_donor_5th_base_variant`, `splice_donor_region_variant` |
+| 11 | `synonymous_variant`, `start_retained_variant`, `stop_retained_variant` |
+| 13 | `coding_sequence_variant`, `mature_mirna_variant`, `exon_variant` |
+| 14 | `5_prime_utr_variant`, `3_prime_utr_variant` |
+| 16 | `intron_variant`, `non_coding_transcript_variant` |
+| 19 | `upstream_gene_variant`, `downstream_gene_variant` |
+| 20 | `regulatory_region_variant`, `tfbs_ablation` |
+| 21 | `intergenic_variant`, `sequence_variant` |
+
+(The full map contains ~60 terms. See `EFFECT_PRIORITY` in the [source code](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/TranscriptConsequencePrioritizer.java) for the complete list.)
+
+##### Final tiebreaker — VEP list order
+
+If multiple transcripts still tie after both passes, the prioritizer returns `bestCandidates.get(0)` — the **first** one in the list. Because the candidate list preserves VEP's original `transcript_consequences` array order throughout the pipeline, VEP's ordering is the ultimate tiebreaker.
+
+As a last-resort fallback (if no transcript had any recognized consequence term at all), the code returns `transcripts.get(0)` — the first transcript in the original input list.
+
+---
+
+### Source code references
+
+| Component | Class | Role |
+|---|---|---|
+| Pipeline orchestrator | [`IsoformAnnotationEnricher`](https://github.com/genome-nexus/genome-nexus/blob/master/service/src/main/java/org/cbioportal/genome_nexus/service/enricher/IsoformAnnotationEnricher.java) | Steps 1–4, marks canonical |
+| Final transcript pick | [`CanonicalTranscriptResolver`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/CanonicalTranscriptResolver.java) | Step 5 branching logic |
+| Consequence ranking | [`TranscriptConsequencePrioritizer`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/TranscriptConsequencePrioritizer.java) | Pass A + Pass B + tiebreaker |
+| Detailed walkthrough | [Canonical-Transcript-Selection-Analysis.md](Canonical-Transcript-Selection-Analysis.md) | Full examples and edge cases |
 
 ---
 
