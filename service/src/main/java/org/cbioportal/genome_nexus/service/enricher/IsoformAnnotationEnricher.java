@@ -142,36 +142,37 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
             return;
         }
 
-        // Override source is configured: take full control of canonical flags.
-        // Reset all VEP canonical flags; we will re-derive them below.
         for (TranscriptConsequence transcript : annotation.getTranscriptConsequences()) {
             transcript.setCanonical(null);
         }
 
-        // Step 1 — biotype (always first): keep only transcripts with the best biotype priority.
-        // This ensures protein_coding always beats antisense/pseudogene/etc.
-        List<TranscriptConsequence> candidates = filterByBestBiotype(annotation.getTranscriptConsequences());
+        // Step 1 — gene-level biotype filter: keep transcripts from genes whose best biotype
+        // equals the global best. Ensures a protein_coding gene beats a lncRNA-only gene.
+        List<TranscriptConsequence> candidates = filterByBestBiotypeGeneLevel(annotation.getTranscriptConsequences());
 
-        // Step 2 — isoform override (tiebreaker): among the best-biotype transcripts, prefer
-        // those listed in the configured override source. If none of the best-biotype transcripts
-        // match the override list (e.g. the override transcript was not returned by VEP for this
-        // position), keep all best-biotype transcripts.
+        // Step 2 — OncoKB gene preference: among remaining genes, narrow to OncoKB genes if any.
+        if (Boolean.parseBoolean(prioritizeOncokbGeneTranscriptsConfig)) {
+            Set<String> oncokbGenes = candidates.stream()
+                .map(TranscriptConsequence::getGeneSymbol)
+                .filter(g -> g != null && oncokbService.getOncokbGeneSymbolList().contains(g))
+                .collect(Collectors.toSet());
+            if (!oncokbGenes.isEmpty()) {
+                candidates = candidates.stream()
+                    .filter(t -> oncokbGenes.contains(t.getGeneSymbol()))
+                    .collect(Collectors.toList());
+            }
+        }
+
+        // Step 3 — per-transcript biotype filter: within selected genes, keep only transcripts
+        // with the best biotype (protein_coding beats retained_intron, etc.).
+        candidates = filterByBestBiotype(candidates);
+
+        // Step 4 — isoform override source: prefer transcripts in the configured override set.
         List<TranscriptConsequence> overrideCandidates = this.findCanonicalTranscriptCandidates(
             candidates, predefinedCanonicalTranscriptIds
         );
-        if (overrideCandidates.size() > 0) {
+        if (!overrideCandidates.isEmpty()) {
             candidates = overrideCandidates;
-        }
-
-        // Step 3 — oncokb (tiebreaker): among remaining candidates, prefer oncokb gene transcripts.
-        if (candidates.size() > 1 && Boolean.parseBoolean(prioritizeOncokbGeneTranscriptsConfig)) {
-            List<TranscriptConsequence> oncokbFiltered = candidates
-                .stream()
-                .filter(t -> oncokbService.getOncokbGeneSymbolList().contains(t.getGeneSymbol()))
-                .collect(Collectors.toList());
-            if (oncokbFiltered.size() > 0) {
-                candidates = oncokbFiltered;
-            }
         }
 
         // Mark all remaining candidates as canonical.
@@ -182,6 +183,32 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
 
     private static int getBiotypePriority(String biotype) {
         return BIOTYPE_PRIORITY.getOrDefault(biotype != null ? biotype : "", 10);
+    }
+
+    // Group transcripts by gene; keep only those from genes whose best biotype equals the
+    // global minimum across all genes. Uses geneId as the grouping key, falling back to
+    // geneSymbol for transcripts that lack a geneId.
+    private static List<TranscriptConsequence> filterByBestBiotypeGeneLevel(List<TranscriptConsequence> transcripts) {
+        Map<String, Integer> geneBestBiotype = new HashMap<>();
+        for (TranscriptConsequence t : transcripts) {
+            String gene = t.getGeneId() != null ? t.getGeneId() : t.getGeneSymbol();
+            if (gene == null) continue;
+            geneBestBiotype.merge(gene, getBiotypePriority(t.getBiotype()), Math::min);
+        }
+        int globalBest = geneBestBiotype.values().stream()
+            .mapToInt(Integer::intValue)
+            .min()
+            .orElse(10);
+        Set<String> bestGenes = geneBestBiotype.entrySet().stream()
+            .filter(e -> e.getValue() == globalBest)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toSet());
+        return transcripts.stream()
+            .filter(t -> {
+                String gene = t.getGeneId() != null ? t.getGeneId() : t.getGeneSymbol();
+                return bestGenes.contains(gene);
+            })
+            .collect(Collectors.toList());
     }
 
     // Keep only the candidates that share the best (lowest) biotype priority score.

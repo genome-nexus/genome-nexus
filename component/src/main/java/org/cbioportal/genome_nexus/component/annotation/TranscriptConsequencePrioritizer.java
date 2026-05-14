@@ -4,6 +4,7 @@ import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,38 +22,57 @@ public class TranscriptConsequencePrioritizer
             return null;
         }
 
-        Integer highestPriority = Integer.MAX_VALUE;
-        TranscriptConsequence highestPriorityTranscript = null;
-
-        for (TranscriptConsequence transcript : transcripts)
-        {
-            List<String> consequenceTerms = transcript.getConsequenceTerms();
-
-            for (String consequenceTerm : consequenceTerms)
-            {
-                if (EFFECT_PRIORITY.getOrDefault(consequenceTerm.toLowerCase(), Integer.MAX_VALUE) < highestPriority)
-                {
-                    highestPriorityTranscript = transcript;
-                    highestPriority = EFFECT_PRIORITY.getOrDefault(consequenceTerm.toLowerCase(), Integer.MAX_VALUE);
+        // Pass A: collect all transcripts whose terms include mostSevereConsequence (case-insensitive).
+        // Collects all matches rather than returning the first, so list order does not decide.
+        String normalizedTarget = mostSevereConsequence != null ? mostSevereConsequence.trim().toLowerCase() : null;
+        List<TranscriptConsequence> candidates = new ArrayList<>();
+        if (normalizedTarget != null && !normalizedTarget.isEmpty()) {
+            for (TranscriptConsequence t : transcripts) {
+                if (t.getConsequenceTerms() != null) {
+                    for (String term : t.getConsequenceTerms()) {
+                        if (term.trim().toLowerCase().equals(normalizedTarget)) {
+                            candidates.add(t);
+                            break;
+                        }
+                    }
                 }
+            }
+        }
+        if (candidates.isEmpty()) {
+            candidates = new ArrayList<>(transcripts);
+        }
 
-                if (consequenceTerm.trim().equals(mostSevereConsequence)) {
-                    return transcript;
+        // Pass B: among candidates, find the minimum EFFECT_PRIORITY value, then keep all
+        // transcripts that have a term at that priority. Collects all ties rather than
+        // returning the first, so that the final get(0) is an explicit understood fallback.
+        int bestPriority = Integer.MAX_VALUE;
+        for (TranscriptConsequence t : candidates) {
+            if (t.getConsequenceTerms() != null) {
+                for (String term : t.getConsequenceTerms()) {
+                    int p = EFFECT_PRIORITY.getOrDefault(term.toLowerCase(), Integer.MAX_VALUE);
+                    if (p < bestPriority) {
+                        bestPriority = p;
+                    }
+                }
+            }
+        }
+        List<TranscriptConsequence> bestCandidates = new ArrayList<>();
+        for (TranscriptConsequence t : candidates) {
+            if (t.getConsequenceTerms() != null) {
+                for (String term : t.getConsequenceTerms()) {
+                    if (EFFECT_PRIORITY.getOrDefault(term.toLowerCase(), Integer.MAX_VALUE) == bestPriority) {
+                        bestCandidates.add(t);
+                        break;
+                    }
                 }
             }
         }
 
-        // no match, pick one with the highest priority
-        if (highestPriorityTranscript != null) {
-            return highestPriorityTranscript;
+        if (!bestCandidates.isEmpty()) {
+            return bestCandidates.get(0);
         }
 
-        // if for whatever reason that is null, just return the first one.
-        if (transcripts.size() > 0) {
-            return transcripts.get(0);
-        }
-
-        return null;
+        return transcripts.get(0);
     }
 
     @Nullable
