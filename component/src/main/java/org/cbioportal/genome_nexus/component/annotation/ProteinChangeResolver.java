@@ -25,7 +25,7 @@ public class ProteinChangeResolver
     };
 
     public static final Set<String> SPLICE_SITE_VARIANTS = new HashSet<>(
-        Arrays.asList("splice_acceptor_variant", "splice_donor_variant", "splice_region_variant")
+        Arrays.asList("splice_acceptor_variant", "splice_donor_variant", "splice_region_variant", "splice_donor_region_variant", "splice_donor_5th_base_variant")
     );
 
     private final CanonicalTranscriptResolver canonicalTranscriptResolver;
