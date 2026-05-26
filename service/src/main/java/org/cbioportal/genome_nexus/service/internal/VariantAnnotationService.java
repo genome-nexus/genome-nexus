@@ -284,6 +284,7 @@ public class VariantAnnotationService
                     .filter((normToOrig) -> normToOrig[0].equals(variantAnnotation.getVariantId()))
                     .findFirst();
                 if (normalizedToOriginal.isPresent()) {
+                    variantAnnotation.setVariant(normalizedToOriginal.get()[0]);
                     if (cacheEnabled) {
                         this.saveToIndexDb(variantAnnotation);
                     }
