@@ -1,24 +1,20 @@
 package org.cbioportal.genome_nexus.service.cached;
 
-import com.google.gson.Gson;
-import com.mongodb.DBObject;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.cbioportal.genome_nexus.persistence.VariantAnnotationRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cbioportal.genome_nexus.persistence.GenericMongoRepository;
-import org.cbioportal.genome_nexus.service.CachedExternalResourceFetcher;
+import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.cbioportal.genome_nexus.persistence.VariantAnnotationRepository;
 import org.cbioportal.genome_nexus.service.ExternalResourceFetcher;
 import org.cbioportal.genome_nexus.service.ResourceTransformer;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
-import org.cbioportal.genome_nexus.util.NaturalOrderComparator;
-import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.mongodb.DBObject;
 
 public abstract class BaseCachedVariantAnnotationFetcher
     extends BaseCachedExternalResourceFetcher<VariantAnnotation, VariantAnnotationRepository>
@@ -60,7 +56,7 @@ public abstract class BaseCachedVariantAnnotationFetcher
     @Override
     protected String extractId(DBObject dbObject)
     {
-        return (String)dbObject.get("input");
+        return (String)dbObject.get("id");
     }
 
     @Override 

@@ -281,9 +281,10 @@ public class VariantAnnotationService
                 // add new annotation to index 
                 Optional<String[]> normalizedToOriginal = normalizedVariantToOriginalVariant
                     .stream()
-                    .filter((normToOrig) -> normToOrig[0].equals(variantAnnotation.getVariant()))
+                    .filter((normToOrig) -> normToOrig[0].equals(variantAnnotation.getVariantId()))
                     .findFirst();
                 if (normalizedToOriginal.isPresent()) {
+                    variantAnnotation.setVariant(normalizedToOriginal.get()[0]);
                     if (cacheEnabled) {
                         this.saveToIndexDb(variantAnnotation);
                     }
