@@ -1,13 +1,13 @@
 package org.cbioportal.genome_nexus.component.annotation;
 
-import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.cbioportal.genome_nexus.model.TranscriptConsequence;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TranscriptConsequencePrioritizer
@@ -133,40 +133,40 @@ public class TranscriptConsequencePrioritizer
         effectPriority.put("splice_donor_5th_base_variant", 10); // A sequence variant that causes a change at the 5th base pair after the start of the intron in the orientation of the transcript
         effectPriority.put("splice_region_variant", 10); // A sequence variant in which a change has occurred within the region of the splice site, either within 1-3 bases of the exon or 3-8 bases of the intron
         effectPriority.put("splice_donor_region_variant", 10); // A sequence variant that falls in the region between the 3rd and 6th base after splice junction (5' end of intron)
-        effectPriority.put("splice_polypyrimidine_tract_variant", 10); // A sequence variant that falls in the polypyrimidine tract at 3' end of intron between 17 and 3 bases from the end (acceptor -3 to acceptor -17)
-        effectPriority.put("synonymous_variant", 11); // A sequence variant where there is no resulting change to the encoded amino acid
-        effectPriority.put("start_retained_variant", 11); // A sequence variant where at least one base in the start codon is changed, but the start remains
-        effectPriority.put("stop_retained_variant", 11); // A sequence variant where at least one base in the terminator codon is changed, but the terminator remains
-        effectPriority.put("incomplete_terminal_codon_variant", 12); // A sequence variant where at least one base of the final codon of an incompletely annotated transcript is changed
+        effectPriority.put("splice_polypyrimidine_tract_variant", 11); // A sequence variant that falls in the polypyrimidine tract at 3' end of intron between 17 and 3 bases from the end (acceptor -3 to acceptor -17)
+        effectPriority.put("synonymous_variant", 12); // A sequence variant where there is no resulting change to the encoded amino acid
+        effectPriority.put("start_retained_variant", 12); // A sequence variant where at least one base in the start codon is changed, but the start remains
+        effectPriority.put("stop_retained_variant", 12); // A sequence variant where at least one base in the terminator codon is changed, but the terminator remains
+        effectPriority.put("incomplete_terminal_codon_variant", 13); // A sequence variant where at least one base of the final codon of an incompletely annotated transcript is changed
         // modifier
-        effectPriority.put("coding_sequence_variant", 13); // A sequence variant that changes the coding sequence
-        effectPriority.put("mature_mirna_variant", 13); // A transcript variant located with the sequence of the mature miRNA
-        effectPriority.put("exon_variant", 13); // A sequence variant that changes exon sequence
-        effectPriority.put("5_prime_utr_variant", 14); // A UTR variant of the 5" UTR
-        effectPriority.put("5_prime_utr_premature_start_codon_gain_variant", 14); // snpEff-specific effect, creating a start codon in 5" UTR
-        effectPriority.put("3_prime_utr_variant", 14); // A UTR variant of the 3" UTR
-        effectPriority.put("non_coding_exon_variant", 15); // A sequence variant that changes non-coding exon sequence
-        effectPriority.put("non_coding_transcript_exon_variant", 15); // snpEff-specific synonym for non_coding_exon_variant
-        effectPriority.put("non_coding_transcript_variant", 16); // A transcript variant of a non coding RNA gene
-        effectPriority.put("nc_transcript_variant", 16); // A transcript variant of a non coding RNA gene (older alias for non_coding_transcript_variant)
-        effectPriority.put("intron_variant", 16); // A transcript variant occurring within an intron
-        effectPriority.put("intragenic_variant", 16); // A variant that occurs within a gene but falls outside of all transcript features. This occurs when alternate transcripts of a gene do not share overlapping sequence
-        effectPriority.put("intragenic", 16); // snpEff-specific synonym of intragenic_variant
-        effectPriority.put("nmd_transcript_variant", 17); // A variant in a transcript that is the target of NMD
-        effectPriority.put("coding_transcript_variant", 18); // A transcript variant of a protein coding gene
-        effectPriority.put("upstream_gene_variant", 19); // A sequence variant located 5" of a gene
-        effectPriority.put("downstream_gene_variant", 19); // A sequence variant located 3" of a gene
-        effectPriority.put("tfbs_ablation", 20); // A feature ablation whereby the deleted region includes a transcription factor binding site
-        effectPriority.put("tfbs_amplification", 20); // A feature amplification of a region containing a transcription factor binding site
-        effectPriority.put("tf_binding_site_variant", 20); // A sequence variant located within a transcription factor binding site
-        effectPriority.put("regulatory_region_ablation", 20); // A feature ablation whereby the deleted region includes a regulatory region
-        effectPriority.put("regulatory_region_amplification", 20); // A feature amplification of a region containing a regulatory region
-        effectPriority.put("regulatory_region_variant", 20); // A sequence variant located within a regulatory region
-        effectPriority.put("regulatory_region", 20); // snpEff-specific effect that should really be regulatory_region_variant
-        effectPriority.put("intergenic_variant", 21); // A sequence variant located in the intergenic region, between genes
-        effectPriority.put("intergenic_region", 21); // snpEff-specific effect that should really be intergenic_variant
-        effectPriority.put("sequence_variant", 21); // A sequence_variant is a non exact copy of a sequence_feature or genome exhibiting one or more sequence_alteration
-        effectPriority.put("", 22);
+        effectPriority.put("coding_sequence_variant", 14); // A sequence variant that changes the coding sequence
+        effectPriority.put("mature_mirna_variant", 14); // A transcript variant located with the sequence of the mature miRNA
+        effectPriority.put("exon_variant", 14); // A sequence variant that changes exon sequence
+        effectPriority.put("5_prime_utr_variant", 15); // A UTR variant of the 5" UTR
+        effectPriority.put("5_prime_utr_premature_start_codon_gain_variant", 15); // snpEff-specific effect, creating a start codon in 5" UTR
+        effectPriority.put("3_prime_utr_variant", 15); // A UTR variant of the 3" UTR
+        effectPriority.put("non_coding_exon_variant", 16); // A sequence variant that changes non-coding exon sequence
+        effectPriority.put("non_coding_transcript_exon_variant", 16); // snpEff-specific synonym for non_coding_exon_variant
+        effectPriority.put("non_coding_transcript_variant", 17); // A transcript variant of a non coding RNA gene
+        effectPriority.put("nc_transcript_variant", 17); // A transcript variant of a non coding RNA gene (older alias for non_coding_transcript_variant)
+        effectPriority.put("intron_variant", 17); // A transcript variant occurring within an intron
+        effectPriority.put("intragenic_variant", 17); // A variant that occurs within a gene but falls outside of all transcript features. This occurs when alternate transcripts of a gene do not share overlapping sequence
+        effectPriority.put("intragenic", 17); // snpEff-specific synonym of intragenic_variant
+        effectPriority.put("nmd_transcript_variant", 18); // A variant in a transcript that is the target of NMD
+        effectPriority.put("coding_transcript_variant", 19); // A transcript variant of a protein coding gene
+        effectPriority.put("upstream_gene_variant", 20); // A sequence variant located 5" of a gene
+        effectPriority.put("downstream_gene_variant", 20); // A sequence variant located 3" of a gene
+        effectPriority.put("tfbs_ablation", 21); // A feature ablation whereby the deleted region includes a transcription factor binding site
+        effectPriority.put("tfbs_amplification", 21); // A feature amplification of a region containing a transcription factor binding site
+        effectPriority.put("tf_binding_site_variant", 21); // A sequence variant located within a transcription factor binding site
+        effectPriority.put("regulatory_region_ablation", 21); // A feature ablation whereby the deleted region includes a regulatory region
+        effectPriority.put("regulatory_region_amplification", 21); // A feature amplification of a region containing a regulatory region
+        effectPriority.put("regulatory_region_variant", 21); // A sequence variant located within a regulatory region
+        effectPriority.put("regulatory_region", 21); // snpEff-specific effect that should really be regulatory_region_variant
+        effectPriority.put("intergenic_variant", 22); // A sequence variant located in the intergenic region, between genes
+        effectPriority.put("intergenic_region", 22); // snpEff-specific effect that should really be intergenic_variant
+        effectPriority.put("sequence_variant", 22); // A sequence_variant is a non exact copy of a sequence_feature or genome exhibiting one or more sequence_alteration
+        effectPriority.put("", 23);
         return effectPriority;
     }
 }
