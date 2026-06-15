@@ -119,10 +119,19 @@ public class VerifiedVariantAnnotationService
     private VariantAnnotation verifyOrFailAnnotation(VariantAnnotation annotation, VariantType variantType)
     {
         String ref = "";
+        if (annotation.getOriginalVariantQuery() == null) {
+            // no original query available, cannot verify
+            return annotation;
+        }
+        if (annotation.getErrorMessage() != null) {
+            // VEP already reported an error for this variant — preserve its message
+            return createFailedAnnotation(annotation.getOriginalVariantQuery(), annotation.getVariant(), annotation.getErrorMessage());
+        }
         if (variantType == VariantType.HGVS) {
             ref = GenomicVariantUtil.providedReferenceAlleleFromHgvs(annotation.getOriginalVariantQuery());
         } else if (variantType == VariantType.GENOMIC_LOCATION) {
-            ref = notationConverter.parseGenomicLocation(annotation.getOriginalVariantQuery()).getReferenceAllele();
+            GenomicLocation genomicLocation = notationConverter.parseGenomicLocation(annotation.getOriginalVariantQuery());
+            ref = genomicLocation != null ? genomicLocation.getReferenceAllele() : "";
         }
 
         if (annotation.getStrand() != null && annotation.getStrand() == -1) {
@@ -156,9 +165,18 @@ public class VerifiedVariantAnnotationService
             // validation complete
             return annotation;
         }
-        // return annotation failure
-        if (annotation.getErrorMessage() == null) {
-            annotation.setErrorMessage( String.format("Reference allele extracted from response (%s) does not match given reference allele (%s)", responseReferenceAllele.length() == 0 ? "-" : responseReferenceAllele, ref.length() == 0 ? "-" : ref));
+        // return annotation failure message
+        String variant = annotation.getVariant() != null ? annotation.getVariant() : annotation.getOriginalVariantQuery();
+        String refDisplay = ref.length() == 0 ? "-" : ref;
+        if (responseReferenceAllele.length() == 0) {
+            // VEP response had no alleleString — can't determine actual ref at this position
+            annotation.setErrorMessage(String.format(
+                "Reference allele for %s could not be determined from VEP response - verify that the position exists in the genome assembly (GRCh37/hg19) and the reference allele (%s) is correct",
+                variant, refDisplay));
+        } else {
+            annotation.setErrorMessage(String.format(
+                "Reference allele extracted from response (%s) does not match reference allele given by input %s (%s)",
+                responseReferenceAllele, variant, refDisplay));
         }
         return createFailedAnnotation(annotation.getOriginalVariantQuery(), annotation.getVariant(), annotation.getErrorMessage());
     }

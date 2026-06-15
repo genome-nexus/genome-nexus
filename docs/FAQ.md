@@ -438,13 +438,37 @@ The intronic offset (the `-5` part) is stripped before this calculation; only th
 
 `successfully_annotated: false` means Genome Nexus could not obtain a valid annotation from VEP for that variant. The most common causes:
 
+- **Reference allele mismatch** — the reference allele you provided does not match what the genome assembly has at that position. The `errorMessage` field will contain: `1:g.1020385C>A: Reference allele extracted from input (C) does not match reference allele from genome (T)`.
+- **Invalid HGVS notation** — the variant string could not be parsed. The `errorMessage` will say: `Invalid HGVS notation '<variant>': could not be parsed.`
+- **Chromosome or position not found** — the chromosome doesn't exist in the reference genome or the position is out of range.
 - **VEP is down or unreachable** — any HTTP 5xx or connection error results in a placeholder annotation with this flag set to false.
-- **VEP returns a 4xx error** — for example, a malformed variant string that VEP rejects.
-- **Any unexpected exception** during annotation processing.
+- **Reference allele verification failure** — even if VEP responds successfully, Genome Nexus verifies the reference allele in the response against your input. Two distinct messages depending on what VEP returned:
+  - Actual mismatch (VEP returned an allele but it differs): `Reference allele extracted from response (T) does not match reference allele given by input 7,140453136,140453136,A,T (A)`
+  - Unknown (VEP returned no allele string — position may not exist in the assembly): `Reference allele for 7,140453136,140453136,A,T could not be determined from VEP response - verify that the position exists in the genome assembly (GRCh37/hg19) and the reference allele (A) is correct`
 
 When `successfully_annotated: true`, it means VEP responded with HTTP 200 and the result was transformed without error, but `transcript_consequences` could be null.
 
-> **Note for developers:** The flag is set by `setSuccessfullyAnnotated(true)` only on the path where `super.fetchAndCache(id)` returns a non-null `VariantAnnotation`. All exception paths (`HttpServerErrorException`, `HttpClientErrorException`, and the generic `catch (Exception e)`) create an empty `VariantAnnotation` without calling that setter, leaving the field false. There is no retry logic anywhere in the codebase — on VEP failure, the error is logged at ERROR level under `org.cbioportal.genome_nexus.service.cached.BaseCachedExternalResourceFetcher` and the placeholder is returned immediately.
+> **Note for developers:** The flag is set by `setSuccessfullyAnnotated(true)` only on the path where `super.fetchAndCache(id)` returns a non-null `VariantAnnotation` without an existing `errorMessage`. All exception paths (`HttpServerErrorException`, `HttpClientErrorException`, and the generic `catch (Exception e)`) create an empty `VariantAnnotation` without calling that setter, leaving the field false. When VEP returns a detailed error for a specific variant in a batch, the error message is propagated through and preserved in the `errorMessage` field.
+
+---
+
+## What error messages can appear in `errorMessage`?
+
+The `errorMessage` field is populated when `successfully_annotated` is false. The message indicates exactly why annotation failed:
+
+| Error type | Example `errorMessage` | Cause |
+|---|---|---|
+| Reference allele mismatch、| `1:g.1020385C>A: Reference allele extracted from input (C) does not match reference allele from genome (T)` | The ref allele you provided doesn't match the genome assembly. Verify coordinates and allele. |
+| Invalid HGVS notation | `Invalid HGVS notation 'xxx': could not be parsed.` | The variant string is malformed. Check format - e.g. `7:g.140453136A>T` for SNVs. |
+| Chromosome/position not found | `Chromosome or position not found: variant '25:g.1295228G>A' - chromosome or position does not exist in the genome assembly.` | The chromosome doesn't exist or the position exceeds the chromosome length. |
+| Reference allele unknown | `Reference allele for 1:g.170552185C>A could not be determined from VEP response - verify that the position exists in the genome assembly (GRCh37/hg19) and the reference allele (C) is correct` | VEP returned no `alleleString` - the position may not exist in the assembly. |
+| Generic VEP error | `Error annotating variant '<variant>': <raw error>` | An unexpected VEP error. The raw error message is preserved for debugging. |
+| VEP returned no data | `Error from VEP for: <variant>` | VEP returned no result for this variant (connection failure, timeout, or variant dropped from batch). |
+
+### Batch behavior
+
+In batch requests (POST), a single bad variant does **not** fail the entire batch. VEP uses a retry strategy to isolate bad variants.
+Each variant gets its own specific error message — good variants are annotated normally even if others in the same batch fail.
 
 ---
 
@@ -675,12 +699,25 @@ In `application.properties`, you can configure caching by setting `cache.enabled
 - `cache.enabled=true`: Enables or disables caching for annotation sources such as vep.annotation, index, my_variant_info.annotation. Default value is true.
 - `cache.enabled=false`: Queries bypass the cache and make direct calls to the web service, not saving any data to the database.
 
-Failed VEP calls are never cached. Successful HTTP 200 responses from VEP are cached, even if `transcript_consequences` is null (e.g. for intergenic variants).
+Failed VEP calls are never cached. Successful HTTP 200 responses from VEP are cached, even if `transcript_consequences` is null (e.g. for intergenic variants). Variants that fail with a specific error (e.g. reference allele mismatch) are also not cached — they will be re-queried on the next request.
 
 | Scenario | Cached to MongoDB? |
 |---|---|
 | VEP returns valid response (any content) | **Yes** |
 | VEP is down / returns 5xx | **No** |
-| VEP returns 4xx | **No** |
+| VEP returns 4xx (single variant) | **No** |
+| Variant fails in batch (ref mismatch, parse error) | **No** |
 
 A practical consequence: if a variant is intergenic, the empty annotation is cached on first lookup. All subsequent requests will serve that cached result without re-querying VEP. To force a re-fetch, delete the document from the `vep.annotation` MongoDB collection or temporarily set `cache.enabled=false`.
+
+---
+
+## What do the LEVEL values in the annotation pipeline error report mean?
+
+When running `genome-nexus-annotation-pipeline`, records that could not be fully annotated are written to an error report TSV (controlled by the `-e` flag). The `LEVEL` column classifies each entry by severity:
+
+| LEVEL | When it appears | Action needed? |
+|---|---|---|
+| `ERROR` | True annotation failures: VEP returned an error for the variant; the Genome Nexus request failed entirely; a `Frame_Shift` or `In_Frame` variant has empty HGVSc+HGVSp **and** VEP set an error message; or any `Missense_Mutation`, `Nonsense_Mutation`, `Splice_Site`, or `Splice_Region` variant has empty HGVSc+HGVSp (regardless of whether an error message is set) | Yes — investigate the `FAILURE_REASON` column |
+| `WARN` | Ambiguous allele: the record has both an SNP and INDEL change at the same position; the SNP allele was used for annotation | Review whether the chosen allele is correct for your analysis |
+| `INFO` | Expected empty HGVSc/HGVSp — either an inherently non-coding classification (3'UTR, 5'UTR, 3'Flank, 5'Flank, IGR, Intron, RNA), or a `Frame_Shift`/`In_Frame` deletion/insertion that spans a coding/UTR boundary **with no VEP error message** | No — this is expected VEP behavior |

@@ -278,10 +278,13 @@ public class VariantAnnotationService
                 variantAnnotations = this.dbsnpFetcher.fetchAndCache(normalizedVariants);
             }
             for (VariantAnnotation variantAnnotation : variantAnnotations) {
-                // add new annotation to index 
+                // add new annotation to index
+                // Match by variantId first (set by VEP response), fall back to variant field
+                // (set for error annotations where variantId is null)
                 Optional<String[]> normalizedToOriginal = normalizedVariantToOriginalVariant
                     .stream()
-                    .filter((normToOrig) -> normToOrig[0].equals(variantAnnotation.getVariantId()))
+                    .filter((normToOrig) -> normToOrig[0].equals(variantAnnotation.getVariantId()) ||
+                        normToOrig[0].equals(variantAnnotation.getVariant()))
                     .findFirst();
                 if (normalizedToOriginal.isPresent()) {
                     variantAnnotation.setVariant(normalizedToOriginal.get()[0]);

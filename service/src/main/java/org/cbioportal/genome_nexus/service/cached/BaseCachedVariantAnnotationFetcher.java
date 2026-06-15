@@ -50,7 +50,12 @@ public abstract class BaseCachedVariantAnnotationFetcher
     @Override
     protected String extractId(VariantAnnotation instance)
     {
-        return instance.getVariantId();
+        // Prefer variantId (VEP "id" field), fall back to variant (VEP "input" field).
+        // Error objects from VEP only have "input", not "id".
+        if (instance.getVariantId() != null) {
+            return instance.getVariantId();
+        }
+        return instance.getVariant();
     }
 
     @Override
@@ -91,6 +96,9 @@ public abstract class BaseCachedVariantAnnotationFetcher
                 VariantAnnotation variantAnnotation = new VariantAnnotation(variantId);
                 variantAnnotation.setErrorMessage("Error from VEP for: " + variantId);
                 variantResponse.put(variantId, variantAnnotation);
+            } else if (variantResponse.get(variantId).getErrorMessage() != null) {
+                // VEP returned an error object with a detailed message — keep it as-is
+                variantResponse.get(variantId).setSuccessfullyAnnotated(false);
             } else {
                 variantResponse.get(variantId).setSuccessfullyAnnotated(true);
             }
