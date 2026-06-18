@@ -76,6 +76,10 @@ public class Hotspot
     @Field(value="splice_count")
     private Integer spliceCount;
 
+    @Indexed
+    @Field(value="version")
+    private String version;
+
     public String getHugoSymbol() {
         return hugoSymbol;
     }
@@ -162,6 +166,14 @@ public class Hotspot
 
     public void setSpliceCount(Integer spliceCount) {
         this.spliceCount = spliceCount;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     @Override

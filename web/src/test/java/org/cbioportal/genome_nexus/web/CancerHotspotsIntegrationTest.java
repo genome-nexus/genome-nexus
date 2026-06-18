@@ -385,6 +385,55 @@ public class CancerHotspotsIntegrationTest
     }
 
     @Test
+    public void testV3HotspotOptIn()
+    {
+        // V3_TEST_GENE has two hotspots in the test DB: R100 (v2) and R200 (v3).
+        // The default endpoint (no includeV3) must only return the v2 hotspot.
+        // Passing includeV3=true must return both.
+        String transcriptId = "ENST99999999901";
+        String baseTranscriptUrl = "http://localhost:38888/cancer_hotspots/transcript/" + transcriptId;
+
+        // default — v3 excluded
+        Hotspot[] defaultHotspots = this.restTemplate.getForObject(baseTranscriptUrl, Hotspot[].class);
+        assertEquals("default endpoint should exclude v3 hotspots", 1, defaultHotspots.length);
+        assertEquals("R100", defaultHotspots[0].getResidue());
+        assertEquals("v2", defaultHotspots[0].getVersion());
+
+        // explicit includeV3=false — same as default
+        Hotspot[] excludedHotspots = this.restTemplate.getForObject(
+            baseTranscriptUrl + "?includeV3=false", Hotspot[].class);
+        assertEquals(1, excludedHotspots.length);
+        assertEquals("R100", excludedHotspots[0].getResidue());
+
+        // includeV3=true — both returned
+        Hotspot[] includedHotspots = this.restTemplate.getForObject(
+            baseTranscriptUrl + "?includeV3=true", Hotspot[].class);
+        assertEquals("includeV3=true should return v2 and v3 hotspots", 2, includedHotspots.length);
+
+        // verify version field is populated for both
+        List<String> versions = Arrays.stream(includedHotspots).map(Hotspot::getVersion).sorted().collect(Collectors.toList());
+        assertEquals(Arrays.asList("v2", "v3"), versions);
+
+        // POST /transcript — same opt-in semantics
+        AggregatedHotspots[] defaultPost = this.restTemplate.postForObject(
+            "http://localhost:38888/cancer_hotspots/transcript",
+            Arrays.asList(transcriptId), AggregatedHotspots[].class);
+        assertEquals(1, defaultPost.length);
+        assertEquals("POST default should exclude v3", 1, defaultPost[0].getHotspots().size());
+
+        AggregatedHotspots[] includedPost = this.restTemplate.postForObject(
+            "http://localhost:38888/cancer_hotspots/transcript?includeV3=true",
+            Arrays.asList(transcriptId), AggregatedHotspots[].class);
+        assertEquals(1, includedPost.length);
+        assertEquals("POST includeV3=true should include v3", 2, includedPost[0].getHotspots().size());
+
+        // legacy hotspots without a version field (stored as null) must still pass the default filter —
+        // backwards compatibility with pre-v3 data. Verified implicitly: testTranscriptIdHotspots
+        // loads BRAF/ENST00000288602 hotspots that have no version field and they still return under
+        // the default endpoint.
+    }
+
+    @Test
     public void testIdenticalVariantsInDifferentRepresentations()
     {
         String[] genomicLocationString = {
