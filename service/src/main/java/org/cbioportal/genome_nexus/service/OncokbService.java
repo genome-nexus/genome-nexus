@@ -15,5 +15,6 @@ public interface OncokbService
     IndicatorQueryResp getOncokb(Alteration alteration, String token)
         throws OncokbNotFoundException, OncokbWebServiceException;
     List<CancerGene>  getOncokbCancerGenesList();
-    Set<String> getOncokbGeneSymbolList();
+    Set<String> getOncokbCuratedGenes();
+    Set<String> getOncokbCancerGenes();
 }

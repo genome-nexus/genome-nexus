@@ -150,16 +150,27 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
         // equals the global best. Ensures a protein_coding gene beats a lncRNA-only gene.
         List<TranscriptConsequence> candidates = filterByBestBiotypeGeneLevel(annotation.getTranscriptConsequences());
 
-        // Step 2 — OncoKB gene preference: among remaining genes, narrow to OncoKB genes if any.
+        // Step 2 — OncoKB gene preference: prefer oncokbAnnotated=true genes first;
+        // if none present, fall back to any cancer gene in the oncokb.gene collection.
         if (Boolean.parseBoolean(prioritizeOncokbGeneTranscriptsConfig)) {
-            Set<String> oncokbGenes = candidates.stream()
+            Set<String> oncokbCuratedGenes = candidates.stream()
                 .map(TranscriptConsequence::getGeneSymbol)
-                .filter(g -> g != null && oncokbService.getOncokbGeneSymbolList().contains(g))
+                .filter(g -> g != null && oncokbService.getOncokbCuratedGenes().contains(g))
                 .collect(Collectors.toSet());
-            if (!oncokbGenes.isEmpty()) {
+            if (!oncokbCuratedGenes.isEmpty()) {
                 candidates = candidates.stream()
-                    .filter(t -> oncokbGenes.contains(t.getGeneSymbol()))
+                    .filter(t -> oncokbCuratedGenes.contains(t.getGeneSymbol()))
                     .collect(Collectors.toList());
+            } else {
+                Set<String> oncokbCancerGenes = candidates.stream()
+                    .map(TranscriptConsequence::getGeneSymbol)
+                    .filter(g -> g != null && oncokbService.getOncokbCancerGenes().contains(g))
+                    .collect(Collectors.toSet());
+                if (!oncokbCancerGenes.isEmpty()) {
+                    candidates = candidates.stream()
+                        .filter(t -> oncokbCancerGenes.contains(t.getGeneSymbol()))
+                        .collect(Collectors.toList());
+                }
             }
         }
 

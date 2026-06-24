@@ -211,9 +211,17 @@ This ensures a gene with a `protein_coding` transcript always beats a gene with 
 
 ### Step 2 — OncoKB gene preference
 
-Among surviving genes, check whether any gene symbol appears in the OncoKB cancer gene list. If at least one gene qualifies, keep only transcripts from OncoKB genes and discard the rest. If no gene is in the list, all candidates pass through unchanged.
+Among surviving genes, check whether any gene symbol appears in the OncoKB cancer gene database. The filter runs in two tiers:
 
-This runs at the **gene** level so that an isoform override for an incidental bystander gene cannot outrank a cancer gene's transcript.
+**Tier 1 — `oncokbCuratedGenes` (`oncokbAnnotated: true`):** Genes with a curated clinical entry in OncoKB. If any surviving gene is in this set, keep only those genes and discard the rest.
+
+**Tier 2 — `oncokbCancerGenes` fallback (`oncokbAnnotated: false`):** Only consulted when Tier 1 found no match. This set includes all genes present in the `oncokb.gene` MongoDB collection that lack a curated OncoKB entry — e.g., Foundation Medicine or MSK-IMPACT panel genes. If at least one gene matches, keep only those.
+
+If neither tier matches, all candidates from Step 1 pass through unchanged.
+
+This two-tier structure prevents non-curated panel genes from outranking OncoKB-curated cancer genes when both appear in the same variant's transcript list. The filter runs at the **gene** level so that an isoform override for a bystander gene cannot outrank a cancer gene's transcript.
+
+> **Note for developers:** Both gene sets are built at startup in [`OncokbServiceImpl.buildList()`](https://github.com/genome-nexus/genome-nexus/blob/master/service/src/main/java/org/cbioportal/genome_nexus/service/internal/OncokbServiceImpl.java) from the `oncokb.gene` MongoDB collection — `buildList(true)` populates `oncokbCuratedGenes` (only entries where `oncokbAnnotated == true`), `buildList(false)` populates `oncokbCancerGenes` (all entries). The two-tier filter logic lives in [`IsoformAnnotationEnricher`](https://github.com/genome-nexus/genome-nexus/blob/master/service/src/main/java/org/cbioportal/genome_nexus/service/enricher/IsoformAnnotationEnricher.java) Step 2, guarded by the `prioritize_cancer_gene_transcripts` config flag (default `true`).
 
 ---
 
@@ -408,11 +416,13 @@ Genome Nexus does not apply its own distance cutoff — it relies entirely on wh
 > ```
 > HGVSc present?
 > ├── contains "c.*"?                    → return null  (3' UTR)
-> └── else: extract cPos, compute pPos = (cPos + 2) / 3
->     ├── first consequence in SPLICE_SITE_VARIANTS?  → "p.X{pPos}_splice"
->     └── else if amino_acids == null?
->         ├── frameshift?                → "p.*{pPos}fs*"
->         └── else                      → "p.*{pPos}*"
+> └── else: extract cPos from regex
+>     ├── hgvsc matches c.-N_M pattern?  → use M (CDS end of range) as cPos
+>     └── clamp cPos to min 1; pPos = (cPos + 2) / 3
+>         ├── first consequence in SPLICE_SITE_VARIANTS?  → "p.X{pPos}_splice"
+>         └── else if amino_acids == null?
+>             ├── frameshift?                → "p.*{pPos}fs*"
+>             └── else                      → "p.*{pPos}*"
 > ```
 > The HGVSp suppression for splice variants is in [`resolveHgvsp()` (lines 251–253)](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/ProteinChangeResolver.java#L251).
 
@@ -430,7 +440,15 @@ For example, `c.3709-5C>A` → cDNA position 3709 → protein position (3709 + 2
 
 The intronic offset (the `-5` part) is stripped before this calculation; only the exon-anchored cDNA number is used.
 
+### Special case: UTR-start range deletions
+
+When HGVSc spans a range that starts in the 5′ UTR and ends in the coding sequence — for example `c.-309_60+142del` — the normal regex captures the first number (`309`) and silently drops the minus sign, which would produce the wrong position. To handle this, when the HGVSc matches the pattern `c.-N_M` (UTR start followed by a range), the **second** position (`M`) is used instead, since it represents the last coding nucleotide before the splice junction.
+
+For `c.-309_60+142del`: second position = `60` → protein position = (60 + 2) / 3 = **20** → `p.X20_splice`.
+
 > **Note for developers:** The cDNA position is extracted with the regex [`".*[cn].-?\\*?(\\d+).*"` (line 41)](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/ProteinChangeResolver.java#L41). It captures the first numeric value after `c.` or `n.`, discarding any `+`/`-` intronic offsets or `*` UTR markers that follow. If the parsed cDNA position is less than 1, it is clamped to 1 before the protein position is computed.
+>
+> For UTR-start ranges, an additional check in [`resolveHgvspShortFromHgvsc()`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/ProteinChangeResolver.java) detects the pattern `c.-\d+_` and re-extracts the CDS end of the range using a secondary regex `.*_(\\d+).*` before computing pPos.
 
 ---
 
@@ -523,6 +541,8 @@ protein_position =  (cDNA_position + 2) / 3   (integer division, minimum 1)
 
 The regex captures only the exon-anchored base number; any intronic offset (`+5`, `-3`) and UTR marker (`*`) that follows are discarded.
 
+**Special case — UTR-start range:** If the HGVSc starts with a negative (5′ UTR) coordinate followed by a range, e.g. `c.-309_60+142del`, the regex would capture `309` and lose the minus sign. In this case the **second** position in the range (`60`) is used instead, as it is the CDS-anchored splice-relevant coordinate. Example: `c.-309_60+142del` → cPos = 60 → pPos = (60+2)/3 = **20** → `p.X20_splice`.
+
 **Branch on the consequence term:**
 
 | Condition | Output |
@@ -534,6 +554,7 @@ The regex captures only the exon-anchored base number; any intronic offset (`+5`
 
 **Examples:**
 - `c.50-1_50delinsTT` (splice acceptor, cDNA pos 50, pPos 17) → `p.X17_splice`
+- `c.-309_60+142del` (splice donor spanning UTR→CDS, CDS pos 60, pPos 20) → `p.X20_splice`
 - `c.340insG` (frameshift, cDNA pos 340, pPos 114) → `p.*114fs*`
 - `c.4349A>G` (stop gained, cDNA pos 4349, pPos 1450) → `p.*1450*`
 
