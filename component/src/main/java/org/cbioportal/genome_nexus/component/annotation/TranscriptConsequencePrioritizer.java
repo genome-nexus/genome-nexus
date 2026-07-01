@@ -130,11 +130,11 @@ public class TranscriptConsequencePrioritizer
         effectPriority.put("conservative_missense_variant", 9); // A sequence variant whereby at least one base of a codon is changed resulting in a codon that encodes for a different but similar amino acid. These variants may or may not be deleterious
         effectPriority.put("rare_amino_acid_variant", 9); // A sequence variant whereby at least one base of a codon encoding a rare amino acid is changed, resulting in a different encoded amino acid
         // low
+        effectPriority.put("synonymous_variant", 10); // A sequence variant where there is no resulting change to the encoded amino acid
         effectPriority.put("splice_donor_5th_base_variant", 10); // A sequence variant that causes a change at the 5th base pair after the start of the intron in the orientation of the transcript
         effectPriority.put("splice_region_variant", 10); // A sequence variant in which a change has occurred within the region of the splice site, either within 1-3 bases of the exon or 3-8 bases of the intron
         effectPriority.put("splice_donor_region_variant", 10); // A sequence variant that falls in the region between the 3rd and 6th base after splice junction (5' end of intron)
         effectPriority.put("splice_polypyrimidine_tract_variant", 11); // A sequence variant that falls in the polypyrimidine tract at 3' end of intron between 17 and 3 bases from the end (acceptor -3 to acceptor -17)
-        effectPriority.put("synonymous_variant", 12); // A sequence variant where there is no resulting change to the encoded amino acid
         effectPriority.put("start_retained_variant", 12); // A sequence variant where at least one base in the start codon is changed, but the start remains
         effectPriority.put("stop_retained_variant", 12); // A sequence variant where at least one base in the terminator codon is changed, but the terminator remains
         effectPriority.put("incomplete_terminal_codon_variant", 13); // A sequence variant where at least one base of the final codon of an incompletely annotated transcript is changed
