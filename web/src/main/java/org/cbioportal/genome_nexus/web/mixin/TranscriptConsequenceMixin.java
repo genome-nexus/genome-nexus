@@ -93,6 +93,10 @@ public class TranscriptConsequenceMixin
     @ApiModelProperty(value = "List of consequence terms", required = false)
     private List<String> consequenceTerms;
 
+    @JsonProperty(value="hgvs_offset", required = true)
+    @ApiModelProperty(value = "HGVS offset", required = false)
+    private Integer hgvsOffset;
+
     @JsonIgnore
     private Map<String, Object> dynamicProps;
 

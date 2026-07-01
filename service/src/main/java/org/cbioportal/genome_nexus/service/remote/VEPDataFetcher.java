@@ -35,6 +35,13 @@ public class VEPDataFetcher extends BaseExternalResourceFetcher<VariantAnnotatio
     }
 
     @Override
+    protected DBObject getForObject(String uri, Map<String, String> queryParams)
+    {
+        String json = fixNanStrings(restTemplate.getForObject(uri, String.class));
+        return (BasicDBList) JSON.parse(json);
+    }
+
+    @Override
     protected DBObject postForObject(String uri, Object requestBody)
     {
         uri = uri.replace("/" + PLACEHOLDER, "");

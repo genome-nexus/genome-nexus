@@ -73,7 +73,16 @@ public abstract class BaseCachedVariantAnnotationFetcher
         }
         catch (HttpClientErrorException e) {
             variantAnnotation = new VariantAnnotation(id);
-            variantAnnotation.setErrorMessage(new Gson().fromJson(e.getResponseBodyAsString(), Map.class).getOrDefault("error", "Error from VEP").toString());
+            String errorMessage = "Error from VEP";
+            try {
+                errorMessage = new Gson().fromJson(e.getResponseBodyAsString(), Map.class).getOrDefault("error", errorMessage).toString();
+            } catch (Exception ignored) {
+                String body = e.getResponseBodyAsString();
+                if (body != null && !body.isEmpty()) {
+                    errorMessage = body;
+                }
+            }
+            variantAnnotation.setErrorMessage(errorMessage);
             return variantAnnotation;
         }
         catch (Exception e) {

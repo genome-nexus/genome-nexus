@@ -66,6 +66,7 @@ public class TranscriptConsequence
     private String siftPrediction;
     private String exon;
     private String uniprotId;
+    private Integer hgvsOffset;
 
     private List<String> refseqTranscriptIds;
     private List<String> consequenceTerms;
@@ -319,6 +320,15 @@ public class TranscriptConsequence
 
     public void setUniprotId(String uniprotId) {
         this.uniprotId = uniprotId;
+    }
+
+    @Field(value="hgvs_offset")
+    public Integer getHgvsOffset() {
+        return hgvsOffset;
+    }
+
+    public void setHgvsOffset(Integer hgvsOffset) {
+        this.hgvsOffset = hgvsOffset;
     }
 
     @Field(value="refseq_transcript_ids")
