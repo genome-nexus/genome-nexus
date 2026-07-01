@@ -18,7 +18,7 @@ public class TranscriptConsequencePrioritizer
     public TranscriptConsequence transcriptWithMostSevereConsequence(List<TranscriptConsequence> transcripts,
                                                                      String mostSevereConsequence)
     {
-        if (transcripts == null) {
+        if (transcripts == null || transcripts.isEmpty()) {
             return null;
         }
 

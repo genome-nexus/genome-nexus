@@ -152,7 +152,7 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
 
         // Step 2 — OncoKB gene preference: prefer oncokbAnnotated=true genes first;
         // if none present, fall back to any cancer gene in the oncokb.gene collection.
-        if (Boolean.parseBoolean(prioritizeOncokbGeneTranscriptsConfig)) {
+        if (Boolean.parseBoolean(prioritizeOncokbGeneTranscriptsConfig) && oncokbService != null) {
             Set<String> oncokbCuratedGenes = candidates.stream()
                 .map(TranscriptConsequence::getGeneSymbol)
                 .filter(g -> g != null && oncokbService.getOncokbCuratedGenes().contains(g))

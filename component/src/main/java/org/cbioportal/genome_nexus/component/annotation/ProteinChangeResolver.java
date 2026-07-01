@@ -32,6 +32,7 @@ public class ProteinChangeResolver
     private final VariantClassificationResolver variantClassificationResolver;
     private final Pattern cDnaExtractor;
     private final Pattern cDnaRangeSecondPosExtractor;
+    private final Pattern utrStartRangePattern;
 
     @Autowired
     public ProteinChangeResolver(CanonicalTranscriptResolver canonicalTranscriptResolver,
@@ -41,6 +42,7 @@ public class ProteinChangeResolver
         this.variantClassificationResolver = variantClassificationResolver;
         this.cDnaExtractor = Pattern.compile(".*[cn].-?\\*?(\\d+).*");
         this.cDnaRangeSecondPosExtractor = Pattern.compile(".*_(\\d+).*");
+        this.utrStartRangePattern = Pattern.compile(".*[cn]\\.-\\d+_.*");
     }
 
     /**
@@ -134,7 +136,7 @@ public class ProteinChangeResolver
             // For UTR-start ranges like c.-309_60+142del the regex loses the minus sign,
             // extracting 309 instead of -309. Detect this case and use the CDS end of
             // the range (the number after '_') which is the splice-relevant position.
-            if (hgvsc.matches(".*[cn]\\.-\\d+_.*")) {
+            if (this.utrStartRangePattern.matcher(hgvsc).matches()) {
                 Matcher rm = this.cDnaRangeSecondPosExtractor.matcher(hgvsc);
                 if (rm.matches()) {
                     int cdsCPos = Integer.parseInt(rm.group(1));
