@@ -279,13 +279,14 @@ Then it keeps only transcripts that have at least one term at that best priority
 | 8 | `protein_altering_variant` |
 | 9 | `missense_variant`, `conservative_missense_variant`, `rare_amino_acid_variant` |
 | 10 | `splice_region_variant`, `splice_donor_5th_base_variant`, `splice_donor_region_variant` |
-| 11 | `synonymous_variant`, `start_retained_variant`, `stop_retained_variant` |
-| 13 | `coding_sequence_variant`, `mature_mirna_variant`, `exon_variant` |
-| 14 | `5_prime_utr_variant`, `3_prime_utr_variant` |
-| 16 | `intron_variant`, `non_coding_transcript_variant` |
-| 19 | `upstream_gene_variant`, `downstream_gene_variant` |
-| 20 | `regulatory_region_variant`, `tfbs_ablation` |
-| 21 | `intergenic_variant`, `sequence_variant` |
+| 11 | `splice_polypyrimidine_tract_variant` |
+| 12 | `synonymous_variant`, `start_retained_variant`, `stop_retained_variant` |
+| 14 | `coding_sequence_variant`, `mature_mirna_variant`, `exon_variant` |
+| 15 | `5_prime_utr_variant`, `3_prime_utr_variant` |
+| 17 | `intron_variant`, `non_coding_transcript_variant` |
+| 20 | `upstream_gene_variant`, `downstream_gene_variant` |
+| 21 | `regulatory_region_variant`, `tfbs_ablation` |
+| 22 | `intergenic_variant`, `sequence_variant` |
 
 (The full map contains ~60 terms. See `EFFECT_PRIORITY` in the [source code](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/TranscriptConsequencePrioritizer.java) for the complete list.)
 
@@ -384,7 +385,7 @@ The label depends on which consequence term VEP assigns as the **most severe** (
 |---|---|---|---|
 | `X(pos)_splice` | `splice_acceptor_variant` | 2 base region at the 3′ end of the intron (the AG dinucleotide) | VEP early versions |
 | `X(pos)_splice` | `splice_donor_variant` | 2 base region at the 5′ end of the intron (the GT dinucleotide) | VEP early versions |
-| `X(pos)_splice` | `splice_region_variant` | Within 1–3 bases of the exon or 3–8 bases of the intron | VEP early versions |
+| `p.*(pos)*` | `splice_region_variant` | Within 1–3 bases of the exon or 3–8 bases of the intron | VEP early versions |
 | `p.*(pos)*` | `splice_donor_5th_base_variant` | 5th base into the intron after the 5′ splice junction | VEP 105 (Dec 2021) |
 | `p.*(pos)*` | `splice_donor_region_variant` | 3rd to 6th base into the intron after the 5′ splice junction | VEP 105 (Dec 2021) |
 | `p.*(pos)*` | `splice_polypyrimidine_tract_variant` | Acceptor −3 to acceptor −17 (polypyrimidine tract at 3′ end of intron) | VEP 105 (Dec 2021) |
@@ -407,7 +408,7 @@ Genome Nexus does not apply its own distance cutoff — it relies entirely on wh
 > **Note for developers:** The three terms that trigger `X(pos)_splice` are defined in [`SPLICE_SITE_VARIANTS` (lines 27–29)](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/ProteinChangeResolver.java#L27):
 > ```java
 > public static final Set<String> SPLICE_SITE_VARIANTS = new HashSet<>(
->     Arrays.asList("splice_acceptor_variant", "splice_donor_variant", "splice_region_variant")
+>     Arrays.asList("splice_acceptor_variant", "splice_donor_variant")
 > );
 > ```
 > Newer VEP terms — `splice_donor_5th_base_variant`, `splice_donor_region_variant`, and `splice_polypyrimidine_tract_variant` — are absent from this set. They are mapped to the `Splice_Region` variant classification in [`VariantClassificationResolver.java` (lines 213–215)](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/VariantClassificationResolver.java#L213), but because they are not in `SPLICE_SITE_VARIANTS` they fall through to the `p.*(pos)*` branch.
@@ -548,7 +549,7 @@ The regex captures only the exon-anchored base number; any intronic offset (`+5`
 | Condition | Output |
 |---|---|
 | HGVSc contains `c.*` (3′ UTR position) | `null` — no protein position exists |
-| First consequence term is `splice_acceptor_variant`, `splice_donor_variant`, or `splice_region_variant` | `p.X{pos}_splice` |
+| First consequence term is `splice_acceptor_variant` or `splice_donor_variant` | `p.X{pos}_splice` |
 | `amino_acids` is null **and** variant classification contains `"frame_shift"` | `p.*{pos}fs*` |
 | `amino_acids` is null **and** no frameshift | `p.*{pos}*` |
 
@@ -647,7 +648,7 @@ The selected consequence term is mapped to a MAF style classification. Context d
 | `splice_region_variant` | `Splice_Region` |
 | `splice_donor_5th_base_variant` | `Splice_Region` |
 | `splice_donor_region_variant` | `Splice_Region` |
-| `splice_polypyrimidine_tract_variant` | `Splice_Region` |
+| `splice_polypyrimidine_tract_variant` | `Intron` |
 | `stop_gained` | `Nonsense_Mutation` |
 | `stop_lost` | `Nonstop_Mutation` |
 | `start_lost` | `Translation_Start_Site` |

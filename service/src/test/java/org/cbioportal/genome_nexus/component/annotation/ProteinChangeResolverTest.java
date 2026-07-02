@@ -177,7 +177,7 @@ public class ProteinChangeResolverTest
         );
 
         assertEquals(
-            "p.X210_splice",
+            "p.L210=",
             this.proteinChangeResolver.resolveHgvspShort(
                 variantMockData.get("7:g.55220240G>T"),
                 variantMockData.get("7:g.55220240G>T").getTranscriptConsequences().get(0)
