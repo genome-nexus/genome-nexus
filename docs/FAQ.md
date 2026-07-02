@@ -183,7 +183,7 @@ Step 5: Mark canonical + resolve     (pick exactly one transcript)
   ▼
 transcriptConsequenceSummary
 ```
-![Flowchart of transcript picking](https://github.com/user-attachments/assets/f8c3ab90-0c99-4ea7-aa89-04bb7224f47f)
+![Flowchart of transcript picking](https://github.com/user-attachments/assets/1b554461-19bf-4f11-b4b4-70081a8234c3)
 ---
 
 ### Step 1 — Gene-level biotype filter
