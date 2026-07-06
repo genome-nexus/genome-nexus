@@ -32,8 +32,10 @@ import java.util.stream.Collectors;
 public class AnnotationIntegrationTest
 {
     private final static String BASE_URL = "http://localhost:38896/annotation/";
+    private final static String BASE_URL_POST = "http://localhost:38896/annotation";
 
     private final static String BASE_URL_GENOMIC_LOCATION = "http://localhost:38896/annotation/genomic/";
+    private final static String BASE_URL_GENOMIC_LOCATION_POST = "http://localhost:38896/annotation/genomic";
 
     private final static String ALL_ENSEMBL_FIELDS = "fields=annotation_summary,nucleotide_context";
     private final static String MY_VARIANT_INFO_FIELD = "fields=my_variant_info";
@@ -49,7 +51,7 @@ public class AnnotationIntegrationTest
 
     private List<Map<String, Object>> fetchVariantAnnotationPOST(String[] variants)
     {
-        String responses = this.restTemplate.postForObject(BASE_URL, variants, String.class);
+        String responses = this.restTemplate.postForObject(BASE_URL_POST, variants, String.class);
         JsonParser springParser = JsonParserFactory.getJsonParser();
         return (List<Map<String, Object>>)(List<?>) springParser.parseList(responses);
     }
@@ -63,14 +65,14 @@ public class AnnotationIntegrationTest
 
     private List<Map<String, Object>> fetchVariantAnnotationByGenomicLocationPOST(GenomicLocation[] genomicLocations)
     {
-        String responses = this.restTemplate.postForObject(BASE_URL_GENOMIC_LOCATION + "?" + ALL_ENSEMBL_FIELDS, genomicLocations, String.class);
+        String responses = this.restTemplate.postForObject(BASE_URL_GENOMIC_LOCATION_POST + "?" + ALL_ENSEMBL_FIELDS, genomicLocations, String.class);
         JsonParser springParser = JsonParserFactory.getJsonParser();
         return (List<Map<String, Object>>)(List<?>) springParser.parseList(responses);
     }
 
     private List<Map<String, Object>> fetchVariantAnnotationWithMyVariantInfoByGenomicLocationPOST(GenomicLocation[] genomicLocations)
     {
-        String responses = this.restTemplate.postForObject(BASE_URL_GENOMIC_LOCATION + "?" + MY_VARIANT_INFO_FIELD, genomicLocations, String.class);
+        String responses = this.restTemplate.postForObject(BASE_URL_GENOMIC_LOCATION_POST + "?" + MY_VARIANT_INFO_FIELD, genomicLocations, String.class);
         JsonParser springParser = JsonParserFactory.getJsonParser();
         return (List<Map<String, Object>>)(List<?>) springParser.parseList(responses);
     }
