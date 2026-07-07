@@ -120,9 +120,20 @@ public class VerifiedVariantAnnotationService
     {
         String ref = "";
         if (variantType == VariantType.HGVS) {
-            ref = GenomicVariantUtil.providedReferenceAlleleFromHgvs(annotation.getOriginalVariantQuery());
+            String query = annotation.getOriginalVariantQuery();
+            if (query == null || query.isEmpty()) {
+                return annotation;
+            }
+            ref = GenomicVariantUtil.providedReferenceAlleleFromHgvs(query);
+            if (ref == null) {
+                ref = "";
+            }
         } else if (variantType == VariantType.GENOMIC_LOCATION) {
-            ref = notationConverter.parseGenomicLocation(annotation.getOriginalVariantQuery()).getReferenceAllele();
+            GenomicLocation parsedLocation = notationConverter.parseGenomicLocation(annotation.getOriginalVariantQuery());
+            if (parsedLocation == null) {
+                return annotation;
+            }
+            ref = parsedLocation.getReferenceAllele();
         }
 
         if (annotation.getStrand() != null && annotation.getStrand() == -1) {

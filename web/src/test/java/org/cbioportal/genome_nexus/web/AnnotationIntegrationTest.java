@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
     properties = {
         "vep.url=http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1",
         "spring.data.mongodb.uri=mongodb://localhost/integration",
+        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration",
         "server.port=38896"
     }
 )

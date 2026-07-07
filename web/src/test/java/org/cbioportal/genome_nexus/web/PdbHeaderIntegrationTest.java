@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
     properties = {
         "pdb.header_service_url=http://files.rcsb.org/header/PDB_ID.pdb",
         "spring.data.mongodb.uri=mongodb://localhost/integration",
+        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration",
         "server.port=38889"
     }
 )
