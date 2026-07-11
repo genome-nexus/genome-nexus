@@ -153,18 +153,20 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
         // Step 2 — OncoKB gene preference: prefer oncokbAnnotated=true genes first;
         // if none present, fall back to any cancer gene in the oncokb.gene collection.
         if (Boolean.parseBoolean(prioritizeOncokbGeneTranscriptsConfig) && oncokbService != null) {
+            Set<String> curatedSet = oncokbService.getOncokbCuratedGenes();
             Set<String> oncokbCuratedGenes = candidates.stream()
                 .map(TranscriptConsequence::getGeneSymbol)
-                .filter(g -> g != null && oncokbService.getOncokbCuratedGenes().contains(g))
+                .filter(g -> g != null && curatedSet.contains(g))
                 .collect(Collectors.toSet());
             if (!oncokbCuratedGenes.isEmpty()) {
                 candidates = candidates.stream()
                     .filter(t -> oncokbCuratedGenes.contains(t.getGeneSymbol()))
                     .collect(Collectors.toList());
             } else {
+                Set<String> cancerSet = oncokbService.getOncokbCancerGenes();
                 Set<String> oncokbCancerGenes = candidates.stream()
                     .map(TranscriptConsequence::getGeneSymbol)
-                    .filter(g -> g != null && oncokbService.getOncokbCancerGenes().contains(g))
+                    .filter(g -> g != null && cancerSet.contains(g))
                     .collect(Collectors.toSet());
                 if (!oncokbCancerGenes.isEmpty()) {
                     candidates = candidates.stream()
@@ -196,15 +198,22 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
         return BIOTYPE_PRIORITY.getOrDefault(biotype != null ? biotype : "", 10);
     }
 
+    private static String getGeneKey(TranscriptConsequence t) {
+        return t.getGeneId() != null ? t.getGeneId() : t.getGeneSymbol();
+    }
+
     // Group transcripts by gene; keep only those from genes whose best biotype equals the
     // global minimum across all genes. Uses geneId as the grouping key, falling back to
     // geneSymbol for transcripts that lack a geneId.
     private static List<TranscriptConsequence> filterByBestBiotypeGeneLevel(List<TranscriptConsequence> transcripts) {
         Map<String, Integer> geneBestBiotype = new HashMap<>();
         for (TranscriptConsequence t : transcripts) {
-            String gene = t.getGeneId() != null ? t.getGeneId() : t.getGeneSymbol();
+            String gene = getGeneKey(t);
             if (gene == null) continue;
             geneBestBiotype.merge(gene, getBiotypePriority(t.getBiotype()), Math::min);
+        }
+        if (geneBestBiotype.isEmpty()) {
+            return transcripts;
         }
         int globalBest = geneBestBiotype.values().stream()
             .mapToInt(Integer::intValue)
@@ -215,10 +224,7 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
             .map(Map.Entry::getKey)
             .collect(Collectors.toSet());
         return transcripts.stream()
-            .filter(t -> {
-                String gene = t.getGeneId() != null ? t.getGeneId() : t.getGeneSymbol();
-                return bestGenes.contains(gene);
-            })
+            .filter(t -> bestGenes.contains(getGeneKey(t)))
             .collect(Collectors.toList());
     }
 

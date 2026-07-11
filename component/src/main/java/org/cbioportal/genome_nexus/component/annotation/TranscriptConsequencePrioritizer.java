@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.jetbrains.annotations.Nullable;
@@ -42,31 +43,20 @@ public class TranscriptConsequencePrioritizer
             candidates = new ArrayList<>(transcripts);
         }
 
-        // Pass B: among candidates, find the minimum EFFECT_PRIORITY value, then keep all
-        // transcripts that have a term at that priority. Collects all ties rather than
-        // returning the first, so that the final get(0) is an explicit understood fallback.
-        int bestPriority = Integer.MAX_VALUE;
-        for (TranscriptConsequence t : candidates) {
-            if (t.getConsequenceTerms() != null) {
-                for (String term : t.getConsequenceTerms()) {
-                    int p = EFFECT_PRIORITY.getOrDefault(term.toLowerCase(), Integer.MAX_VALUE);
-                    if (p < bestPriority) {
-                        bestPriority = p;
-                    }
-                }
-            }
-        }
-        List<TranscriptConsequence> bestCandidates = new ArrayList<>();
-        for (TranscriptConsequence t : candidates) {
-            if (t.getConsequenceTerms() != null) {
-                for (String term : t.getConsequenceTerms()) {
-                    if (EFFECT_PRIORITY.getOrDefault(term.toLowerCase(), Integer.MAX_VALUE) == bestPriority) {
-                        bestCandidates.add(t);
-                        break;
-                    }
-                }
-            }
-        }
+        // Pass B: keep only candidates whose best consequence term matches the global minimum
+        // priority across all candidates. Collects all ties rather than returning the first,
+        // so that the final get(0) is an explicit understood fallback.
+        final int bestPriority = candidates.stream()
+            .filter(t -> t.getConsequenceTerms() != null)
+            .flatMap(t -> t.getConsequenceTerms().stream())
+            .mapToInt(term -> EFFECT_PRIORITY.getOrDefault(term.toLowerCase(), Integer.MAX_VALUE))
+            .min()
+            .orElse(Integer.MAX_VALUE);
+        List<TranscriptConsequence> bestCandidates = candidates.stream()
+            .filter(t -> t.getConsequenceTerms() != null &&
+                t.getConsequenceTerms().stream()
+                    .anyMatch(term -> EFFECT_PRIORITY.getOrDefault(term.toLowerCase(), Integer.MAX_VALUE) == bestPriority))
+            .collect(Collectors.toList());
 
         if (!bestCandidates.isEmpty()) {
             return bestCandidates.get(0);
