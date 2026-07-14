@@ -1,19 +1,26 @@
 package org.cbioportal.genome_nexus.service.mixin;
 
-import com.fasterxml.jackson.annotation.*;
+import java.util.List;
+import java.util.Map;
 
 import org.cbioportal.genome_nexus.model.ColocatedVariant;
 import org.cbioportal.genome_nexus.model.IntergenicConsequences;
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VariantAnnotationMixin
 {
     @JsonProperty(value="input", required = true)
     private String variant;
+
+    // Maps VEP's "error" field into errorMessage
+    @JsonProperty(value="error", required = false)
+    private String errorMessage;
 
     @JsonProperty(value="original_variant_query", required = true)
     private String originalVariantQuery;

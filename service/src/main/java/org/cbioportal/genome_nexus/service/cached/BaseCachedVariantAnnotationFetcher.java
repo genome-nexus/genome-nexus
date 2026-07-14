@@ -50,7 +50,10 @@ public abstract class BaseCachedVariantAnnotationFetcher
     @Override
     protected String extractId(VariantAnnotation instance)
     {
-        return instance.getVariantId();
+        // VEP error objects have "input" but no "id" — fall back to variant so the
+        // annotation is stored at the correct map key instead of null.
+        String id = instance.getVariantId();
+        return id != null ? id : instance.getVariant();
     }
 
     @Override
@@ -96,12 +99,14 @@ public abstract class BaseCachedVariantAnnotationFetcher
     {
         Map<String, VariantAnnotation> variantResponse = this.constructFetchedMap(ids); 
         for (String variantId : variantResponse.keySet()) {
-            if (variantResponse.get(variantId) == null) {
+            VariantAnnotation annotation = variantResponse.get(variantId);
+            if (annotation == null) {
                 VariantAnnotation variantAnnotation = new VariantAnnotation(variantId);
                 variantAnnotation.setErrorMessage("Error from VEP for: " + variantId);
                 variantResponse.put(variantId, variantAnnotation);
-            } else {
-                variantResponse.get(variantId).setSuccessfullyAnnotated(true);
+            } else if (annotation.getErrorMessage() == null) {
+                // Only mark successful when VEP didn't return an error for this variant.
+                annotation.setSuccessfullyAnnotated(true);
             }
         }
         // some util function to return response (values) with duplicates

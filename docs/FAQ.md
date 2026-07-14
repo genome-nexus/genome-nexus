@@ -198,9 +198,9 @@ This ensures a gene with a `protein_coding` transcript always beats a gene with 
 |---|---|
 | 1 | `protein_coding` |
 | 2 | `IG_*`, `TR_*` (immunoglobulin / T-cell receptor genes) |
-| 3 | `miRNA`, `snRNA`, `snoRNA`, `lncRNA`, `lincRNA` |
-| 4 | `Mt_tRNA`, `Mt_rRNA`, `vault_RNA`, `rRNA`, `ribozyme` |
-| 5 | `antisense`, `sense_intronic`, `sense_overlapping`, `misc_RNA`, `scRNA` |
+| 3 | `miRNA`, `snRNA`, `snoRNA`, `rRNA`, `scRNA`, `lncRNA`, `lincRNA`, `ribozyme`, `tRNA`, `sRNA`, `scaRNA` |
+| 4 | `Mt_tRNA`, `Mt_rRNA`, `vault_RNA`, `macro_lncRNA` |
+| 5 | `antisense`, `sense_intronic`, `sense_overlapping`, `misc_RNA` |
 | 6 | `processed_transcript`, `TEC` |
 | 7 | `retained_intron`, `nonsense_mediated_decay`, `non_stop_decay` |
 | 8 | All pseudogene types |
