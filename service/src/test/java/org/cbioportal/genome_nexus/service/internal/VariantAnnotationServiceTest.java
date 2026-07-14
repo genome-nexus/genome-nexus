@@ -427,9 +427,10 @@ public class VariantAnnotationServiceTest
 
     private void mockOncokbServiceMethods()
     {
-        Set<String> oncokbGeneSymbolList = new HashSet<>();
-        oncokbGeneSymbolList.add("BRAF");
-        oncokbGeneSymbolList.add("KMT2A");
-        Mockito.when(this.oncokbService.getOncokbGeneSymbolList()).thenReturn(oncokbGeneSymbolList);
+        Set<String> oncokbCuratedGenes = new HashSet<>();
+        oncokbCuratedGenes.add("BRAF");
+        oncokbCuratedGenes.add("KMT2A");
+        Mockito.when(this.oncokbService.getOncokbCuratedGenes()).thenReturn(oncokbCuratedGenes);
+        Mockito.when(this.oncokbService.getOncokbCancerGenes()).thenReturn(new HashSet<>());
     }
 }

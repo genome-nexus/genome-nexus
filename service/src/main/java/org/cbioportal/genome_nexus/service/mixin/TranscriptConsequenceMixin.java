@@ -78,6 +78,9 @@ public class TranscriptConsequenceMixin
     @JsonProperty(value="alphamissense", required = true)
     private AlphaMissense alphaMissense;
 
+    @JsonProperty(value="hgvs_offset", required = false)
+    private Integer hgvsOffset;
+
     @JsonIgnore
     private Map<String, Object> dynamicProps;
 }

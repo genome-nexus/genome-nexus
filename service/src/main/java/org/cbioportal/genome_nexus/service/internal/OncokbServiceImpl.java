@@ -29,14 +29,16 @@ public class OncokbServiceImpl implements OncokbService {
 
     private final OncokbDataFetcher oncokbDataFetcher;
     private final OncokbCancerGenesListRepository oncokbCancerGenesListRepository;
-    private Set<String> oncokbGeneSymbolList = new HashSet();
+    private Set<String> oncokbCuratedGenes = new HashSet();
+    private Set<String> oncokbCancerGenes = new HashSet();
 
     @Autowired
     public OncokbServiceImpl(OncokbDataFetcher oncokbDataFetcher, OncokbCancerGenesListRepository oncokbCancerGenesListRepository) {
         this.oncokbDataFetcher = oncokbDataFetcher;
         this.oncokbCancerGenesListRepository = oncokbCancerGenesListRepository;
         LOG.info("Building OncoKB gene list");
-        this.oncokbGeneSymbolList = this.buildList();
+        this.oncokbCuratedGenes = this.buildList(true);
+        this.oncokbCancerGenes = this.buildList(false);
         LOG.info("Finished building OncoKB gene list");
     }
 
@@ -113,18 +115,26 @@ public class OncokbServiceImpl implements OncokbService {
         return this.oncokbCancerGenesListRepository.getOncokbCancerGenesList();
     }
 
-    private Set<String> buildList() {
+    private Set<String> buildList(boolean oncokbAnnotatedOnly) {
         List<CancerGene> cancerGenes = this.getOncokbCancerGenesList();
         Set<String> geneSymbolList = new HashSet();
         for (CancerGene cancerGene : cancerGenes) {
-            geneSymbolList.add(cancerGene.getHugoSymbol());
+            if (!oncokbAnnotatedOnly || Boolean.TRUE.equals(cancerGene.getOncokbAnnotated())) {
+                geneSymbolList.add(cancerGene.getHugoSymbol());
+            }
         }
         return geneSymbolList;
     }
 
     @Override
-    public Set<String> getOncokbGeneSymbolList()
+    public Set<String> getOncokbCuratedGenes()
     {
-        return this.oncokbGeneSymbolList;
+        return this.oncokbCuratedGenes;
+    }
+
+    @Override
+    public Set<String> getOncokbCancerGenes()
+    {
+        return this.oncokbCancerGenes;
     }
 }

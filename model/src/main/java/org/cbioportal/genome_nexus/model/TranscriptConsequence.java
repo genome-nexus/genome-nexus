@@ -59,12 +59,14 @@ public class TranscriptConsequence
     private String aminoAcids;
     private String hgncId;
     private String canonical;
+    private String biotype;
     private Double polyphenScore;
     private String polyphenPrediction;
     private Double siftScore;
     private String siftPrediction;
     private String exon;
     private String uniprotId;
+    private Integer hgvsOffset;
 
     private List<String> refseqTranscriptIds;
     private List<String> consequenceTerms;
@@ -290,6 +292,17 @@ public class TranscriptConsequence
         this.canonical = canonical;
     }
 
+    @Field(value="biotype")
+    public String getBiotype()
+    {
+        return biotype;
+    }
+
+    public void setBiotype(String biotype)
+    {
+        this.biotype = biotype;
+    }
+
     @Field(value="exon")
     public String getExon()
     {
@@ -307,6 +320,15 @@ public class TranscriptConsequence
 
     public void setUniprotId(String uniprotId) {
         this.uniprotId = uniprotId;
+    }
+
+    @Field(value="hgvs_offset")
+    public Integer getHgvsOffset() {
+        return hgvsOffset;
+    }
+
+    public void setHgvsOffset(Integer hgvsOffset) {
+        this.hgvsOffset = hgvsOffset;
     }
 
     @Field(value="refseq_transcript_ids")

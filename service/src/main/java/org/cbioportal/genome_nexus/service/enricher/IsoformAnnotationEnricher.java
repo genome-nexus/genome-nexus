@@ -6,13 +6,104 @@ import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.OncokbService;
 import org.cbioportal.genome_nexus.util.IsoformOverrideSource;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
 {
+    // Biotype priority table ported from vcf2maf/vcf2maf.pl GetBiotypePriority().
+    // Lower number = higher priority. Unrecognized biotypes get priority 10.
+    // Full biotype definitions: https://www.gencodegenes.org/pages/biotypes.html
+    private static final Map<String, Integer> BIOTYPE_PRIORITY = new HashMap<>();
+    static {
+        BIOTYPE_PRIORITY.put("protein_coding", 1);
+        BIOTYPE_PRIORITY.put("LRG_gene", 2);
+        BIOTYPE_PRIORITY.put("IG_C_gene", 2);
+        BIOTYPE_PRIORITY.put("IG_D_gene", 2);
+        BIOTYPE_PRIORITY.put("IG_J_gene", 2);
+        BIOTYPE_PRIORITY.put("IG_LV_gene", 2);
+        BIOTYPE_PRIORITY.put("IG_V_gene", 2);
+        BIOTYPE_PRIORITY.put("TR_C_gene", 2);
+        BIOTYPE_PRIORITY.put("TR_D_gene", 2);
+        BIOTYPE_PRIORITY.put("TR_J_gene", 2);
+        BIOTYPE_PRIORITY.put("TR_V_gene", 2);
+        BIOTYPE_PRIORITY.put("miRNA", 3);
+        BIOTYPE_PRIORITY.put("snRNA", 3);
+        BIOTYPE_PRIORITY.put("snoRNA", 3);
+        BIOTYPE_PRIORITY.put("ribozyme", 3);
+        BIOTYPE_PRIORITY.put("tRNA", 3);
+        BIOTYPE_PRIORITY.put("sRNA", 3);
+        BIOTYPE_PRIORITY.put("scaRNA", 3);
+        BIOTYPE_PRIORITY.put("rRNA", 3);
+        BIOTYPE_PRIORITY.put("scRNA", 3);
+        BIOTYPE_PRIORITY.put("lincRNA", 3);
+        BIOTYPE_PRIORITY.put("lncRNA", 3);
+        BIOTYPE_PRIORITY.put("bidirectional_promoter_lncrna", 3);
+        BIOTYPE_PRIORITY.put("bidirectional_promoter_lncRNA", 3);
+        BIOTYPE_PRIORITY.put("known_ncrna", 4);
+        BIOTYPE_PRIORITY.put("vaultRNA", 4);
+        BIOTYPE_PRIORITY.put("vault_RNA", 4);
+        BIOTYPE_PRIORITY.put("macro_lncRNA", 4);
+        BIOTYPE_PRIORITY.put("Mt_tRNA", 4);
+        BIOTYPE_PRIORITY.put("Mt_rRNA", 4);
+        BIOTYPE_PRIORITY.put("antisense", 5);
+        BIOTYPE_PRIORITY.put("antisense_RNA", 5);
+        BIOTYPE_PRIORITY.put("sense_intronic", 5);
+        BIOTYPE_PRIORITY.put("sense_overlapping", 5);
+        BIOTYPE_PRIORITY.put("3prime_overlapping_ncrna", 5);
+        BIOTYPE_PRIORITY.put("3prime_overlapping_ncRNA", 5);
+        BIOTYPE_PRIORITY.put("misc_RNA", 5);
+        BIOTYPE_PRIORITY.put("non_coding", 5);
+        BIOTYPE_PRIORITY.put("regulatory_region", 6);
+        BIOTYPE_PRIORITY.put("disrupted_domain", 6);
+        BIOTYPE_PRIORITY.put("processed_transcript", 6);
+        BIOTYPE_PRIORITY.put("protein_coding_CDS_not_defined", 6);
+        BIOTYPE_PRIORITY.put("TEC", 6);
+        BIOTYPE_PRIORITY.put("TF_binding_site", 7);
+        BIOTYPE_PRIORITY.put("CTCF_binding_site", 7);
+        BIOTYPE_PRIORITY.put("promoter_flanking_region", 7);
+        BIOTYPE_PRIORITY.put("enhancer", 7);
+        BIOTYPE_PRIORITY.put("promoter", 7);
+        BIOTYPE_PRIORITY.put("open_chromatin_region", 7);
+        BIOTYPE_PRIORITY.put("retained_intron", 7);
+        BIOTYPE_PRIORITY.put("nonsense_mediated_decay", 7);
+        BIOTYPE_PRIORITY.put("non_stop_decay", 7);
+        BIOTYPE_PRIORITY.put("ambiguous_orf", 7);
+        BIOTYPE_PRIORITY.put("pseudogene", 8);
+        BIOTYPE_PRIORITY.put("processed_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("polymorphic_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("protein_coding_LoF", 8);
+        BIOTYPE_PRIORITY.put("retrotransposed", 8);
+        BIOTYPE_PRIORITY.put("translated_processed_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("translated_unprocessed_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("transcribed_processed_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("transcribed_unprocessed_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("transcribed_unitary_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("unitary_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("unprocessed_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("Mt_tRNA_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("tRNA_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("snoRNA_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("snRNA_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("scRNA_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("rRNA_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("misc_RNA_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("miRNA_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("IG_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("IG_C_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("IG_D_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("IG_J_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("IG_V_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("TR_J_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("TR_V_pseudogene", 8);
+        BIOTYPE_PRIORITY.put("artifact", 9);
+    }
+
     String source;
     EnsemblService ensemblService;
     OncokbService  oncokbService;
@@ -46,38 +137,106 @@ public class IsoformAnnotationEnricher extends BaseAnnotationEnricher
             IsoformOverrideSource.getOrDefault(this.source)
         );
 
-        List<TranscriptConsequence> canonicalTranscriptCandidates = this.findCanonicalTranscriptCandidates(
-            annotation.getTranscriptConsequences(),
-            predefinedCanonicalTranscriptIds
+        // If no override source is configured, rely on VEP's canonical flags as-is.
+        if (predefinedCanonicalTranscriptIds == null || predefinedCanonicalTranscriptIds.isEmpty()) {
+            return;
+        }
+
+        for (TranscriptConsequence transcript : annotation.getTranscriptConsequences()) {
+            transcript.setCanonical(null);
+        }
+
+        // Step 1 — gene-level biotype filter: keep transcripts from genes whose best biotype
+        // equals the global best. Ensures a protein_coding gene beats a lncRNA-only gene.
+        List<TranscriptConsequence> candidates = filterByBestBiotypeGeneLevel(annotation.getTranscriptConsequences());
+
+        // Step 2 — OncoKB gene preference: prefer oncokbAnnotated=true genes first;
+        // if none present, fall back to any cancer gene in the oncokb.gene collection.
+        if (Boolean.parseBoolean(prioritizeOncokbGeneTranscriptsConfig) && oncokbService != null) {
+            Set<String> curatedSet = oncokbService.getOncokbCuratedGenes();
+            Set<String> oncokbCuratedGenes = candidates.stream()
+                .map(TranscriptConsequence::getGeneSymbol)
+                .filter(g -> g != null && curatedSet.contains(g))
+                .collect(Collectors.toSet());
+            if (!oncokbCuratedGenes.isEmpty()) {
+                candidates = candidates.stream()
+                    .filter(t -> oncokbCuratedGenes.contains(t.getGeneSymbol()))
+                    .collect(Collectors.toList());
+            } else {
+                Set<String> cancerSet = oncokbService.getOncokbCancerGenes();
+                Set<String> oncokbCancerGenes = candidates.stream()
+                    .map(TranscriptConsequence::getGeneSymbol)
+                    .filter(g -> g != null && cancerSet.contains(g))
+                    .collect(Collectors.toSet());
+                if (!oncokbCancerGenes.isEmpty()) {
+                    candidates = candidates.stream()
+                        .filter(t -> oncokbCancerGenes.contains(t.getGeneSymbol()))
+                        .collect(Collectors.toList());
+                }
+            }
+        }
+
+        // Step 3 — per-transcript biotype filter: within selected genes, keep only transcripts
+        // with the best biotype (protein_coding beats retained_intron, etc.).
+        candidates = filterByBestBiotype(candidates);
+
+        // Step 4 — isoform override source: prefer transcripts in the configured override set.
+        List<TranscriptConsequence> overrideCandidates = this.findCanonicalTranscriptCandidates(
+            candidates, predefinedCanonicalTranscriptIds
         );
-
-        // if at least one canonical transcript candidate is found
-        // then mark all transcripts as non-canonical.
-        //
-        // if no override, then we should leave the transcript list intact
-        // (rely on the canonical info provided by the web service in that case).
-        if (canonicalTranscriptCandidates.size() > 0) {
-            for (TranscriptConsequence transcript: annotation.getTranscriptConsequences()) {
-                transcript.setCanonical(null);
-            }
-        }
-        // if there are multiple canonical transcript candidates, we filter by if there are oncokb genes
-        // and if only one transcript is oncokb gene, we set it as canonical, and set the rest as non-canonical
-        // if there are more than one oncokb gene, we keep them as candidates and set other transcripts as non-canonical
-        if (canonicalTranscriptCandidates.size() > 1 && Boolean.parseBoolean(prioritizeOncokbGeneTranscriptsConfig)) {
-            List<TranscriptConsequence> canonicalTranscriptCandidatesFilteredByOncokb = canonicalTranscriptCandidates
-            .stream()
-            .filter(t -> oncokbService.getOncokbGeneSymbolList().contains(t.getGeneSymbol()))
-            .collect(Collectors.toList());
-            if (canonicalTranscriptCandidatesFilteredByOncokb.size() > 0) {
-                canonicalTranscriptCandidates = canonicalTranscriptCandidatesFilteredByOncokb;
-            }
+        if (!overrideCandidates.isEmpty()) {
+            candidates = overrideCandidates;
         }
 
-        // override the canonical field for all the candidates
-        for (TranscriptConsequence transcript: canonicalTranscriptCandidates) {
+        // Mark all remaining candidates as canonical.
+        for (TranscriptConsequence transcript : candidates) {
             transcript.setCanonical("1");
         }
+    }
+
+    private static int getBiotypePriority(String biotype) {
+        return BIOTYPE_PRIORITY.getOrDefault(biotype != null ? biotype : "", 10);
+    }
+
+    private static String getGeneKey(TranscriptConsequence t) {
+        return t.getGeneId() != null ? t.getGeneId() : t.getGeneSymbol();
+    }
+
+    // Group transcripts by gene; keep only those from genes whose best biotype equals the
+    // global minimum across all genes. Uses geneId as the grouping key, falling back to
+    // geneSymbol for transcripts that lack a geneId.
+    private static List<TranscriptConsequence> filterByBestBiotypeGeneLevel(List<TranscriptConsequence> transcripts) {
+        Map<String, Integer> geneBestBiotype = new HashMap<>();
+        for (TranscriptConsequence t : transcripts) {
+            String gene = getGeneKey(t);
+            if (gene == null) continue;
+            geneBestBiotype.merge(gene, getBiotypePriority(t.getBiotype()), Math::min);
+        }
+        if (geneBestBiotype.isEmpty()) {
+            return transcripts;
+        }
+        int globalBest = geneBestBiotype.values().stream()
+            .mapToInt(Integer::intValue)
+            .min()
+            .orElse(10);
+        Set<String> bestGenes = geneBestBiotype.entrySet().stream()
+            .filter(e -> e.getValue() == globalBest)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toSet());
+        return transcripts.stream()
+            .filter(t -> bestGenes.contains(getGeneKey(t)))
+            .collect(Collectors.toList());
+    }
+
+    // Keep only the candidates that share the best (lowest) biotype priority score.
+    private static List<TranscriptConsequence> filterByBestBiotype(List<TranscriptConsequence> candidates) {
+        int bestPriority = candidates.stream()
+            .mapToInt(t -> getBiotypePriority(t.getBiotype()))
+            .min()
+            .orElse(10);
+        return candidates.stream()
+            .filter(t -> getBiotypePriority(t.getBiotype()) == bestPriority)
+            .collect(Collectors.toList());
     }
 
     /**

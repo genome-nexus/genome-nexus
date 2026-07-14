@@ -1,11 +1,5 @@
 package org.cbioportal.genome_nexus.component.annotation;
 
-import org.cbioportal.genome_nexus.model.TranscriptConsequence;
-import org.cbioportal.genome_nexus.model.VariantAnnotation;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +7,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.cbioportal.genome_nexus.model.TranscriptConsequence;
+import org.cbioportal.genome_nexus.model.VariantAnnotation;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ProteinChangeResolver
@@ -25,12 +25,14 @@ public class ProteinChangeResolver
     };
 
     public static final Set<String> SPLICE_SITE_VARIANTS = new HashSet<>(
-        Arrays.asList("splice_acceptor_variant", "splice_donor_variant", "splice_region_variant")
+        Arrays.asList("splice_acceptor_variant", "splice_donor_variant")
     );
 
     private final CanonicalTranscriptResolver canonicalTranscriptResolver;
     private final VariantClassificationResolver variantClassificationResolver;
     private final Pattern cDnaExtractor;
+    private final Pattern cDnaRangeSecondPosExtractor;
+    private final Pattern utrStartRangePattern;
 
     @Autowired
     public ProteinChangeResolver(CanonicalTranscriptResolver canonicalTranscriptResolver,
@@ -39,6 +41,8 @@ public class ProteinChangeResolver
         this.canonicalTranscriptResolver = canonicalTranscriptResolver;
         this.variantClassificationResolver = variantClassificationResolver;
         this.cDnaExtractor = Pattern.compile(".*[cn].-?\\*?(\\d+).*");
+        this.cDnaRangeSecondPosExtractor = Pattern.compile(".*_(\\d+).*");
+        this.utrStartRangePattern = Pattern.compile(".*[cn]\\.-\\d+_.*");
     }
 
     /**
@@ -129,6 +133,18 @@ public class ProteinChangeResolver
             }
 
             cPos = Integer.parseInt(m.group(1));
+            // For UTR-start ranges like c.-309_60+142del the regex loses the minus sign,
+            // extracting 309 instead of -309. Detect this case and use the CDS end of
+            // the range (the number after '_') which is the splice-relevant position.
+            if (this.utrStartRangePattern.matcher(hgvsc).matches()) {
+                Matcher rm = this.cDnaRangeSecondPosExtractor.matcher(hgvsc);
+                if (rm.matches()) {
+                    int cdsCPos = Integer.parseInt(rm.group(1));
+                    if (cdsCPos >= 1) {
+                        cPos = cdsCPos;
+                    }
+                }
+            }
             cPos = cPos < 1 ? 1 : cPos;
             pPos = (cPos + 2) / 3;
 
@@ -207,7 +223,7 @@ public class ProteinChangeResolver
             }
             else
             {
-                hgvspShort = "p." + aaParts[0] + transcriptConsequence.getProteinStart();
+                hgvspShort = "p." + aaParts[0].substring(0, 1) + transcriptConsequence.getProteinStart();
 
                 if (transcriptConsequence.getConsequenceTerms() != null &&
                     transcriptConsequence.getConsequenceTerms().get(0).toLowerCase().contains("frameshift_variant"))
@@ -216,7 +232,7 @@ public class ProteinChangeResolver
                 }
                 else
                 {
-                    hgvspShort += aaParts[1];
+                    hgvspShort += (aaParts.length > 1) ? aaParts[1] : "=";
                 }
             }
         } catch (Exception e) {
@@ -247,10 +263,11 @@ public class ProteinChangeResolver
 
         String variantClassification = this.variantClassificationResolver.resolve(null, transcriptConsequence);
 
-        // only use hgvsp if the most severe impact is not a splice variant
+        // only use hgvsp if it's not a splice site variant
+        // Splice_Region variants could have valid HGVSp
         if (transcriptConsequence != null &&
             transcriptConsequence.getHgvsp() != null &&
-            !(variantClassification != null && variantClassification.toLowerCase().contains("splice"))
+            !(variantClassification != null && variantClassification.equalsIgnoreCase("Splice_Site"))
             )
         {
             hgvsp = this.normalizeHgvsp(transcriptConsequence.getHgvsp());

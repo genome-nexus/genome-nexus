@@ -32,7 +32,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.BasicDBList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(
@@ -65,31 +64,31 @@ public class AnnotationApiTest {
 
     @Before
     public void setUp() throws Exception {
-        Answer<BasicDBList> getAnswer = new Answer<BasicDBList>() {
+        Answer<String> getAnswer = new Answer<String>() {
             @Override
-            public BasicDBList answer(InvocationOnMock invocation) throws Throwable {
+            public String answer(InvocationOnMock invocation) throws Throwable {
                 String requestUrl = invocation.getArgument(0);
                 String[] requestUrlParts = requestUrl.split("/");
                 String variant = requestUrlParts[requestUrlParts.length - 1];
-                return objectMapper.readValue('[' + readVEPMockResponseFile(variant) + ']', BasicDBList.class);
+                return '[' + readVEPMockResponseFile(variant) + ']';
             }
         };
-        Answer<BasicDBList> postAnswer = new Answer<BasicDBList>() {
+        Answer<String> postAnswer = new Answer<String>() {
             @Override
-            public BasicDBList answer(InvocationOnMock invocation) throws Throwable {
+            public String answer(InvocationOnMock invocation) throws Throwable {
                 Map<String, LinkedHashSet<String>> requestBody = invocation.getArgument(1);
                 LinkedHashSet<String> variants = requestBody.get("hgvs_notations");
 
                 List<String> mockResponse = new ArrayList<>();
                 for (String variant : variants) {
                     mockResponse.add(readVEPMockResponseFile(variant));
-                }               
-                return objectMapper.readValue("[" + String.join(",", mockResponse) + "]", BasicDBList.class);
-            }   
+                }
+                return "[" + String.join(",", mockResponse) + "]";
+            }
         };
 
-        Mockito.when(mockRestTemplate.getForObject(Mockito.startsWith("http://fake"), Mockito.eq(BasicDBList.class))).thenAnswer(getAnswer);
-        Mockito.when(mockRestTemplate.postForObject(Mockito.startsWith("http://fake"), Mockito.any(), Mockito.eq(BasicDBList.class))).thenAnswer(postAnswer);        
+        Mockito.when(mockRestTemplate.getForObject(Mockito.startsWith("http://fake"), Mockito.eq(String.class))).thenAnswer(getAnswer);
+        Mockito.when(mockRestTemplate.postForObject(Mockito.startsWith("http://fake"), Mockito.any(), Mockito.eq(String.class))).thenAnswer(postAnswer);
     }
 
     @Test

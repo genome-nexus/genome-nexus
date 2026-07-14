@@ -152,8 +152,9 @@ public class IsoformAnnotationEnricherTest
 
     private void mockOncokbServiceMethods()
     {
-        Set<String> oncokbGeneSymbolList = new HashSet<>();
-        oncokbGeneSymbolList.add("TPRXL");
-        Mockito.when(this.oncokbService.getOncokbGeneSymbolList()).thenReturn(oncokbGeneSymbolList);
+        Set<String> oncokbCuratedGenes = new HashSet<>();
+        oncokbCuratedGenes.add("TPRXL");
+        Mockito.when(this.oncokbService.getOncokbCuratedGenes()).thenReturn(oncokbCuratedGenes);
+        Mockito.when(this.oncokbService.getOncokbCancerGenes()).thenReturn(new HashSet<>());
     }
 }

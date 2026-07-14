@@ -1,20 +1,20 @@
 package org.cbioportal.genome_nexus.component.annotation;
 
+import java.io.IOException;
+import java.util.Map;
+
+import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.mock.CanonicalTranscriptResolverMocker;
 import org.cbioportal.genome_nexus.service.mock.VariantAnnotationMockData;
 import org.cbioportal.genome_nexus.service.mock.VariantClassificationResolverMocker;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.io.IOException;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ProteinChangeResolverTest
@@ -177,7 +177,7 @@ public class ProteinChangeResolverTest
         );
 
         assertEquals(
-            "p.X210_splice",
+            "p.L210=",
             this.proteinChangeResolver.resolveHgvspShort(
                 variantMockData.get("7:g.55220240G>T"),
                 variantMockData.get("7:g.55220240G>T").getTranscriptConsequences().get(0)
@@ -191,11 +191,51 @@ public class ProteinChangeResolverTest
         Map<String, VariantAnnotation> variantMockData = this.variantAnnotationMockData.generateData();
         this.variantClassificationResolverMocker.mockMethods(variantMockData, this.variantClassificationResolver);
 
+        // Missense variant: BRAF V600E - should normalize hgvsp (strip transcript prefix)
+        TranscriptConsequence brafCanonical = variantMockData.get("7:g.140453136A>T").getTranscriptConsequences().get(0);
+        assertEquals(
+            "p.Val600Glu",
+            this.proteinChangeResolver.resolveHgvsp(brafCanonical)
+        );
+
+        // Missense variant: KRAS G12C
+        TranscriptConsequence krasCanonical = variantMockData.get("12:g.25398285C>A").getTranscriptConsequences().get(0);
+        assertEquals(
+            "p.Gly12Cys",
+            this.proteinChangeResolver.resolveHgvsp(krasCanonical)
+        );
+
+        // Inframe deletion: should have valid hgvsp
+        TranscriptConsequence delCanonical = variantMockData.get("22:g.36689419_36689421del").getTranscriptConsequences().get(0);
+        assertEquals(
+            "p.Glu1350del",
+            this.proteinChangeResolver.resolveHgvsp(delCanonical)
+        );
+
+        // Protein altering variant (delins): FLT3
+        TranscriptConsequence flt3Canonical = variantMockData.get("13:g.28608258_28608275del").getTranscriptConsequences().get(0);
+        assertEquals(
+            "p.Phe594_Asp600delinsSerProProProHis",
+            this.proteinChangeResolver.resolveHgvsp(flt3Canonical)
+        );
+
+        // Frameshift variant: should have valid hgvsp
+        TranscriptConsequence fsCanonical = variantMockData.get("6:g.137519505_137519506delinsA").getTranscriptConsequences().get(0);
+        assertEquals(
+            "p.Ser378PhefsTer5",
+            this.proteinChangeResolver.resolveHgvsp(fsCanonical)
+        );
+
+        // Splice acceptor variant: hgvsp should be null (splice site exclusion)
+        TranscriptConsequence spliceCanonical = variantMockData.get("19:g.46141892_46141893delinsAA").getTranscriptConsequences().get(0);
         assertNull(
-            "Hgvsp is null when most severe consequence is splice",
-            this.proteinChangeResolver.resolveHgvsp(
-                variantMockData.get("7:g.55220240G>T").getTranscriptConsequences().get(0)
-            )
+            this.proteinChangeResolver.resolveHgvsp(spliceCanonical)
+        );
+
+        // Null transcript consequence: should return null
+        assertNull(
+            this.proteinChangeResolver.resolveHgvsp(null)
         );
     }
+
 }

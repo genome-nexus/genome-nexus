@@ -1,17 +1,17 @@
 package org.cbioportal.genome_nexus.component.annotation;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class VariantClassificationResolver
@@ -211,8 +211,8 @@ public class VariantClassificationResolver
         variantMap.put("sequence_variant",      "Sequence_Variant");
         variantMap.put("splice_region_variant",         "Splice_Region");
         variantMap.put("splice_donor_region_variant",         "Splice_Region");
-        variantMap.put("splice_polypyrimidine_tract_variant",         "Splice_Region");
         variantMap.put("splice_donor_5th_base_variant",         "Splice_Region");
+        variantMap.put("splice_polypyrimidine_tract_variant",         "Intron"); // splice_polypyrimidine_tract_variant is from range -3 to -15 of the splice acceptor site, so we classify it as intron variant as the overlap with splice region will return splice region in consequence terms together, splice region will be picked
         variantMap.put("intron_variant",                "Intron");
         variantMap.put("intragenic",                    "Intron");
         variantMap.put("intragenic_variant",            "Intron");

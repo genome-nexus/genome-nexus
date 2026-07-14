@@ -138,18 +138,174 @@ Without a valid token the OncoKB enricher will be called but the API request to 
 
 ---
 
-## How is the canonical transcript selected?
+## How does Genome Nexus pick a transcript for a variant?
 
-Genome Nexus picks one transcript per variant using this priority order:
+When a variant overlaps multiple transcripts, Genome Nexus selects one "canonical" transcript through a multi-step pipeline. VEP's own canonical flag is **reset** before the pipeline runs — it is not used as input.
 
-1. **Isoform override list** — A curated list of preferred transcript IDs (controlled by the `isoformOverrideSource` query parameter, default `mskcc`). If any of the variant's transcripts appear in that list, only those are considered.
-2. **Cancer gene preference** — If multiple transcripts survived step 1 and the instance has `prioritize_cancer_gene_transcripts=true` (default), transcripts whose gene is in the OncoKB cancer gene list are preferred. If none qualify, all step-1 candidates are kept.
-3. **Most severe consequence** — If multiple transcripts are still tied, the one with the most severe consequence term wins.
-4. **Fallback to VEP canonical** — If no transcript matched the isoform override list at all, Genome Nexus falls back to whichever transcript VEP itself flagged as canonical, again using most-severe-consequence to break any tie.
+Each step can only shrink the candidate list (or leave it unchanged when the filter finds no matches).
 
-The selected transcript populates `transcriptConsequenceSummary` in the summary response.
+**Table of Contents**
 
-> **Note for developers:** The isoform override step is [`IsoformAnnotationEnricher`](https://github.com/genome-nexus/genome-nexus/blob/master/service/src/main/java/org/cbioportal/genome_nexus/service/enricher/IsoformAnnotationEnricher.java); the final pick is [`CanonicalTranscriptResolver`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/CanonicalTranscriptResolver.java).
+- [Overview](#overview)
+- [Step 1 — Gene-level biotype filter](#step-1--gene-level-biotype-filter)
+- [Step 2 — OncoKB gene preference](#step-2--oncokb-gene-preference)
+- [Step 3 — Per-transcript biotype filter](#step-3--per-transcript-biotype-filter)
+- [Step 4 — Isoform override](#step-4--isoform-override)
+- [Step 5 — Mark canonical and resolve](#step-5--mark-canonical-and-resolve)
+  - [How the prioritizer picks one transcript](#how-the-prioritizer-picks-one-transcript)
+    - [Pass A — Match most_severe_consequence](#pass-a--match-most_severe_consequence)
+    - [Pass B — Highest-priority consequence term](#pass-b--highest-priority-consequence-term)
+    - [Final tiebreaker — VEP list order](#final-tiebreaker--vep-list-order)
+- [Source code references](#source-code-references)
+
+---
+
+### Overview
+
+```
+VEP transcript_consequences
+  │
+  ▼
+Step 1: Gene-level biotype filter    (keep genes with best biotype)
+  │
+  ▼
+Step 2: OncoKB gene preference       (prefer cancer genes)
+  │
+  ▼
+Step 3: Per-transcript biotype filter (keep transcripts with best biotype)
+  │
+  ▼
+Step 4: Isoform override             (keep transcripts in override set)
+  │
+  ▼
+Step 5: Mark canonical + resolve     (pick exactly one transcript)
+  │
+  ▼
+transcriptConsequenceSummary
+```
+![Flowchart of transcript picking](https://github.com/user-attachments/assets/1b554461-19bf-4f11-b4b4-70081a8234c3)
+---
+
+### Step 1 — Gene-level biotype filter
+
+Group all transcripts by gene. For each gene, find the best (lowest-number) biotype among its transcripts. Then compare across genes and keep only transcripts from genes whose best biotype equals the global minimum.
+
+This ensures a gene with a `protein_coding` transcript always beats a gene with only `lncRNA` or `pseudogene` transcripts.
+
+**Biotype priority table** (lower number = higher priority):
+
+| Priority | Biotypes |
+|---|---|
+| 1 | `protein_coding` |
+| 2 | `IG_*`, `TR_*` (immunoglobulin / T-cell receptor genes) |
+| 3 | `miRNA`, `snRNA`, `snoRNA`, `rRNA`, `scRNA`, `lncRNA`, `lincRNA`, `ribozyme`, `tRNA`, `sRNA`, `scaRNA` |
+| 4 | `Mt_tRNA`, `Mt_rRNA`, `vault_RNA`, `macro_lncRNA` |
+| 5 | `antisense`, `sense_intronic`, `sense_overlapping`, `misc_RNA` |
+| 6 | `processed_transcript`, `TEC` |
+| 7 | `retained_intron`, `nonsense_mediated_decay`, `non_stop_decay` |
+| 8 | All pseudogene types |
+| 9 | `artifact` |
+| 10 | Anything not in the above list |
+
+---
+
+### Step 2 — OncoKB gene preference
+
+Among surviving genes, check whether any gene symbol appears in the OncoKB cancer gene database. The filter runs in two tiers:
+
+**Tier 1 — `oncokbCuratedGenes` (`oncokbAnnotated: true`):** Genes with a curated clinical entry in OncoKB. If any surviving gene is in this set, keep only those genes and discard the rest.
+
+**Tier 2 — `oncokbCancerGenes` fallback (`oncokbAnnotated: false`):** Only consulted when Tier 1 found no match. This set includes all genes present in the `oncokb.gene` MongoDB collection that lack a curated OncoKB entry — e.g., Foundation Medicine or MSK-IMPACT panel genes. If at least one gene matches, keep only those.
+
+If neither tier matches, all candidates from Step 1 pass through unchanged.
+
+This two-tier structure prevents non-curated panel genes from outranking OncoKB-curated cancer genes when both appear in the same variant's transcript list. The filter runs at the **gene** level so that an isoform override for a bystander gene cannot outrank a cancer gene's transcript.
+
+> **Note for developers:** Both gene sets are built at startup in [`OncokbServiceImpl.buildList()`](https://github.com/genome-nexus/genome-nexus/blob/master/service/src/main/java/org/cbioportal/genome_nexus/service/internal/OncokbServiceImpl.java) from the `oncokb.gene` MongoDB collection — `buildList(true)` populates `oncokbCuratedGenes` (only entries where `oncokbAnnotated == true`), `buildList(false)` populates `oncokbCancerGenes` (all entries). The two-tier filter logic lives in [`IsoformAnnotationEnricher`](https://github.com/genome-nexus/genome-nexus/blob/master/service/src/main/java/org/cbioportal/genome_nexus/service/enricher/IsoformAnnotationEnricher.java) Step 2, guarded by the `prioritize_cancer_gene_transcripts` config flag (default `true`).
+
+---
+
+### Step 3 — Per-transcript biotype filter
+
+Within the surviving genes from Step 2, apply the same biotype priority table again, but now at the **individual transcript** level. Keep only transcripts whose biotype has the lowest (best) priority value. For example, if one transcript is `protein_coding` (1) and another is `nonsense_mediated_decay` (7), only the `protein_coding` transcript survives.
+
+---
+
+### Step 4 — Isoform override
+
+Check the configured isoform override set (controlled by the `isoformOverrideSource` query parameter; default `mskcc`). Among the remaining transcripts, keep only those whose transcript ID appears in the override set. If **no** transcript matches the override set (e.g., the curated transcript is too far from the variant to appear in VEP's output), all Step 3 candidates are kept unchanged.
+
+---
+
+### Step 5 — Highest consequence term
+
+For all transcripts that survived Steps 1–4,
+| Scenario | Action |
+|---|---|
+| Exactly **1** transcript marked canonical | Return it immediately — no further logic needed. |
+| **Multiple** transcripts marked canonical | Run the **prioritizer** (described below) on just the survived transcripts. |
+| **0** transcripts marked canonical | Run the **prioritizer** on **all** original transcripts as a fallback. |
+
+#### How the prioritizer picks one transcript
+
+The [`TranscriptConsequencePrioritizer`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/TranscriptConsequencePrioritizer.java) works in two passes to narrow candidates, then uses list position as a final tiebreaker.
+
+##### Pass A — Match `most_severe_consequence`
+
+VEP returns a top-level `most_severe_consequence` string for the whole variant (e.g., `missense_variant`). This is the single most severe consequence term across **all** transcripts, computed by VEP itself.
+
+The prioritizer scans every candidate transcript and collects those whose `consequence_terms` list contains this exact term (case-insensitive match). This narrows the pool to transcripts that actually carry the variant's most impactful effect.
+
+If one transcript matches, all other transcripts are discarded.
+If more than one transcript matches, those transcripts carry forward to Pass B.
+If **no** transcript matches (rare — can happen when VEP's term is not in any transcript's list), all candidates carry forward to Pass B unchanged.
+
+##### Pass B — Highest-priority consequence term
+
+Among the transcripts from Pass A, the prioritizer scans every `consequence_terms` entry and looks up its numeric priority in the `EFFECT_PRIORITY` map. It finds the **single lowest value** (= most severe) across all terms of all candidates.
+
+Then it keeps only transcripts that have at least one term at that best priority level, and discards the rest.
+
+**Effect priority table** (lower number = more severe; selected examples):
+
+| Priority | Consequence terms |
+|---|---|
+| 1 | `transcript_ablation`, `exon_loss_variant` |
+| 2 | `splice_donor_variant`, `splice_acceptor_variant` |
+| 3 | `stop_gained`, `frameshift_variant`, `stop_lost` |
+| 4 | `start_lost`, `initiator_codon_variant` |
+| 5 | `transcript_amplification` |
+| 7 | `inframe_insertion`, `inframe_deletion`, `disruptive_inframe_insertion`, `disruptive_inframe_deletion` |
+| 8 | `protein_altering_variant` |
+| 9 | `missense_variant`, `conservative_missense_variant`, `rare_amino_acid_variant` |
+| 10 | `splice_region_variant`, `splice_donor_5th_base_variant`, `splice_donor_region_variant` |
+| 11 | `splice_polypyrimidine_tract_variant` |
+| 12 | `synonymous_variant`, `start_retained_variant`, `stop_retained_variant` |
+| 14 | `coding_sequence_variant`, `mature_mirna_variant`, `exon_variant` |
+| 15 | `5_prime_utr_variant`, `3_prime_utr_variant` |
+| 17 | `intron_variant`, `non_coding_transcript_variant` |
+| 20 | `upstream_gene_variant`, `downstream_gene_variant` |
+| 21 | `regulatory_region_variant`, `tfbs_ablation` |
+| 22 | `intergenic_variant`, `sequence_variant` |
+
+(The full map contains ~60 terms. See `EFFECT_PRIORITY` in the [source code](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/TranscriptConsequencePrioritizer.java) for the complete list.)
+
+##### Final tiebreaker — VEP list order
+
+If multiple transcripts still tie after both passes, the prioritizer returns `bestCandidates.get(0)` — the **first** one in the list. Because the candidate list preserves VEP's original `transcript_consequences` array order throughout the pipeline, VEP's ordering is the ultimate tiebreaker.
+
+As a last-resort fallback (if no transcript had any recognized consequence term at all), the code returns `transcripts.get(0)` — the first transcript in the original input list.
+
+---
+
+### Source code references
+
+| Component | Class | Role |
+|---|---|---|
+| Pipeline orchestrator | [`IsoformAnnotationEnricher`](https://github.com/genome-nexus/genome-nexus/blob/master/service/src/main/java/org/cbioportal/genome_nexus/service/enricher/IsoformAnnotationEnricher.java) | Steps 1–4, marks canonical |
+| Final transcript pick | [`CanonicalTranscriptResolver`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/CanonicalTranscriptResolver.java) | Step 5 branching logic |
+| Consequence ranking | [`TranscriptConsequencePrioritizer`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/TranscriptConsequencePrioritizer.java) | Pass A + Pass B + tiebreaker |
+| Detailed walkthrough | [Canonical-Transcript-Selection-Analysis.md](Canonical-Transcript-Selection-Analysis.md) | Full examples and edge cases |
 
 ---
 
@@ -229,7 +385,7 @@ The label depends on which consequence term VEP assigns as the **most severe** (
 |---|---|---|---|
 | `X(pos)_splice` | `splice_acceptor_variant` | 2 base region at the 3′ end of the intron (the AG dinucleotide) | VEP early versions |
 | `X(pos)_splice` | `splice_donor_variant` | 2 base region at the 5′ end of the intron (the GT dinucleotide) | VEP early versions |
-| `X(pos)_splice` | `splice_region_variant` | Within 1–3 bases of the exon or 3–8 bases of the intron | VEP early versions |
+| `p.*(pos)*` | `splice_region_variant` | Within 1–3 bases of the exon or 3–8 bases of the intron | VEP early versions |
 | `p.*(pos)*` | `splice_donor_5th_base_variant` | 5th base into the intron after the 5′ splice junction | VEP 105 (Dec 2021) |
 | `p.*(pos)*` | `splice_donor_region_variant` | 3rd to 6th base into the intron after the 5′ splice junction | VEP 105 (Dec 2021) |
 | `p.*(pos)*` | `splice_polypyrimidine_tract_variant` | Acceptor −3 to acceptor −17 (polypyrimidine tract at 3′ end of intron) | VEP 105 (Dec 2021) |
@@ -252,7 +408,7 @@ Genome Nexus does not apply its own distance cutoff — it relies entirely on wh
 > **Note for developers:** The three terms that trigger `X(pos)_splice` are defined in [`SPLICE_SITE_VARIANTS` (lines 27–29)](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/ProteinChangeResolver.java#L27):
 > ```java
 > public static final Set<String> SPLICE_SITE_VARIANTS = new HashSet<>(
->     Arrays.asList("splice_acceptor_variant", "splice_donor_variant", "splice_region_variant")
+>     Arrays.asList("splice_acceptor_variant", "splice_donor_variant")
 > );
 > ```
 > Newer VEP terms — `splice_donor_5th_base_variant`, `splice_donor_region_variant`, and `splice_polypyrimidine_tract_variant` — are absent from this set. They are mapped to the `Splice_Region` variant classification in [`VariantClassificationResolver.java` (lines 213–215)](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/VariantClassificationResolver.java#L213), but because they are not in `SPLICE_SITE_VARIANTS` they fall through to the `p.*(pos)*` branch.
@@ -261,11 +417,13 @@ Genome Nexus does not apply its own distance cutoff — it relies entirely on wh
 > ```
 > HGVSc present?
 > ├── contains "c.*"?                    → return null  (3' UTR)
-> └── else: extract cPos, compute pPos = (cPos + 2) / 3
->     ├── first consequence in SPLICE_SITE_VARIANTS?  → "p.X{pPos}_splice"
->     └── else if amino_acids == null?
->         ├── frameshift?                → "p.*{pPos}fs*"
->         └── else                      → "p.*{pPos}*"
+> └── else: extract cPos from regex
+>     ├── hgvsc matches c.-N_M pattern?  → use M (CDS end of range) as cPos
+>     └── clamp cPos to min 1; pPos = (cPos + 2) / 3
+>         ├── first consequence in SPLICE_SITE_VARIANTS?  → "p.X{pPos}_splice"
+>         └── else if amino_acids == null?
+>             ├── frameshift?                → "p.*{pPos}fs*"
+>             └── else                      → "p.*{pPos}*"
 > ```
 > The HGVSp suppression for splice variants is in [`resolveHgvsp()` (lines 251–253)](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/ProteinChangeResolver.java#L251).
 
@@ -283,7 +441,15 @@ For example, `c.3709-5C>A` → cDNA position 3709 → protein position (3709 + 2
 
 The intronic offset (the `-5` part) is stripped before this calculation; only the exon-anchored cDNA number is used.
 
+### Special case: UTR-start range deletions
+
+When HGVSc spans a range that starts in the 5′ UTR and ends in the coding sequence — for example `c.-309_60+142del` — the normal regex captures the first number (`309`) and silently drops the minus sign, which would produce the wrong position. To handle this, when the HGVSc matches the pattern `c.-N_M` (UTR start followed by a range), the **second** position (`M`) is used instead, since it represents the last coding nucleotide before the splice junction.
+
+For `c.-309_60+142del`: second position = `60` → protein position = (60 + 2) / 3 = **20** → `p.X20_splice`.
+
 > **Note for developers:** The cDNA position is extracted with the regex [`".*[cn].-?\\*?(\\d+).*"` (line 41)](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/ProteinChangeResolver.java#L41). It captures the first numeric value after `c.` or `n.`, discarding any `+`/`-` intronic offsets or `*` UTR markers that follow. If the parsed cDNA position is less than 1, it is clamped to 1 before the protein position is computed.
+>
+> For UTR-start ranges, an additional check in [`resolveHgvspShortFromHgvsc()`](https://github.com/genome-nexus/genome-nexus/blob/master/component/src/main/java/org/cbioportal/genome_nexus/component/annotation/ProteinChangeResolver.java) detects the pattern `c.-\d+_` and re-extracts the CDS end of the range using a secondary regex `.*_(\\d+).*` before computing pPos.
 
 ---
 
@@ -376,17 +542,20 @@ protein_position =  (cDNA_position + 2) / 3   (integer division, minimum 1)
 
 The regex captures only the exon-anchored base number; any intronic offset (`+5`, `-3`) and UTR marker (`*`) that follows are discarded.
 
+**Special case — UTR-start range:** If the HGVSc starts with a negative (5′ UTR) coordinate followed by a range, e.g. `c.-309_60+142del`, the regex would capture `309` and lose the minus sign. In this case the **second** position in the range (`60`) is used instead, as it is the CDS-anchored splice-relevant coordinate. Example: `c.-309_60+142del` → cPos = 60 → pPos = (60+2)/3 = **20** → `p.X20_splice`.
+
 **Branch on the consequence term:**
 
 | Condition | Output |
 |---|---|
 | HGVSc contains `c.*` (3′ UTR position) | `null` — no protein position exists |
-| First consequence term is `splice_acceptor_variant`, `splice_donor_variant`, or `splice_region_variant` | `p.X{pos}_splice` |
+| First consequence term is `splice_acceptor_variant` or `splice_donor_variant` | `p.X{pos}_splice` |
 | `amino_acids` is null **and** variant classification contains `"frame_shift"` | `p.*{pos}fs*` |
 | `amino_acids` is null **and** no frameshift | `p.*{pos}*` |
 
 **Examples:**
 - `c.50-1_50delinsTT` (splice acceptor, cDNA pos 50, pPos 17) → `p.X17_splice`
+- `c.-309_60+142del` (splice donor spanning UTR→CDS, CDS pos 60, pPos 20) → `p.X20_splice`
 - `c.340insG` (frameshift, cDNA pos 340, pPos 114) → `p.*114fs*`
 - `c.4349A>G` (stop gained, cDNA pos 4349, pPos 1450) → `p.*1450*`
 
@@ -479,7 +648,7 @@ The selected consequence term is mapped to a MAF style classification. Context d
 | `splice_region_variant` | `Splice_Region` |
 | `splice_donor_5th_base_variant` | `Splice_Region` |
 | `splice_donor_region_variant` | `Splice_Region` |
-| `splice_polypyrimidine_tract_variant` | `Splice_Region` |
+| `splice_polypyrimidine_tract_variant` | `Intron` |
 | `stop_gained` | `Nonsense_Mutation` |
 | `stop_lost` | `Nonstop_Mutation` |
 | `start_lost` | `Translation_Start_Site` |
