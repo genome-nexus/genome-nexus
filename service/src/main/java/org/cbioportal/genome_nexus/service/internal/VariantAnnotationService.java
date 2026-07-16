@@ -279,9 +279,14 @@ public class VariantAnnotationService
             }
             for (VariantAnnotation variantAnnotation : variantAnnotations) {
                 // add new annotation to index 
+                // For successful VEP responses, match by variantId ("id" field).
+                // For VEP error objects, "id" is absent so variantId is null; fall back to
+                // variant ("input" field) which VEP echoes back as the normalized HGVS string.
                 Optional<String[]> normalizedToOriginal = normalizedVariantToOriginalVariant
                     .stream()
-                    .filter((normToOrig) -> normToOrig[0].equals(variantAnnotation.getVariantId()))
+                    .filter((normToOrig) -> normToOrig[0].equals(variantAnnotation.getVariantId())
+                        || (variantAnnotation.getVariantId() == null
+                            && normToOrig[0].equals(variantAnnotation.getVariant())))
                     .findFirst();
                 if (normalizedToOriginal.isPresent()) {
                     variantAnnotation.setVariant(normalizedToOriginal.get()[0]);
