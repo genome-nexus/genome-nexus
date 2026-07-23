@@ -177,7 +177,7 @@ public class Hotspot
 
     @Override
     public int hashCode() {
-        return (hugoSymbol + residue + type + tumorCount + version).hashCode();
+        return (hugoSymbol + residue + type + tumorCount).hashCode();
     }
 
     @Override
