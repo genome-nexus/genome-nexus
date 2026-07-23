@@ -1,0 +1,143 @@
+name: cbioportal-frontend Mutation Mapper Test
+on: [push, pull_request]
+
+# cbioportal-frontend's master is hot-deployed straight to production, so it's
+# the actual consumer this job needs to protect — not a released tag.
+env:
+  CBIOPORTAL_FRONTEND_REF: master
+  GENOME_NEXUS_PORT: 8888
+  GN_MONGO_IMAGE: genomenexus/gn-mongo:1.4
+
+jobs:
+  mutation-mapper-test:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: genomenexus/gn-mongo:1.4
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout genome-nexus
+        uses: actions/checkout@v4
+
+      # gn-mongo's entrypoint imports reference data into a disposable temp
+      # mongod on every fresh container start (~3-4 min), then tears it down
+      # and execs the real, externally-reachable mongod — logging
+      # "=== Starting final MongoDB ===" right before that final exec. A
+      # bare TCP-port (or even a ping) check can succeed against the temp
+      # instance moments before it's killed, which is what caused genome-nexus's
+      # intermittent "Prematurely reached end of stream" failure. Wait for
+      # that log line specifically, then confirm with a real ping.
+      - name: Wait for Mongo to be ready
+        run: |
+          MONGO_CID=$(docker ps --filter "ancestor=${{ env.GN_MONGO_IMAGE }}" --format '{{.ID}}' | head -n1)
+          if [ -z "$MONGO_CID" ]; then
+            echo "Could not find the Mongo service container" >&2
+            exit 1
+          fi
+
+          for i in $(seq 1 120); do
+            if docker logs "$MONGO_CID" 2>&1 | grep -q "=== Starting final MongoDB ==="; then
+              echo "Final MongoDB starting"
+              break
+            fi
+            echo "Waiting for Mongo import to finish... ($i)"
+            sleep 3
+          done
+
+          for i in $(seq 1 30); do
+            if docker exec "$MONGO_CID" mongosh --quiet --eval 'db.adminCommand("ping")' >/dev/null 2>&1; then
+              echo "Mongo is up"
+              exit 0
+            fi
+            echo "Waiting for Mongo to accept connections... ($i)"
+            sleep 2
+          done
+          echo "Mongo did not become ready in time" >&2
+          docker logs "$MONGO_CID" || true
+          exit 1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build candidate genome-nexus image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: genome-nexus-candidate:ci
+          file: Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha
+
+      # Overrides the image's default CMD to point at the Mongo service above
+      # and the public Ensembl VEP endpoint (same combination the existing
+      # SpringBootTest integration tests and CircleCI's gn-mongo-backed suite
+      # already rely on). --network host lets the container reach the
+      # service container via localhost, matching how GitHub Actions maps
+      # `services:` ports onto the runner's own network namespace.
+      - name: Run candidate genome-nexus image
+        run: |
+          docker run -d --name genome-nexus-candidate \
+            --network host \
+            genome-nexus-candidate:ci \
+            java \
+            -Dvep.url="http://grch37.rest.ensembl.org/vep/human/hgvs/VARIANT?content-type=application/json&xref_refseq=1&ccds=1&canonical=1&domains=1&hgvs=1&numbers=1&protein=1" \
+            -Dspring.data.mongodb.uri=mongodb://localhost:27017/annotator \
+            -Dspring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration \
+            -Dserver.port=${{ env.GENOME_NEXUS_PORT }} \
+            -jar /app.war
+
+      - name: Wait for genome-nexus to be ready
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:${{ env.GENOME_NEXUS_PORT }}/actuator/health 2>/dev/null | grep -q '"status":"UP"'; then
+              echo "genome-nexus is up"
+              exit 0
+            fi
+            echo "Waiting for genome-nexus... ($i)"
+            sleep 5
+          done
+          echo "genome-nexus did not become ready in time" >&2
+          docker logs genome-nexus-candidate || true
+          exit 1
+
+      - name: Checkout cbioportal-frontend
+        uses: actions/checkout@v4
+        with:
+          repository: cBioPortal/cbioportal-frontend
+          ref: ${{ env.CBIOPORTAL_FRONTEND_REF }}
+          path: cbioportal-frontend
+
+      # pnpm must be set up before actions/setup-node's cache: 'pnpm' option
+      # below, since it shells out to `pnpm store path` to locate what to
+      # cache.
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: cbioportal-frontend/pnpm-lock.yaml
+
+      # Scoped to react-mutation-mapper and its workspace dependencies only,
+      # not the whole monorepo, since that's all the integration spec needs.
+      - name: Install cbioportal-frontend dependencies
+        working-directory: cbioportal-frontend
+        run: pnpm install --frozen-lockfile --filter "react-mutation-mapper..."
+
+      - name: Run cbioportal-frontend mutation mapper tests against candidate build
+        working-directory: cbioportal-frontend
+        env:
+          GENOME_NEXUS_TEST_URL: http://localhost:${{ env.GENOME_NEXUS_PORT }}
+        run: pnpm --filter react-mutation-mapper run test:genome-nexus-integration
+
+      - name: Dump genome-nexus logs on failure
+        if: failure()
+        run: docker logs genome-nexus-candidate || true
