@@ -18,6 +18,9 @@ public class HotspotMixin
     @JsonProperty(value="residue")
     private String residue;
 
+    @JsonProperty(value="version")
+    private String version;
+
     @JsonProperty(value="tumor_count")
     private Integer tumorCount;
 

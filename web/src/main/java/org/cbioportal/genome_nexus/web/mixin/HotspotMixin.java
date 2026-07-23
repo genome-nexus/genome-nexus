@@ -22,6 +22,9 @@ public class HotspotMixin
     @ApiModelProperty(value = "Hotspot residue")
     private String residue;
 
+    @ApiModelProperty(value = "Hotspot version (v2 or v3)")
+    private String version;
+
     @ApiModelProperty(value = "Hotspot type")
     private String type;
 

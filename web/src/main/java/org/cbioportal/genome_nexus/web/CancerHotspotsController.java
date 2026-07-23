@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cbioportal.genome_nexus.model.GenomicLocation;
 import org.cbioportal.genome_nexus.model.Hotspot;
+import org.cbioportal.genome_nexus.model.HotspotVersion;
 import org.cbioportal.genome_nexus.model.ProteinLocation;
 import org.cbioportal.genome_nexus.model.AggregatedHotspots;
 import org.cbioportal.genome_nexus.service.CancerHotspotService;
@@ -24,6 +25,10 @@ import java.util.List;
 @Api(tags = "cancer-hotspots-controller", description = "Cancer Hotspots Controller")
 public class CancerHotspotsController
 {
+    private static final String VERSION_PARAM_DESCRIPTION =
+        "Cancer hotspots dataset version to return. 'v2' returns only v2 hotspots. " +
+        "'v3' returns v2 and v3 hotspots (v3 is a cumulative superset of v2, not v3-only). Default: v3";
+
     private final CancerHotspotService hotspotService;
 
     @Autowired
@@ -41,11 +46,13 @@ public class CancerHotspotsController
         @ApiParam(value="A variant. For example 7:g.140453136A>T",
             required = true,
             allowMultiple = true)
-        @PathVariable String variant)
+        @PathVariable String variant,
+        @ApiParam(value = VERSION_PARAM_DESCRIPTION)
+        @RequestParam(required = false, defaultValue = "v3") HotspotVersion version)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
     {
-        return this.hotspotService.getHotspotAnnotationsByVariant(variant);
+        return this.hotspotService.getHotspotAnnotationsByVariant(variant, version);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotations for the provided list of variants",
@@ -57,9 +64,11 @@ public class CancerHotspotsController
         @ApiParam(value="List of variants. For example [\"7:g.140453136A>T\",\"12:g.25398285C>A\"]",
             required = true,
             allowMultiple = true)
-        @RequestBody List<String> variants) throws CancerHotspotsWebServiceException
+        @RequestBody List<String> variants,
+        @ApiParam(value = VERSION_PARAM_DESCRIPTION)
+        @RequestParam(required = false, defaultValue = "v3") HotspotVersion version) throws CancerHotspotsWebServiceException
     {
-        return this.hotspotService.getHotspotAnnotationsByVariants(variants);
+        return this.hotspotService.getHotspotAnnotationsByVariants(variants, version);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotations for a specific genomic location",
@@ -71,11 +80,13 @@ public class CancerHotspotsController
         @ApiParam(value="A genomic location. For example 7,140453136,140453136,A,T",
             required = true,
             allowMultiple = true)
-        @PathVariable String genomicLocation)
+        @PathVariable String genomicLocation,
+        @ApiParam(value = VERSION_PARAM_DESCRIPTION)
+        @RequestParam(required = false, defaultValue = "v3") HotspotVersion version)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
     {
-        return this.hotspotService.getHotspotAnnotationsByGenomicLocation(genomicLocation);
+        return this.hotspotService.getHotspotAnnotationsByGenomicLocation(genomicLocation, version);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotations for the provided list of genomic locations",
@@ -87,9 +98,11 @@ public class CancerHotspotsController
         @ApiParam(value="List of genomic locations.",
             required = true,
             allowMultiple = true)
-        @RequestBody List<GenomicLocation> genomicLocations) throws CancerHotspotsWebServiceException
+        @RequestBody List<GenomicLocation> genomicLocations,
+        @ApiParam(value = VERSION_PARAM_DESCRIPTION)
+        @RequestParam(required = false, defaultValue = "v3") HotspotVersion version) throws CancerHotspotsWebServiceException
     {
-        return this.hotspotService.getHotspotAnnotationsByGenomicLocations(genomicLocations);
+        return this.hotspotService.getHotspotAnnotationsByGenomicLocations(genomicLocations, version);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotations for the provided transcript ID",
@@ -101,11 +114,13 @@ public class CancerHotspotsController
         @ApiParam(value="A Transcript Id. For example ENST00000288602",
             required = true,
             allowMultiple = true)
-        @PathVariable String transcriptId)
+        @PathVariable String transcriptId,
+        @ApiParam(value = VERSION_PARAM_DESCRIPTION)
+        @RequestParam(required = false, defaultValue = "v3") HotspotVersion version)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
     {
-        return this.hotspotService.getHotspots(transcriptId);
+        return this.hotspotService.getHotspots(transcriptId, version);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotations for the provided list of transcript ID",
@@ -117,10 +132,12 @@ public class CancerHotspotsController
         @ApiParam(value="List of transcript Id. For example [\"ENST00000288602\",\"ENST00000256078\"]",
             required = true,
             allowMultiple = true)
-        @RequestBody List<String> transcriptIds)
+        @RequestBody List<String> transcriptIds,
+        @ApiParam(value = VERSION_PARAM_DESCRIPTION)
+        @RequestParam(required = false, defaultValue = "v3") HotspotVersion version)
         throws CancerHotspotsWebServiceException
     {
-        return this.hotspotService.getHotspotsByTranscriptIds(transcriptIds);
+        return this.hotspotService.getHotspotsByTranscriptIds(transcriptIds, version);
     }
 
     @ApiOperation(value = "Retrieves hotspot annotations for the provided list of transcript id, protein location and mutation type",
@@ -129,11 +146,13 @@ public class CancerHotspotsController
         method = RequestMethod.POST,
         produces = "application/json")
     public List<AggregatedHotspots> fetchHotspotAnnotationByProteinLocationsPOST(
-        @ApiParam(value="List of transcript id, protein start location, protein end location, mutation type. The mutation types are limited to 'Missense_Mutation', 'In_Frame_Ins', 'In_Frame_Del', 'Splice_Site', and 'Splice_Region'",
+        @ApiParam(value="List of transcript id, protein start location, protein end location, mutation type. The mutation types are limited to 'Missense_Mutation', 'In_Frame_Ins', 'In_Frame_Del', 'Splice_Site', and 'Splice_Region'",
             required = true,
             allowMultiple = true)
-        @RequestBody List<ProteinLocation> proteinLocations) throws CancerHotspotsWebServiceException
+        @RequestBody List<ProteinLocation> proteinLocations,
+        @ApiParam(value = VERSION_PARAM_DESCRIPTION)
+        @RequestParam(required = false, defaultValue = "v3") HotspotVersion version) throws CancerHotspotsWebServiceException
     {
-        return this.hotspotService.getHotspotAnnotationsByProteinLocations(proteinLocations);
+        return this.hotspotService.getHotspotAnnotationsByProteinLocations(proteinLocations, version);
     }
 }

@@ -78,6 +78,12 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     }
 
     @Override
+    public List<Hotspot> getHotspots(String transcriptId, HotspotVersion version) throws CancerHotspotsWebServiceException
+    {
+        return this.filterByVersion(this.getHotspots(transcriptId), version);
+    }
+
+    @Override
     public List<Hotspot> getHotspots(TranscriptConsequence transcript,
                                      VariantAnnotation annotation) throws CancerHotspotsWebServiceException
     {
@@ -118,6 +124,24 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     }
 
     @Override
+    public List<AggregatedHotspots> getHotspotsByTranscriptIds(List<String> transcriptIds, HotspotVersion version) throws CancerHotspotsWebServiceException
+    {
+        List<AggregatedHotspots> hotspots = new ArrayList<>();
+        for (String transcriptId : transcriptIds) {
+            AggregatedHotspots aggregatedHotspots = new AggregatedHotspots();
+
+            // add protein location information
+            aggregatedHotspots.setTranscriptId(transcriptId);
+
+            // query hotspots service by protein location
+            aggregatedHotspots.setHotspots(this.getHotspots(transcriptId, version));
+            hotspots.add(aggregatedHotspots);
+        }
+
+        return hotspots;
+    }
+
+    @Override
     public List<Hotspot> getHotspotAnnotationsByVariant(String variant)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
@@ -131,6 +155,14 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         }
 
         return hotspots;
+    }
+
+    @Override
+    public List<Hotspot> getHotspotAnnotationsByVariant(String variant, HotspotVersion version)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        CancerHotspotsWebServiceException
+    {
+        return this.filterByVersion(this.getHotspotAnnotationsByVariant(variant), version);
     }
 
     @Override
@@ -154,12 +186,27 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
     }
 
     @Override
+    public List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants, HotspotVersion version)
+        throws CancerHotspotsWebServiceException
+    {
+        return this.filterAggregatedByVersion(this.getHotspotAnnotationsByVariants(variants), version);
+    }
+
+    @Override
     public List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
         CancerHotspotsWebServiceException
     {
         VariantAnnotation variantAnnotation = variantAnnotationService.getAnnotation(genomicLocation, VariantType.GENOMIC_LOCATION);
         return this.getHotspotAnnotations(variantAnnotation);
+    }
+
+    @Override
+    public List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation, HotspotVersion version)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException,
+        CancerHotspotsWebServiceException
+    {
+        return this.filterByVersion(this.getHotspotAnnotationsByGenomicLocation(genomicLocation), version);
     }
 
     @Override
@@ -184,6 +231,13 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         }
 
         return hotspots;
+    }
+
+    @Override
+    public List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations, HotspotVersion version)
+        throws CancerHotspotsWebServiceException
+    {
+        return this.filterAggregatedByVersion(this.getHotspotAnnotationsByGenomicLocations(genomicLocations), version);
     }
 
     protected Boolean filterHotspot(Hotspot hotspot, TranscriptConsequence transcript, VariantAnnotation annotation)
@@ -226,5 +280,34 @@ public class CancerHotspotServiceImpl implements CancerHotspotService
         }
 
         return hotspots;
+    }
+
+    @Override
+    public List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations, HotspotVersion version)
+        throws CancerHotspotsWebServiceException
+    {
+        return this.filterAggregatedByVersion(this.getHotspotAnnotationsByProteinLocations(proteinLocations), version);
+    }
+
+    private List<Hotspot> filterByVersion(List<Hotspot> hotspots, HotspotVersion version)
+    {
+        List<Hotspot> filtered = new ArrayList<>();
+
+        for (Hotspot hotspot : hotspots) {
+            if (version.matches(hotspot.getVersion())) {
+                filtered.add(hotspot);
+            }
+        }
+
+        return filtered;
+    }
+
+    private List<AggregatedHotspots> filterAggregatedByVersion(List<AggregatedHotspots> aggregatedHotspotsList, HotspotVersion version)
+    {
+        for (AggregatedHotspots aggregatedHotspots : aggregatedHotspotsList) {
+            aggregatedHotspots.setHotspots(this.filterByVersion(aggregatedHotspots.getHotspots(), version));
+        }
+
+        return aggregatedHotspotsList;
     }
 }

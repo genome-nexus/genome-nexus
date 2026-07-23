@@ -1,5 +1,6 @@
 package org.cbioportal.genome_nexus.web.config;
 import org.cbioportal.genome_nexus.web.converters.AnnotationFieldEnumConverter;
+import org.cbioportal.genome_nexus.web.converters.HotspotVersionEnumConverter;
 import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -14,6 +15,7 @@ public class AppWebMvcConfigurer implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new AnnotationFieldEnumConverter());
+        registry.addConverter(new HotspotVersionEnumConverter());
         WebConversionService.addDefaultFormatters(registry);
     }
 }
