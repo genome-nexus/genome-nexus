@@ -30,6 +30,7 @@ public class CancerHotspotMockData implements MockData<List<Hotspot>>
         hotspot.setResidue("V600");
         //hotspot.setAminoAcidPosition(new IntegerRange(600, 600));
         hotspot.setType("single residue");
+        hotspot.setVersion("v2");
 
         hotspots.add(hotspot);
 
@@ -40,6 +41,7 @@ public class CancerHotspotMockData implements MockData<List<Hotspot>>
         hotspot.setResidue("592-604");
         //hotspot.setAminoAcidPosition(new IntegerRange(592, 604));
         hotspot.setType("in-frame indel");
+        hotspot.setVersion("v3");
 
         hotspots.add(hotspot);
 

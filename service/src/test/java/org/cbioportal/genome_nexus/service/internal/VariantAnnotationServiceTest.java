@@ -283,6 +283,13 @@ public class VariantAnnotationServiceTest
         assertEquals(hotspotMockData.get("ENST00000288602"),
             annotation1.getHotspotAnnotation().getAnnotation().get(0));
 
+        // the "hotspots" field on /annotation must always return both v2 and v3
+        // hotspots, unfiltered by version -- assert both versions from the mock
+        // data survive through the enrichment pipeline untouched
+        List<Hotspot> braf = annotation1.getHotspotAnnotation().getAnnotation().get(0);
+        assertEquals("v2", braf.get(0).getVersion());
+        assertEquals("v3", braf.get(1).getVersion());
+
         VariantAnnotation annotation2 = variantAnnotationService.getAnnotation(
             "12:g.25398285C>A", VariantType.HGVS, null, null, fields);
 

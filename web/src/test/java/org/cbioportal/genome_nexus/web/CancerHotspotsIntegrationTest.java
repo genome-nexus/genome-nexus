@@ -77,6 +77,12 @@ public class CancerHotspotsIntegrationTest
         return this.restTemplate.getForObject("http://localhost:38888/cancer_hotspots/transcript/" + transcriptId, Hotspot[].class);
     }
 
+    private Hotspot[] fetchHotspotsByTranscriptGET(String transcriptId, String version)
+    {
+        return this.restTemplate.getForObject(
+            "http://localhost:38888/cancer_hotspots/transcript/" + transcriptId + "?version=" + version, Hotspot[].class);
+    }
+
     private AggregatedHotspots[] fetchHotspotsByTranscriptPOST(List<String> transcriptIds)
     {
         return this.restTemplate.postForObject("http://localhost:38888/cancer_hotspots/transcript", transcriptIds, AggregatedHotspots[].class);
@@ -397,6 +403,68 @@ public class CancerHotspotsIntegrationTest
         AggregatedHotspots[] aggregatedHotspots = this.fetchHotspotsPOST(genomicLocationsList);
         // If input variants are identical after normalization, but since the input is not the same, it still should return two annotations
         assertEquals(genomicLocationString.length, aggregatedHotspots.length);
-        
+
+    }
+
+    @Test
+    public void testHotspotVersionFiltering()
+    {
+        // NRAS/ENST00000369535 fixture has G12 tagged "v2" and Q61 tagged "v3"
+        String transcriptId = "ENST00000369535";
+
+        // no version param -> default (v3) -> both v2 and v3 hotspots
+        Hotspot[] defaultHotspots = this.fetchHotspotsByTranscriptGET(transcriptId);
+        assertEquals(2, defaultHotspots.length);
+
+        // version=v3 -> both v2 and v3 hotspots (v3 is a superset, not v3-only)
+        Hotspot[] v3Hotspots = this.fetchHotspotsByTranscriptGET(transcriptId, "v3");
+        assertEquals(2, v3Hotspots.length);
+        assertEquals(defaultHotspots.length, v3Hotspots.length);
+
+        // version=v2 -> only the v2-tagged hotspot
+        Hotspot[] v2Hotspots = this.fetchHotspotsByTranscriptGET(transcriptId, "v2");
+        assertEquals(1, v2Hotspots.length);
+        assertEquals("G12", v2Hotspots[0].getResidue());
+        assertEquals("v2", v2Hotspots[0].getVersion());
+
+        // the v3-tagged hotspot should carry the version value through to JSON
+        boolean foundQ61 = false;
+        for (Hotspot hotspot : defaultHotspots) {
+            if ("Q61".equals(hotspot.getResidue())) {
+                foundQ61 = true;
+                assertEquals("v3", hotspot.getVersion());
+            }
+        }
+        assertEquals("expected the v3-tagged NRAS Q61 hotspot to be present", true, foundQ61);
+    }
+
+    @Test
+    public void testHotspotVersionFilteringBackwardCompatibility()
+    {
+        // KRAS/ENST00000256078 fixture has two "v2"-tagged hotspots (G12 single residue,
+        // G12 3d) plus one legacy hotspot (E63 3d) that has no "version" key at all,
+        // simulating a pre-migration Mongo document.
+        String transcriptId = "ENST00000256078";
+
+        Hotspot[] allHotspots = this.fetchHotspotsByTranscriptGET(transcriptId);
+        assertEquals(3, allHotspots.length);
+
+        // a missing/null version should be treated as implicit v2, so the legacy
+        // hotspot must still be included under version=v2, not silently dropped
+        Hotspot[] v2Hotspots = this.fetchHotspotsByTranscriptGET(transcriptId, "v2");
+        assertEquals(3, v2Hotspots.length);
+
+        boolean foundLegacyEntry = false;
+        for (Hotspot hotspot : v2Hotspots) {
+            if ("E63".equals(hotspot.getResidue())) {
+                foundLegacyEntry = true;
+                // version is simply absent (null), not serialized as an empty string
+                assertEquals(null, hotspot.getVersion());
+                // transcript_id_version is also absent in this fixture entirely,
+                // confirming a missing column doesn't break deserialization/response
+                assertEquals(null, hotspot.getTranscriptIdVersion());
+            }
+        }
+        assertEquals("expected the legacy no-version KRAS E63 hotspot to be present", true, foundLegacyEntry);
     }
 }

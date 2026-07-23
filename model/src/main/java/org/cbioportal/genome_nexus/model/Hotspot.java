@@ -58,6 +58,9 @@ public class Hotspot
     @Field(value="residue")
     private String residue;
 
+    @Field(value="version")
+    private String version;
+
     @Field(value="tumor_count")
     private Integer tumorCount;
 
@@ -106,6 +109,14 @@ public class Hotspot
 
     public void setResidue(String residue) {
         this.residue = residue;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public Integer getTumorCount() {

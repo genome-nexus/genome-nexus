@@ -45,14 +45,23 @@ import java.util.List;
 public interface CancerHotspotService
 {
     List<Hotspot> getHotspots(String transcriptId) throws CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspots(String transcriptId, HotspotVersion version) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspots(TranscriptConsequence transcript, VariantAnnotation annotation) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspots() throws CancerHotspotsWebServiceException;
     List<AggregatedHotspots> getHotspotsByTranscriptIds(List<String> transcriptIds) throws CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotsByTranscriptIds(List<String> transcriptIds, HotspotVersion version) throws CancerHotspotsWebServiceException;
     List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants) throws CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotAnnotationsByVariants(List<String> variants, HotspotVersion version) throws CancerHotspotsWebServiceException;
     List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations) throws CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotAnnotationsByGenomicLocations(List<GenomicLocation> genomicLocations, HotspotVersion version) throws CancerHotspotsWebServiceException;
     List<Hotspot> getHotspotAnnotationsByVariant(String variant)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspotAnnotationsByVariant(String variant, HotspotVersion version)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
     List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation)
         throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
+    List<Hotspot> getHotspotAnnotationsByGenomicLocation(String genomicLocation, HotspotVersion version)
+        throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException, CancerHotspotsWebServiceException;
     List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations) throws CancerHotspotsWebServiceException;
+    List<AggregatedHotspots> getHotspotAnnotationsByProteinLocations(List<ProteinLocation> proteinLocations, HotspotVersion version) throws CancerHotspotsWebServiceException;
 }

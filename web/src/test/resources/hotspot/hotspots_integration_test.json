@@ -8,7 +8,8 @@
         "missense_count": 21,
         "trunc_count": 0,
         "inframe_count": 0,
-        "splice_count": 0
+        "splice_count": 0,
+        "version": "v2"
     },
     {
         "hugo_symbol": "BRAF",
@@ -19,7 +20,8 @@
         "missense_count": "",
         "trunc_count": "",
         "inframe_count": "",
-        "splice_count": ""
+        "splice_count": "",
+        "version": "v2"
     },
     {
         "hugo_symbol": "ERBB2",
@@ -30,7 +32,8 @@
         "missense_count": 44,
         "trunc_count": 0,
         "inframe_count": 0,
-        "splice_count": 0
+        "splice_count": 0,
+        "version": "v2"
     },
     {
         "hugo_symbol": "ERBB2",
@@ -41,7 +44,8 @@
         "missense_count": 4,
         "trunc_count": 0,
         "inframe_count": 0,
-        "splice_count": 0
+        "splice_count": 0,
+        "version": "v2"
     },
     {
         "hugo_symbol": "KRAS",
@@ -52,7 +56,8 @@
         "missense_count": 2175,
         "trunc_count": 0,
         "inframe_count": 0,
-        "splice_count": 0
+        "splice_count": 0,
+        "version": "v2"
     },
     {
         "hugo_symbol": "NRAS",
@@ -63,7 +68,8 @@
         "missense_count": 74,
         "trunc_count": 0,
         "inframe_count": 0,
-        "splice_count": 0
+        "splice_count": 0,
+        "version": "v2"
     },
     {
         "hugo_symbol": "KRAS",
@@ -74,7 +80,8 @@
         "missense_count": "",
         "trunc_count": "",
         "inframe_count": "",
-        "splice_count": ""
+        "splice_count": "",
+        "version": "v2"
     },
     {
         "hugo_symbol": "KRAS",
@@ -96,7 +103,8 @@
         "missense_count": 0,
         "trunc_count": 0,
         "inframe_count": 155,
-        "splice_count": 0
+        "splice_count": 0,
+        "version": "v2"
     },
     {
         "hugo_symbol": "EGFR",
@@ -107,7 +115,8 @@
         "missense_count": 0,
         "trunc_count": 0,
         "inframe_count": 33,
-        "splice_count": 0
+        "splice_count": 0,
+        "version": "v2"
     },
     {
         "hugo_symbol": "EGFR",
@@ -118,7 +127,8 @@
         "missense_count": 0,
         "trunc_count": 0,
         "inframe_count": 9,
-        "splice_count": 0
+        "splice_count": 0,
+        "version": "v2"
     },
     {
         "hugoSymbol": "DNMT1",
@@ -129,7 +139,8 @@
         "missenseCount": 7,
         "truncatingCount": 0,
         "inframeCount": 0,
-        "spliceCount": 0
+        "spliceCount": 0,
+        "version": "v2"
     },
     {
         "hugo_symbol": "MET",
@@ -140,7 +151,8 @@
         "missense_count": 0,
         "truncating_count": 0,
         "inframe_count": 0,
-        "splice_count": 19
+        "splice_count": 19,
+        "version": "v2"
     },
     {
         "hugo_symbol": "AKT1",
@@ -151,7 +163,8 @@
         "missense_count": 0,
         "truncating_count": 0,
         "inframe_count": 2,
-        "splice_count": 0
+        "splice_count": 0,
+        "version": "v2"
     },
     {
         "hugo_symbol": "AKT1",
@@ -162,6 +175,19 @@
         "missense_count": 148,
         "truncating_count": 1,
         "inframe_count": 0,
-        "splice_count": 0
+        "splice_count": 0,
+        "version": "v2"
+    },
+    {
+        "hugo_symbol": "NRAS",
+        "transcript_id": "ENST00000369535",
+        "residue": "Q61",
+        "type": "single residue",
+        "tumor_count": 300,
+        "missense_count": 300,
+        "trunc_count": 0,
+        "inframe_count": 0,
+        "splice_count": 0,
+        "version": "v3"
     }
 ]
