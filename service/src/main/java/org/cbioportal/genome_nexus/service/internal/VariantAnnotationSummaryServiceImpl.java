@@ -230,12 +230,12 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
     }
 
     @Nullable
-    private String resolveEntrezGeneId(TranscriptConsequence canonicalTranscript)
+    private String resolveEntrezGeneId(TranscriptConsequence canonicalTranscript, @Nullable String resolvedHugoGeneSymbol)
     {
         String entrezGeneId;
 
         try {
-            entrezGeneId = this.entrezGeneIdResolver.resolve(canonicalTranscript);
+            entrezGeneId = this.entrezGeneIdResolver.resolve(canonicalTranscript, resolvedHugoGeneSymbol);
         } catch (EnsemblWebServiceException e) {
             entrezGeneId = null;
         }
@@ -307,7 +307,6 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
             summary.setAminoAcids(this.aminoAcidsResolver.resolve(transcriptConsequence));
             summary.setAminoAcidRef(this.aminoAcidsResolver.getRefAminoAcid(transcriptConsequence));
             summary.setAminoAcidAlt(this.aminoAcidsResolver.getAltAminoAcid(transcriptConsequence));
-            summary.setEntrezGeneId(this.resolveEntrezGeneId(transcriptConsequence));
             summary.setConsequenceTerms(this.consequenceTermsResolver.resolve(transcriptConsequence));
             String hugoSymbolResolved;
             if (Boolean.TRUE.equals(this.replaceOldGeneSymbol)) {
@@ -318,6 +317,7 @@ public class VariantAnnotationSummaryServiceImpl implements VariantAnnotationSum
                     : null;
             }
             summary.setHugoGeneSymbol(hugoSymbolResolved);
+            summary.setEntrezGeneId(this.resolveEntrezGeneId(transcriptConsequence, hugoSymbolResolved));
             summary.setHgvspShort(this.proteinChangeResolver.resolveHgvspShort(annotation, transcriptConsequence));
             summary.setHgvsp(this.proteinChangeResolver.resolveHgvsp(transcriptConsequence));
             summary.setHgvsc(this.proteinChangeResolver.resolveHgvsc(transcriptConsequence));

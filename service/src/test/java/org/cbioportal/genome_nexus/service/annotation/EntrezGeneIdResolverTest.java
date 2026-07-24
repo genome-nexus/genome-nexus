@@ -2,6 +2,7 @@ package org.cbioportal.genome_nexus.service.annotation;
 
 import org.cbioportal.genome_nexus.component.annotation.CanonicalTranscriptResolver;
 import org.cbioportal.genome_nexus.model.GeneXref;
+import org.cbioportal.genome_nexus.model.TranscriptConsequence;
 import org.cbioportal.genome_nexus.model.VariantAnnotation;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.GeneXrefService;
@@ -175,6 +176,46 @@ public class EntrezGeneIdResolverTest
     {
         return this.entrezGeneIdResolver.resolve(
             this.canonicalTranscriptResolver.resolve(variantAnnotation)
+        );
+    }
+
+    @Test
+    public void resolveUsesResolvedHugoGeneSymbolForRenamedGene() throws EnsemblWebServiceException
+    {
+        // simulates VEP reporting the old/deprecated gene symbol (H3F3A),
+        // while HugoGeneSymbolResolver has already upgraded it to the current
+        // official HGNC symbol (H3-3A) for the same transcript consequence.
+        TranscriptConsequence transcriptConsequence = new TranscriptConsequence();
+        transcriptConsequence.setGeneSymbol("H3F3A");
+        transcriptConsequence.setHgncId("4764");
+
+        // the entrez lookup map is keyed by current official symbols only,
+        // so only "H3-3A" resolves; the old "H3F3A" symbol has no entry.
+        this.mockGetEntrezGeneIdByHugoSymbol("H3-3A", "3020");
+
+        // without the resolved symbol, the raw/old symbol fails to resolve
+        assertNull(this.entrezGeneIdResolver.resolve(transcriptConsequence));
+
+        // with the resolved symbol passed in, resolution succeeds
+        assertEquals(
+            "3020",
+            this.entrezGeneIdResolver.resolve(transcriptConsequence, "H3-3A")
+        );
+    }
+
+    @Test
+    public void resolveFallsBackToRawSymbolWhenResolvedSymbolNotFound() throws EnsemblWebServiceException
+    {
+        TranscriptConsequence transcriptConsequence = new TranscriptConsequence();
+        transcriptConsequence.setGeneSymbol("BRAF");
+
+        this.mockGetEntrezGeneIdByHugoSymbol("BRAF", "673");
+
+        // resolvedHugoGeneSymbol is null (e.g. replace_old_hgnc_gene_symbol disabled),
+        // so it should fall back to the raw gene symbol from the transcript consequence
+        assertEquals(
+            "673",
+            this.entrezGeneIdResolver.resolve(transcriptConsequence, null)
         );
     }
 }
