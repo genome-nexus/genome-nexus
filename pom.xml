@@ -18,6 +18,18 @@
       <module>service</module>
       <module>web</module>
     </modules>
+    <repositories>
+      <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+      </repository>
+    </repositories>
+    <pluginRepositories>
+      <pluginRepository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+      </pluginRepository>
+    </pluginRepositories>
     <!-- inherit defaults from spring boot -->
     <parent>
       <groupId>org.springframework.boot</groupId>
