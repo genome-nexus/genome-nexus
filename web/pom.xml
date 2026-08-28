@@ -100,9 +100,9 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>com.github.genome-nexus</groupId>
+                  <groupId>io.github.genome-nexus</groupId>
                   <artifactId>genome-nexus-frontend</artifactId>
-                  <version>f34fcf6d16</version>
+                  <version>1.0</version>
                   <type>jar</type>
                   <outputDirectory>src/main/resources/static</outputDirectory>
                   <overWrite>true</overWrite>
