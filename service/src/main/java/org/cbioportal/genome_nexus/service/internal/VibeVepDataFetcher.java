@@ -121,9 +121,11 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
 
     /**
      * Convert a variant string to the appropriate input for vibe-vep.
-     * Comma-separated genomic locations → GenomicLocation JSON.
-     * Everything else (HGVS, protein notation) → passed as-is (plain text).
-     * vibe-vep's stream mode auto-detects JSON vs plain text input.
+     * Always produces GenomicLocation JSON so vibe-vep uses the provided alleles
+     * directly and does not need to look up adjacent "padding" bases in its index.
+     * Passing HGVS notation (e.g. "19:g.50919866del") causes vibe-vep to perform
+     * that lookup, which fails for positions without CDS coverage even though the
+     * variant itself is annotatable.
      */
     private String toVibeVepInput(String variantStr) throws Exception {
         if (variantStr.contains(",")) {
@@ -131,7 +133,17 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
             GenomicLocation gl = parseGenomicLocation(variantStr);
             return inputMapper.writeValueAsString(gl);
         }
-        // HGVS, protein notation, genomic coords — send as-is
+        if (variantStr.contains(":g.")) {
+            // HGVS genomic notation → parse back to GenomicLocation JSON so
+            // vibe-vep uses the explicit alleles instead of doing a padding-base lookup
+            try {
+                GenomicLocation gl = parseHgvsGenomic(variantStr);
+                return inputMapper.writeValueAsString(gl);
+            } catch (IllegalArgumentException e) {
+                // unrecognized HGVS pattern — fall through to plain text
+            }
+        }
+        // Protein notation, transcript HGVS, or other — send as-is
         return variantStr;
     }
 
@@ -143,6 +155,12 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
                 String resultJson = vibeVepProcess.annotate(input);
                 extractWarnings(resultJson, variantStr);
                 DBObject parsed = (DBObject) JSON.parse(resultJson);
+                // Overwrite "id" with the original input string so that
+                // BaseCachedVariantAnnotationFetcher.extractId() returns the same
+                // key used to initialise idToInstance, preventing a map-key mismatch
+                // that would mark every annotation as FAILED.
+                parsed.put("id", variantStr);
+
                 results.add(parsed);
             } catch (Exception e) {
                 LOG.warn("Failed to annotate variant: " + variantStr, e);
@@ -259,7 +277,9 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
             rest = rest.substring(2);
         }
 
-        // Handle different mutation types (check delins before del since del is a substring)
+        // Handle different mutation types.
+        // Check order matters: delins before ins (since "delins" contains "ins"),
+        // and delins before del (since "delins" contains "del").
         if (rest.contains(">")) {
             // SNV: 140753336A>T
             int snvIdx = -1;
@@ -278,21 +298,6 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
             String ref = alleles.substring(0, gtIdx);
             String alt = alleles.substring(gtIdx + 1);
             return new GenomicLocation(chrom, pos, pos, ref, alt);
-        } else if (rest.contains("ins")) {
-            // Insertion: 65325832_65325833insG
-            int insIdx = rest.indexOf("ins");
-            String posPart = rest.substring(0, insIdx);
-            String alt = rest.substring(insIdx + 3);
-            int start, end;
-            if (posPart.contains("_")) {
-                String[] positions = posPart.split("_");
-                start = Integer.parseInt(positions[0]);
-                end = Integer.parseInt(positions[1]);
-            } else {
-                start = Integer.parseInt(posPart);
-                end = start + 1;
-            }
-            return new GenomicLocation(chrom, start, end, "-", alt);
         } else if (rest.contains("delins")) {
             // Delins: 9057113_9057114delinsCTG
             int delinsIdx = rest.indexOf("delins");
@@ -306,6 +311,21 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
             } else {
                 start = Integer.parseInt(posPart);
                 end = start;
+            }
+            return new GenomicLocation(chrom, start, end, "-", alt);
+        } else if (rest.contains("ins")) {
+            // Insertion: 65325832_65325833insG
+            int insIdx = rest.indexOf("ins");
+            String posPart = rest.substring(0, insIdx);
+            String alt = rest.substring(insIdx + 3);
+            int start, end;
+            if (posPart.contains("_")) {
+                String[] positions = posPart.split("_");
+                start = Integer.parseInt(positions[0]);
+                end = Integer.parseInt(positions[1]);
+            } else {
+                start = Integer.parseInt(posPart);
+                end = start + 1;
             }
             return new GenomicLocation(chrom, start, end, "-", alt);
         } else if (rest.contains("del")) {
