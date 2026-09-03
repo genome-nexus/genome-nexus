@@ -112,6 +112,8 @@ public class VariantAnnotationService
     private boolean cacheEnabled;
     @Value("${replace_old_hgnc_gene_symbol:true}")
     private String replaceOldGeneSymbol;
+    @Value("${vibe_vep.enabled:false}")
+    private boolean vibeVepEnabled;
 
     public VariantAnnotationService(
         CachedVariantAnnotationFetcher cachedVariantAnnotationFetcher,
@@ -430,9 +432,21 @@ public class VariantAnnotationService
         if (variantType == VariantType.DBSNP) {
             return id;
         }
-        if (variantType == VariantType.GENOMIC_LOCATION && (id = this.notationConverter.genomicToHgvs(id)) == null) {
-            return null;
-        } 
+        if (variantType == VariantType.GENOMIC_LOCATION) {
+            // genomicToHgvs() drops the deleted bases ("13,41134330,41134330,G,-"
+            // becomes "13:g.41134330del"). Ensembl VEP recovers them from its own
+            // reference genome; vibe-vep has none, so it would receive a reference
+            // allele of "-" and report the variant as unchanged (c.1298=). Use the
+            // lossless form for vibe-vep, which keeps the notation HGVS-shaped so
+            // downstream id validation and cache keying are unaffected.
+            String converted = vibeVepEnabled
+                ? this.notationConverter.genomicToHgvsWithReference(id)
+                : this.notationConverter.genomicToHgvs(id);
+            if (converted == null) {
+                return null;
+            }
+            id = converted;
+        }
         return this.notationConverter.hgvsNormalizer(id);
     }
 
@@ -440,6 +454,16 @@ public class VariantAnnotationService
         variantAnnotation.setOriginalVariantQuery(originalVariantQuery);
         if (variantType == VariantType.GENOMIC_LOCATION) {
             variantAnnotation.setGenomicLocationExplanation(this.notationConverter.getGenomicLocationExplanation(originalVariantQuery));
+            // With vibe-vep the variant is fetched using the lossless HGVS form
+            // ("13:g.41134330delG", see normalizeVariant), so restore the canonical
+            // HGVSg here. reVUE keys on this value, and callers expect the standard
+            // notation regardless of which backend produced the annotation.
+            if (vibeVepEnabled) {
+                String hgvs = this.notationConverter.genomicToHgvs(originalVariantQuery);
+                if (hgvs != null) {
+                    variantAnnotation.setVariant(this.notationConverter.hgvsNormalizer(hgvs));
+                }
+            }
         }
     }
 

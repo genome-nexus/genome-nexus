@@ -298,11 +298,16 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
             String ref = alleles.substring(0, gtIdx);
             String alt = alleles.substring(gtIdx + 1);
             return new GenomicLocation(chrom, pos, pos, ref, alt);
-        } else if (rest.contains("delins")) {
-            // Delins: 9057113_9057114delinsCTG
-            int delinsIdx = rest.indexOf("delins");
-            String posPart = rest.substring(0, delinsIdx);
-            String alt = rest.substring(delinsIdx + 6);
+        } else if (rest.contains("del") && rest.indexOf("ins") > rest.indexOf("del")) {
+            // Delins, with or without the deleted bases:
+            //   9057113_9057114delinsCTG      (reference not carried)
+            //   9057113_9057114delCAinsCTG    (reference carried, see
+            //                                  NotationConverter.genomicToHgvsWithReference)
+            int delIdx = rest.indexOf("del");
+            int insIdx = rest.indexOf("ins", delIdx);
+            String posPart = rest.substring(0, delIdx);
+            String deleted = rest.substring(delIdx + 3, insIdx);
+            String alt = rest.substring(insIdx + 3);
             int start, end;
             if (posPart.contains("_")) {
                 String[] positions = posPart.split("_");
@@ -312,7 +317,8 @@ public class VibeVepDataFetcher implements ExternalResourceFetcher<VariantAnnota
                 start = Integer.parseInt(posPart);
                 end = start;
             }
-            return new GenomicLocation(chrom, start, end, "-", alt);
+            String ref = deleted.isEmpty() ? "-" : deleted;
+            return new GenomicLocation(chrom, start, end, ref, alt);
         } else if (rest.contains("ins")) {
             // Insertion: 65325832_65325833insG
             int insIdx = rest.indexOf("ins");

@@ -162,6 +162,50 @@ public GenomicLocation normalizeGenomicLocation(GenomicLocation genomicLocation)
     }
 
     @Nullable
+    /**
+     * Like {@link #genomicToHgvs(GenomicLocation)} but keeps the deleted reference
+     * bases in the notation ("13:g.32914438delT", "2:g.216809708_216809709delCAinsT").
+     *
+     * The standard form drops them because Ensembl VEP recovers them from its own
+     * reference genome. Annotators without a reference genome (vibe-vep) cannot, and
+     * would otherwise receive a reference allele of "-" and report the variant as
+     * unchanged. Including the bases is valid HGVS and keeps the notation lossless.
+     *
+     * Insertions and SNVs are unchanged: neither loses information in the standard form.
+     */
+    public String genomicToHgvsWithReference(String genomicLocation) {
+        return genomicToHgvsWithReference(parseGenomicLocation(genomicLocation));
+    }
+
+    public String genomicToHgvsWithReference(GenomicLocation genomicLocation) {
+        String hgvs = genomicToHgvs(genomicLocation);
+        if (hgvs == null) {
+            return null;
+        }
+        GenomicLocation normalized = normalizeGenomicLocation(genomicLocation);
+        String ref = normalized.getReferenceAllele().trim();
+        String var = normalized.getVariantAllele().trim();
+        if (isEmptyAllele(ref)) {
+            // insertion — nothing is deleted, so nothing is lost
+            return hgvs;
+        }
+        if (isEmptyAllele(var)) {
+            // deletion: "...del" -> "...del<ref>"
+            return hgvs + ref;
+        }
+        int delinsIdx = hgvs.indexOf("delins");
+        if (delinsIdx >= 0) {
+            // delins: "...delins<alt>" -> "...del<ref>ins<alt>"
+            return hgvs.substring(0, delinsIdx) + "del" + ref + hgvs.substring(delinsIdx + 3);
+        }
+        // SNV already carries both alleles
+        return hgvs;
+    }
+
+    private boolean isEmptyAllele(String allele) {
+        return allele.equals("-") || allele.length() == 0 || allele.equals("NA") || allele.contains("--");
+    }
+
     public String genomicToHgvs(GenomicLocation genomicLocation) {
         if (genomicLocation == null) {
             return null;
