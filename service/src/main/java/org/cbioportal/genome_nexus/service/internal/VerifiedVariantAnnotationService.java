@@ -149,6 +149,12 @@ public class VerifiedVariantAnnotationService
         String responseReferenceAllele = getReferenceAlleleFromAnnotation(annotation);
         if (responseReferenceAllele.length() != ref.length() ||
          (variantType == VariantType.GENOMIC_LOCATION && responseReferenceAllele.equals("-"))) {
+            // Accept left-normalized deletions: VEP shifts deletions left and extends the
+            // reference context (e.g. input "G" becomes response "AG"). If the provided
+            // ref is a suffix of the response ref, they represent the same variant.
+            if (responseReferenceAllele.length() > ref.length() && responseReferenceAllele.endsWith(ref)) {
+                return annotation;
+            }
             // for altered length Deletion-Insertion responses, recover full reference allele with followup query
             String followUpVariant = constructFollowUpQuery(annotation.getOriginalVariantQuery(), variantType);
 
@@ -165,6 +171,25 @@ public class VerifiedVariantAnnotationService
         }
         if (ref.equals(responseReferenceAllele)) {
             // validation complete
+            return annotation;
+        }
+        // Also accept left-normalized result after follow-up query
+        if (responseReferenceAllele.length() > ref.length() && responseReferenceAllele.endsWith(ref)) {
+            return annotation;
+        }
+        // Accept VCF-style insertion: input ref="-" but response uses the base before the
+        // insertion as reference (e.g. "-/AA" → "G/GAA"). Valid if alt starts with the ref base.
+        if (ref.equals("-") && !responseReferenceAllele.isEmpty() && !responseReferenceAllele.equals("-")) {
+            String responseAlt = getAlternativeAlleleFromAnnotation(annotation);
+            if (responseAlt.startsWith(responseReferenceAllele)) {
+                return annotation;
+            }
+        }
+        // Accept deletions/delins where vibe-vep returns allele_string "-/-" or "-/alt":
+        // when provided ref="-" in JSON input, vibe-vep annotates correctly without resolving
+        // the actual reference base, so it reports "-" as reference. The input ref from the
+        // genomic location is a real base (e.g. "G" for a single-base deletion), not "-".
+        if (responseReferenceAllele.equals("-") && !ref.equals("-")) {
             return annotation;
         }
         // return annotation failure
@@ -211,6 +236,19 @@ public class VerifiedVariantAnnotationService
         }
         return alleleString.substring(0,slashPosition);
 
+    }
+
+    private String getAlternativeAlleleFromAnnotation(VariantAnnotation annotation)
+    {
+        String alleleString = annotation.getAlleleString();
+        if (alleleString == null) {
+            return "";
+        }
+        int slashPosition = alleleString.indexOf('/');
+        if (slashPosition == -1 || slashPosition >= alleleString.length() - 1) {
+            return "";
+        }
+        return alleleString.substring(slashPosition + 1);
     }
 
     private VariantAnnotation createFailedAnnotation(String originalVariantQuery, String originalVariant, String errorMessage)
