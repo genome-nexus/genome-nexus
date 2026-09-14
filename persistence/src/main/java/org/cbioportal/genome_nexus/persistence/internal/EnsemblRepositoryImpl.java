@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 import org.cbioportal.genome_nexus.model.EnsemblCanonical;
 import org.cbioportal.genome_nexus.model.EnsemblGene;
@@ -44,7 +45,7 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
         Query query;
 
         // check approved symbols
-        Criteria approvedSymbolCriteria = Criteria.where("hgnc_symbol").regex("^" + hugoSymbol + "$", "i");
+        Criteria approvedSymbolCriteria = Criteria.where("hgnc_symbol").regex("^" + Pattern.quote(hugoSymbol) + "$", "i");
         query = new Query();
         query.addCriteria(approvedSymbolCriteria);
         ensemblCanonical = mongoTemplate.findOne(query,
@@ -52,7 +53,7 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
 
         if (ensemblCanonical == null) {
             // check prev symbols
-            Criteria prevSymbolsCriteria = Criteria.where("previous_symbols").regex("(^| |,)" + hugoSymbol + "($| |,)", "i");
+            Criteria prevSymbolsCriteria = Criteria.where("previous_symbols").regex("(^| |,)" + Pattern.quote(hugoSymbol) + "($| |,)", "i");
             query = new Query();
             query.addCriteria(prevSymbolsCriteria);
             ensemblCanonical = mongoTemplate.findOne(query,
@@ -60,7 +61,7 @@ public class EnsemblRepositoryImpl implements EnsemblRepositoryCustom
 
             if (ensemblCanonical == null) {
                 // check synonyms
-                Criteria synonymCriteria = Criteria.where("synonyms").regex("(^| |,)" + hugoSymbol + "($| |,)", "i");
+                Criteria synonymCriteria = Criteria.where("synonyms").regex("(^| |,)" + Pattern.quote(hugoSymbol) + "($| |,)", "i");
                 query = new Query();
                 query.addCriteria(synonymCriteria);
                 ensemblCanonical = mongoTemplate.findOne(query,
