@@ -55,6 +55,7 @@ import org.cbioportal.genome_nexus.service.CancerHotspotService;
 import org.cbioportal.genome_nexus.service.ClinvarVariantAnnotationService;
 import org.cbioportal.genome_nexus.service.EnrichmentService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
+import org.cbioportal.genome_nexus.service.AlphaGenomeService;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
 import org.cbioportal.genome_nexus.service.NucleotideContextService;
 import org.cbioportal.genome_nexus.service.OncokbService;
@@ -67,6 +68,7 @@ import org.cbioportal.genome_nexus.service.enricher.CanonicalTranscriptAnnotatio
 import org.cbioportal.genome_nexus.service.enricher.ClinvarVariantAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.HotspotAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.MutationAssessorEnricher;
+import org.cbioportal.genome_nexus.service.enricher.AlphaGenomeAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.MyVariantInfoAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.NucleotideContextAnnotationEnricher;
 import org.cbioportal.genome_nexus.service.enricher.OncokbAnnotationEnricher;
@@ -98,6 +100,7 @@ public class VariantAnnotationService
     private final MutationAssessorService mutationAssessorService;
     private final VariantAnnotationSummaryService variantAnnotationSummaryService;
     private final MyVariantInfoService myVariantInfoService;
+    private final AlphaGenomeService alphaGenomeService;
     private final NucleotideContextService nucleotideContextService;
     private final PostTranslationalModificationService postTranslationalModificationService;
     private final SignalMutationService signalMutationService;
@@ -119,6 +122,7 @@ public class VariantAnnotationService
         @Lazy CancerHotspotService hotspotService,
         @Lazy MutationAssessorService mutationAssessorService,
         MyVariantInfoService myVariantInfoService,
+        AlphaGenomeService alphaGenomeService,
         @Lazy NucleotideContextService nucleotideContextService,
         @Lazy VariantAnnotationSummaryService variantAnnotationSummaryService,
         PostTranslationalModificationService postTranslationalModificationService,
@@ -138,6 +142,7 @@ public class VariantAnnotationService
         this.nucleotideContextService = nucleotideContextService;
         this.variantAnnotationSummaryService = variantAnnotationSummaryService;
         this.myVariantInfoService = myVariantInfoService;
+        this.alphaGenomeService = alphaGenomeService;
         this.postTranslationalModificationService = postTranslationalModificationService;
         this.signalMutationService = signalMutationService;
         this.oncokbService = oncokbService;
@@ -223,7 +228,7 @@ public class VariantAnnotationService
             }
 
             // add new annotation to index db
-            // if caching is enabled, add to the index DB 
+            // if caching is enabled, add to the index DB
             if (cacheEnabled) {
                 variantAnnotation.ifPresent(annotation -> {
                     this.saveToIndexDb(annotation);
@@ -278,7 +283,7 @@ public class VariantAnnotationService
                 variantAnnotations = this.dbsnpFetcher.fetchAndCache(normalizedVariants);
             }
             for (VariantAnnotation variantAnnotation : variantAnnotations) {
-                // add new annotation to index 
+                // add new annotation to index
                 // For successful VEP responses, match by variantId ("id" field).
                 // For VEP error objects, "id" is absent so variantId is null; fall back to
                 // variant ("input" field) which VEP echoes back as the normalized HGVS string.
@@ -374,6 +379,13 @@ public class VariantAnnotationService
             );
         }
 
+        if (fields.contains(AnnotationField.ALPHA_GENOME))
+        {
+            postEnrichmentService.registerEnricher(
+                new AlphaGenomeAnnotationEnricher("alpha_genome", alphaGenomeService)
+            );
+        }
+
         if (fields.contains(AnnotationField.PTMS))
         {
             postEnrichmentService.registerEnricher(
@@ -432,7 +444,7 @@ public class VariantAnnotationService
         }
         if (variantType == VariantType.GENOMIC_LOCATION && (id = this.notationConverter.genomicToHgvs(id)) == null) {
             return null;
-        } 
+        }
         return this.notationConverter.hgvsNormalizer(id);
     }
 

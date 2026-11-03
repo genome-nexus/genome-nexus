@@ -95,7 +95,7 @@ public class AnnotationController
                     required = false)
             String token,
             @ApiParam(value="Comma separated list of fields to include in the annotation (case-sensitive!). Defaults to \"annotation_summary\" if no value passed. " +
-                "Valid values: {annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
+                "Valid values: {alpha_genome, annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
                 required = false, defaultValue = "annotation_summary")
             @RequestParam(required = false)
             List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationQueryMixedFormatException, VariantAnnotationWebServiceException
@@ -120,7 +120,7 @@ public class AnnotationController
             @ApiParam(value="Map of tokens. For example {\"source1\":\"put-your-token1-here\",\"source2\":\"put-your-token2-here\"}", required = false)
             String token,
             @ApiParam(value="Comma separated list of fields to include in the annotation (case-sensitive!). Defaults to \"annotation_summary\" if no value passed. " +
-                "Valid values: {annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
+                "Valid values: {alpha_genome, annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
                 required = false, defaultValue = "annotation_summary")
             @RequestParam(required = false)
             List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationQueryMixedFormatException, VariantAnnotationWebServiceException
@@ -143,16 +143,16 @@ public class AnnotationController
             @RequestParam(required = false)
             String token,
             @ApiParam(value="Comma separated list of fields to include in the annotation (case-sensitive!). Defaults to \"annotation_summary\" if no value passed. " +
-                "Valid values: {annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
+                "Valid values: {alpha_genome, annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
                 required = false, defaultValue = "annotation_summary")
             @RequestParam(required = false)
             List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationQueryMixedFormatException, VariantAnnotationWebServiceException
     {
         return this.verifiedVariantAnnotationService.getAnnotations(
-            variants, 
+            variants,
             VariantType.HGVS,
-            isoformOverrideSource, 
-            tokenMapConverter.convertToMap(token), 
+            isoformOverrideSource,
+            tokenMapConverter.convertToMap(token),
             fields
         );
     }
@@ -170,16 +170,16 @@ public class AnnotationController
             @RequestParam(required = false)
             String token,
             @ApiParam(value="Comma separated list of fields to include in the annotation (case-sensitive!). Defaults to \"annotation_summary\" if no value passed. " +
-                "Valid values: {annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
+                "Valid values: {alpha_genome, annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
                 required = false, defaultValue = "annotation_summary")
             @RequestParam(required = false)
             List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         return this.verifiedVariantAnnotationService.getAnnotation(
-            variant, 
+            variant,
             VariantType.HGVS,
-            isoformOverrideSource, 
-            tokenMapConverter.convertToMap(token), 
+            isoformOverrideSource,
+            tokenMapConverter.convertToMap(token),
             fields
         );
     }
@@ -197,7 +197,7 @@ public class AnnotationController
             @RequestParam(required = false)
             String token,
             @ApiParam(value="Comma separated list of fields to include in the annotation (case-sensitive!). Defaults to \"annotation_summary\" if no value passed. " +
-                "Valid values: {annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
+                "Valid values: {alpha_genome, annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
                 required = false, defaultValue = "annotation_summary")
             @RequestParam(required = false)
             List<AnnotationField> fields)
@@ -224,16 +224,16 @@ public class AnnotationController
             @RequestParam(required = false)
             String token,
             @ApiParam(value="Comma separated list of fields to include in the annotation (case-sensitive!). Defaults to \"annotation_summary\" if no value passed. " +
-                "Valid values: {annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
+                "Valid values: {alpha_genome, annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
                 required = false, defaultValue = "annotation_summary")
             @RequestParam(required = false)
             List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException
     {
         return this.verifiedVariantAnnotationService.getAnnotation(
-            genomicLocation, 
+            genomicLocation,
             VariantType.GENOMIC_LOCATION,
-            isoformOverrideSource, 
-            tokenMapConverter.convertToMap(token), 
+            isoformOverrideSource,
+            tokenMapConverter.convertToMap(token),
             fields
         );
     }
@@ -251,7 +251,7 @@ public class AnnotationController
             @RequestParam(required = false)
             String token,
             @ApiParam(value="Comma separated list of fields to include in the annotation (case-sensitive!). Defaults to \"annotation_summary\" if no value passed. " +
-                "Valid values: {annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
+                "Valid values: {alpha_genome, annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
                 required = false, defaultValue = "annotation_summary")
             @RequestParam(required = false)
             List<AnnotationField> fields)
@@ -272,7 +272,7 @@ public class AnnotationController
             @RequestParam(required = false)
             String token,
             @ApiParam(value="Comma separated list of fields to include in the annotation (case-sensitive!). Defaults to \"annotation_summary\" if no value passed. " +
-                "Valid values: {annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
+                "Valid values: {alpha_genome, annotation_summary, clinvar, hotspots, mutation_assessor, my_variant_info, nucleotide_context, oncokb, ptms, signal}",
                 required = false, defaultValue = "annotation_summary")
             @RequestParam(required = false)
             List<AnnotationField> fields) throws VariantAnnotationNotFoundException, VariantAnnotationWebServiceException

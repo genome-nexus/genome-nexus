@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 
 public enum AnnotationField {
+    ALPHA_GENOME("alpha_genome"),
     ANNOTATION_SUMMARY("annotation_summary"),
     CLINVAR("clinvar"),
     HOTSPOTS("hotspots"),
