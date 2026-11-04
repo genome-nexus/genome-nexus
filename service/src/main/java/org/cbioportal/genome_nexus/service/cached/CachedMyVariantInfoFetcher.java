@@ -52,10 +52,14 @@ public class CachedMyVariantInfoFetcher extends BaseCachedExternalResourceFetche
             maxPageSize
         );
 
-        // instantiate a custom object mapper for normalizing purposes
+        // Object mapper used to decide whether an entity is worth keeping. It has to be
+        // configured exactly like the one ExternalResourceTransformer maps with, otherwise
+        // an entity can pass this check and then fail to map downstream. In particular
+        // ACCEPT_SINGLE_VALUE_AS_ARRAY must stay disabled here: the shared mapper cannot
+        // enable it (see ExternalResourceObjectMapper), and normalizeRawEntity already
+        // wraps the single values we know about before the check runs.
         this.objectMapper = new ExternalResourceObjectMapper();
         this.objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-        this.objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
@@ -95,11 +99,15 @@ public class CachedMyVariantInfoFetcher extends BaseCachedExternalResourceFetche
                 // check for any errors (this throws exception if the response is an error JSON)
                 this.checkForErrorResponse(dbObject);
 
-                // convert DBObject to a proper instance of the given class type
-                this.objectMapper.convertValue(dbObject, this.type);
+                // normalize first: the check below runs against the shape we actually keep,
+                // not against the raw response
+                DBObject normalized = this.normalizeRawEntity(dbObject);
 
-                // if can be successfully converted normalize and add to the curated list
-                curatedList.add(this.normalizeRawEntity(dbObject));
+                // convert DBObject to a proper instance of the given class type
+                this.objectMapper.convertValue(normalized, this.type);
+
+                // if can be successfully converted add to the curated list
+                curatedList.add(normalized);
             } catch (MyVariantInfoNotFoundException e) {
                 // fail silently for NotFoundException
                 // TODO we should cache "not found" queries somewhere
