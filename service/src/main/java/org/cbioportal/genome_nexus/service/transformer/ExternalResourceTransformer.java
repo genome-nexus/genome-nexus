@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.mongodb.DBObject;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cbioportal.genome_nexus.service.ResourceTransformer;
 import org.cbioportal.genome_nexus.service.exception.ResourceMappingException;
 import org.cbioportal.genome_nexus.util.Transformer;
@@ -18,6 +20,8 @@ import java.util.List;
 @Component
 public class ExternalResourceTransformer<T> implements ResourceTransformer<T>
 {
+    private static final Log LOG = LogFactory.getLog(ExternalResourceTransformer.class);
+
     private final ObjectMapper externalResourceObjectMapper;
 
     @Autowired
@@ -42,6 +46,11 @@ public class ExternalResourceTransformer<T> implements ResourceTransformer<T>
     /**
      * Maps the given raw JSON DBObject onto the provided class instances.
      *
+     * A single entity that cannot be mapped (for example because the external
+     * service returned an unexpected shape for one variant) is skipped instead
+     * of discarding the entire batch. Only a payload that cannot be split into
+     * entities at all is reported as a mapping failure.
+     *
      * @param rawJson       raw JSON value
      * @param type          object class
      * @param objectMapper  custom object mapper
@@ -56,14 +65,24 @@ public class ExternalResourceTransformer<T> implements ResourceTransformer<T>
         mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+        List<DBObject> dbObjects;
+
         try {
-            for (DBObject dbObject: Transformer.convertToDbObjectList(rawJson))
-            {
-                // convert DBObject to a proper instance of the given class type
-                list.add(mapper.convertValue(dbObject, type));
-            }
+            dbObjects = Transformer.convertToDbObjectList(rawJson);
         } catch (Exception e) {
             throw new ResourceMappingException(e.getMessage());
+        }
+
+        for (DBObject dbObject: dbObjects)
+        {
+            try {
+                // convert DBObject to a proper instance of the given class type
+                list.add(mapper.convertValue(dbObject, type));
+            } catch (Exception e) {
+                // skip only the entity we cannot map, the rest of the batch is still valid
+                LOG.warn("Failed to map " + type.getSimpleName() + " entity, skipping it: " +
+                    e.getLocalizedMessage());
+            }
         }
 
         return list;

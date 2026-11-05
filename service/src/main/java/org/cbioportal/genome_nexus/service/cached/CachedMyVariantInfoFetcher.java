@@ -128,18 +128,36 @@ public class CachedMyVariantInfoFetcher extends BaseCachedExternalResourceFetche
     {
         if (rawJson.get("dbsnp") instanceof Map) {
             Map<String, Object> dbsnp = (Map<String, Object>) rawJson.get("dbsnp");
-            dbsnp.put("alleles", convertToList(dbsnp.get("alleles")));
-            dbsnp.put("flags", convertToList(dbsnp.get("flags")));
+            normalizeToList(dbsnp, "alleles");
+            normalizeToList(dbsnp, "flags");
         }
 
         if (rawJson.get("clinvar") instanceof Map) {
             Map<String, Object> clinvar = (Map<String, Object>) rawJson.get("clinvar");
-            clinvar.put("rcv", convertToList(clinvar.get("rcv")));
-            Map<String, Object> hgvs = (Map<String, Object>) clinvar.get("hgvs");
-            hgvs.put("coding", convertToList(hgvs.get("coding")));
+            normalizeToList(clinvar, "rcv");
+
+            // clinvar does not always report hgvs, and reports a bare string instead of a
+            // list whenever there is only one coding/genomic/protein value for the variant
+            if (clinvar.get("hgvs") instanceof Map) {
+                Map<String, Object> hgvs = (Map<String, Object>) clinvar.get("hgvs");
+                normalizeToList(hgvs, "coding");
+                normalizeToList(hgvs, "genomic");
+                normalizeToList(hgvs, "protein");
+            }
         }
 
         return rawJson;
+    }
+
+    /**
+     * Wraps the value of the given key into a list, so that it always matches the model.
+     * Absent keys are left alone: wrapping them would introduce a list holding a single null.
+     */
+    private void normalizeToList(Map<String, Object> map, String key)
+    {
+        if (map.get(key) != null) {
+            map.put(key, convertToList(map.get(key)));
+        }
     }
 
     private List<Object> convertToList(Object listOrSingleValue)

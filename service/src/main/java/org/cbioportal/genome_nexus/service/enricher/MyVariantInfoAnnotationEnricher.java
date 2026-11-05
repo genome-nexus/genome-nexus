@@ -51,8 +51,11 @@ public class MyVariantInfoAnnotationEnricher extends BaseAnnotationEnricher
     public void enrich(List<VariantAnnotation> annotations) {
         try {
             List<MyVariantInfo> myVariantInfo = myVariantInfoService.getMyVariantInfoByAnnotation(annotations);
-            Map<String, MyVariantInfo> hgvsToMyVariantInfoMap =
-                myVariantInfo.stream().collect(Collectors.toMap(MyVariantInfo::getHgvs, v -> v));
+            // entries without an hgvs value cannot be matched back to an annotation, and a duplicate
+            // hgvs would make Collectors.toMap throw and take down the enrichment for the whole batch
+            Map<String, MyVariantInfo> hgvsToMyVariantInfoMap = myVariantInfo.stream()
+                .filter(v -> v.getHgvs() != null)
+                .collect(Collectors.toMap(MyVariantInfo::getHgvs, v -> v, (first, duplicate) -> first));
 
             for (VariantAnnotation annotation: annotations) {
                 this.enrichAnnotationWithMyVariantInfo(annotation,
