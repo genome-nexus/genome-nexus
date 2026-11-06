@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
     properties = {
         "spring.data.mongodb.uri=mongodb://localhost/integration",
+        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration",
         "server.port=38892"
     }
 )

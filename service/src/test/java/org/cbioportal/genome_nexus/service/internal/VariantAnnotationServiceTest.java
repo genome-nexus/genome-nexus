@@ -13,6 +13,7 @@ import java.util.Set;
 import org.cbioportal.genome_nexus.model.*;
 import org.cbioportal.genome_nexus.model.my_variant_info_model.MyVariantInfo;
 import org.cbioportal.genome_nexus.persistence.IndexRepository;
+import org.cbioportal.genome_nexus.service.AlphaGenomeService;
 import org.cbioportal.genome_nexus.service.EnsemblService;
 import org.cbioportal.genome_nexus.service.MutationAssessorService;
 import org.cbioportal.genome_nexus.service.MyVariantInfoService;
@@ -76,6 +77,9 @@ public class VariantAnnotationServiceTest
     private MyVariantInfoService myVariantInfoService;
 
     @Mock
+    private AlphaGenomeService alphaGenomeService;
+
+    @Mock
     private OncokbService oncokbService;
 
     @Mock
@@ -96,20 +100,21 @@ public class VariantAnnotationServiceTest
         variantAnnotationService = Mockito.spy(new VariantAnnotationService(
             fetcher,
             idFetcher,
-            cancerHotspotService, 
+            cancerHotspotService,
             mutationAssessorService,
             myVariantInfoService,
+            alphaGenomeService,
             null,
-            null, 
-            postTranslationalModificationService, 
-            null, 
-            oncokbService, 
-            null, 
-            indexRepository, 
-            proteinChangeResolver, 
-            hugoGeneSymbolResolver, 
-            notationConverter, 
-            new IsoformAnnotationEnricherFactory(ensemblService, oncokbService, appConfig)    
+            null,
+            postTranslationalModificationService,
+            null,
+            oncokbService,
+            null,
+            indexRepository,
+            proteinChangeResolver,
+            hugoGeneSymbolResolver,
+            notationConverter,
+            new IsoformAnnotationEnricherFactory(ensemblService, oncokbService, appConfig)
         ));
     }
 

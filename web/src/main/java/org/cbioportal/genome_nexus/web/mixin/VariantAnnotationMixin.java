@@ -99,6 +99,10 @@ public class VariantAnnotationMixin {
     @ApiModelProperty(value = "My Variant Info Annotation", required = false)
     private MyVariantInfoAnnotation myVariantInfoAnnotation;
 
+    @JsonProperty(value="alpha_genome", required = true)
+    @ApiModelProperty(value = "AlphaGenome Annotation", required = false)
+    private AlphaGenomeAnnotation alphaGenomeAnnotation;
+
     @JsonProperty(value="clinvar", required = true)
     @ApiModelProperty(value = "MyVariantInfoClinVar", required = false)
     private ClinvarAnnotation clinvarAnnotation;
